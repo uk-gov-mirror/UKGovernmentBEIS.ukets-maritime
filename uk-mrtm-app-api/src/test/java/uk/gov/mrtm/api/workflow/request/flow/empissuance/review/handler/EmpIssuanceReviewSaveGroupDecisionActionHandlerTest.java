@@ -20,7 +20,6 @@ import uk.gov.netz.api.workflow.request.flow.common.domain.review.ChangesRequire
 import uk.gov.netz.api.workflow.request.flow.common.domain.review.ReviewDecisionRequiredChange;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -63,7 +62,7 @@ class EmpIssuanceReviewSaveGroupDecisionActionHandlerTest {
         RequestTask requestTask = RequestTask.builder().id(requestTaskId).payload(expectedRequestTaskPayload).build();
         AppUser appUser = AppUser.builder().build();
 
-        when(requestTaskService.findTaskById(requestTaskId)).thenReturn(requestTask);
+        when(requestTaskService.findTaskByIdForUpdate(requestTaskId)).thenReturn(requestTask);
 
         //invoke
         RequestTaskPayload requestTaskPayload = reviewSaveGroupDecisionActionHandler.process(requestTask.getId(),
@@ -73,7 +72,7 @@ class EmpIssuanceReviewSaveGroupDecisionActionHandlerTest {
 
         assertThat(requestTaskPayload).isEqualTo(expectedRequestTaskPayload);
         verifyNoMoreInteractions(expectedRequestTaskPayload);
-        verify(requestTaskService, times(1)).findTaskById(requestTaskId);
+        verify(requestTaskService, times(1)).findTaskByIdForUpdate(requestTaskId);
         verify(requestEmpReviewService, times(1)).saveReviewGroupDecision(requestTaskActionPayload, requestTask);
         verifyNoMoreInteractions(requestTaskService, requestEmpReviewService);
     }

@@ -1,0 +1,18 @@
+<div #bannerContainer>
+  @if (feedbackInfo$ | async; as feedbackInfo) {
+    @if (feedbackInfo.type === 'success') {
+      <govuk-notification-banner type="success">
+        @for (message of feedbackInfo.successMessages; track message) {
+          <h3 class="govuk-notification-banner__heading" [innerHTML]="message"></h3>
+        }
+      </govuk-notification-banner>
+    } @else if (feedbackInfo.type === 'error') {
+      <govuk-error-summary [form]="feedbackInfo.invalidForm" />
+    } @else if (feedbackInfo.type === 'neutral') {
+      <govuk-notification-banner type="neutral">
+        <h2 class="govuk-notification-banner__heading">{{ feedbackInfo.neutralBanner.heading }}</h2>
+        <p class="govuk-body">{{ feedbackInfo.neutralBanner.body }}</p>
+      </govuk-notification-banner>
+    }
+  }
+</div>

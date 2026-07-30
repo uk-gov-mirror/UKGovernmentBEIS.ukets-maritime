@@ -10,6 +10,8 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -73,20 +75,26 @@ public class ExceptionControllerAdvice {
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
         log.error("Method Argument Not Valid Exception:", ExceptionUtils.getRootCause(e));
 
-        Object[] errors;
+        return ErrorUtil.getErrorResponse(extractBindingErrors(e.getBindingResult()), ErrorCode.FORM_VALIDATION);
+    }
 
-        if (e.getBindingResult().getFieldErrors().isEmpty()) {
-            errors = e.getBindingResult().getAllErrors().stream()
-                    .map(field -> new Violation(field.getObjectName(), field.getDefaultMessage()))
-                    .toArray();
+    @ExceptionHandler(BindException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleBindException(BindException e) {
+        log.error("Bind Exception:", ExceptionUtils.getRootCause(e));
 
-        } else {
-            errors = e.getBindingResult().getFieldErrors().stream()
-                    .map(field -> new Violation(field.getField(), field.getDefaultMessage()))
-                    .toArray();
+        return ErrorUtil.getErrorResponse(extractBindingErrors(e.getBindingResult()), ErrorCode.FORM_VALIDATION);
+    }
+
+    private static Violation[] extractBindingErrors(BindingResult bindingResult) {
+        if (bindingResult.getFieldErrors().isEmpty()) {
+            return bindingResult.getAllErrors().stream()
+                    .map(error -> new Violation(error.getObjectName(), error.getDefaultMessage()))
+                    .toArray(Violation[]::new);
         }
-
-        return ErrorUtil.getErrorResponse(errors, ErrorCode.FORM_VALIDATION);
+        return bindingResult.getFieldErrors().stream()
+                .map(error -> new Violation(error.getField(), error.getDefaultMessage()))
+                .toArray(Violation[]::new);
     }
 
     /**

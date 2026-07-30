@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
@@ -11,7 +11,7 @@ describe('BreadcrumbsComponent', () => {
     imports: [BreadcrumbsComponent, LinkDirective],
     standalone: true,
     template: `
-      <govuk-breadcrumbs [inverse]="inverse">
+      <govuk-breadcrumbs [inverse]="inverse()">
         <a govukLink="breadcrumb" href="#">Home</a>
         <a govukLink="breadcrumb" href="#">Travel abroad</a>
         <a govukLink="breadcrumb" href="#">Environment</a>
@@ -19,7 +19,7 @@ describe('BreadcrumbsComponent', () => {
     `,
   })
   class TestComponent {
-    inverse = false;
+    readonly inverse = signal(false);
   }
 
   let component: BreadcrumbsComponent;
@@ -55,7 +55,7 @@ describe('BreadcrumbsComponent', () => {
     const breadcrumbDiv = hostElement.querySelector<HTMLElement>('.govuk-breadcrumbs');
     expect(breadcrumbDiv.classList).not.toContain('govuk-breadcrumbs--inverse');
 
-    fixture.componentInstance.inverse = true;
+    fixture.componentInstance.inverse.set(true);
     fixture.detectChanges();
 
     expect(breadcrumbDiv.classList).toContain('govuk-breadcrumbs--inverse');

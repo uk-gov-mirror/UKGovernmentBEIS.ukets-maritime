@@ -29,7 +29,7 @@ describe('AerAggregatedDataUploadComponent', () => {
   let page: Page;
   let store: RequestTaskStore;
 
-  const getFixedUUID = jest.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
+  const getFixedUUID = vi.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
   Object.defineProperty(window, 'crypto', {
     value: { getRandomValues: getFixedUUID, randomUUID: getFixedUUID },
   });
@@ -45,7 +45,7 @@ describe('AerAggregatedDataUploadComponent', () => {
     name: 'ships.xml',
     size: 1024,
     type: 'text/xml',
-    text: jest.fn().mockResolvedValue(mockAerAggregatedDataPartialErrorsXml),
+    text: vi.fn().mockResolvedValue(mockAerAggregatedDataPartialErrorsXml),
   } as unknown as File;
 
   const expectedValidationErrors = [
@@ -70,7 +70,7 @@ describe('AerAggregatedDataUploadComponent', () => {
     name: 'ships.xml',
     size: 1024,
     type: 'text/xml',
-    text: jest.fn().mockResolvedValue(aerAggregatedDataXmlMock),
+    text: vi.fn().mockResolvedValue(aerAggregatedDataXmlMock),
   } as unknown as File;
 
   const expectedValidAggregatedData = [
@@ -168,10 +168,10 @@ describe('AerAggregatedDataUploadComponent', () => {
   const route = new ActivatedRouteStub();
 
   const taskService: MockType<TaskService<any>> = {
-    saveSubtask: jest.fn().mockReturnValue(of({})),
+    saveSubtask: vi.fn().mockReturnValue(of({})),
   };
 
-  const taskServiceSpy = jest.spyOn(taskService, 'saveSubtask');
+  const taskServiceSpy = vi.spyOn(taskService, 'saveSubtask');
 
   class Page extends BasePage<AerAggregatedDataUploadComponent> {
     get tableContents(): string[] {

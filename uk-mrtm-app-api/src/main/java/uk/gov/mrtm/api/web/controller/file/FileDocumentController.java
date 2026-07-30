@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.netz.api.files.common.domain.dto.FileDTO;
-import uk.gov.netz.api.files.documents.service.FileDocumentTokenService;
+import uk.gov.netz.api.files.documents.service.storage.FileDocumentStorageService;
 import uk.gov.mrtm.api.web.constants.SwaggerApiInfo;
 import uk.gov.mrtm.api.web.controller.exception.ErrorResponse;
 
@@ -33,7 +33,7 @@ import java.nio.charset.StandardCharsets;
 @SecurityRequirements
 public class FileDocumentController {
 
-    private final FileDocumentTokenService fileDocumentTokenService;
+    private final FileDocumentStorageService fileDocumentStorageService;
 
     @GetMapping(path = "/{token}")
     @Operation(summary = "Get the file document resource for the provided file token")
@@ -47,7 +47,7 @@ public class FileDocumentController {
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
     public ResponseEntity<Resource> getFileDocument(
             @PathVariable("token") @Parameter(description = "The file document token", required = true) @NotEmpty String token) {
-        FileDTO file = fileDocumentTokenService.getFileDTOByToken(token);
+        FileDTO file = fileDocumentStorageService.getFileDTOByToken(token);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         ContentDisposition.builder("document").filename(file.getFileName(), StandardCharsets.UTF_8).build().toString())

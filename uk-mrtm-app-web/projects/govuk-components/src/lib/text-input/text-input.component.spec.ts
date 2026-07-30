@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ControlContainer, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -23,18 +23,18 @@ describe('TextInputComponent', () => {
       <div
         govuk-text-input
         [formControl]="control"
-        [prefix]="prefix"
-        [suffix]="suffix"
+        [prefix]="prefix()"
+        [suffix]="suffix()"
         label="First control"
-        [isLabelHidden]="isLabelHidden"
-        [labelSize]="labelSize"></div>
+        [isLabelHidden]="isLabelHidden()"
+        [labelSize]="labelSize()"></div>
       <div
-        [isLabelHidden]="isLabelHidden"
-        [labelSize]="labelSize"
+        [isLabelHidden]="isLabelHidden()"
+        [labelSize]="labelSize()"
         govuk-text-input
         [formControl]="control"
-        [prefix]="prefix"
-        [suffix]="suffix">
+        [prefix]="prefix()"
+        [suffix]="suffix()">
         <ng-container govukLabel>
           Second control
           <span class="govuk-visually-hidden">hidden</span>
@@ -52,20 +52,20 @@ describe('TextInputComponent', () => {
       { text: new FormControl(null, { validators: GovukValidators.minLength(5, 'Enter a value') }) },
       { updateOn: 'submit' },
     );
-    isLabelHidden = false;
-    labelSize: LabelSizeType = 'normal';
-    prefix: string;
-    suffix: string;
+    readonly isLabelHidden = signal(false);
+    readonly labelSize = signal<LabelSizeType>('normal');
+    readonly prefix = signal<string>(undefined);
+    readonly suffix = signal<string>(undefined);
   }
 
   @Component({
     imports: [TextInputComponent, ReactiveFormsModule],
     standalone: true,
-    template: '<div govuk-text-input [formControl]="control" inputType="number" [numberFormat]="format"></div>',
+    template: '<div govuk-text-input [formControl]="control" inputType="number" [numberFormat]="format()"></div>',
   })
   class TestNumericComponent {
     control = new FormControl(null, GovukValidators.max(5, 'Max test'));
-    format: string;
+    readonly format = signal<string>(undefined);
   }
 
   beforeEach(async () => {
@@ -170,7 +170,7 @@ describe('TextInputComponent', () => {
   });
 
   it('should format on blur and revert on focus', () => {
-    hostNumericComponent.format = '1.0-0';
+    hostNumericComponent.format.set('1.0-0');
     fixtureNumericComponent.detectChanges();
     const input = fixtureNumericComponent.debugElement.query(By.css('input'));
     hostNumericComponent.control.patchValue('2000');
@@ -191,19 +191,19 @@ describe('TextInputComponent', () => {
     expect(getPrefix()).toBeNull();
     expect(getSuffix()).toBeNull();
 
-    hostTestComponent.prefix = 'Eur';
+    hostTestComponent.prefix.set('Eur');
     fixtureTestComponent.detectChanges();
 
     expect(getPrefix().textContent).toEqual('Eur');
     expect(getSuffix()).toBeNull();
 
-    hostTestComponent.suffix = '%';
+    hostTestComponent.suffix.set('%');
     fixtureTestComponent.detectChanges();
 
     expect(getPrefix().textContent).toEqual('Eur');
     expect(getSuffix().textContent).toEqual('%');
 
-    hostTestComponent.prefix = undefined;
+    hostTestComponent.prefix.set(undefined);
     fixtureTestComponent.detectChanges();
 
     expect(getPrefix()).toBeNull();
@@ -234,22 +234,22 @@ describe('TextInputComponent', () => {
     const hostElement: HTMLElement = fixtureTestComponent.nativeElement;
     const label = hostElement.querySelector('label');
 
-    hostTestComponent.isLabelHidden = false;
+    hostTestComponent.isLabelHidden.set(false);
     fixtureTestComponent.detectChanges();
 
     expect(label.className).toEqual('govuk-label');
 
-    hostTestComponent.labelSize = 'small';
+    hostTestComponent.labelSize.set('small');
     fixtureTestComponent.detectChanges();
 
     expect(label.className).toEqual('govuk-label govuk-label--s');
 
-    hostTestComponent.labelSize = 'medium';
+    hostTestComponent.labelSize.set('medium');
     fixtureTestComponent.detectChanges();
 
     expect(label.className).toEqual('govuk-label govuk-label--m');
 
-    hostTestComponent.labelSize = 'large';
+    hostTestComponent.labelSize.set('large');
     fixtureTestComponent.detectChanges();
 
     expect(label.className).toEqual('govuk-label govuk-label--l');

@@ -66,7 +66,7 @@ describe('DataSuppliersFormComponent', () => {
   });
 
   it('should submit form', () => {
-    const storeSpy = jest.spyOn(store, 'setNewItem');
+    const storeSpy = vi.spyOn(store, 'setNewItem');
     page.setInputValue('#name', singleDataSupplierItemCreateDTO.name);
     page.setInputValue('#jwksUrl', singleDataSupplierItemCreateDTO.jwksUrl);
     page.submitButton.click();

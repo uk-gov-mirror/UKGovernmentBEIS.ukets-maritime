@@ -14,7 +14,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { AerShipAggregatedDataSave } from '@mrtm/api';
 
-import { PageHeadingComponent } from '@netz/common/components';
+import { FeedbackBannerStore, PageHeadingComponent } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { TaskService } from '@netz/common/forms';
 import { RequestTaskStore } from '@netz/common/store';
@@ -32,7 +32,6 @@ import { aerAggregatedDataUploadFormProvider } from '@requests/common/aer/subtas
 import { AerAggregatedDataXmlService } from '@requests/common/aer/subtasks/aer-aggregated-data/services';
 import { TASK_FORM } from '@requests/common/task-form.token';
 import { DataParserWizardStepComponent } from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { PersistablePaginationService } from '@shared/services';
 import { AerAggregatedDataUploadDto, XmlValidationError } from '@shared/types';
 
@@ -60,7 +59,7 @@ export class AerAggregatedDataUploadComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerSubmitTaskPayload>);
   private readonly xmlService = inject(AerAggregatedDataXmlService);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private readonly title = inject(Title);
 
   private readonly dataParserWizardStep = viewChild.required(DataParserWizardStepComponent);
@@ -138,9 +137,7 @@ export class AerAggregatedDataUploadComponent {
         )
         .subscribe(() => {
           const actionMsg = this.showConfirmation ? 'replaced' : 'uploaded';
-          this.notificationBannerStore.setSuccessMessages([
-            `The aggregated data file has been ${actionMsg} successfully`,
-          ]);
+          this.feedbackBannerStore.setSuccessMessages([`The aggregated data file has been ${actionMsg} successfully`]);
         });
     }
   }

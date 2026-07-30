@@ -4,11 +4,11 @@
     govuk-text-input
     label="Company IMO number"
     hint="Must be 7 digits long"
-    widthClass="govuk-!-width-one-quarter"></div>
+    widthClass="govuk-!-width-one-third"></div>
 }
 <div formControlName="name" govuk-text-input label="Operator name" widthClass="govuk-!-width-two-thirds"></div>
 @if (formMode() === 'EDIT') {
-  <div formControlName="sopId" govuk-text-input label="SOP ID (optional)" widthClass="govuk-!-width-one-quarter"></div>
+  <div formControlName="sopId" govuk-text-input label="SOP ID (optional)" widthClass="govuk-!-width-one-third"></div>
 }
 <mrtm-location-state-form legendLabel="Contact address" />
 <div

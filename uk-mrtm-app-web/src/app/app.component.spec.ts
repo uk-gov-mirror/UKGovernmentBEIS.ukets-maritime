@@ -39,11 +39,11 @@ describe('AppComponent', () => {
     }
 
     get dashboardLink() {
-      return this.query<HTMLAnchorElement>('a[href="/maritime/dashboard"]');
+      return this.query<HTMLAnchorElement>('govuk-header-nav-list-legacy a[href="/maritime/dashboard"]');
     }
 
     get accountsLink() {
-      return this.query<HTMLAnchorElement>('a[href="/maritime/accounts"]');
+      return this.query<HTMLAnchorElement>('govuk-header-nav-list-legacy a[href="/maritime/accounts"]');
     }
 
     get regulatorsLink() {
@@ -68,7 +68,7 @@ describe('AppComponent', () => {
   }
 
   beforeAll(() => {
-    console.warn = jest.fn();
+    console.warn = vi.fn();
   });
 
   afterAll(() => {

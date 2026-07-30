@@ -1,4 +1,4 @@
-import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule, UrlSegment } from '@angular/router';
 
@@ -55,7 +55,7 @@ describe('CreateUserAuthorityComponent', () => {
   });
 
   it('should set newUserAuthority and isInitiallySubmitted in store when submitting the form', async () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     component.form.setValue(mockOperatorUser);
     component.handleSubmit();
 
@@ -66,7 +66,7 @@ describe('CreateUserAuthorityComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['summary'], { relativeTo: route });
   });
 
-  it('should display errors when final submission has failed and user has been redirected back to form to correct their input', fakeAsync(() => {
+  it('should display errors when final submission has failed and user has been redirected back to form to correct their input', () => {
     store.setSubmissionErrors([
       {
         control: 'email',
@@ -75,7 +75,6 @@ describe('CreateUserAuthorityComponent', () => {
         },
       },
     ]);
-    flush();
     fixture.detectChanges();
     expect(component.form.invalid).toEqual(true);
     expect(component.form.touched).toEqual(true);
@@ -83,7 +82,6 @@ describe('CreateUserAuthorityComponent', () => {
     // Test automatic reset of submission errors.
     let submissionErrors: SubmissionError[] = null;
     store.pipe(selectSubmissionErrors).subscribe((result) => (submissionErrors = result));
-    flush();
     expect(submissionErrors).toHaveLength(0);
-  }));
+  });
 });

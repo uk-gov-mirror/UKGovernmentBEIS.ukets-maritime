@@ -19,10 +19,10 @@ describe('AccountClosureSubmitComponent', () => {
 
   const activatedRoute = new ActivatedRouteStub({ accountId: 1 });
   const accountClosureStateService: MockType<AccountClosureStateService> = {
-    saveAccountClosure: jest.fn().mockReturnValue(of(null)),
+    saveAccountClosure: vi.fn().mockReturnValue(of(null)),
   };
   const accountClosureExistingStateService: MockType<AccountClosureStateService> = {
-    saveAccountClosure: jest.fn().mockReturnValue(of(null)),
+    saveAccountClosure: vi.fn().mockReturnValue(of(null)),
     get payload(): AccountClosureSubmitRequestTaskPayload {
       return { accountClosure: { reason: 'Test' } };
     },
@@ -74,8 +74,8 @@ describe('AccountClosureSubmitComponent', () => {
     });
 
     it('should submit a valid form and navigate to nextRoute', () => {
-      const taskServiceSpy = jest.spyOn(accountClosureStateService, 'saveAccountClosure');
-      const navigateSpy = jest.spyOn(router, 'navigate');
+      const taskServiceSpy = vi.spyOn(accountClosureStateService, 'saveAccountClosure');
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
       page.reason = 'Test reason';
       page.submitButton.click();
@@ -111,8 +111,8 @@ describe('AccountClosureSubmitComponent', () => {
     });
 
     it('should submit a valid form and navigate to nextRoute', () => {
-      const taskServiceSpy = jest.spyOn(accountClosureExistingStateService, 'saveAccountClosure');
-      const navigateSpy = jest.spyOn(router, 'navigate');
+      const taskServiceSpy = vi.spyOn(accountClosureExistingStateService, 'saveAccountClosure');
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
       expect(page.reason).toEqual('Test');
       expect(page.errorSummary).toBeFalsy();

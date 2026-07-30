@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 
+import { FeedbackBannerComponent } from '@netz/common/components';
 import { RequestTaskPageContentFactory } from '@netz/common/request-task';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
 
@@ -28,7 +29,6 @@ import {
 import { ThirdPartyDataProviderInfoComponent } from '@requests/common/third-party-data-provider/third-party-data-provider-info';
 import { ADDITIONAL_DOCUMENTS_SUB_TASK } from '@requests/common/utils/additional-documents';
 import { EMP_SUBMIT_ROUTE_PREFIX } from '@requests/tasks/emp-submit/emp-submit.const';
-import { NotificationBannerComponent } from '@shared/components';
 import { taskActionTypeToTitleMap } from '@shared/constants';
 
 const routePrefix = EMP_SUBMIT_ROUTE_PREFIX;
@@ -40,11 +40,13 @@ export const empSubmitTaskContent: RequestTaskPageContentFactory = () => {
   const isEmpSectionCompleted = store.select(empCommonQuery.selectIsEmpSectionCompleted)();
 
   return {
-    pageTopComponent: NotificationBannerComponent,
+    pageTopComponent: FeedbackBannerComponent,
     header: taskActionTypeToTitleMap?.[requestTaskType],
-    preContentComponent: allowedRequestTaskActions.includes('EMP_ISSUANCE_IMPORT_THIRD_PARTY_DATA_APPLICATION')
-      ? ThirdPartyDataProviderInfoComponent
-      : null,
+    preContentComponent: [
+      allowedRequestTaskActions.includes('EMP_ISSUANCE_IMPORT_THIRD_PARTY_DATA_APPLICATION')
+        ? ThirdPartyDataProviderInfoComponent
+        : null,
+    ].filter(Boolean),
     sections: [
       {
         title: 'Account details',

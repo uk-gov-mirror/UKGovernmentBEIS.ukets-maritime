@@ -22,9 +22,11 @@ import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegula
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.PEER_REVIEW_EMP_NOTIFICATION;
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.PEER_REVIEW_EMP_VARIATION;
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.PEER_REVIEW_NON_COMPLIANCE;
+import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.PEER_REVIEW_SITE_VISIT;
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.REVIEW_AER;
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.REVIEW_EMP_APPLICATION;
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.REVIEW_EMP_NOTIFICATION;
+import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.REVIEW_SITE_VISIT;
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.REVIEW_VIR;
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.SUBMIT_DOE;
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.SUBMIT_NON_COMPLIANCE;
@@ -174,6 +176,8 @@ class MrtmRegulatorPermissionsAdapterTest {
         expectedPermissionGroupLevels.put(MANAGE_VERIFICATION_BODIES, NONE);
         expectedPermissionGroupLevels.put(MANAGE_GUIDANCE, NONE);
         expectedPermissionGroupLevels.put(MANAGE_THIRD_PARTY_DATA_PROVIDERS, NONE);
+        expectedPermissionGroupLevels.put(REVIEW_SITE_VISIT, NONE);
+        expectedPermissionGroupLevels.put(PEER_REVIEW_SITE_VISIT, NONE);
 
         assertThat(regulatorPermissionsAdapter.getPermissionGroupLevelsFromPermissions(permissions))
                 .containsExactlyInAnyOrderEntriesOf(expectedPermissionGroupLevels);
@@ -208,6 +212,8 @@ class MrtmRegulatorPermissionsAdapterTest {
         expectedPermissionGroupLevels.put(MANAGE_VERIFICATION_BODIES, NONE);
         expectedPermissionGroupLevels.put(MANAGE_GUIDANCE, NONE);
         expectedPermissionGroupLevels.put(MANAGE_THIRD_PARTY_DATA_PROVIDERS, NONE);
+        expectedPermissionGroupLevels.put(REVIEW_SITE_VISIT, NONE);
+        expectedPermissionGroupLevels.put(PEER_REVIEW_SITE_VISIT, NONE);
 
         assertThat(regulatorPermissionsAdapter.getPermissionGroupLevelsFromPermissions(permissions))
                 .containsExactlyInAnyOrderEntriesOf(expectedPermissionGroupLevels);
@@ -261,6 +267,8 @@ class MrtmRegulatorPermissionsAdapterTest {
         expectedPermissionGroupLevels.put(ACCOUNT_CLOSURE, NONE);
         expectedPermissionGroupLevels.put(MANAGE_GUIDANCE, NONE);
         expectedPermissionGroupLevels.put(MANAGE_THIRD_PARTY_DATA_PROVIDERS, NONE);
+        expectedPermissionGroupLevels.put(REVIEW_SITE_VISIT, NONE);
+        expectedPermissionGroupLevels.put(PEER_REVIEW_SITE_VISIT, NONE);
 
         assertThat(regulatorPermissionsAdapter.getPermissionGroupLevelsFromPermissions(permissions))
                 .containsExactlyInAnyOrderEntriesOf(expectedPermissionGroupLevels);
@@ -290,6 +298,8 @@ class MrtmRegulatorPermissionsAdapterTest {
         expectedPermissionGroupLevels.put(ACCOUNT_CLOSURE, List.of(NONE, VIEW_ONLY, EXECUTE));
         expectedPermissionGroupLevels.put(MANAGE_GUIDANCE, List.of(NONE, EXECUTE));
         expectedPermissionGroupLevels.put(MANAGE_THIRD_PARTY_DATA_PROVIDERS, List.of(NONE, EXECUTE));
+        expectedPermissionGroupLevels.put(REVIEW_SITE_VISIT, List.of(NONE, VIEW_ONLY, EXECUTE));
+        expectedPermissionGroupLevels.put(PEER_REVIEW_SITE_VISIT, List.of(NONE, VIEW_ONLY, EXECUTE));
 
         Map<String, List<RegulatorPermissionLevel>> actualPermissionGroupLevels =
                 regulatorPermissionsAdapter.getPermissionGroupLevels();

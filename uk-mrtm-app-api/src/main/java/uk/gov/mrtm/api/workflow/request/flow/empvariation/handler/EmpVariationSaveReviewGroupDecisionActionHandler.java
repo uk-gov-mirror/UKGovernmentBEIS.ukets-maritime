@@ -24,7 +24,7 @@ public class EmpVariationSaveReviewGroupDecisionActionHandler
     @Override
     public RequestTaskPayload process(Long requestTaskId, String requestTaskActionType, AppUser appUser,
                                       EmpVariationSaveReviewGroupDecisionRequestTaskActionPayload payload) {
-        final RequestTask requestTask = requestTaskService.findTaskById(requestTaskId);
+        final RequestTask requestTask = requestTaskService.findTaskByIdForUpdate(requestTaskId);
         empVariationReviewService.saveReviewGroupDecision(payload, requestTask);
 
         return requestTask.getPayload();

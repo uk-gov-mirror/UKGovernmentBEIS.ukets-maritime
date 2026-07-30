@@ -1,18 +1,18 @@
 import { HttpResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
-import { provideRouter } from '@angular/router';
 
-import { lastValueFrom, Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 
 import { RequestTaskAttachmentsHandlingService, TasksService } from '@mrtm/api';
 
+import { SignalStore } from '@netz/common/store';
 import { asyncData, mockClass } from '@netz/common/testing';
 
-import { Store } from '@core/store/store';
 import { RequestTaskFileService } from '@shared/services';
+import { Mocked } from 'vitest';
 
-class MockedStore extends Store<MockedState> {
+class MockedStore extends SignalStore<MockedState> {
   constructor() {
     super(initialMockedState);
   }
@@ -28,9 +28,8 @@ const initialMockedState: MockedState = {
 
 describe('RequestTaskFileService', () => {
   let service: RequestTaskFileService;
-  let attachmentsService: jest.Mocked<RequestTaskAttachmentsHandlingService>;
-
-  const myMockedStore = new MockedStore();
+  let mockedStore: MockedStore;
+  let attachmentsService: Mocked<RequestTaskAttachmentsHandlingService>;
 
   beforeEach(() => {
     attachmentsService = mockClass(RequestTaskAttachmentsHandlingService);
@@ -41,12 +40,14 @@ describe('RequestTaskFileService', () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       providers: [
-        provideRouter([]),
+        MockedStore,
         { provide: RequestTaskAttachmentsHandlingService, useValue: attachmentsService },
         { provide: TasksService, useValue: mockClass(TasksService) },
       ],
     });
+
     service = TestBed.inject(RequestTaskFileService);
+    mockedStore = TestBed.inject(MockedStore);
   });
 
   it('should be created', () => {
@@ -55,21 +56,20 @@ describe('RequestTaskFileService', () => {
 
   it('should upload a single file', async () => {
     const control = new FormControl({ file: new File(['content'], 'file.txt') });
+
     await expect(
-      lastValueFrom(
-        service.upload(myMockedStore.getState().requestTaskId, 'RFI_SUBMIT')(control) as Observable<ValidationErrors>,
+      firstValueFrom(
+        service.upload(mockedStore.state.requestTaskId, 'RDE_SUBMIT')(control) as Observable<ValidationErrors>,
       ),
     ).resolves.toBeNull();
   });
 
-  it('should upload multiple files', () => {
+  it('should upload multiple files', async () => {
     const control = new FormControl([{ file: new File(['content'], 'file.txt') }]);
-    expect(
-      lastValueFrom(
-        service.uploadMany(
-          myMockedStore.getState().requestTaskId,
-          'RFI_SUBMIT',
-        )(control) as Observable<ValidationErrors>,
+
+    await expect(
+      firstValueFrom(
+        service.uploadMany(mockedStore.state.requestTaskId, 'RDE_SUBMIT')(control) as Observable<ValidationErrors>,
       ),
     ).resolves.toBeNull();
   });

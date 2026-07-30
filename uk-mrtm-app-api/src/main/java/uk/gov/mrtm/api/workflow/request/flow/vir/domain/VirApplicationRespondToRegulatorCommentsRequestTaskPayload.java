@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.Map;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
+@NoArgsConstructor
 @SuperBuilder
 public class VirApplicationRespondToRegulatorCommentsRequestTaskPayload extends
     VirApplicationRequestTaskPayload {

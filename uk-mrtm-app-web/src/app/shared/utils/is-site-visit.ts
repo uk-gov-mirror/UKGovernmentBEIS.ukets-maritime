@@ -1,0 +1,23 @@
+import { MrtmRequestTaskActionType, MrtmRequestTaskType } from '@shared/types';
+
+export const siteVisitTypeList: Array<MrtmRequestTaskType | MrtmRequestTaskActionType> = [
+  'SITE_VISIT',
+  'SITE_VISIT_APPLICATION_SUBMIT',
+  'SITE_VISIT_WAIT_FOR_REVIEW',
+  'SITE_VISIT_APPLICATION_SUBMITTED',
+  'SITE_VISIT_APPLICATION_REVIEW',
+  'SITE_VISIT_WAIT_FOR_PEER_REVIEW',
+  'SITE_VISIT_APPLICATION_PEER_REVIEW',
+  'SITE_VISIT_WAIT_FOR_AMENDS',
+  'SITE_VISIT_APPLICATION_AMENDS_SUBMITTED',
+  'SITE_VISIT_APPLICATION_RETURNED_FOR_AMENDS',
+  'SITE_VISIT_APPLICATION_AMENDS_SUBMIT',
+  'SITE_VISIT_APPLICATION_APPROVED',
+  'SITE_VISIT_APPLICATION_REJECTED',
+  'SITE_VISIT_RECALLED_FROM_AMENDS',
+  'SITE_VISIT_APPLICATION_CANCELLED',
+];
+
+export const isSiteVisit = (type: MrtmRequestTaskType | MrtmRequestTaskActionType): boolean => {
+  return siteVisitTypeList.includes(type);
+};

@@ -40,6 +40,9 @@ import { registryNoticeEventSubmittedTaskContent } from '@requests/timeline/regi
 import { registrySubmittedTaskContent } from '@requests/timeline/registry-submitted/registry-submitted-task-content';
 import { rfiResponseTaskContent } from '@requests/timeline/rfi-response/rfi-response-task-content';
 import { rfiSubmittedTaskContent } from '@requests/timeline/rfi-submitted/rfi-submitted-task-content';
+import { siteVisitReturnedForAmendsTaskContent } from '@requests/timeline/site-visit-returned-for-amends';
+import { siteVisitReviewedTaskContent } from '@requests/timeline/site-visit-reviewed';
+import { siteVisitSubmittedTaskContent } from '@requests/timeline/site-visit-submitted';
 import { virFollowUpTaskContent } from '@requests/timeline/vir-follow-up';
 import { virReviewedTaskContent } from '@requests/timeline/vir-reviewed';
 import { virSubmittedTaskContent } from '@requests/timeline/vir-submitted';
@@ -116,4 +119,13 @@ export const timelineContent: RequestActionPageContentFactoryMap = {
   AER_APPLICATION_RETURNED_FOR_AMENDS: aerReturnedForAmendsTaskContent,
   NON_COMPLIANCE_DETAILS_AMENDED: nonComplianceDetailsAmendedTaskContent,
   REGISTRY_REGULATOR_NOTICE_EVENT_SUBMITTED: registryNoticeEventSubmittedTaskContent,
+
+  //SITE_VISIT
+  SITE_VISIT_APPLICATION_SUBMITTED: siteVisitSubmittedTaskContent,
+  SITE_VISIT_APPLICATION_AMENDS_SUBMITTED: siteVisitSubmittedTaskContent,
+  SITE_VISIT_APPLICATION_PEER_REVIEWER_ACCEPTED: peerReviewDecisionTaskContent,
+  SITE_VISIT_APPLICATION_PEER_REVIEWER_REJECTED: peerReviewDecisionTaskContent,
+  SITE_VISIT_APPLICATION_RETURNED_FOR_AMENDS: siteVisitReturnedForAmendsTaskContent,
+  SITE_VISIT_APPLICATION_APPROVED: siteVisitReviewedTaskContent,
+  SITE_VISIT_APPLICATION_REJECTED: siteVisitReviewedTaskContent,
 };

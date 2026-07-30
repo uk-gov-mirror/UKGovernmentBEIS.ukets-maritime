@@ -12,7 +12,7 @@ describe('MethaneSlipValuePipe', () => {
   });
 
   it('should display correct values depends on type', () => {
-    expect(pipe.transform(12, 'OTHER')).toBe('Other: 12');
-    expect(pipe.transform(12, 'PRESELECTED')).toBe(12);
+    expect(pipe.transform('12', 'OTHER')).toBe('Other: 12');
+    expect(pipe.transform('12', 'PRESELECTED')).toBe('12');
   });
 });

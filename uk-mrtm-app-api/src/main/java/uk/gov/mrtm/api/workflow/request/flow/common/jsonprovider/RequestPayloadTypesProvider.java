@@ -11,6 +11,7 @@ import uk.gov.mrtm.api.workflow.request.flow.empreissue.domain.EmpBatchReissueRe
 import uk.gov.mrtm.api.workflow.request.flow.empreissue.domain.EmpReissueRequestPayload;
 import uk.gov.mrtm.api.workflow.request.flow.empvariation.domain.EmpVariationRequestPayload;
 import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceRequestPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.common.domain.SiteVisitRequestPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirRequestPayload;
 import uk.gov.netz.api.common.config.jackson.JsonSubTypesProvider;
 
@@ -25,6 +26,7 @@ import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequest
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestPayloadType.EMP_VARIATION_REQUEST_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestPayloadType.EMP_REISSUE_REQUEST_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestPayloadType.NON_COMPLIANCE_REQUEST_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestPayloadType.SITE_VISIT_REQUEST_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestPayloadType.VIR_REQUEST_PAYLOAD;
 
 @Component
@@ -50,7 +52,9 @@ public class RequestPayloadTypesProvider implements JsonSubTypesProvider {
 				//VIR
 				new NamedType(VirRequestPayload.class, VIR_REQUEST_PAYLOAD),
 				//NON_COMPLIANCE
-				new NamedType(NonComplianceRequestPayload.class, NON_COMPLIANCE_REQUEST_PAYLOAD)
+				new NamedType(NonComplianceRequestPayload.class, NON_COMPLIANCE_REQUEST_PAYLOAD),
+				//SITE_VISIT
+				new NamedType(SiteVisitRequestPayload.class, SITE_VISIT_REQUEST_PAYLOAD)
 				);
 	}
 

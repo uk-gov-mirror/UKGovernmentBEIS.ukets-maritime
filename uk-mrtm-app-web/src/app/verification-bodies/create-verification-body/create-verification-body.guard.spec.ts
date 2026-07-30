@@ -4,7 +4,7 @@ import { CanDeactivateFn } from '@angular/router';
 import { canDeactivateCreateVerificationBodyGuard } from '@verification-bodies//create-verification-body/create-verification-body.guard';
 
 describe('canDeactivateCreateVerificationBodyGuard', () => {
-  const executeGuard: CanDeactivateFn<any> = (...guardParameters) =>
+  const executeGuard: CanDeactivateFn<unknown> = (...guardParameters) =>
     TestBed.runInInjectionContext(() => canDeactivateCreateVerificationBodyGuard(...guardParameters));
 
   beforeEach(() => {

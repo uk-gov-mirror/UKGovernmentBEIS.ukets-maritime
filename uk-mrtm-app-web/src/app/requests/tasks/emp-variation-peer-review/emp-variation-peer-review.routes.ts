@@ -9,6 +9,7 @@ import {
   provideEmpPeerReviewStepFlowManagers,
 } from '@requests/tasks/emp-peer-review/emp-peer-review.providers';
 import { provideEmpVariationPeerReviewTaskServices } from '@requests/tasks/emp-variation-peer-review/emp-variation-peer-review.providers';
+import { HTML_DIFF } from '@shared/directives';
 import { resetPersistableStateGuard } from '@shared/guards';
 
 export const EMP_VARIATION_PEER_REVIEW_ROUTES: Routes = [
@@ -21,6 +22,7 @@ export const EMP_VARIATION_PEER_REVIEW_ROUTES: Routes = [
       provideEmpPeerReviewSideEffects(),
       provideEmpVariationPeerReviewTaskServices(),
       provideEmpPeerReviewStepFlowManagers(),
+      { provide: HTML_DIFF, useValue: true },
     ],
     canActivate: [resetPersistableStateGuard],
     children: [

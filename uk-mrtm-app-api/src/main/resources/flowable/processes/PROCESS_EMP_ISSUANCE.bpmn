@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.21.0">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.46.1">
   <message id="Message_1cvgrnk" />
   <message id="Message_0ru6fq0" />
   <process id="PROCESS_EMP_ISSUANCE" name="EMP Issuance Process" isExecutable="true">
@@ -9,13 +9,13 @@
     <sequenceFlow id="Flow_0az5ca4" sourceRef="ApplyForPermitStartEvent" targetRef="EMP_ISSUANCE_APPLICATION_SUBMIT" />
     <exclusiveGateway id="Gateway_19o6n11" name="what is the review determination?" />
     <endEvent id="Event_0ol6ie2" />
-    <sequenceFlow id="Flow_0r2teah" name="deemed withdrawn" sourceRef="Gateway_19o6n11" targetRef="Activity_0do5bqu">
+    <sequenceFlow id="Flow_0r2teah" name="deemed withdrawn" sourceRef="Gateway_19o6n11" targetRef="Activity_0xyg4pv">
       <conditionExpression xsi:type="tFormalExpression">${reviewDetermination=='DEEMED_WITHDRAWN'}</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="Flow_1j8ek33" name="approved" sourceRef="Gateway_19o6n11" targetRef="Activity_014ftb6">
       <conditionExpression xsi:type="tFormalExpression">${reviewDetermination=='APPROVED'}</conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="Flow_1p48t5z" sourceRef="Activity_014ftb6" targetRef="Activity_11xkdzc" />
+    <sequenceFlow id="Flow_1p48t5z" sourceRef="Activity_014ftb6" targetRef="Activity_01z2zx8" />
     <callActivity id="EMP_ISSUANCE_REVIEW" name="Review EMP Issuance Application" calledElement="APPL_REVIEW" flowable:calledElementType="key" flowable:businessKey="#{businessKey}" flowable:fallbackToDefaultTenant="false">
       <extensionElements>
         <flowable:in source="requestId" target="requestId" />
@@ -35,9 +35,13 @@
       </extensionElements>
     </serviceTask>
     <sequenceFlow id="Flow_1yl4zkz" sourceRef="Activity_0qgk5of" targetRef="Event_0ol6ie2" />
-    <serviceTask id="Activity_01z2zx8" name="Add Approved Request Action" flowable:delegateExpression="#{empIssuanceApprovedAddRequestActionHandlerFlowable}" />
+    <serviceTask id="Activity_01z2zx8" name="Add Approved Request Action" flowable:delegateExpression="#{empIssuanceApprovedAddRequestActionHandlerFlowable}">
+      <incoming>Flow_1p48t5z</incoming>
+    </serviceTask>
     <sequenceFlow id="Flow_06aoewy" sourceRef="Activity_01z2zx8" targetRef="Activity_0mhbb4f" />
-    <serviceTask id="Activity_0xyg4pv" name="Add Deemed Withdrawn Request Action" flowable:delegateExpression="#{empIssuanceDeemedWithdrawnAddRequestActionHandlerFlowable}" />
+    <serviceTask id="Activity_0xyg4pv" name="Add Deemed Withdrawn Request Action" flowable:delegateExpression="#{empIssuanceDeemedWithdrawnAddRequestActionHandlerFlowable}">
+      <incoming>Flow_0r2teah</incoming>
+    </serviceTask>
     <sequenceFlow id="Flow_0sgt8le" sourceRef="Activity_0xyg4pv" targetRef="Activity_1h8mfcp" />
     <serviceTask id="Activity_0i0nftz" name="Update Workflow status to WITHDRAWN" flowable:delegateExpression="#{requestUpdateStatusHandlerFlowable}">
       <extensionElements>
@@ -47,10 +51,6 @@
       </extensionElements>
     </serviceTask>
     <sequenceFlow id="Flow_0t9cftc" sourceRef="Activity_0i0nftz" targetRef="Event_0ol6ie2" />
-    <serviceTask id="Activity_11xkdzc" name="Generate granted documents" flowable:delegateExpression="#{empIssuanceGrantedGenerateDocumentsHandlerFlowable}" />
-    <sequenceFlow id="Flow_0glekzj" sourceRef="Activity_11xkdzc" targetRef="Activity_01z2zx8" />
-    <serviceTask id="Activity_0do5bqu" name="Generate deemed withdrawn official notice" flowable:delegateExpression="#{empIssuanceDeemedWithdrawnGenerateOfficialNoticeHandlerFlowable}" />
-    <sequenceFlow id="Flow_0uznhmg" sourceRef="Activity_0do5bqu" targetRef="Activity_0xyg4pv" />
     <serviceTask id="Activity_0mhbb4f" name="Send Official Notice Email" flowable:delegateExpression="#{empIssuanceSendOfficialNoticeEmailHandlerFlowable}" />
     <sequenceFlow id="Flow_0tu7sxd" sourceRef="Activity_0mhbb4f" targetRef="Activity_0qgk5of" />
     <serviceTask id="Activity_1h8mfcp" name="Send Official Notice Email" flowable:delegateExpression="#{empIssuanceSendOfficialNoticeEmailHandlerFlowable}" />
@@ -62,6 +62,27 @@
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_PROCESS_EMP_ISSUANCE">
     <bpmndi:BPMNPlane id="BPMNPlane_PROCESS_EMP_ISSUANCE" bpmnElement="PROCESS_EMP_ISSUANCE">
+      <bpmndi:BPMNShape id="BPMNShape_EMP_ISSUANCE_APPLICATION_SUBMIT" bpmnElement="EMP_ISSUANCE_APPLICATION_SUBMIT">
+        <omgdc:Bounds x="350" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ApplyForPermitStartEvent" bpmnElement="ApplyForPermitStartEvent">
+        <omgdc:Bounds x="255" y="235" width="30" height="30" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="258" y="265" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Gateway_19o6n11" bpmnElement="Gateway_19o6n11" isMarkerVisible="true">
+        <omgdc:Bounds x="800" y="230" width="40" height="40" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="731" y="213" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Event_0ol6ie2" bpmnElement="Event_0ol6ie2">
+        <omgdc:Bounds x="1766" y="241" width="28" height="28" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EMP_ISSUANCE_REVIEW" bpmnElement="EMP_ISSUANCE_REVIEW">
+        <omgdc:Bounds x="560" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_Activity_014ftb6" bpmnElement="Activity_014ftb6">
         <omgdc:Bounds x="920" y="78" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -77,43 +98,12 @@
       <bpmndi:BPMNShape id="BPMNShape_Activity_0i0nftz" bpmnElement="Activity_0i0nftz">
         <omgdc:Bounds x="1610" y="370" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_Activity_11xkdzc" bpmnElement="Activity_11xkdzc">
-        <omgdc:Bounds x="1110" y="78" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_Activity_0do5bqu" bpmnElement="Activity_0do5bqu">
-        <omgdc:Bounds x="1110" y="370" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_Activity_0mhbb4f" bpmnElement="Activity_0mhbb4f">
         <omgdc:Bounds x="1440" y="78" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_Activity_1h8mfcp" bpmnElement="Activity_1h8mfcp">
         <omgdc:Bounds x="1440" y="370" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_Gateway_19o6n11" bpmnElement="Gateway_19o6n11" isMarkerVisible="true">
-        <omgdc:Bounds x="800" y="230" width="40" height="40" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="731" y="213" width="88" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_Event_0ol6ie2" bpmnElement="Event_0ol6ie2">
-        <omgdc:Bounds x="1766" y="241" width="28" height="28" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_EMP_ISSUANCE_REVIEW" bpmnElement="EMP_ISSUANCE_REVIEW">
-        <omgdc:Bounds x="560" y="210" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_EMP_ISSUANCE_APPLICATION_SUBMIT" bpmnElement="EMP_ISSUANCE_APPLICATION_SUBMIT">
-        <omgdc:Bounds x="350" y="210" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_ApplyForPermitStartEvent" bpmnElement="ApplyForPermitStartEvent">
-        <omgdc:Bounds x="255" y="235" width="30" height="30" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="258" y="265" width="25" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="BPMNEdge_Association_12t8i82" bpmnElement="Association_12t8i82" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="35.0" flowable:targetDockerY="0.0">
-        <omgdi:waypoint x="258" y="258" />
-        <omgdi:waypoint x="195" y="300" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_057v3nk" bpmnElement="TextAnnotation_057v3nk">
         <omgdc:Bounds x="160" y="300" width="70" height="30" />
       </bpmndi:BPMNShape>
@@ -128,9 +118,9 @@
       <bpmndi:BPMNEdge id="BPMNEdge_Flow_0r2teah" bpmnElement="Flow_0r2teah" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
         <omgdi:waypoint x="820" y="270" />
         <omgdi:waypoint x="820" y="410" />
-        <omgdi:waypoint x="1110" y="410" />
+        <omgdi:waypoint x="1280" y="410" />
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="796" y="315" width="49" height="27" />
+          <omgdc:Bounds x="816" y="471" width="49" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_Flow_1j8ek33" bpmnElement="Flow_1j8ek33" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
@@ -142,8 +132,8 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_Flow_1p48t5z" bpmnElement="Flow_1p48t5z" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
-        <omgdi:waypoint x="1019.9499999999999" y="118" />
-        <omgdi:waypoint x="1109.9999999999754" y="118" />
+        <omgdi:waypoint x="1020" y="118" />
+        <omgdi:waypoint x="1280" y="118" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_Flow_1hmzmrq" bpmnElement="Flow_1hmzmrq" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
         <omgdi:waypoint x="660" y="250" />
@@ -167,14 +157,6 @@
         <omgdi:waypoint x="1780" y="410" />
         <omgdi:waypoint x="1780" y="269" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_Flow_0glekzj" bpmnElement="Flow_0glekzj" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
-        <omgdi:waypoint x="1209.95" y="118" />
-        <omgdi:waypoint x="1280" y="118" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_Flow_0uznhmg" bpmnElement="Flow_0uznhmg" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
-        <omgdi:waypoint x="1209.95" y="410" />
-        <omgdi:waypoint x="1280" y="410" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_Flow_0tu7sxd" bpmnElement="Flow_0tu7sxd" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
         <omgdi:waypoint x="1539.95" y="118" />
         <omgdi:waypoint x="1610" y="118" />
@@ -182,6 +164,10 @@
       <bpmndi:BPMNEdge id="BPMNEdge_Flow_0sgt2lx" bpmnElement="Flow_0sgt2lx" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
         <omgdi:waypoint x="1539.95" y="410" />
         <omgdi:waypoint x="1610" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Association_12t8i82" bpmnElement="Association_12t8i82" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="35.0" flowable:targetDockerY="0.0">
+        <omgdi:waypoint x="258" y="258" />
+        <omgdi:waypoint x="195" y="300" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -53,13 +53,13 @@ public class EmpVariationSaveReviewGroupDecisionRegulatorLedActionHandlerTest {
                 .build();
         RequestTask requestTask = RequestTask.builder().id(requestTaskId).payload(expectedRequestTaskPayload).build();
 
-        when(requestTaskService.findTaskById(requestTaskId)).thenReturn(requestTask);
+        when(requestTaskService.findTaskByIdForUpdate(requestTaskId)).thenReturn(requestTask);
 
         RequestTaskPayload requestTaskPayload = handler.process(requestTaskId, requestTaskActionType, appUser, expectedRequestPayload);
 
         assertThat(requestTaskPayload).isEqualTo(expectedRequestTaskPayload);
         verifyNoMoreInteractions(expectedRequestTaskPayload);
-        verify(requestTaskService, times(1)).findTaskById(requestTaskId);
+        verify(requestTaskService, times(1)).findTaskByIdForUpdate(requestTaskId);
         verify(empVariationSubmitRegulatorLedService, times(1)).saveReviewGroupDecision(expectedRequestPayload, requestTask);
     }
 

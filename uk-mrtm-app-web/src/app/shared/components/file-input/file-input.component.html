@@ -27,7 +27,7 @@
     </div>
   }
   @if (hint()) {
-    <div [id]="`${identifier}-hint`" class="govuk-hint">{{ hint() }}</div>
+    <div [id]="`${identifier}-hint`" class="govuk-hint" [innerHTML]="hint() | safeHtml"></div>
   }
   @if (shouldDisplayErrors$ | async) {
     <govuk-error-message [errors]="control.errors" [identifier]="identifier" />

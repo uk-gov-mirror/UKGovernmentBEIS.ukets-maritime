@@ -9,10 +9,11 @@ import { AuthStore } from '@netz/common/auth';
 import { ActivatedRouteSnapshotStub, asyncData } from '@netz/common/testing';
 
 import { permissionsResolver } from '@regulators/details/permissions.resolver';
+import { Mocked } from 'vitest';
 
 describe('PermissionsResolver', () => {
   const resolver = permissionsResolver;
-  let regulatorAuthService: Partial<jest.Mocked<RegulatorAuthoritiesService>>;
+  let regulatorAuthService: Partial<Mocked<RegulatorAuthoritiesService>>;
   let authStore: AuthStore;
 
   const callResolver: (route: ActivatedRouteSnapshot) => Observable<AuthorityManagePermissionDTO> = (route) =>
@@ -29,8 +30,8 @@ describe('PermissionsResolver', () => {
 
   beforeEach(() => {
     regulatorAuthService = {
-      getCurrentRegulatorUserPermissionsByCa: jest.fn().mockReturnValue(asyncData(permissions)),
-      getRegulatorUserPermissionsByCaAndId: jest.fn().mockReturnValue(asyncData(permissions)),
+      getCurrentRegulatorUserPermissionsByCa: vi.fn().mockReturnValue(asyncData(permissions)),
+      getRegulatorUserPermissionsByCaAndId: vi.fn().mockReturnValue(asyncData(permissions)),
     };
 
     TestBed.configureTestingModule({
@@ -49,18 +50,21 @@ describe('PermissionsResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
+  // The resolver's first value comes from `toObservable` (authStore.rxSelect), which only emits
+  // once its effect flushes. `TestBed.tick()` drives that flush so these tests don't depend on the
+  // auto-scheduler, which can be wedged by cross-file state under the non-isolated runner.
   it('should provide the permissions of another user', async () => {
-    await expect(lastValueFrom(callResolver(new ActivatedRouteSnapshotStub({ userId: '1234567' })))).resolves.toEqual(
-      permissions,
-    );
+    const result = lastValueFrom(callResolver(new ActivatedRouteSnapshotStub({ userId: '1234567' })));
+    TestBed.tick();
+    await expect(result).resolves.toEqual(permissions);
 
     expect(regulatorAuthService.getRegulatorUserPermissionsByCaAndId).toHaveBeenCalledWith('1234567');
   });
 
   it('should provide current user permissions', async () => {
-    await expect(
-      lastValueFrom(callResolver(new ActivatedRouteSnapshotStub({ accountId: '1', userId: 'ABC1' }))),
-    ).resolves.toEqual(permissions);
+    const result = lastValueFrom(callResolver(new ActivatedRouteSnapshotStub({ accountId: '1', userId: 'ABC1' })));
+    TestBed.tick();
+    await expect(result).resolves.toEqual(permissions);
 
     expect(regulatorAuthService.getCurrentRegulatorUserPermissionsByCa).toHaveBeenCalled();
   });

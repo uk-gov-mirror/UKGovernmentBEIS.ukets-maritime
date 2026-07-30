@@ -15,7 +15,6 @@ import uk.gov.mrtm.api.integration.external.emp.domain.procedures.ExternalEmpPro
 import uk.gov.mrtm.api.integration.external.emp.domain.shipemissions.ExternalEmpShipEmissions;
 import uk.gov.netz.api.common.validation.uniqueelements.UniqueElements;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -31,7 +30,7 @@ public class ExternalEmissionsMonitoringPlan {
     @NotEmpty
     @JsonDeserialize(as = LinkedHashSet.class)
     @UniqueElements
-    private Set<@NotNull @Valid ExternalEmpShipEmissions> shipParticulars = new HashSet<>();
+    private Set<@NotNull @Valid ExternalEmpShipEmissions> shipParticulars = new LinkedHashSet<>();
 
     @Schema(description = "Delegated UK ETS responsibility")
     @Valid

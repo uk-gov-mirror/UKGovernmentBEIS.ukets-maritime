@@ -62,7 +62,7 @@ import uk.gov.mrtm.api.integration.external.emp.domain.shipemissions.ExternalEmp
 import uk.gov.mrtm.api.integration.external.emp.domain.shipemissions.ExternalEmpUncertaintyLevel;
 import uk.gov.mrtm.api.integration.external.emp.enums.ExternalFuelType;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -120,7 +120,7 @@ public class ExternalEmpMapper extends ExternalCommonMapper {
                 .measuringEquipment(toExternalEmpMeasurementDescription(ship.getMeasurements()))
                 .conditionsOfExemption(toExternalEmpExemptionConditions(ship.getExemptionConditions()))
                 .build())
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private Set<ExternalEmpFuelsAndEmissionsFactors> toExternalEmpFuelsAndEmissionsFactors(Set<EmpFuelsAndEmissionsFactors> fuelsAndEmissionsFactors) {
@@ -137,7 +137,7 @@ public class ExternalEmpMapper extends ExternalCommonMapper {
                     .methodDensityTankCode(factors.getDensityMethodTank())
                     .build()
             )
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private Set<ExternalEmpEmissionsSources> toExternalEmpEmissionsSources(Set<EmpEmissionsSources> emissionsSources) {
@@ -151,7 +151,7 @@ public class ExternalEmpMapper extends ExternalCommonMapper {
                     .monitoringMethods(source.getMonitoringMethod())
                     .identificationNumber(source.getReferenceNumber())
                     .build())
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private Set<ExternalEmpFuelOriginTypeName> toExternalEmpFuelOriginTypeName(Set<FuelOriginTypeName> fuelDetails) {
@@ -163,7 +163,7 @@ public class ExternalEmpMapper extends ExternalCommonMapper {
                     .otherFuelType(fuelOriginTypeName.getName())
                     .slipPercentage(fuelOriginTypeName.getMethaneSlip())
                     .build())
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private Set<ExternalEmpUncertaintyLevel> toExternalEmpUncertaintyLevel(Set<UncertaintyLevel> uncertaintyLevel) {
@@ -174,14 +174,14 @@ public class ExternalEmpMapper extends ExternalCommonMapper {
                     .levelOfUncertaintyTypeCode(level.getMethodApproach())
                     .shipSpecificUncertainty(level.getValue())
                     .build())
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private ExternalEmpCarbonCapture toExternalEmpCarbonCapture(EmpCarbonCapture carbonCapture) {
         return ExternalEmpCarbonCapture.builder()
             .captureAndStorageApplied(carbonCapture.getExist())
             .technology(Optional.ofNullable(carbonCapture.getTechnologies()).map(EmpCarbonCaptureTechnologies::getDescription).orElse(null))
-            .emissionSourceName(Optional.ofNullable(carbonCapture.getTechnologies()).map(EmpCarbonCaptureTechnologies::getTechnologyEmissionSources).orElse(new HashSet<>()))
+            .emissionSourceName(Optional.ofNullable(carbonCapture.getTechnologies()).map(EmpCarbonCaptureTechnologies::getTechnologyEmissionSources).orElse(new LinkedHashSet<>()))
             .build();
     }
 
@@ -192,7 +192,7 @@ public class ExternalEmpMapper extends ExternalCommonMapper {
                     .technicalDescription(measurement.getTechnicalDescription())
                     .emissionSourceName(measurement.getEmissionSources())
                     .build())
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private ExternalEmpExemptionConditions toExternalEmpExemptionConditions(ExemptionConditions exemptionConditions) {
@@ -318,7 +318,7 @@ public class ExternalEmpMapper extends ExternalCommonMapper {
                 .agreementDate(owner.getEffectiveDate())
                 .ships(toExternalEmpRegisteredOwnerShipDetails(owner.getShips()))
                 .build()
-        ).collect(Collectors.toSet());
+        ).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private Set<ExternalEmpRegisteredOwnerShipDetails> toExternalEmpRegisteredOwnerShipDetails(Set<RegisteredOwnerShipDetails> ships) {
@@ -327,7 +327,7 @@ public class ExternalEmpMapper extends ExternalCommonMapper {
                 .name(ship.getName())
                 .shipImoNumber(ship.getImoNumber())
                 .build()
-        ).collect(Collectors.toSet());
+        ).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private ExternalEmpDataGaps toExternalEmpDataGaps(EmpDataGaps dataGaps) {
@@ -343,7 +343,7 @@ public class ExternalEmpMapper extends ExternalCommonMapper {
 
     private EmpMandate toEmpMandate(ExternalEmpDelegatedResponsibility delegatedResponsibility) {
 
-        Set<EmpRegisteredOwner> registeredOwners = new HashSet<>();
+        Set<EmpRegisteredOwner> registeredOwners = new LinkedHashSet<>();
         Boolean delegatedResponsibilityUsed = delegatedResponsibility.getDelegatedResponsibilityUsed();
 
         if (delegatedResponsibilityUsed) {
@@ -360,9 +360,9 @@ public class ExternalEmpMapper extends ExternalCommonMapper {
                             .name(ship.getName())
                             .imoNumber(ship.getShipImoNumber())
                             .build()
-                    ).collect(Collectors.toSet()))
+                    ).collect(Collectors.toCollection(LinkedHashSet::new)))
                     .build()
-            ).collect(Collectors.toSet());
+            ).collect(Collectors.toCollection(LinkedHashSet::new));
         }
 
         return EmpMandate.builder()
@@ -448,11 +448,11 @@ public class ExternalEmpMapper extends ExternalCommonMapper {
                     Set<EmpFuelsAndEmissionsFactors> fuelsAndEmissionsFactors =
                         ship.getFuelTypes().stream()
                             .map(this::toFuelsAndEmissionsFactors)
-                            .collect(Collectors.toSet());
+                            .collect(Collectors.toCollection(LinkedHashSet::new));
 
                     Set<EmpEmissionsSources> emissionsSources = ship.getEmissionsSources().stream()
                             .map(this::toEmpEmissionsSources)
-                        .collect(Collectors.toSet());
+                        .collect(Collectors.toCollection(LinkedHashSet::new));
 
                     return EmpShipEmissions.builder()
                         .uniqueIdentifier(UUID.randomUUID())
@@ -460,13 +460,13 @@ public class ExternalEmpMapper extends ExternalCommonMapper {
                         .fuelsAndEmissionsFactors(fuelsAndEmissionsFactors)
                         .emissionsSources(emissionsSources)
                         .uncertaintyLevel(ship.getUncertaintyLevel().stream().map(
-                            this::toUncertaintyLevel).collect(Collectors.toSet()))
+                            this::toUncertaintyLevel).collect(Collectors.toCollection(LinkedHashSet::new)))
                         .carbonCapture(toEmpCarbonCapture(ship))
-                        .measurements(ship.getMeasuringEquipment().stream().map(this::toMeasurementDescription).collect(Collectors.toSet()))
+                        .measurements(ship.getMeasuringEquipment().stream().map(this::toMeasurementDescription).collect(Collectors.toCollection(LinkedHashSet::new)))
                         .exemptionConditions(toExemptionConditions(ship))
                         .build();
                 }
-            ).collect(Collectors.toSet()))
+            ).collect(Collectors.toCollection(LinkedHashSet::new)))
             .build();
     }
 
@@ -476,7 +476,7 @@ public class ExternalEmpMapper extends ExternalCommonMapper {
             .type(emissionsSources.getEmissionSourceTypeCode())
             .sourceClass(emissionsSources.getEmissionSourceClassCode())
             .fuelDetails(emissionsSources.getFuelTypeCodes().stream()
-                .map(this::toFuelOriginTypeName).collect(Collectors.toSet()))
+                .map(this::toFuelOriginTypeName).collect(Collectors.toCollection(LinkedHashSet::new)))
             .monitoringMethod(emissionsSources.getMonitoringMethods())
             .referenceNumber(emissionsSources.getIdentificationNumber())
             .uniqueIdentifier(UUID.randomUUID())

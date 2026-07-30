@@ -40,7 +40,7 @@ describe('EmissionSourcesSubmittedComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     page = new Page(fixture);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should create', () => {

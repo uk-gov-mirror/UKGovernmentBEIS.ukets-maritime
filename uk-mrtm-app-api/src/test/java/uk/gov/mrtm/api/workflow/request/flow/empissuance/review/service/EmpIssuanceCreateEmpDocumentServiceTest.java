@@ -5,28 +5,33 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import uk.gov.mrtm.api.account.domain.dto.MrtmDocumentTemplateAccountData;
+import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlan;
+import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlanContainer;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.dto.EmissionsMonitoringPlanDTO;
-import uk.gov.mrtm.api.emissionsmonitoringplan.service.EmissionsMonitoringPlanQueryService;
+import uk.gov.mrtm.api.emissionsmonitoringplan.service.EmissionsMonitoringPlanIdentifierGenerator;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateType;
-import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestPayloadType;
 import uk.gov.mrtm.api.workflow.request.flow.common.service.EmpCreateDocumentService;
-import uk.gov.mrtm.api.workflow.request.flow.empissuance.submit.domain.EmpIssuanceRequestPayload;
+import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceApplicationReviewRequestTaskPayload;
 import uk.gov.netz.api.authorization.rules.domain.ResourceType;
 import uk.gov.netz.api.common.utils.DateService;
-import uk.gov.netz.api.files.common.domain.dto.FileInfoDTO;
+import uk.gov.netz.api.documenttemplate.domain.DocumentTemplateStage;
 import uk.gov.netz.api.workflow.request.core.domain.Request;
 import uk.gov.netz.api.workflow.request.core.domain.RequestResource;
-import uk.gov.netz.api.workflow.request.core.service.RequestService;
+import uk.gov.netz.api.workflow.request.core.domain.RequestTask;
+import uk.gov.netz.api.workflow.request.core.service.RequestTaskService;
 import uk.gov.netz.api.workflow.request.flow.common.domain.DecisionNotification;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import java.util.Map;
+import java.util.UUID;
 
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,54 +41,79 @@ class EmpIssuanceCreateEmpDocumentServiceTest {
     private EmpIssuanceCreateEmpDocumentService cut;
 
     @Mock
-    private RequestService requestService;
-
-    @Mock
-    private EmissionsMonitoringPlanQueryService emissionsMonitoringPlanQueryService;
-
-    @Mock
     private EmpCreateDocumentService empCreateDocumentService;
-
+    @Mock
+    private MrtmDocumentTemplateAccountDataCollectFromEmpIssuanceService templateAccountDataCollectFromEmpIssuanceService;
+    @Mock
+    private RequestTaskService requestTaskService;
     @Mock
     private DateService dateService;
+    @Mock
+    private EmissionsMonitoringPlanIdentifierGenerator generator;
 
     @Test
-    void create() {
+    void createAsyncConvert() {
+        Long requestTaskId = 1L;
+        Long accountId = 2L;
+        String empId = "EMP-ID";
+        String signatory = "signatory";
+        UUID randomUUID = UUID.randomUUID();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime submissionDate = LocalDateTime.now().plusDays(1);
+        DocumentTemplateStage stage = mock(DocumentTemplateStage.class);
+        EmissionsMonitoringPlan emissionsMonitoringPlan = mock(EmissionsMonitoringPlan.class);
+        Map<UUID, String> empAttachments = Map.of(randomUUID, "empAttachment");
+        MrtmDocumentTemplateAccountData accountData = mock(MrtmDocumentTemplateAccountData.class);
+        DecisionNotification decisionNotification = DecisionNotification.builder()
+            .signatory(signatory)
+            .build();
+        EmissionsMonitoringPlanContainer empContainer = EmissionsMonitoringPlanContainer.builder()
+            .emissionsMonitoringPlan(emissionsMonitoringPlan)
+            .empAttachments(empAttachments)
+            .build();
+        EmpIssuanceApplicationReviewRequestTaskPayload requestTaskPayload = EmpIssuanceApplicationReviewRequestTaskPayload.builder()
+            .emissionsMonitoringPlan(emissionsMonitoringPlan)
+            .empAttachments(empAttachments)
+            .build();
+        Request request = Request.builder()
+            .id("3")
+            .submissionDate(submissionDate)
+            .requestResources(List.of(RequestResource.builder().resourceId(String.valueOf(accountId)).resourceType(ResourceType.ACCOUNT).build()))
+            .build();
+        RequestTask requestTask = RequestTask.builder()
+            .id(requestTaskId)
+            .payload(requestTaskPayload)
+            .request(request)
+            .build();
+        EmissionsMonitoringPlanDTO empDTO = EmissionsMonitoringPlanDTO.builder()
+            .id(empId)
+            .accountId(accountId)
+            .empContainer(empContainer)
+            .consolidationNumber(1)
+            .build();
 
-        final String requestId = "1";
-        final long accountId = 5L;
-        final String signatory = "signatory";
-        final LocalDateTime empSubmissionDate = LocalDateTime.now();
-        final LocalDateTime empEndDate = LocalDateTime.now().plusDays(1);
-        final EmpIssuanceRequestPayload requestPayload = EmpIssuanceRequestPayload.builder()
-                .payloadType(MrtmRequestPayloadType.EMP_ISSUANCE_REQUEST_PAYLOAD)
-                .decisionNotification(DecisionNotification.builder()
-                        .signatory(signatory)
-                        .build())
-                .build();
-        final Request request =
-                Request.builder()
-                    .submissionDate(empSubmissionDate)
-                    .requestResources(List.of(RequestResource.builder()
-                    .resourceId(String.valueOf(accountId))
-                    .resourceType(ResourceType.ACCOUNT).build())).payload(requestPayload).build();
-        final EmissionsMonitoringPlanDTO empDto =
-                EmissionsMonitoringPlanDTO.builder().id("empId").build();
-        final FileInfoDTO empDocument = FileInfoDTO.builder().uuid("uuid").build();
+        when(requestTaskService.findTaskById(requestTaskId)).thenReturn(requestTask);
+        when(generator.generate(accountId)).thenReturn(empId);
+        when(templateAccountDataCollectFromEmpIssuanceService.collect(requestTask)).thenReturn(accountData);
+        when(dateService.getLocalDateTime()).thenReturn(now);
 
-        when(requestService.findRequestById(requestId)).thenReturn(request);
-        when(dateService.getLocalDateTime()).thenReturn(empEndDate);
-        when(emissionsMonitoringPlanQueryService.getEmissionsMonitoringPlanDTOByAccountId(accountId))
-                .thenReturn(Optional.of(empDto));
-        when(empCreateDocumentService.generateDocumentAsync(request, signatory, empDto,
-            MrtmDocumentTemplateType.EMP, new ArrayList<>(), empSubmissionDate, empEndDate))
-                .thenReturn(CompletableFuture.completedFuture(empDocument));
+        cut.createAsyncConvert(requestTaskId, stage, decisionNotification);
 
-        cut.create(requestId);
+        verify(requestTaskService).findTaskById(requestTaskId);
+        verify(generator).generate(accountId);
+        verify(templateAccountDataCollectFromEmpIssuanceService).collect(requestTask);
+        verify(empCreateDocumentService).generateDocumentAsyncConvert(request,
+            requestTaskId,
+            decisionNotification.getSignatory(),
+            empDTO,
+            MrtmDocumentTemplateType.EMP,
+            stage,
+            Collections.emptyList(),
+            submissionDate,
+            now,
+            accountData);
 
-        verify(requestService, times(1)).findRequestById(requestId);
-        verify(emissionsMonitoringPlanQueryService, times(1)).getEmissionsMonitoringPlanDTOByAccountId(accountId);
-        verify(empCreateDocumentService, times(1)).generateDocumentAsync(request, signatory, empDto,
-            MrtmDocumentTemplateType.EMP, new ArrayList<>(), empSubmissionDate, empEndDate);
+        verifyNoMoreInteractions(empCreateDocumentService, templateAccountDataCollectFromEmpIssuanceService,
+            requestTaskService, dateService, generator);
     }
 }

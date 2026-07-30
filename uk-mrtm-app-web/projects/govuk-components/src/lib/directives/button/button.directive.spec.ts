@@ -1,5 +1,5 @@
 import { Component, ElementRef, viewChild } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { ButtonDirective } from './button.directive';
@@ -81,23 +81,23 @@ describe('ButtonDirective', () => {
     expect(element.hasAttribute('govukinversebutton')).toBeTruthy();
   });
 
-  it('should not get clicked if keydown is not space', fakeAsync(() => {
+  it('should not get clicked if keydown is not space', () => {
     const event = new KeyboardEvent('keydown', {
       key: 'enter',
       code: 'Enter',
       cancelable: true,
     });
-    jest.spyOn(fixture.componentInstance, 'onClick');
+    vi.spyOn(fixture.componentInstance, 'onClick');
     const button: HTMLButtonElement = fixture.componentInstance.simpleButton().nativeElement;
     button.dispatchEvent(event);
     expect(fixture.componentInstance.onClick).toHaveBeenCalledTimes(0);
-  }));
+  });
 
-  it('should get clicked if keydown is space', fakeAsync(() => {
+  it('should get clicked if keydown is space', () => {
     const event = new KeyboardEvent('keydown', { key: ' ', code: 'Space' });
-    jest.spyOn(fixture.componentInstance, 'onClick');
+    vi.spyOn(fixture.componentInstance, 'onClick');
     const button: HTMLButtonElement = fixture.componentInstance.simpleButton().nativeElement;
     button.dispatchEvent(event);
     expect(fixture.componentInstance.onClick).toHaveBeenCalledTimes(1);
-  }));
+  });
 });

@@ -39,4 +39,5 @@ export class ReviewDecisionSummaryTemplateComponent {
   readonly isEditable = input(false);
   readonly queryParams = input<Params>({});
   readonly isPermittedUser = input<boolean>(true);
+  readonly withOverallDecision = input(false);
 }

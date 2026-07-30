@@ -38,7 +38,7 @@ public class EmpVariationRequestPeerReviewRegulatorLedActionHandler implements R
                                       final String requestTaskActionType,
                                       final AppUser appUser,
                                       final PeerReviewRequestTaskActionPayload taskActionPayload) {
-        final RequestTask requestTask = requestTaskService.findTaskById(requestTaskId);
+        final RequestTask requestTask = requestTaskService.findTaskByIdForUpdate(requestTaskId);
         final Request request = requestTask.getRequest();
         final String userId = appUser.getUserId();
         final String peerReviewer = taskActionPayload.getPeerReviewer();

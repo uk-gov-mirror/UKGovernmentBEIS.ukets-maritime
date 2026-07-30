@@ -5,4 +5,5 @@ export const reportTypesMap: Record<MrtmRequestType, string> = {
   AER: 'Annual emissions',
   DOE: 'Determination of emissions',
   VIR: 'Verifier improvement',
+  SITE_VISIT: 'Virtual site visit',
 };

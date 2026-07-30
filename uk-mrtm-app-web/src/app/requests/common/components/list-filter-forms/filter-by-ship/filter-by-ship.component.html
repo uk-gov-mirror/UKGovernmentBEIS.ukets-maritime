@@ -1,26 +1,28 @@
 <ng-container #outletContainer />
 
 <ng-template #contentTemplate>
-  <form [formGroup]="formGroup" (submit)="onSubmit()" #formElement>
-    <div class="control-row align-items-end">
-      <div
-        mrtm-autocomplete-select
-        inputFieldType="search"
-        [label]="filterByShipLabel()"
-        labelSize="small"
-        hint="Start typing and select from suggestions"
-        noOptionsFoundText="No matching results"
-        formControlName="filterByShip"
-        [options]="shipOptions()"
-        class="flex-grow-1 govuk-!-margin-bottom-0"
-        widthClass="govuk-!-width-full"></div>
-      <button #applyButton class="nowrap filter-by-ship__button" type="submit" govukSecondaryButton>
-        Apply filter
-      </button>
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" #formElement>
+    <div class="row-flex align-items-end">
+      <div class="col-flex-three-quarters">
+        <div
+          mrtm-autocomplete-select
+          inputFieldType="search"
+          [label]="filterByShipLabel()"
+          labelSize="small"
+          hint="Start typing and select from suggestions"
+          noOptionsFoundText="No matching results"
+          formControlName="filterByShip"
+          [options]="shipOptions()"></div>
+      </div>
+      <div class="col-flex-one-quarter">
+        <button #applyButton class="nowrap" type="submit" govukSecondaryButton>Apply filter</button>
+      </div>
     </div>
     @if (hasAppliedFilters()) {
-      <div class="govuk-!-margin-top-3">
-        <a govukLink class="govuk-!-font-size-19" [routerLink]="[]" (click)="onClearFiltersClick()">Clear filter</a>
+      <div class="govuk-!-margin-bottom-6">
+        <button type="button" class="link-button govuk-!-font-size-19" (click)="onClearFiltersClick()">
+          Clear filter
+        </button>
       </div>
     }
   </form>

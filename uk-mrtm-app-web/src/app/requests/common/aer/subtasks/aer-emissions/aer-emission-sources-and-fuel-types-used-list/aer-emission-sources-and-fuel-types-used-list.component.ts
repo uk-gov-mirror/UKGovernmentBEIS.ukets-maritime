@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal, WritableSignal } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { takeUntil } from 'rxjs';
@@ -20,6 +21,7 @@ import {
 } from '@requests/common/aer/subtasks/aer-emissions/aer-emissions.helpers';
 import { emissionsShipSubtaskMap, emissionsSubtaskMap } from '@requests/common/components/emissions';
 import { EMISSION_SOURCES_AND_FUEL_TYPES_USED_FORM_STEP } from '@requests/common/components/emissions/emission-sources-and-fuel-types-used-form/emission-sources-and-fuel-types-used-form.helper';
+import { buildAerEmissionSourceValidationFormGroup } from '@requests/common/components/emissions/emission-sources-and-fuel-types-used-form/emission-sources-and-fuel-types-used-form.provider';
 import { EMISSIONS_SUB_TASK } from '@requests/common/components/emissions/emissions.helpers';
 import { ReturnToShipsListTableComponent } from '@requests/common/components/emissions/return-to-ships-list-table';
 import { findNotAssociatedFuelFactors } from '@requests/common/utils/emissions';
@@ -53,6 +55,7 @@ export class AerEmissionSourcesAndFuelTypesUsedListComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroy$ = inject(DestroySubject);
+  private readonly fb = inject(FormBuilder);
 
   readonly shipId = input<string>();
   readonly emissionSources = computed(() => {
@@ -115,7 +118,12 @@ export class AerEmissionSourcesAndFuelTypesUsedListComponent {
       }
     }
 
-    if (this.hasNeedsReviewItems()) {
+    const needsReviewItems = this.emissionSources().filter((emissionSource) => emissionSource.needsReview);
+    const resolvedIds = needsReviewItems
+      .filter((emissionSource) => this.isEmissionSourceValid(emissionSource))
+      .map((emissionSource) => emissionSource.uniqueIdentifier);
+
+    if (resolvedIds.length < needsReviewItems.length) {
       errors.push({
         column: null,
         row: -1,
@@ -124,11 +132,32 @@ export class AerEmissionSourcesAndFuelTypesUsedListComponent {
       isValid = false;
     }
 
-    if (isValid) {
-      this.router.navigate([`../../${AerEmissionsWizardStep.UNCERTAINTY_LEVEL}`], { relativeTo: this.route });
-    } else {
+    if (!isValid) {
       this.validationErrors.set(errors);
+      return;
     }
+
+    if (resolvedIds.length) {
+      this.taskService
+        .saveSubtask(EMISSIONS_SUB_TASK, AerEmissionsWizardStep.EMISSION_SOURCES_LIST, this.route, resolvedIds)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() =>
+          this.router.navigate([`../../${AerEmissionsWizardStep.UNCERTAINTY_LEVEL}`], { relativeTo: this.route }),
+        );
+      return;
+    }
+
+    this.router.navigate([`../../${AerEmissionsWizardStep.UNCERTAINTY_LEVEL}`], { relativeTo: this.route });
+  }
+
+  private isEmissionSourceValid(emissionSource: EmissionsSources): boolean {
+    return buildAerEmissionSourceValidationFormGroup(
+      this.fb,
+      emissionSource,
+      this.emissionSources(),
+      emissionSource.uniqueIdentifier,
+      this.fuelsAndEmissionsFactors(),
+    ).valid;
   }
 
   formatValidationErrorDetails(error: NestedMessageValidationError): string {

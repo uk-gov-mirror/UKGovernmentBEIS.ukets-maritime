@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import {
@@ -25,6 +25,7 @@ import {
   VerifierAuthoritiesService,
 } from '@mrtm/api';
 
+import { FeedbackBannerStore } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { BusinessErrorService, catchBadRequest, ErrorCodes } from '@netz/common/error';
 import { UserFullNamePipe } from '@netz/common/pipes';
@@ -38,7 +39,6 @@ import {
   TableComponent,
 } from '@netz/govuk-components';
 
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { SITE_CONTACTS_LIST_COLUMNS } from '@verifiers/components/site-contacts/site-contacts.constants';
 import { savePartiallyNotFoundSiteContactError } from '@verifiers/errors/business-error';
 
@@ -47,7 +47,6 @@ type TableData = AccountContactVbInfoDTO & { user: UserAuthorityInfoDTO };
 @Component({
   selector: 'mrtm-site-contacts',
   imports: [
-    FormsModule,
     ReactiveFormsModule,
     TableComponent,
     SelectComponent,
@@ -79,7 +78,7 @@ export class SiteContactsComponent implements OnInit {
   private readonly verifiersAuthoritiesService = inject(VerifierAuthoritiesService);
   private readonly businessErrorService = inject(BusinessErrorService);
   private readonly destroy$ = inject(DestroySubject);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private modifiedAccounts: string[] = [];
 
   ngOnInit(): void {
@@ -164,7 +163,7 @@ export class SiteContactsComponent implements OnInit {
       )
       .subscribe(() => {
         const messages: string[] = this.modifiedAccounts.map((contact) => `${contact} updated`);
-        this.notificationBannerStore.setSuccessMessages(messages);
+        this.feedbackBannerStore.setSuccessMessages(messages);
         this.modifiedAccounts = [];
       });
   }

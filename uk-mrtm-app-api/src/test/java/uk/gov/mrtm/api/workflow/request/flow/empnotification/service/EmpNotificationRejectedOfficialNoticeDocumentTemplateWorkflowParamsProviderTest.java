@@ -26,7 +26,6 @@ class EmpNotificationRejectedOfficialNoticeDocumentTemplateWorkflowParamsProvide
             .isEqualTo(MrtmDocumentTemplateGenerationContextActionType.EMP_NOTIFICATION_REJECTED);
     }
 
-
     @Test
     void constructParams() {
         String officialNotice = "test";

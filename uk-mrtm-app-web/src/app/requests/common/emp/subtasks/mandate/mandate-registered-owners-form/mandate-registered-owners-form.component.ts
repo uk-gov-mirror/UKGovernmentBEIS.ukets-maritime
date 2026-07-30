@@ -16,7 +16,7 @@ import {
   MandateWizardStep,
 } from '@requests/common/emp/subtasks/mandate';
 import { mandateRegisteredOwnersFormProvider } from '@requests/common/emp/subtasks/mandate/mandate-registered-owners-form/mandate-registered-owners.form-provider';
-import { MANDATE_AVAILABLE_SHIPS_COLUMNS } from '@requests/common/emp/subtasks/mandate/mandate-registered-owners-form/mandate-registered-owners-form.constans';
+import { MANDATE_AVAILABLE_SHIPS_COLUMNS } from '@requests/common/emp/subtasks/mandate/mandate-registered-owners-form/mandate-registered-owners-form.constants';
 import { MandateShipSelectItem } from '@requests/common/emp/subtasks/mandate/mandate-registered-owners-form/mandate-registered-owners-form.types';
 import { mandateMap } from '@requests/common/emp/subtasks/subtask-list.map';
 import { TASK_FORM } from '@requests/common/task-form.token';

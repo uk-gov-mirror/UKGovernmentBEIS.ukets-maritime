@@ -6,7 +6,7 @@ import { take } from 'rxjs';
 
 import { AerShipEmissions } from '@mrtm/api';
 
-import { PageHeadingComponent } from '@netz/common/components';
+import { FeedbackBannerComponent, FeedbackBannerStore, PageHeadingComponent } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { TaskService } from '@netz/common/forms';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
@@ -21,7 +21,6 @@ import {
 } from '@requests/common/aer/subtasks/aer-voyages/aer-voyages.helpers';
 import { aerVoyagesMap } from '@requests/common/aer/subtasks/aer-voyages/aer-voyages-subtask-list.map';
 import { validateIfUsedFuelsExistInEmissionsValidator } from '@requests/common/aer/subtasks/utils';
-import { NotificationBannerComponent, NotificationBannerStore } from '@shared/components/notification-banner';
 import { VoyageSummaryTemplateComponent } from '@shared/components/summaries';
 import { isNil } from '@shared/utils';
 
@@ -34,7 +33,7 @@ import { isNil } from '@shared/utils';
     PendingButtonDirective,
     PageHeadingComponent,
     VoyageSummaryTemplateComponent,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
   ],
   standalone: true,
   templateUrl: './aer-voyage-emission-summary.component.html',
@@ -44,7 +43,7 @@ export class AerVoyageEmissionSummaryComponent {
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly taskService: TaskService<AerSubmitTaskPayload> = inject(TaskService);
-  private readonly notificationBannerStore: NotificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
 
   readonly isAddNewVoyage = inject(AER_SUBTASK_NEW_ENTRY_FLOW, { optional: true });
   readonly form = new UntypedFormGroup({});
@@ -79,7 +78,7 @@ export class AerVoyageEmissionSummaryComponent {
 
     if (!isNil(errors)) {
       this.form.setErrors(errors);
-      this.notificationBannerStore.setInvalidForm(this.form);
+      this.feedbackBannerStore.setInvalidForm(this.form);
       return;
     }
 

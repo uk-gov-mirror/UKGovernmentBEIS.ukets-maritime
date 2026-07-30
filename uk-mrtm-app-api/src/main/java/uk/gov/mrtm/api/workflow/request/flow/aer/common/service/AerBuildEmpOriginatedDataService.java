@@ -39,7 +39,7 @@ public class AerBuildEmpOriginatedDataService {
 
 		empOperatorDetail.setOperatorName(accountInfo.getName());
 		empOperatorDetail.setImoNumber(accountInfo.getImoNumber());
-		empOperatorDetail.setContactAddress(addressStateMapper.toAddressState(accountInfo.getAddress()));
+		empOperatorDetail.setContactAddress(addressStateMapper.toAddressStateDTO(accountInfo.getAddress()));
 
 		final EmpOriginatedData empOriginatedData = EmpOriginatedData.builder()
 				.operatorDetails(empOperatorDetail)

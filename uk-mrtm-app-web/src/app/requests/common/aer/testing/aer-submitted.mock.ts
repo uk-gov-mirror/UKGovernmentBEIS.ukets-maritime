@@ -50,6 +50,7 @@ const mockAdditionalDocuments: AdditionalDocuments = {
 const mockAerEmissions: AerEmissions = {
   ships: [
     {
+      dataInputType: 'MANUAL',
       details: {
         imoNumber: '1111111',
         name: 'Ever Green',
@@ -283,6 +284,7 @@ const mockAerVoyageEmissions: AerVoyageEmissions = {
 const mockAerAggregatedData: AerAggregatedData = {
   emissions: [
     {
+      dataInputType: 'MANUAL',
       uniqueIdentifier: '654914f2-43c1-4c23-a927-7504889a57b9',
       imoNumber: '1111111',
       fuelConsumptions: [
@@ -345,6 +347,7 @@ const mockSmf: AerSmf = {
   smfDetails: {
     purchases: [
       {
+        dataInputType: 'MANUAL',
         uniqueIdentifier: 'c6c9ddaa-9c5a-425b-a674-56858ff8e671',
         fuelOriginTypeName: {
           origin: 'FOSSIL',

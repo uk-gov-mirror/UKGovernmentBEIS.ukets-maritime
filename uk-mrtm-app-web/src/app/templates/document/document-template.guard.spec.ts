@@ -16,7 +16,7 @@ describe('DocumentTemplateGuard', () => {
 
   beforeEach(() => {
     documentTemplatesService = mockClass(DocumentTemplatesService);
-    documentTemplatesService.getDocumentTemplateById.mockReturnValueOnce(of(mockedDocumentTemplate));
+    documentTemplatesService.getDocumentTemplateById.mockReturnValueOnce(of(mockedDocumentTemplate) as any);
 
     TestBed.configureTestingModule({
       providers: [

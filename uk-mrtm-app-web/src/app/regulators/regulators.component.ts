@@ -1,7 +1,7 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ReactiveFormsModule, UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { map, merge, Observable, shareReplay, Subject, switchMap, takeUntil, tap } from 'rxjs';
 
@@ -12,7 +12,7 @@ import {
 } from '@mrtm/api';
 
 import { AuthStore, selectUserId } from '@netz/common/auth';
-import { PageHeadingComponent } from '@netz/common/components';
+import { FeedbackBannerComponent, FeedbackBannerStore, PageHeadingComponent } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { BusinessErrorService, catchBadRequest, ErrorCodes } from '@netz/common/error';
 import { UserFullNamePipe } from '@netz/common/pipes';
@@ -23,7 +23,7 @@ import {
   GovukTableColumn,
   LinkDirective,
   SelectComponent,
-  TabDirective,
+  TabLazyDirective,
   TableComponent,
   TabsComponent,
 } from '@netz/govuk-components';
@@ -31,8 +31,6 @@ import {
 import { savePartiallyNotFoundRegulatorError } from '@regulators/errors/business-error';
 import { ExternalContactsComponent } from '@regulators/external-contacts/external-contacts.component';
 import { SiteContactsComponent } from '@regulators/site-contacts/site-contacts.component';
-import { NotificationBannerComponent } from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { UsersTableDirective } from '@shared/directives';
 import { FormUtils } from '@shared/utils';
 
@@ -41,10 +39,8 @@ import { FormUtils } from '@shared/utils';
   imports: [
     PageHeadingComponent,
     TabsComponent,
-    TabDirective,
     ButtonDirective,
     RouterLink,
-    FormsModule,
     ReactiveFormsModule,
     TableComponent,
     LinkDirective,
@@ -55,7 +51,8 @@ import { FormUtils } from '@shared/utils';
     AsyncPipe,
     UserFullNamePipe,
     UsersTableDirective,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
+    TabLazyDirective,
   ],
   standalone: true,
   templateUrl: './regulators.component.html',
@@ -66,10 +63,11 @@ export class RegulatorsComponent implements OnInit {
   readonly authStore = inject(AuthStore);
   private readonly fb = inject(UntypedFormBuilder);
   private readonly regulatorAuthoritiesService = inject(RegulatorAuthoritiesService);
-  private readonly route = inject(ActivatedRoute);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly destroy$ = inject(DestroySubject);
   private readonly businessErrorService = inject(BusinessErrorService);
-  private readonly notificationBannerStore: NotificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
   regulators$: Observable<RegulatorUserAuthorityInfoDTO[]>;
   isEditable$: Observable<boolean>;
   public authorityStatusesOptions: { [key: string]: any } = {};
@@ -91,6 +89,7 @@ export class RegulatorsComponent implements OnInit {
   regulatorsForm = this.fb.group({ regulatorsArray: this.fb.array([]) });
   userId$ = this.authStore.rxSelect(selectUserId);
   refresh$ = new Subject<void>();
+  readonly activeTab = signal('regulator-users');
 
   get regulatorsArray(): UntypedFormArray {
     return this.regulatorsForm.get('regulatorsArray') as UntypedFormArray;
@@ -98,7 +97,7 @@ export class RegulatorsComponent implements OnInit {
 
   ngOnInit(): void {
     const regulatorsManagement$ = merge(
-      this.route.data.pipe(map((data: { regulators: RegulatorUsersAuthoritiesInfoDTO }) => data.regulators)),
+      this.activatedRoute.data.pipe(map((data: { regulators: RegulatorUsersAuthoritiesInfoDTO }) => data.regulators)),
       this.refresh$.pipe(switchMap(() => this.regulatorAuthoritiesService.getCaRegulators())),
     ).pipe(
       tap((authoritiesInfoDTO) => {
@@ -124,7 +123,7 @@ export class RegulatorsComponent implements OnInit {
     }
     if (!this.regulatorsForm.valid) {
       this.regulatorsForm.markAllAsTouched();
-      this.notificationBannerStore.setInvalidForm(this.regulatorsForm);
+      this.feedbackBannerStore.setInvalidForm(this.regulatorsForm);
     } else {
       this.regulatorAuthoritiesService
         .updateCompetentAuthorityRegulatorUsersStatus(
@@ -143,14 +142,25 @@ export class RegulatorsComponent implements OnInit {
             const updatedControlsKeys = FormUtils.findDirtyControlsKeys(this.regulatorsForm);
 
             if (updatedControlsKeys.length !== 0) {
-              this.notificationBannerStore.setSuccessMessages(this.createSuccessMessages(updatedControlsKeys));
+              this.feedbackBannerStore.setSuccessMessages(this.createSuccessMessages(updatedControlsKeys));
               this.regulatorsForm.markAsPristine();
             } else {
-              this.notificationBannerStore.reset();
+              this.feedbackBannerStore.reset();
             }
           }),
         )
         .subscribe(() => this.refresh$.next());
+    }
+  }
+
+  selectTab(selected: string) {
+    if (selected !== this.activeTab()) {
+      this.activeTab.update(() => selected);
+      this.router.navigate([], {
+        relativeTo: this.activatedRoute,
+        queryParams: { page: 1 },
+        fragment: selected,
+      });
     }
   }
 

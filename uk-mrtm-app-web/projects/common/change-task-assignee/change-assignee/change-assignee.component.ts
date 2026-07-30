@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { BehaviorSubject, combineLatest, iif, map, mergeMap, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, iif, map, mergeMap, Observable } from 'rxjs';
 
 import { RequestTaskDTO, TasksAssignmentService, TasksReleaseService, UserStateDTO } from '@mrtm/api';
 
@@ -67,25 +67,14 @@ export class ChangeAssigneeComponent {
     this.store.rxSelect(requestTaskQuery.selectRequestTaskItem),
     this.showErrorSummary$.asObservable(),
   ]).pipe(
-    mergeMap(([userState, requestTaskWrapper, showErrorSummary]) => {
-      const requestTask = requestTaskWrapper?.requestTask;
-
-      if (!requestTask) {
-        return of({ userState, candidates: [], requestTask: null, showErrorSummary });
-      }
-
-      return this.tasksAssignmentService.getCandidateAssigneesByTaskId(requestTask.id).pipe(
-        map((candidates) => ({
-          userState,
-          candidates,
-          requestTask,
-          showErrorSummary,
-        })),
-      );
-    }),
+    mergeMap(([userState, { requestTask }, showErrorSummary]) =>
+      this.tasksAssignmentService
+        .getCandidateAssigneesByTaskId(requestTask.id)
+        .pipe(map((candidates) => ({ userState, candidates, requestTask, showErrorSummary }))),
+    ),
     map(({ userState, candidates, requestTask, showErrorSummary }) => {
       const options = [
-        ...(!!requestTask?.assigneeUserId && this.allowReleaseTask(userState.roleType)
+        ...(!!requestTask.assigneeUserId && this.allowReleaseTask(userState.roleType)
           ? [{ text: 'Unassigned', value: this.UNASSIGNED_VALUE }]
           : []),
         ...candidates
@@ -93,8 +82,7 @@ export class ChangeAssigneeComponent {
           .map((candidate) => ({
             text: this.userFullNamePipe.transform(candidate),
             value: candidate.id,
-          }))
-          .sort((a, b) => a.text?.localeCompare(b.text)),
+          })),
       ];
       this.options = options;
 

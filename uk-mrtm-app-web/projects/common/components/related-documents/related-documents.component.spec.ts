@@ -61,7 +61,7 @@ describe('RelatedDocumentsComponent', () => {
 
   it('should display all HTML elements', () => {
     expect(page.links.map((el) => [el.href, el.textContent?.trim()])).toEqual([
-      ['http://localhost/?filename=letter.txt&signatory=test-user-id', 'letter.txt'],
+      ['http://localhost:3000/?filename=letter.txt&signatory=test-user-id', 'letter.txt'],
     ]);
   });
 });

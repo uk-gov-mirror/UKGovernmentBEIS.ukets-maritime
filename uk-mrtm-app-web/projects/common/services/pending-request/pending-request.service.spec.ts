@@ -17,7 +17,7 @@ describe('PendingRequestService', () => {
   });
 
   it('should flag the start and end of a subscription', async () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
 
     timer(3000).pipe(service.trackRequest()).subscribe();
 
@@ -25,13 +25,13 @@ describe('PendingRequestService', () => {
 
     await expect(isPending()).resolves.toBeTruthy();
 
-    jest.advanceTimersByTime(3001);
+    vi.advanceTimersByTime(3001);
 
     await expect(isPending()).resolves.toBeFalsy();
   });
 
   it('should monitor multiple requests', async () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
 
     timer(3000).pipe(service.trackRequest()).subscribe();
     timer(5000).pipe(service.trackRequest()).subscribe();
@@ -40,12 +40,12 @@ describe('PendingRequestService', () => {
 
     await expect(isPending()).resolves.toBeTruthy();
 
-    jest.advanceTimersByTime(3001);
+    vi.advanceTimersByTime(3001);
 
     await expect(isPending()).resolves.toBeTruthy();
     expect(service.hasPendingRequests()).toBeTruthy();
 
-    jest.advanceTimersByTime(2000);
+    vi.advanceTimersByTime(2000);
 
     await expect(isPending()).resolves.toBeFalsy();
     expect(service.hasPendingRequests()).toBeFalsy();

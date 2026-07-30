@@ -110,7 +110,7 @@ describe('PasswordComponent', () => {
   });
 
   it('should not accept a blacklisted password', async () => {
-    const validatePasswordSpy = jest.spyOn(forgotPasswordService, 'validatePassword').mockReturnValue(
+    const validatePasswordSpy = vi.spyOn(forgotPasswordService, 'validatePassword').mockReturnValue(
       of({
         valid: false,
         errors: [

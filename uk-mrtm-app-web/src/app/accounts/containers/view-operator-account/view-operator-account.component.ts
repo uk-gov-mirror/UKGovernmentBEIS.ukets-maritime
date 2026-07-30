@@ -7,7 +7,7 @@ import { BehaviorSubject, combineLatestWith, map, Observable } from 'rxjs';
 import { MrtmAccountViewDTO, UserStateDTO } from '@mrtm/api';
 
 import { AuthStore, selectUserRoleType } from '@netz/common/auth';
-import { PageHeadingComponent } from '@netz/common/components';
+import { FeedbackBannerComponent, PageHeadingComponent } from '@netz/common/components';
 import { ButtonDirective, TabLazyDirective, TabsComponent, TagComponent } from '@netz/govuk-components';
 
 import {
@@ -22,7 +22,6 @@ import { ActiveEmissionsPlanComponent } from '@accounts/components/active-emissi
 import { OperatorAccountsStatusColorPipe } from '@accounts/pipes';
 import { OperatorAccountsStore, selectAccount } from '@accounts/store';
 import { NotesListComponent } from '@notes/components';
-import { NotificationBannerComponent } from '@shared/components';
 
 interface ViewModel {
   accountInfo: MrtmAccountViewDTO;
@@ -44,7 +43,7 @@ interface ViewModel {
     OperatorAccountsStatusColorPipe,
     AsyncPipe,
     TitleCasePipe,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
     TabLazyDirective,
     EmissionsPlanHistoryTabComponent,
     NotesListComponent,

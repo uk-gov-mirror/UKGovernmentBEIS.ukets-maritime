@@ -17,7 +17,7 @@ describe('AccountClosureConfirmationComponent', () => {
 
   const activatedRoute = new ActivatedRouteStub({ accountId: 1 });
   const accountClosureStateService: MockType<AccountClosureStateService> = {
-    submitAccountClosure: jest.fn().mockReturnValue(of([])),
+    submitAccountClosure: vi.fn().mockReturnValue(of([])),
   };
 
   class Page extends BasePage<AccountClosureConfirmationComponent> {
@@ -63,8 +63,8 @@ describe('AccountClosureConfirmationComponent', () => {
   });
 
   it('should submit and navigate to nextRoute', () => {
-    const taskServiceSpy = jest.spyOn(accountClosureStateService, 'submitAccountClosure');
-    const navigateSpy = jest.spyOn(router, 'navigate');
+    const taskServiceSpy = vi.spyOn(accountClosureStateService, 'submitAccountClosure');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     page.submitButton.click();
     fixture.detectChanges();

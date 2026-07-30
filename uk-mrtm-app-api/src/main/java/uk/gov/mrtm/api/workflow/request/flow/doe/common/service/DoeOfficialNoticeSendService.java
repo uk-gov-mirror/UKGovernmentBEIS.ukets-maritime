@@ -9,7 +9,7 @@ import uk.gov.netz.api.common.exception.ErrorCode;
 import uk.gov.netz.api.competentauthority.CompetentAuthorityDTO;
 import uk.gov.netz.api.competentauthority.CompetentAuthorityService;
 import uk.gov.netz.api.files.common.domain.dto.FileInfoDTO;
-import uk.gov.netz.api.files.documents.service.FileDocumentService;
+import uk.gov.netz.api.files.documents.service.storage.FileDocumentStorageService;
 import uk.gov.netz.api.notificationapi.mail.domain.EmailData;
 import uk.gov.netz.api.notificationapi.mail.domain.EmailNotificationTemplateData;
 import uk.gov.netz.api.notificationapi.mail.service.NotificationEmailService;
@@ -37,7 +37,7 @@ public class DoeOfficialNoticeSendService {
     private final RequestAccountContactQueryService requestAccountContactQueryService;
     private final DecisionNotificationUsersService decisionNotificationUsersService;
     private final NotificationEmailService<EmailNotificationTemplateData> notificationEmailService;
-    private final FileDocumentService fileDocumentService;
+    private final FileDocumentStorageService fileDocumentStorageService;
     private final CompetentAuthorityService competentAuthorityService;
 
     public void sendOfficialNotice(String requestId) {
@@ -103,7 +103,7 @@ public class DoeOfficialNoticeSendService {
                 .templateParams(templateParams)
                 .build())
             .attachments(attachments.stream().collect(
-                Collectors.toMap(FileInfoDTO::getName, att -> fileDocumentService.getFileDTO(att.getUuid()).getFileContent()))
+                Collectors.toMap(FileInfoDTO::getName, att -> fileDocumentStorageService.getFileDTO(att.getUuid()).getFileContent()))
             )
             .build();
     }

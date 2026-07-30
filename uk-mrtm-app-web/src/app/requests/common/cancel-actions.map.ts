@@ -28,4 +28,7 @@ export const cancelActionsMap: CancelActionsMap = {
   VIR_WAIT_FOR_RFI_RESPONSE: {
     actionType: 'CANCEL_APPLICATION',
   },
+  SITE_VISIT_APPLICATION_SUBMIT: {
+    actionType: 'SITE_VISIT_CANCEL_APPLICATION',
+  },
 };

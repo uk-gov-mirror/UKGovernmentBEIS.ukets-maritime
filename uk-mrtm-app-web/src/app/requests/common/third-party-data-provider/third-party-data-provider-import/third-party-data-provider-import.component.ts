@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { take } from 'rxjs';
 
-import { PageHeadingComponent, ReturnToTaskOrActionPageComponent } from '@netz/common/components';
+import { FeedbackBannerStore, PageHeadingComponent, ReturnToTaskOrActionPageComponent } from '@netz/common/components';
 import { TaskService } from '@netz/common/forms';
 import { GovukDatePipe } from '@netz/common/pipes';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
@@ -30,7 +30,6 @@ import {
   SUBTASKS_AFFECTED_BY_IMPORT,
   SUCCESS_MESSAGES,
 } from '@requests/common/third-party-data-provider/third-party-data-provider.const';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { isAer, isNil } from '@shared/utils';
 
 @Component({
@@ -56,7 +55,7 @@ export class ThirdPartyDataProviderImportComponent {
   private readonly sectionsCompletedSelector = inject(SECTIONS_COMPLETED_SELECTOR);
   private readonly service = inject(TaskService) as IThirdPartyDataProviderService<unknown>;
   private readonly thirdPartyDataProviderStore = inject(ThirdPartyDataProviderStore);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private readonly requestTaskId = this.store.select(requestTaskQuery.selectRequestTaskId);
   private readonly requestTaskType = this.store.select(requestTaskQuery.selectRequestTaskType);
   private readonly sectionsCompleted = this.store.select(this.sectionsCompletedSelector);
@@ -103,7 +102,7 @@ export class ThirdPartyDataProviderImportComponent {
       .pipe(take(1))
       .subscribe(() => {
         const message = this.successMessage?.();
-        this.notificationBannerStore.setSuccessMessages(
+        this.feedbackBannerStore.setSuccessMessages(
           !isNil(message) ? this.successMessage() : ['The data has been successfully imported from the data supplier.'],
         );
       });

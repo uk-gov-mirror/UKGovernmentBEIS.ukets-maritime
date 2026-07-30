@@ -21,6 +21,7 @@ public class PreviewOfficialNoticeService {
 
     private final RequestAccountContactQueryService requestAccountContactQueryService;
     private final DecisionNotificationUsersService decisionNotificationUsersService;
+    private final MrtmDocumentTemplateAccountDataCollectFromAccountService templateAccountDataCollectFromAccountService;
     private final DocumentTemplateOfficialNoticeParamsProvider documentTemplateOfficialNoticeParamsProvider;
 
     public TemplateParams generateCommonParams(final Request request,
@@ -38,6 +39,8 @@ public class PreviewOfficialNoticeService {
                 .signatory(signatory)
                 .accountPrimaryContact(accountPrimaryContact)
                 .toRecipientEmail(accountPrimaryContact.getEmail())
-                .ccRecipientsEmails(ccRecipientsEmails).build());
+                .ccRecipientsEmails(ccRecipientsEmails)
+                .accountData(templateAccountDataCollectFromAccountService.collect(request.getAccountId()))
+                .build());
     }
 }

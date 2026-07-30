@@ -30,7 +30,7 @@ import uk.gov.netz.api.security.AppSecurityComponent;
 import uk.gov.netz.api.security.AuthorizationAspectUserResolver;
 import uk.gov.netz.api.security.AuthorizedAspect;
 import uk.gov.netz.api.workflow.request.application.attachment.task.RequestTaskAttachmentActionProcessDTO;
-import uk.gov.netz.api.workflow.request.application.attachment.task.RequestTaskAttachmentService;
+import uk.gov.netz.api.workflow.request.application.attachment.task.RequestTaskFileAttachmentService;
 import uk.gov.netz.api.workflow.request.flow.common.service.RequestTaskAttachmentUploadService;
 
 import java.util.UUID;
@@ -64,7 +64,7 @@ class RequestTaskAttachmentControllerTest {
     private RequestTaskAttachmentUploadService requestTaskAttachmentUploadService;
 
     @Mock
-    private RequestTaskAttachmentService requestTaskAttachmentService;
+    private RequestTaskFileAttachmentService requestTaskAttachmentService;
 
     private ObjectMapper mapper;
 
@@ -111,6 +111,7 @@ class RequestTaskAttachmentControllerTest {
             .fileType(attachmentContentType)
             .fileContent(attachmentContent)
             .fileSize(attachmentFile.getSize())
+            .createdBy(authUser.getUserId())
             .build();
 
         UUID attachmentUuid = UUID.randomUUID();

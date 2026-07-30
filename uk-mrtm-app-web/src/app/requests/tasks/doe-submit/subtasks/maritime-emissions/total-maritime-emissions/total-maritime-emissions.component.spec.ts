@@ -32,12 +32,12 @@ describe('TotalMaritimeEmissionsComponent', () => {
   let supportingDocumentsControl: FormControl;
 
   const route = new ActivatedRouteStub();
-  const taskService: MockType<TaskService<any>> = { saveSubtask: jest.fn().mockReturnValue(of({})) };
-  const taskServiceSpy = jest.spyOn(taskService, 'saveSubtask');
+  const taskService: MockType<TaskService<any>> = { saveSubtask: vi.fn().mockReturnValue(of({})) };
+  const taskServiceSpy = vi.spyOn(taskService, 'saveSubtask');
   const uuid3 = '33333333-3333-4333-a333-333333333333';
   const uuid4 = '44444444-4444-4444-a444-444444444444';
   const attachmentService: MockType<RequestTaskAttachmentsHandlingService> = {
-    uploadRequestTaskAttachment: jest.fn().mockReturnValue(asyncData<any>(new HttpResponse({ body: { uuid: uuid4 } }))),
+    uploadRequestTaskAttachment: vi.fn().mockReturnValue(asyncData<any>(new HttpResponse({ body: { uuid: uuid4 } }))),
   };
 
   class Page extends BasePage<TotalMaritimeEmissionsComponent> {
@@ -64,7 +64,7 @@ describe('TotalMaritimeEmissionsComponent', () => {
     supportingDocumentsControl = component['form'].get('supportingDocuments') as FormControl;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(async () => {
@@ -151,6 +151,7 @@ describe('TotalMaritimeEmissionsComponent', () => {
       page.fileDeleteButtons[0].click();
       supportingDocumentsControl.setValue([{ file: new File(['test content 3'], 'testfile3.jpg'), uuid: uuid3 }]);
       page.filesValue = [new File(['test content 4'], 'testfile4.jpg')];
+      await fixture.whenStable();
       fixture.detectChanges();
 
       expect(page.filesText).toEqual(['testfile3.jpg', 'testfile4.jpg has been uploaded']);

@@ -21,7 +21,7 @@ describe('SendForPeerReviewComponent', () => {
 
   const route = new ActivatedRouteStub();
   const notifyUsersService: MockType<NotifyUsersService> = {
-    getAssigneesByTaskType: jest.fn().mockReturnValue(
+    getAssigneesByTaskType: vi.fn().mockReturnValue(
       of([
         {
           text: 'Regulator England',
@@ -33,9 +33,9 @@ describe('SendForPeerReviewComponent', () => {
         },
       ]),
     ),
-    submitForPeerReview: jest.fn().mockReturnValue(of({})),
+    submitForPeerReview: vi.fn().mockReturnValue(of({})),
   };
-  const notifyUsersServiceSpy = jest.spyOn(notifyUsersService, 'submitForPeerReview');
+  const notifyUsersServiceSpy = vi.spyOn(notifyUsersService, 'submitForPeerReview');
 
   class Page extends BasePage<SendForPeerReviewComponent> {
     set assignees(value: string) {
@@ -48,7 +48,7 @@ describe('SendForPeerReviewComponent', () => {
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(async () => {
@@ -135,7 +135,7 @@ describe('SendForPeerReviewComponent', () => {
     });
 
     it(`should edit and submit a valid form`, async () => {
-      const navigateSpy = jest.spyOn(router, 'navigate');
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
       page.assignees = '22222222-2222-4222-a222-222222222222';
       page.submitButton.click();
       fixture.detectChanges();

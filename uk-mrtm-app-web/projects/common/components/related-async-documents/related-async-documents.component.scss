@@ -1,0 +1,12 @@
+@use 'govuk-frontend/dist/govuk/index' as govuk;
+
+ul > li {
+  padding-bottom: govuk.govuk-spacing(2);
+  margin-bottom: govuk.govuk-spacing(2) !important;
+  border-bottom: 1px solid govuk.$govuk-border-colour;
+
+  & > * {
+    vertical-align: middle;
+  }
+}
+

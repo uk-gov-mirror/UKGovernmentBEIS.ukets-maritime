@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
-import { ButtonDirective, LinkDirective } from '@netz/govuk-components';
+import { ButtonDirective } from '@netz/govuk-components';
 
 import { FilterByShip } from '@requests/common/components/list-filter-forms/filter-by-ship/filter-by-ship.interface';
 import {
@@ -13,10 +12,9 @@ import { AutocompleteSelectComponent } from '@shared/components/autocomplete-sel
 
 @Component({
   selector: 'mrtm-filter-by-ship',
-  imports: [FormsModule, ReactiveFormsModule, ButtonDirective, AutocompleteSelectComponent, RouterLink, LinkDirective],
+  imports: [ReactiveFormsModule, ButtonDirective, AutocompleteSelectComponent],
   standalone: true,
   templateUrl: './filter-by-ship.component.html',
-  styleUrl: './filter-by-ship.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilterByShipComponent extends ListFilterFormsCommon<FilterByShip | null> {

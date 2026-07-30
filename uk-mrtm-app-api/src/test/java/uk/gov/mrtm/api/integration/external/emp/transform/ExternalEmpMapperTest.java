@@ -82,6 +82,7 @@ import uk.gov.mrtm.api.integration.external.emp.enums.ExternalFuelType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -89,6 +90,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.mockito.Mockito.mockStatic;
 
 @ExtendWith(MockitoExtension.class)
@@ -628,5 +630,41 @@ class ExternalEmpMapperTest {
                 .minVoyages(derogationCodeUsed ? 301 : null)
                 .build())
             .build();
+    }
+
+    @Test
+    void toExternalEmissionsMonitoringPlan_preservesShipParticularsOrder() {
+        EmpShipEmissions zebraShip = createEmpShipEmissions(false, false);
+        zebraShip.setUniqueIdentifier(UUID.fromString("00000000-0000-0000-0000-000000000001"));
+        zebraShip.getDetails().setImoNumber("1111111");
+        zebraShip.getDetails().setName("Zebra");
+
+        EmpShipEmissions alphaShip = createEmpShipEmissions(false, false);
+        alphaShip.setUniqueIdentifier(UUID.fromString("00000000-0000-0000-0000-000000000002"));
+        alphaShip.getDetails().setImoNumber("2222222");
+        alphaShip.getDetails().setName("Alpha");
+
+        Set<EmpShipEmissions> ships = new LinkedHashSet<>();
+        ships.add(zebraShip);
+        ships.add(alphaShip);
+
+        EmissionsMonitoringPlan emp = EmissionsMonitoringPlan.builder()
+            .emissions(EmpEmissions.builder().ships(ships).build())
+            .mandate(createEmpMandate(false))
+            .sources(createEmpEmissionSources(true, false))
+            .greenhouseGas(createEmpMonitoringGreenhouseGas())
+            .managementProcedures(createEmpManagementProcedures())
+            .controlActivities(createEmpControlActivities(false))
+            .dataGaps(createEmpDataGaps())
+            .build();
+
+        ExternalEmissionsMonitoringPlan external = externalEmpMapper.toExternalEmissionsMonitoringPlan(emp);
+
+        assertEquals(2, external.getShipParticulars().size());
+
+        List<String> exposedImoNumbers = new ArrayList<>();
+        external.getShipParticulars().forEach(ship -> exposedImoNumbers.add(ship.getShipDetails().getShipImoNumber()));
+
+        assertIterableEquals(List.of("1111111", "2222222"), exposedImoNumbers);
     }
 }

@@ -3,12 +3,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { finalize, interval, takeUntil } from 'rxjs';
 
+import { Mock } from 'vitest';
+
 import { DestroySubject } from './destroy-subject.service';
 
 describe('DestroySubject', () => {
   let service: DestroySubject;
   let fixture: ComponentFixture<TestComponent>;
-  let closeSpy: jest.Mock;
+  let closeSpy: Mock;
 
   @Component({ standalone: true, template: '', providers: [DestroySubject] })
   class TestComponent {
@@ -25,7 +27,7 @@ describe('DestroySubject', () => {
   }
 
   beforeEach(async () => {
-    closeSpy = jest.fn();
+    closeSpy = vi.fn();
   });
 
   beforeEach(() => {

@@ -40,12 +40,12 @@ public class ExternalEmpSubmitService {
     @Transactional
     public void submitEmissionsMonitoringPlanData(ExternalEmissionsMonitoringPlan external, String companyImoNumber,
                                                   AppUser appUser) {
+        MrtmAccount account = mrtmAccountRepository
+            .findByImoNumberForUpdate(companyImoNumber)
+            .orElseThrow(() -> new BusinessException(RESOURCE_NOT_FOUND));
+
         StagingEmissionsMonitoringPlan staging = mapper.toStagingEmissionsMonitoringPlan(external);
         validator.validate(staging, companyImoNumber);
-
-        MrtmAccount account = mrtmAccountRepository
-            .findByImoNumber(companyImoNumber)
-            .orElseThrow(() -> new BusinessException(RESOURCE_NOT_FOUND));
 
         Optional<StagingEmissionsMonitoringPlanEntity> optionalStagingEmpEntity =
             stagingEmpRepository.findByAccountId(account.getId());

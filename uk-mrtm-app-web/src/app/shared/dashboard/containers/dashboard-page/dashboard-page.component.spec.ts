@@ -14,8 +14,10 @@ import {
 import { AuthStore } from '@netz/common/auth';
 import { BasePage } from '@netz/common/testing';
 
-import { DashboardPageComponent, DashboardStore } from '@shared/dashboard';
+import { DashboardStore } from '@shared/dashboard/+store';
+import { DashboardPageComponent } from '@shared/dashboard/containers';
 import { WorkflowItemsService } from '@shared/dashboard/services';
+import { Mocked } from 'vitest';
 
 class Page extends BasePage<DashboardPageComponent> {
   get assignedToOthersTabLink() {
@@ -44,10 +46,10 @@ describe('DashboardPageComponent', () => {
   let component: DashboardPageComponent;
   let fixture: ComponentFixture<DashboardPageComponent>;
   let page: Page;
-  let itemsAssignedToMeService: Partial<jest.Mocked<ItemsAssignedToMeService>>;
-  let itemsAssignedToOthersService: Partial<jest.Mocked<ItemsAssignedToOthersService>>;
-  let unassignedItemsService: Partial<jest.Mocked<UnassignedItemsService>>;
-  let maritimeAccountsService: Partial<jest.Mocked<MaritimeAccountsService>>;
+  let itemsAssignedToMeService: Partial<Mocked<ItemsAssignedToMeService>>;
+  let itemsAssignedToOthersService: Partial<Mocked<ItemsAssignedToOthersService>>;
+  let unassignedItemsService: Partial<Mocked<UnassignedItemsService>>;
+  let maritimeAccountsService: Partial<Mocked<MaritimeAccountsService>>;
 
   const mockTasks: ItemDTOResponse = {
     items: [
@@ -94,18 +96,18 @@ describe('DashboardPageComponent', () => {
 
   beforeEach(async () => {
     itemsAssignedToMeService = {
-      getAssignedItems: jest.fn().mockReturnValue(of(mockTasks)),
+      getAssignedItems: vi.fn().mockReturnValue(of(mockTasks)),
     };
     itemsAssignedToOthersService = {
-      getAssignedToOthersItems: jest
+      getAssignedToOthersItems: vi
         .fn()
         .mockReturnValue(of({ items: mockTasks.items.slice(1, 2), totalPages: mockTasks.totalItems })),
     };
     unassignedItemsService = {
-      getUnassignedItems: jest.fn().mockReturnValue(of(unassignedItems)),
+      getUnassignedItems: vi.fn().mockReturnValue(of(unassignedItems)),
     };
     maritimeAccountsService = {
-      getMrtmAccountsInfoByUser: jest.fn().mockReturnValue(of([])),
+      getMrtmAccountsInfoByUser: vi.fn().mockReturnValue(of([])),
     };
     await TestBed.configureTestingModule({
       providers: [
@@ -145,6 +147,7 @@ describe('DashboardPageComponent', () => {
 
     it('should render assigned to others table rows', async () => {
       page.assignedToOthersTabLink.click();
+      await fixture.whenStable();
       fixture.detectChanges();
 
       const anchors = Array.from(page.assignedToOthersTab.querySelectorAll('td'))
@@ -161,7 +164,6 @@ describe('DashboardPageComponent', () => {
       const store = TestBed.inject(DashboardStore);
 
       component.changePage(3);
-      fixture.detectChanges();
       await fixture.whenStable();
 
       expect(itemsAssignedToMeService.getAssignedItems).toHaveBeenLastCalledWith(
@@ -171,7 +173,6 @@ describe('DashboardPageComponent', () => {
       );
 
       store.setFilters({ accountId: null, workflowType: 'AER', orderBy: 'NEWEST_FIRST' });
-      fixture.detectChanges();
       await fixture.whenStable();
 
       expect(component.page()).toEqual(1);
@@ -192,6 +193,7 @@ describe('DashboardPageComponent', () => {
     it('should display the unassigned items', async () => {
       expect(page.unassignedTabLink).toBeTruthy();
       page.unassignedTabLink.click();
+      await fixture.whenStable();
       fixture.detectChanges();
 
       const anchors = Array.from(page.unassignedTab.querySelectorAll('td'))

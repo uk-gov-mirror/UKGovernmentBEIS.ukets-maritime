@@ -18,7 +18,7 @@ describe('NotesListComponent', () => {
   let page: Page;
 
   const accountNotesService: MockType<AccountNotesService> = {
-    getNotesByAccountId: jest.fn().mockReturnValue(of(mockAccountNotesResults)),
+    getNotesByAccountId: vi.fn().mockReturnValue(of(mockAccountNotesResults)),
   };
   const activatedRoute = new ActivatedRouteStub({ accountId: '1' });
 
@@ -43,7 +43,7 @@ describe('NotesListComponent', () => {
     fixture = TestBed.createComponent(NotesListComponent);
     component = fixture.componentInstance;
     page = new Page(fixture);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     fixture.detectChanges();
   });
 

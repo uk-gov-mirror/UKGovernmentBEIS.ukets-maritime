@@ -144,7 +144,7 @@ public class GuidanceDocumentController {
             @RequestPart("file") @Parameter(description = "The guidance file", required = true)
             MultipartFile file) throws IOException {
 
-        final FileDTO fileDTO = fileDtoMapper.toFileDTO(file);
+        final FileDTO fileDTO = fileDtoMapper.toFileDTO(file, authUser.getUserId());
         final FileUuidDTO fileUuidDTO = fileGuidanceService.uploadFile(authUser.getUserId(), fileDTO, sectionId);
 
         return new ResponseEntity<>(fileUuidDTO, HttpStatus.OK);

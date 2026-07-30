@@ -1,17 +1,12 @@
 <label [for]="identifier" [id]="`l.${identifier}`" class="govuk-label">
   {{ label() }}
 </label>
-
 @if (hint()) {
-  <span [id]="`${identifier}-hint`" class="govuk-hint">
-    {{ hint() }}
-  </span>
+  <div [id]="`${identifier}-hint`" class="govuk-hint" [innerHTML]="hint() | safeHtml"></div>
 }
-
 @if (shouldDisplayErrors) {
   <govuk-error-message [errors]="control.errors" [identifier]="identifier" />
 }
-
 <button
   type="button"
   class="govuk-input"

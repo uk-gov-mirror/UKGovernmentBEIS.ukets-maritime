@@ -1,0 +1,8 @@
+<h2 class="govuk-heading-m">Response details</h2>
+<mrtm-site-visit-summary-template [model]="data()?.details" />
+
+@if (userRole() === 'REGULATOR') {
+  <mrtm-review-decision-summary-template
+    [reviewDecision]="data()?.reviewDecision"
+    [withOverallDecision]="data()?.reviewDecision?.type !== 'OPERATOR_AMENDS_NEEDED'" />
+}

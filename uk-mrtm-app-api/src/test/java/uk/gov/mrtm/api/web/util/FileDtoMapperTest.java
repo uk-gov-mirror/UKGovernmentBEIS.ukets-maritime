@@ -17,13 +17,15 @@ class FileDtoMapperTest {
     @Test
     void toFileDTO() throws IOException {
         String  content = "content";
+        String createdBy = "user-id";
         MultipartFile multipartFile = new MockMultipartFile("name", "originalname.txt", "type", content.getBytes());
         
-        FileDTO fileDTO = mapper.toFileDTO(multipartFile);
+        FileDTO fileDTO = mapper.toFileDTO(multipartFile, createdBy);
         
         assertThat(fileDTO.getFileContent()).isEqualTo(content.getBytes());
         assertThat(fileDTO.getFileName()).isEqualTo("originalname.txt");
         assertThat(fileDTO.getFileSize()).isEqualTo(content.getBytes().length);
         assertThat(fileDTO.getFileType()).isEqualTo("text/plain");
+        assertThat(fileDTO.getCreatedBy()).isEqualTo(createdBy);
     }
 }

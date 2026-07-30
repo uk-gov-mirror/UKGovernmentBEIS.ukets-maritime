@@ -69,7 +69,7 @@ describe('AccountClosureServiceService', () => {
     });
 
     it('should return services with appropriate payloads', async () => {
-      const tasksServiceSpy = jest.spyOn(tasksService, 'processRequestTaskAction');
+      const tasksServiceSpy = vi.spyOn(tasksService, 'processRequestTaskAction');
 
       expect(stateService.payload).toEqual({
         accountClosure: { reason: 'test' },
@@ -129,7 +129,7 @@ describe('AccountClosureServiceService', () => {
     });
 
     it('should return services with appropriate payloads', async () => {
-      const tasksServiceSpy = jest.spyOn(tasksServiceSubmit, 'processRequestTaskAction');
+      const tasksServiceSpy = vi.spyOn(tasksServiceSubmit, 'processRequestTaskAction');
 
       await expect(firstValueFrom(stateService.submitAccountClosure())).resolves.toEqual({
         requestTaskActionPayload: {

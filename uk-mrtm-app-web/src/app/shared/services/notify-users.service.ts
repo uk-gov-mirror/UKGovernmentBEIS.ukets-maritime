@@ -7,7 +7,7 @@ import {
   CaExternalContactDTO,
   CaExternalContactsService,
   DecisionNotification,
-  EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload,
+  NotifyOperatorForDecisionRequestTaskActionPayload,
   OperatorAuthoritiesService,
   PeerReviewRequestTaskActionPayload,
   RequestActionUserInfo,
@@ -146,7 +146,7 @@ export class NotifyUsersService {
         requestTaskActionPayload: {
           payloadType: payloadType,
           decisionNotification: decisionNotification,
-        } as EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload,
+        } as NotifyOperatorForDecisionRequestTaskActionPayload,
       })
       .pipe(this.handleForceNavigationError());
   }

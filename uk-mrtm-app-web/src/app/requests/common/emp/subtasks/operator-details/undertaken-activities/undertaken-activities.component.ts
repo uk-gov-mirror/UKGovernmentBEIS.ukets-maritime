@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { TaskService } from '@netz/common/forms';
@@ -14,7 +14,7 @@ import { WizardStepComponent } from '@shared/components';
 
 @Component({
   selector: 'mrtm-undertaken-activities',
-  imports: [FormsModule, ReactiveFormsModule, WizardStepComponent, TextareaComponent],
+  imports: [ReactiveFormsModule, WizardStepComponent, TextareaComponent],
   standalone: true,
   templateUrl: './undertaken-activities.component.html',
   providers: [undertakenActivitiesFormProvider],

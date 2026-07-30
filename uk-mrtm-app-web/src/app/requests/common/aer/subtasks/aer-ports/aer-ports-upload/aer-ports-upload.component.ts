@@ -14,6 +14,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { AerFuelConsumption, AerPort, AerPortEmissionsMeasurement, FuelOriginTypeName } from '@mrtm/api';
 
+import { FeedbackBannerStore } from '@netz/common/components';
 import { TaskService } from '@netz/common/forms';
 import { RequestTaskStore } from '@netz/common/store';
 import { ButtonDirective, LinkDirective, TableComponent } from '@netz/govuk-components';
@@ -42,7 +43,6 @@ import {
 } from '@requests/common/aer/subtasks/utils';
 import { TASK_FORM } from '@requests/common/task-form.token';
 import { DataParserWizardStepComponent } from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { AER_PORT_CODE_SELECT_ITEMS, AER_PORT_COUNTRY_SELECT_ITEMS } from '@shared/constants';
 import { SelectOptionToTitlePipe } from '@shared/pipes';
 import { PersistablePaginationService } from '@shared/services';
@@ -72,7 +72,7 @@ export class AerPortsUploadComponent {
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
   private readonly taskService: TaskService<AerSubmitTaskPayload> = inject(TaskService);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
 
   private readonly dataParserWizardStep = viewChild.required(DataParserWizardStepComponent);
 
@@ -306,7 +306,7 @@ export class AerPortsUploadComponent {
         }
 
         if (this.insertedRows > 0 || this.updatedRows > 0) {
-          this.notificationBannerStore.setSuccessMessages(messages);
+          this.feedbackBannerStore.setSuccessMessages(messages);
         }
       });
   }

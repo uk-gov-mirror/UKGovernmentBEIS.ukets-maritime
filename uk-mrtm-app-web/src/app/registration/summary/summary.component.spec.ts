@@ -52,8 +52,7 @@ describe('SummaryComponent', () => {
 
     store = TestBed.inject(UserRegistrationStore);
 
-    jest
-      .spyOn(store, 'select')
+    vi.spyOn(store, 'select')
       .mockReturnValueOnce(of(mockUserRegistrationDTO))
       .mockReturnValueOnce(of('password'))
       .mockReturnValueOnce(of('token'));
@@ -82,8 +81,10 @@ describe('SummaryComponent', () => {
 
     fixture.detectChanges();
 
-    const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation();
-    jest.spyOn(service, 'acceptAuthorityAndEnableInvitedUserWithCredentials').mockReturnValue(of(mockUserOperatorDTO));
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    vi.spyOn(service, 'acceptAuthorityAndEnableInvitedUserWithCredentials').mockReturnValue(
+      of(mockUserOperatorDTO) as any,
+    );
 
     buttonClick(fixture);
 
@@ -101,10 +102,10 @@ describe('SummaryComponent', () => {
 
     fixture.detectChanges();
 
-    const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation();
-    jest
-      .spyOn(service, 'acceptAuthorityAndEnableInvitedUserWithoutCredentials')
-      .mockReturnValue(of(mockUserOperatorDTO));
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    vi.spyOn(service, 'acceptAuthorityAndEnableInvitedUserWithoutCredentials').mockReturnValue(
+      of(mockUserOperatorDTO) as any,
+    );
 
     buttonClick(fixture);
 

@@ -15,7 +15,6 @@ import uk.gov.mrtm.api.emissionsmonitoringplan.domain.emissions.constants.Emissi
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.emissions.constants.EmissionSourceType;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.emissions.constants.MonitoringMethod;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -39,11 +38,12 @@ public class ExternalEmpEmissionsSources {
     @JsonDeserialize(as = LinkedHashSet.class)
     @NotEmpty
     @Valid
-    private Set<ExternalEmpFuelOriginTypeName> fuelTypeCodes = new HashSet<>();
+    private Set<ExternalEmpFuelOriginTypeName> fuelTypeCodes = new LinkedHashSet<>();
 
     @Builder.Default
+    @JsonDeserialize(as = LinkedHashSet.class)
     @NotEmpty
-    private Set<MonitoringMethod> monitoringMethods = new HashSet<>();
+    private Set<MonitoringMethod> monitoringMethods = new LinkedHashSet<>();
 
     @Size(max = 30)
     private String identificationNumber;

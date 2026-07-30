@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { Component, signal } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter, Router } from '@angular/router';
 
@@ -15,6 +15,10 @@ describe('TabsComponent', () => {
   let fixture: ComponentFixture<TestComponent>;
   let router: Router;
 
+  // The async tabs are emitted through `delay(200)` (a real macrotask scheduled during the
+  // initial detectChanges), so we wait real wall-clock time for them to arrive.
+  const waitForAsyncTabs = () => new Promise((resolve) => setTimeout(resolve, 250));
+
   @Component({
     imports: [TabsComponent, AsyncPipe, TabDirective],
     standalone: true,
@@ -28,7 +32,7 @@ describe('TabsComponent', () => {
         <ng-template govukTab id="paragraph2" label="Another paragraph">
           <p>This is another paragraph</p>
         </ng-template>
-        <ng-template govukTab [id]="syncTab.id" [label]="syncTab.label" />
+        <ng-template govukTab [id]="syncTab().id" [label]="syncTab().label" />
       </govuk-tabs>
     `,
   })
@@ -39,7 +43,7 @@ describe('TabsComponent', () => {
       { id: 'span', label: 'A span', body: 'This is a span' },
     ]).pipe(delay(200));
 
-    syncTab = { id: 'paragraph3', label: 'A static link', body: 'This is a static link' };
+    readonly syncTab = signal({ id: 'paragraph3', label: 'A static link', body: 'This is a static link' });
   }
 
   beforeEach(async () => {
@@ -66,13 +70,13 @@ describe('TabsComponent', () => {
     expect(tabs).toBeTruthy();
   });
 
-  it('should render async tabs', fakeAsync(async () => {
+  it('should render async tabs', async () => {
     const tabsElement: HTMLElement = fixture.debugElement.query(By.directive(TabsComponent)).nativeElement;
 
     let anchors = tabsElement.querySelectorAll<HTMLAnchorElement>('a.govuk-tabs__tab');
     expect(anchors.length).toEqual(2);
 
-    await fixture.whenStable();
+    await waitForAsyncTabs();
     fixture.detectChanges();
 
     anchors = tabsElement.querySelectorAll<HTMLAnchorElement>('a.govuk-tabs__tab');
@@ -86,7 +90,7 @@ describe('TabsComponent', () => {
 
     const anchor3 = tabsElement.querySelector<HTMLAnchorElement>('#tab_span');
     expect(anchor3.textContent).toContain('A span');
-  }));
+  });
 
   it('should set a clicked anchor as the active one', async () => {
     const tabsElement: HTMLElement = fixture.debugElement.query(By.directive(TabsComponent)).nativeElement;
@@ -94,7 +98,7 @@ describe('TabsComponent', () => {
 
     expect(anchors[0].parentElement.classList).toContain('govuk-tabs__list-item--selected');
 
-    await fixture.whenStable();
+    await waitForAsyncTabs();
     fixture.detectChanges();
 
     anchors = tabsElement.querySelectorAll<HTMLAnchorElement>('a.govuk-tabs__tab');
@@ -123,9 +127,9 @@ describe('TabsComponent', () => {
     expect(anchors[3].parentElement.classList).toContain('govuk-tabs__list-item--selected');
   });
 
-  it('should navigate with arrows', fakeAsync(async () => {
+  it('should navigate with arrows', async () => {
     const tabsElement: HTMLElement = fixture.debugElement.query(By.directive(TabsComponent)).nativeElement;
-    await fixture.whenStable();
+    await waitForAsyncTabs();
     fixture.detectChanges();
 
     const anchors = tabsElement.querySelectorAll<HTMLAnchorElement>('a.govuk-tabs__tab');
@@ -139,6 +143,7 @@ describe('TabsComponent', () => {
 
     anchors[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
     await fixture.whenStable();
+    fixture.detectChanges();
 
     expect(router.url).toEqual('/#link');
     expect(anchors[0]).not.toEqual(document.activeElement);
@@ -146,18 +151,19 @@ describe('TabsComponent', () => {
 
     anchors[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }));
     await fixture.whenStable();
+    fixture.detectChanges();
 
     expect(router.url).toEqual('/#paragraph');
     expect(anchors[0]).toEqual(document.activeElement);
     expect(anchors[1]).not.toEqual(document.activeElement);
-  }));
+  });
 
   it('should change the tab label', () => {
     const element: HTMLElement = fixture.nativeElement;
     const getAnchorTexts = () => Array.from(element.querySelectorAll('a')).map((anchor) => anchor.textContent.trim());
     expect(getAnchorTexts()).toContain('A static link');
 
-    hostComponent.syncTab.label = 'Another static link';
+    hostComponent.syncTab.set({ ...hostComponent.syncTab(), label: 'Another static link' });
 
     fixture.detectChanges();
 

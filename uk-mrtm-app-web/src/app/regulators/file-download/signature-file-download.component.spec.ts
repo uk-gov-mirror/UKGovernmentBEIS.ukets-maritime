@@ -8,17 +8,18 @@ import { RegulatorUsersService, TasksService, UsersService } from '@mrtm/api';
 import { ActivatedRouteStub, mockClass, testSchedulerFactory } from '@netz/common/testing';
 
 import { SignatureFileDownloadComponent } from '@regulators/file-download/signature-file-download.component';
+import { Mocked } from 'vitest';
 
 describe('SignatureFileDownloadComponent', () => {
   let component: SignatureFileDownloadComponent;
   let fixture: ComponentFixture<SignatureFileDownloadComponent>;
-  let regulatorUsersService: jest.Mocked<RegulatorUsersService>;
+  let regulatorUsersService: Mocked<RegulatorUsersService>;
 
   beforeEach(async () => {
-    Object.defineProperty(window, 'onfocus', { set: jest.fn() });
+    Object.defineProperty(window, 'onfocus', { set: vi.fn() });
     regulatorUsersService = mockClass(RegulatorUsersService);
     regulatorUsersService.generateGetRegulatorSignatureToken.mockReturnValue(
-      of({ token: 'abce', tokenExpirationMinutes: 1 }),
+      of({ token: 'abce', tokenExpirationMinutes: 1 }) as any,
     );
     const activatedRoute = new ActivatedRouteStub({ userId: 11 });
 
@@ -49,7 +50,7 @@ describe('SignatureFileDownloadComponent', () => {
   });
 
   it('should refresh the download link', async () => {
-    regulatorUsersService.generateGetRegulatorSignatureToken.mockClear().mockImplementation(() => {
+    (regulatorUsersService.generateGetRegulatorSignatureToken.mockClear() as any).mockImplementation(() => {
       let subscribes = 0;
 
       return defer(() => {

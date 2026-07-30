@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import uk.gov.mrtm.api.account.domain.AccountUpdatedRegistryEvent;
 import uk.gov.mrtm.api.account.domain.MrtmAccount;
+import uk.gov.mrtm.api.account.domain.dto.MrtmDocumentTemplateAccountData;
 import uk.gov.mrtm.api.account.service.MrtmAccountQueryService;
 import uk.gov.mrtm.api.common.config.RegistryConfig;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlan;
@@ -22,27 +23,36 @@ import uk.gov.mrtm.api.integration.registry.regulatornotice.domain.RegulatorNoti
 import uk.gov.mrtm.api.integration.registry.regulatornotice.request.MaritimeRegulatorNoticeEventListenerResolver;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateGenerationContextActionType;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateType;
+import uk.gov.mrtm.api.workflow.request.flow.common.domain.RequestGeneratedFileType;
+import uk.gov.mrtm.api.workflow.request.flow.common.service.MrtmDocumentTemplateAccountDataCollectFromAccountService;
+import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpIssuanceDetermination;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpIssuanceDeterminationType;
+import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceApplicationReviewRequestTaskPayload;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.submit.domain.EmpIssuanceRequestPayload;
 import uk.gov.mrtm.api.workflow.request.flow.registry.service.AccountUpdatedEventAddRequestActionService;
 import uk.gov.mrtm.api.workflow.request.flow.registry.service.RegulatorNoticeEventAddRequestActionService;
 import uk.gov.netz.api.common.exception.BusinessException;
 import uk.gov.netz.api.common.exception.ErrorCode;
+import uk.gov.netz.api.documenttemplate.domain.DocumentTemplateStage;
 import uk.gov.netz.api.documenttemplate.domain.templateparams.TemplateParams;
 import uk.gov.netz.api.documenttemplate.service.FileDocumentGenerateServiceDelegator;
 import uk.gov.netz.api.files.common.domain.dto.FileInfoDTO;
 import uk.gov.netz.api.files.documents.repository.FileDocumentRepository;
 import uk.gov.netz.api.userinfoapi.UserInfoDTO;
 import uk.gov.netz.api.workflow.request.core.domain.Request;
+import uk.gov.netz.api.workflow.request.core.domain.RequestTask;
 import uk.gov.netz.api.workflow.request.core.service.RequestService;
+import uk.gov.netz.api.workflow.request.core.service.RequestTaskService;
+import uk.gov.netz.api.workflow.request.flow.common.domain.DecisionNotification;
 import uk.gov.netz.api.workflow.request.flow.common.service.DecisionNotificationUsersService;
 import uk.gov.netz.api.workflow.request.flow.common.service.RequestAccountContactQueryService;
+import uk.gov.netz.api.workflow.request.flow.common.service.notification.DocumentTemplateGeneratorParamConstants;
 import uk.gov.netz.api.workflow.request.flow.common.service.notification.DocumentTemplateOfficialNoticeParamsProvider;
 import uk.gov.netz.api.workflow.request.flow.common.service.notification.DocumentTemplateParamsSourceData;
 import uk.gov.netz.api.workflow.request.flow.common.service.notification.OfficialNoticeSendService;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.Map;
 
 import static uk.gov.mrtm.api.integration.registry.common.NotifyRegistryUtils.REQUEST_LOG_FORMAT;
 import static uk.gov.mrtm.api.integration.registry.common.NotifyRegistryUtils.SERVICE_KEY;
@@ -69,6 +79,9 @@ public class EmpIssuanceOfficialNoticeService {
     private final MaritimeRegulatorNoticeEventListenerResolver registryNoticeEventListenerResolver;
     private final FileDocumentRepository fileDocumentRepository;
     private final RegulatorNoticeEventAddRequestActionService regulatorNoticeEventAddRequestActionService;
+    private final RequestTaskService requestTaskService;
+    private final MrtmDocumentTemplateAccountDataCollectFromEmpIssuanceService templateAccountDataCollectFromEmpIssuanceService;
+    private final MrtmDocumentTemplateAccountDataCollectFromAccountService templateAccountDataCollectFromAccountService;
 
     private static final String INTEGRATION_POINT_KEY = "Account Created";
 
@@ -104,44 +117,75 @@ public class EmpIssuanceOfficialNoticeService {
     }
 
     @Transactional
-    public CompletableFuture<FileInfoDTO> generateGrantedOfficialNotice(final String requestId) {
-        final Request request = requestService.findRequestById(requestId);
-        final EmpIssuanceRequestPayload requestPayload = (EmpIssuanceRequestPayload) request.getPayload();
-        final UserInfoDTO accountPrimaryContact = requestAccountContactQueryService.getRequestAccountPrimaryContact(request)
-                .orElseThrow(() -> new BusinessException(ErrorCode.ACCOUNT_CONTACT_TYPE_PRIMARY_CONTACT_NOT_FOUND));
-        final UserInfoDTO serviceContact = requestAccountContactQueryService.getRequestAccountServiceContact(request)
-                .orElseThrow(() -> new BusinessException(ErrorCode.ACCOUNT_CONTACT_TYPE_SERVICE_CONTACT_NOT_FOUND));
-        final List<String> ccRecipientsEmails = decisionNotificationUsersService.findUserEmails(requestPayload.getDecisionNotification());
+    public String generateOfficialNoticeAsyncConvert(Long requestTaskId, DocumentTemplateStage stage,
+                                                     DecisionNotification decisionNotification) {
+        final RequestTask requestTask = requestTaskService.findTaskById(requestTaskId);
+        final String response;
 
-        return generateOfficialNoticeAsync(request,
-                accountPrimaryContact,
-                serviceContact,
-                ccRecipientsEmails,
-                MrtmDocumentTemplateGenerationContextActionType.EMP_ISSUANCE_GRANTED,
-                MrtmDocumentTemplateType.EMP_ISSUANCE_GRANTED,
-                "emp_application_approved.pdf");
+        final EmpIssuanceApplicationReviewRequestTaskPayload requestTaskPayload = (EmpIssuanceApplicationReviewRequestTaskPayload) requestTask
+            .getPayload();
+        final EmpIssuanceDetermination determination = requestTaskPayload.getDetermination();
+
+        response = switch (determination.getType()) {
+            case APPROVED -> generateGrantedOfficialNotice(requestTask, stage, decisionNotification);
+            case DEEMED_WITHDRAWN -> generateDeemedWithdrawnOfficialNotice(requestTask, stage, decisionNotification);
+        };
+
+        return response;
     }
 
-    @Transactional
-    public void generateAndSaveDeemedWithdrawnOfficialNotice(final String requestId) {
-        final Request request = requestService.findRequestById(requestId);
-        final EmpIssuanceRequestPayload requestPayload = (EmpIssuanceRequestPayload) request.getPayload();
-
+    private String generateGrantedOfficialNotice(RequestTask requestTask, DocumentTemplateStage stage,
+                                                 DecisionNotification decisionNotification) {
+        final Request request = requestTask.getRequest();
         final UserInfoDTO accountPrimaryContact = requestAccountContactQueryService.getRequestAccountPrimaryContact(request)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ACCOUNT_CONTACT_TYPE_PRIMARY_CONTACT_NOT_FOUND));
         final UserInfoDTO serviceContact = requestAccountContactQueryService.getRequestAccountServiceContact(request)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ACCOUNT_CONTACT_TYPE_SERVICE_CONTACT_NOT_FOUND));
-        final List<String> ccRecipientsEmails = decisionNotificationUsersService.findUserEmails(requestPayload.getDecisionNotification());
+        final List<String> ccRecipientsEmails = decisionNotificationUsersService.findUserEmails(decisionNotification);
 
-        final FileInfoDTO officialNotice = this.generateOfficialNotice(request,
-                accountPrimaryContact,
-                serviceContact,
-                ccRecipientsEmails,
-                MrtmDocumentTemplateGenerationContextActionType.EMP_ISSUANCE_DEEMED_WITHDRAWN,
-                MrtmDocumentTemplateType.EMP_ISSUANCE_DEEMED_WITHDRAWN,
-                "emp_application_withdrawn.pdf");
+        final MrtmDocumentTemplateAccountData accountData = templateAccountDataCollectFromEmpIssuanceService.collect(requestTask);
 
-        requestPayload.setOfficialNotice(officialNotice);
+        final TemplateParams templateParams = buildTemplateParams(request, requestTask, accountPrimaryContact, serviceContact,
+            ccRecipientsEmails, MrtmDocumentTemplateGenerationContextActionType.EMP_ISSUANCE_GRANTED,
+            accountData,
+            decisionNotification.getSignatory());
+
+        final Map<String, String> documentMetadata = Map.of(
+            DocumentTemplateGeneratorParamConstants.REQUEST_TASK_ID, String.valueOf(requestTask.getId()),
+            DocumentTemplateGeneratorParamConstants.FILE_TYPE, RequestGeneratedFileType.OFFICIAL_NOTICE.name(),
+            DocumentTemplateGeneratorParamConstants.FILE_NAME, resolveOfficialNoticeFileName(stage, "emp_application_approved.pdf"),
+            DocumentTemplateGeneratorParamConstants.DOCUMENT_TEMPLATE_STAGE, stage.name()
+        );
+
+        return documentFileGeneratorService.generateDocumentAsyncConvert(MrtmDocumentTemplateType.EMP_ISSUANCE_GRANTED,
+            templateParams, documentMetadata);
+    }
+
+    private String generateDeemedWithdrawnOfficialNotice(RequestTask requestTask, DocumentTemplateStage stage,
+                                                         DecisionNotification decisionNotification) {
+        final Request request = requestTask.getRequest();
+        final UserInfoDTO accountPrimaryContact = requestAccountContactQueryService.getRequestAccountPrimaryContact(request)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ACCOUNT_CONTACT_TYPE_PRIMARY_CONTACT_NOT_FOUND));
+        final UserInfoDTO serviceContact = requestAccountContactQueryService.getRequestAccountServiceContact(request)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ACCOUNT_CONTACT_TYPE_SERVICE_CONTACT_NOT_FOUND));
+        final List<String> ccRecipientsEmails = decisionNotificationUsersService.findUserEmails(decisionNotification);
+
+        final MrtmDocumentTemplateAccountData accountData = templateAccountDataCollectFromAccountService.collect(request.getAccountId());
+
+        final TemplateParams templateParams = buildTemplateParams(request, requestTask, accountPrimaryContact, serviceContact,
+            ccRecipientsEmails, MrtmDocumentTemplateGenerationContextActionType.EMP_ISSUANCE_DEEMED_WITHDRAWN,
+            accountData,
+            decisionNotification.getSignatory());
+
+        final Map<String, String> documentMetadata = Map.of(
+            DocumentTemplateGeneratorParamConstants.REQUEST_TASK_ID, String.valueOf(requestTask.getId()),
+            DocumentTemplateGeneratorParamConstants.FILE_TYPE, RequestGeneratedFileType.OFFICIAL_NOTICE.name(),
+            DocumentTemplateGeneratorParamConstants.FILE_NAME, resolveOfficialNoticeFileName(stage, "emp_application_withdrawn.pdf"),
+            DocumentTemplateGeneratorParamConstants.DOCUMENT_TEMPLATE_STAGE, stage.name()
+        );
+
+        return documentFileGeneratorService.generateDocumentAsyncConvert(MrtmDocumentTemplateType.EMP_ISSUANCE_DEEMED_WITHDRAWN,
+            templateParams, documentMetadata);
     }
 
     private void sendAccountCreatedEventToRegistry(Request request, EmissionsMonitoringPlan emissionsMonitoringPlan, String regulatorReviewer) {
@@ -188,48 +232,30 @@ public class EmpIssuanceOfficialNoticeService {
             null);
     }
 
-    private CompletableFuture<FileInfoDTO> generateOfficialNoticeAsync(final Request request,
-                                                                       final UserInfoDTO accountPrimaryContact,
-                                                                       final UserInfoDTO serviceContact,
-                                                                       final List<String> ccRecipientsEmails,
-                                                                       final String type,
-                                                                       final String documentTemplateType,
-                                                                       final String fileNameToGenerate) {
-        final EmpIssuanceRequestPayload requestPayload = (EmpIssuanceRequestPayload) request.getPayload();
-
-        final TemplateParams templateParams = constructTemplateParams(request, accountPrimaryContact,
-                ccRecipientsEmails, type, requestPayload, serviceContact);
-        return documentFileGeneratorService.generateAndSaveFileDocumentAsync(documentTemplateType, templateParams,
-                fileNameToGenerate);
-    }
-
-
-    private TemplateParams constructTemplateParams(final Request request, final UserInfoDTO accountPrimaryContact,
-                                                   final List<String> ccRecipientsEmails, final String type,
-                                                   final EmpIssuanceRequestPayload requestPayload, final UserInfoDTO serviceContact) {
-        return documentTemplateOfficialNoticeParamsProvider
-                .constructTemplateParams(DocumentTemplateParamsSourceData.builder()
-                        .contextActionType(type)
-                        .request(request)
-                        .signatory(requestPayload.getDecisionNotification().getSignatory())
-                        .accountPrimaryContact(accountPrimaryContact)
-                        .toRecipientEmail(serviceContact.getEmail())
-                        .ccRecipientsEmails(ccRecipientsEmails).build());
-    }
-
-    private FileInfoDTO generateOfficialNotice(final Request request,
+    //TODO reduce number of arguments
+    private TemplateParams buildTemplateParams(final Request request,
+                                               final RequestTask requestTask,
                                                final UserInfoDTO accountPrimaryContact,
                                                final UserInfoDTO serviceContact,
                                                final List<String> ccRecipientsEmails,
                                                final String type,
-                                               final String documentTemplateType,
-                                               final String fileNameToGenerate) {
+                                               final MrtmDocumentTemplateAccountData accountData,
+                                               String signatory) {
+        return documentTemplateOfficialNoticeParamsProvider
+            .constructTemplateParams(DocumentTemplateParamsSourceData.builder()
+                .contextActionType(type)
+                .request(request)
+                .requestTask(requestTask)
+                .signatory(signatory)
+                .accountPrimaryContact(accountPrimaryContact)
+                .toRecipientEmail(serviceContact.getEmail())
+                .ccRecipientsEmails(ccRecipientsEmails)
+                .accountData(accountData)
+                .build());
+    }
 
-        final EmpIssuanceRequestPayload requestPayload = (EmpIssuanceRequestPayload) request.getPayload();
-
-        final TemplateParams templateParams = constructTemplateParams(request, accountPrimaryContact,
-                ccRecipientsEmails, type, requestPayload, serviceContact);
-        return documentFileGeneratorService.generateAndSaveFileDocument(documentTemplateType, templateParams, fileNameToGenerate);
+    private String resolveOfficialNoticeFileName(DocumentTemplateStage stage, String finalFileName) {
+        return stage == DocumentTemplateStage.PREVIEW ? "Letter_preview.pdf" : finalFileName;
     }
 
 }

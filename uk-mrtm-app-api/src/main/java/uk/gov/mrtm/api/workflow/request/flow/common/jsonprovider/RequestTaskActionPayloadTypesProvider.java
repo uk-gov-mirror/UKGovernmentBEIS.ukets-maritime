@@ -12,7 +12,6 @@ import uk.gov.mrtm.api.workflow.request.flow.aer.verify.domain.AerSaveApplicatio
 import uk.gov.mrtm.api.workflow.request.flow.aer.verify.domain.AerVerificationImportThirdPartyDataRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.aer.verify.domain.AerVerificationReturnToOperatorRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.doe.submit.domain.DoeSaveApplicationRequestTaskActionPayload;
-import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceSaveApplicationAmendRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceSaveApplicationReviewRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceSaveReviewDeterminationRequestTaskActionPayload;
@@ -40,6 +39,9 @@ import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceI
 import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceNoticeOfIntentSaveApplicationRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceNotifyOperatorRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceSaveApplicationRequestTaskActionPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.review.domain.SiteVisitSaveApplicationAmendRequestTaskActionPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.review.domain.SiteVisitSaveReviewGroupDecisionRequestTaskActionPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.submit.domain.SiteVisitApplicationSaveRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirSaveApplicationRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirSaveRespondToRegulatorCommentsRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirSaveReviewRequestTaskActionPayload;
@@ -114,6 +116,12 @@ import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequest
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskActionPayloadTypes.NON_COMPLIANCE_NOTICE_OF_INTENT_SAVE_APPLICATION_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskActionPayloadTypes.NON_COMPLIANCE_NOTICE_OF_INTENT_SUBMIT_PEER_REVIEW_DECISION_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskActionPayloadTypes.NON_COMPLIANCE_SAVE_APPLICATION_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskActionPayloadTypes.SITE_VISIT_NOTIFY_OPERATOR_FOR_DECISION_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskActionPayloadTypes.SITE_VISIT_REQUEST_PEER_REVIEW_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskActionPayloadTypes.SITE_VISIT_REVIEW_SUBMIT_PEER_REVIEW_DECISION_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskActionPayloadTypes.SITE_VISIT_SAVE_APPLICATION_AMEND_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskActionPayloadTypes.SITE_VISIT_SAVE_APPLICATION_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskActionPayloadTypes.SITE_VISIT_SAVE_REVIEW_GROUP_DECISION_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskActionPayloadTypes.VIR_NOTIFY_OPERATOR_FOR_DECISION_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskActionPayloadTypes.VIR_SAVE_APPLICATION_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskActionPayloadTypes.VIR_SAVE_RESPOND_TO_REGULATOR_COMMENTS_PAYLOAD;
@@ -134,7 +142,7 @@ public class RequestTaskActionPayloadTypesProvider implements JsonSubTypesProvid
                 new NamedType(EmpIssuanceSaveApplicationReviewRequestTaskActionPayload.class, EMP_ISSUANCE_SAVE_APPLICATION_REVIEW_PAYLOAD),
                 new NamedType(EmpIssuanceSaveReviewGroupDecisionRequestTaskActionPayload.class, EMP_ISSUANCE_SAVE_REVIEW_GROUP_DECISION_PAYLOAD),
                 new NamedType(EmpIssuanceSaveReviewDeterminationRequestTaskActionPayload.class, EMP_ISSUANCE_SAVE_REVIEW_DETERMINATION_PAYLOAD),
-                new NamedType(EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload.class, EMP_ISSUANCE_NOTIFY_OPERATOR_FOR_DECISION_PAYLOAD),
+                new NamedType(NotifyOperatorForDecisionRequestTaskActionPayload.class, EMP_ISSUANCE_NOTIFY_OPERATOR_FOR_DECISION_PAYLOAD),
                 new NamedType(PeerReviewDecisionRequestTaskActionPayload.class, EMP_ISSUANCE_REVIEW_SUBMIT_PEER_REVIEW_DECISION_PAYLOAD),
                 new NamedType(PeerReviewRequestTaskActionPayload.class, EMP_ISSUANCE_REQUEST_PEER_REVIEW_PAYLOAD),
                 new NamedType(EmpIssuanceSaveApplicationAmendRequestTaskActionPayload.class, EMP_ISSUANCE_SAVE_APPLICATION_AMEND_PAYLOAD),
@@ -207,7 +215,15 @@ public class RequestTaskActionPayloadTypesProvider implements JsonSubTypesProvid
                 new NamedType(PeerReviewDecisionRequestTaskActionPayload.class, NON_COMPLIANCE_CIVIL_PENALTY_SUBMIT_PEER_REVIEW_DECISION_PAYLOAD),
                 new NamedType(NonComplianceFinalDeterminationSaveApplicationRequestTaskActionPayload.class, NON_COMPLIANCE_FINAL_DETERMINATION_SAVE_APPLICATION_PAYLOAD),
                 new NamedType(NonComplianceCloseApplicationRequestTaskActionPayload.class, NON_COMPLIANCE_CLOSE_APPLICATION_PAYLOAD),
-                new NamedType(NonComplianceAmendDetailsRequestTaskActionPayload.class, NON_COMPLIANCE_AMEND_DETAILS_PAYLOAD)
+                new NamedType(NonComplianceAmendDetailsRequestTaskActionPayload.class, NON_COMPLIANCE_AMEND_DETAILS_PAYLOAD),
+
+                // SITE_VISIT
+                new NamedType(SiteVisitApplicationSaveRequestTaskActionPayload.class, SITE_VISIT_SAVE_APPLICATION_PAYLOAD),
+                new NamedType(SiteVisitSaveReviewGroupDecisionRequestTaskActionPayload.class, SITE_VISIT_SAVE_REVIEW_GROUP_DECISION_PAYLOAD),
+                new NamedType(PeerReviewRequestTaskActionPayload.class, SITE_VISIT_REQUEST_PEER_REVIEW_PAYLOAD),
+                new NamedType(PeerReviewDecisionRequestTaskActionPayload.class, SITE_VISIT_REVIEW_SUBMIT_PEER_REVIEW_DECISION_PAYLOAD),
+                new NamedType(SiteVisitSaveApplicationAmendRequestTaskActionPayload.class, SITE_VISIT_SAVE_APPLICATION_AMEND_PAYLOAD),
+                new NamedType(NotifyOperatorForDecisionRequestTaskActionPayload.class, SITE_VISIT_NOTIFY_OPERATOR_FOR_DECISION_PAYLOAD)
         );
     }
 

@@ -1,5 +1,5 @@
 import { provideHttpClient } from '@angular/common/http';
-import { ComponentFixture, fakeAsync, inject, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 
 import { of } from 'rxjs';
@@ -44,7 +44,7 @@ describe('ChoosePasswordComponent', () => {
   }
 
   const operatorUsersRegistrationService: MockType<OperatorUsersRegistrationService> = {
-    acceptAuthorityAndSetCredentialsToUser: jest.fn().mockReturnValue(of(null)),
+    acceptAuthorityAndSetCredentialsToUser: vi.fn().mockReturnValue(of(null)),
   };
 
   beforeEach(async () => {
@@ -62,7 +62,7 @@ describe('ChoosePasswordComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ChoosePasswordComponent);
     component = fixture.debugElement.componentInstance;
-    component.form.controls['password'].clearAsyncValidators();
+    component['form'].controls['password'].clearAsyncValidators();
     page = new Page(fixture);
     fixture.detectChanges();
   });
@@ -71,22 +71,18 @@ describe('ChoosePasswordComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should fill form from store', inject(
-    [UserRegistrationStore],
-    fakeAsync((store: UserRegistrationStore) => {
-      store.setState({ password: 'password', email: 'test@netz.uk' });
+  it('should fill form from store', inject([UserRegistrationStore], (store: UserRegistrationStore) => {
+    store.setState({ password: 'password', email: 'test@netz.uk' });
 
-      tick();
-      fixture.detectChanges();
+    fixture.detectChanges();
 
-      expect(page.emailValue).toBe('test@netz.uk');
-      expect(page.passwordValue).toBe('password');
-      expect(page.repeatedPasswordValue).toBe('password');
-    }),
-  ));
+    expect(page.emailValue).toBe('test@netz.uk');
+    expect(page.passwordValue).toBe('password');
+    expect(page.repeatedPasswordValue).toBe('password');
+  }));
 
   it('should submit only if form valid', inject([Router], (router: Router) => {
-    const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation();
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     page.passwordValue = '';
     page.repeatedPasswordValue = '';
@@ -109,7 +105,7 @@ describe('ChoosePasswordComponent', () => {
   it('should navigate to summary when creating an operator from an emitter', inject(
     [Router, UserRegistrationStore],
     (router: Router, store: UserRegistrationStore) => {
-      const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation();
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
       const token = 'thisisatoken';
       const password = 'ThisIsAStrongP@ssw0rd';
 

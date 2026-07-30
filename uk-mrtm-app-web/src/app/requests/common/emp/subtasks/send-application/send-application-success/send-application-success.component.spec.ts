@@ -16,7 +16,7 @@ describe('SendApplicationSuccessComponent', () => {
 
   const activatedRouteStub = new ActivatedRouteStub();
   const taskServiceMock: MockType<TaskService<EmpTaskPayload>> = {
-    submit: jest.fn().mockReturnValue(of({})),
+    submit: vi.fn().mockReturnValue(of({})),
   };
 
   beforeEach(async () => {

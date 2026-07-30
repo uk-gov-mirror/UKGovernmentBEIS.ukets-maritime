@@ -93,7 +93,7 @@ describe('MultipleFileInputComponent', () => {
     control.setValidators(FileValidators.multipleCompose(FileValidators.maxFileSize(1)));
     control.setAsyncValidators(TestBed.inject(FileUploadService).uploadMany(() => uploadSubject));
     const file = new File(['test content'], 'Big file');
-    jest.spyOn(file, 'size', 'get').mockReturnValue(1024 * 1024 * 1024);
+    vi.spyOn(file, 'size', 'get').mockReturnValue(1024 * 1024 * 1024);
     page.files = [file];
     fixture.detectChanges();
 

@@ -12,6 +12,7 @@ const mockAddress: AddressDTO = {
 export const mockedVerificationBodyCreationDTO: VerificationBodyCreationDTO = {
   name: 'mockedName',
   accreditationReferenceNumber: 'mockedAccreditationReferenceNumber',
+  accreditationBodyName: 'Accreditation body',
   emissionTradingSchemes: [EmissionTradingSchemesEnum.UKMRTM],
   address: mockAddress,
   adminVerifierUserInvitation: {
@@ -26,6 +27,7 @@ export const mockedVerificationBodies: VerificationBodyDTO[] = [
   {
     id: 1,
     name: 'mockedName',
+    accreditationBodyName: 'Accreditation body',
     accreditationReferenceNumber: 'mockedAccreditationReferenceNumber',
     emissionTradingSchemes: [EmissionTradingSchemesEnum.UKMRTM],
     address: mockAddress,

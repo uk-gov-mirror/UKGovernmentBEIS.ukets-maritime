@@ -1,5 +1,5 @@
 import { ChangeDetectorRef } from '@angular/core';
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { EmptyError, of, throwError } from 'rxjs';
 
@@ -12,7 +12,7 @@ import { CountryPipe } from '@shared/pipes';
 describe('CountryPipe', () => {
   let pipe: CountryPipe;
   const changeDetectorSpy = {
-    markForCheck: jest.fn(),
+    markForCheck: vi.fn(),
   };
 
   const COUNTRIES: Record<string, Country> = {
@@ -40,7 +40,6 @@ describe('CountryPipe', () => {
 
   function transformCode(code: string): string {
     pipe.transform(code);
-    tick();
     return pipe.transform(code);
   }
 
@@ -62,16 +61,16 @@ describe('CountryPipe', () => {
     expect(pipe).toBeTruthy();
   });
 
-  it('should return the country name', fakeAsync(() => {
+  it('should return the country name', () => {
     expect(transformCode('GB')).toEqual('United Kingdom');
-  }));
+  });
 
-  it('should return invalid country if country is not found', fakeAsync(() => {
+  it('should return invalid country if country is not found', () => {
     expect(transformCode('GO')).toEqual('Invalid country');
-  }));
+  });
 
-  it('should return empty string if not EmptyError', fakeAsync(() => {
+  it('should return empty string if not EmptyError', () => {
     countryService.getCountry.mockImplementation(() => throwError(() => new Error()));
     expect(transformCode('GO')).toEqual('');
-  }));
+  });
 });

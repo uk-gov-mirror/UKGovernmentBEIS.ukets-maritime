@@ -11,13 +11,13 @@ import { empVariationReviewQuery } from '@requests/common/emp/+state';
   imports: [ButtonDirective, RouterLink],
   standalone: true,
   template: `
-    @if (isEditable) {
+    @if (isEditable()) {
       <div class="govuk-button-group">
-        @if (isOverallDecisionCompleted) {
+        @if (isOverallDecisionCompleted()) {
           <a govukButton [routerLink]="['emp-variation-review', 'notify-operator']">Notify operator of decision</a>
           <a govukSecondaryButton [routerLink]="['emp-variation-review', 'peer-review']">Send for peer review</a>
         }
-        @if (hasOperatorAmendsNeeded) {
+        @if (hasOperatorAmendsNeeded()) {
           <a govukButton [routerLink]="['emp-variation-review', 'return-for-amends']">Return for amends</a>
         }
       </div>
@@ -28,7 +28,7 @@ import { empVariationReviewQuery } from '@requests/common/emp/+state';
 export class EmpVariationReviewActionButtonsComponent {
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
 
-  isEditable = this.store.select(requestTaskQuery.selectIsEditable)();
-  hasOperatorAmendsNeeded = this.store.select(empVariationReviewQuery.selectAnySubtaskNeedsAmend)();
-  isOverallDecisionCompleted = this.store.select(empVariationReviewQuery.selectIsOverallDecisionCompleted)();
+  readonly isEditable = this.store.select(requestTaskQuery.selectIsEditable);
+  readonly hasOperatorAmendsNeeded = this.store.select(empVariationReviewQuery.selectAnySubtaskNeedsAmend);
+  readonly isOverallDecisionCompleted = this.store.select(empVariationReviewQuery.selectIsOverallDecisionCompleted);
 }

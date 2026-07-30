@@ -32,7 +32,7 @@
           (click)="rejectCookies()">
           Reject analytics cookies
         </button>
-        <a class="govuk-link" routerLink="." (click)="goToSetPreferences()">View cookies</a>
+        <a class="govuk-link" href="/cookies/">View cookies</a>
       </div>
     </div>
   </div>
@@ -50,7 +50,7 @@
                 You’ve accepted analytics cookies.
               }
               You can
-              <a class="govuk-link" [routerLink]="[]" (click)="goToSetPreferences()">change your cookie settings</a>
+              <a class="govuk-link" href="/cookies/">change your cookie settings</a>
               at any time.
             </p>
           </div>

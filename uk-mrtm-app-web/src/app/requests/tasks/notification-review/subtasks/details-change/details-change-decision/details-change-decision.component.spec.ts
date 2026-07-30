@@ -29,9 +29,9 @@ describe('DetailsChangeDecisionComponent', () => {
 
   const route = new ActivatedRouteStub();
   const taskService: MockType<ReviewService> = {
-    saveSubtask: jest.fn().mockReturnValue(of({})),
+    saveSubtask: vi.fn().mockReturnValue(of({})),
   };
-  const taskServiceSpy = jest.spyOn(taskService, 'saveSubtask');
+  const taskServiceSpy = vi.spyOn(taskService, 'saveSubtask');
 
   class Page extends BasePage<DetailsChangeDecisionComponent> {
     get typeRadios() {
@@ -52,7 +52,7 @@ describe('DetailsChangeDecisionComponent', () => {
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(async () => {

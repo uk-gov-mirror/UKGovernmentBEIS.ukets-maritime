@@ -27,9 +27,9 @@ describe('ReturnForAmendsConfirmComponent', () => {
 
   const route = new ActivatedRouteStub();
   const taskService: MockType<FollowUpReviewService> = {
-    submit: jest.fn().mockReturnValue(of({})),
+    submit: vi.fn().mockReturnValue(of({})),
   };
-  const taskServiceSpy = jest.spyOn(taskService, 'submit');
+  const taskServiceSpy = vi.spyOn(taskService, 'submit');
 
   class Page extends BasePage<ReturnForAmendsConfirmComponent> {
     get confirmButton(): HTMLButtonElement {
@@ -42,7 +42,7 @@ describe('ReturnForAmendsConfirmComponent', () => {
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(async () => {
@@ -68,7 +68,7 @@ describe('ReturnForAmendsConfirmComponent', () => {
   });
 
   it(`should edit and submit a valid form`, async () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     page.confirmButton.click();
     fixture.detectChanges();

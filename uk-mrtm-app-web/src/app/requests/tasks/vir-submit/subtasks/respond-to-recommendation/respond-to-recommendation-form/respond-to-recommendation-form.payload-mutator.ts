@@ -35,7 +35,7 @@ export class RespondToRecommendationFormPayloadMutator extends PayloadMutator {
         } as OperatorImprovementResponse;
 
         // Reset next 2 steps when there is a change in isAddressed
-        if (currentPayload.operatorImprovementResponses[key].isAddressed !== formData.isAddressed) {
+        if (currentPayload.operatorImprovementResponses[key]?.isAddressed !== formData.isAddressed) {
           delete payload.operatorImprovementResponses[key].uploadEvidence;
           delete payload.operatorImprovementResponses[key].files;
         }

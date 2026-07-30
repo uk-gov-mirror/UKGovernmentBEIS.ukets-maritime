@@ -11,10 +11,7 @@ import {
 import { DATA_SUPPLIERS_ROUTE_PREFIX } from '@data-suppliers/data-suppliers.constants';
 import { canActivateDataSuppliers } from '@data-suppliers/data-suppliers.guards';
 import { GUIDANCE_ROUTE_PREFIX } from '@guidance/guidance.constants';
-import { LandingPageComponent } from '@landing-page/landing-page.component';
 import { landingPageGuard } from '@landing-page/landing-page.guard';
-import { DashboardPageComponent } from '@shared/dashboard';
-import { TimedOutComponent } from '@timeout/timed-out';
 
 export const APP_ROUTES: Routes = [
   {
@@ -22,7 +19,7 @@ export const APP_ROUTES: Routes = [
     title: 'Maritime',
     data: { breadcrumb: 'Home' },
     canActivate: [landingPageGuard],
-    component: LandingPageComponent,
+    loadComponent: () => import('@landing-page/landing-page.component').then((c) => c.LandingPageComponent),
   },
   {
     path: '',
@@ -81,7 +78,7 @@ export const APP_ROUTES: Routes = [
     path: 'timed-out',
     title: 'Session Timeout',
     canActivate: [NonAuthGuard],
-    component: TimedOutComponent,
+    loadComponent: () => import('@timeout/timed-out').then((c) => c.TimedOutComponent),
   },
   {
     path: 'redirect-to-sign-in',
@@ -96,7 +93,7 @@ export const APP_ROUTES: Routes = [
       {
         path: 'dashboard',
         title: 'Tasks',
-        component: DashboardPageComponent,
+        loadComponent: () => import('@shared/dashboard').then((c) => c.DashboardPageComponent),
       },
       {
         path: 'user',

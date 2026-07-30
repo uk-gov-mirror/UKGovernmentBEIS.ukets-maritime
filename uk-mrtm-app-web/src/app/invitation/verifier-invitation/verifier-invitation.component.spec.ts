@@ -2,7 +2,7 @@ import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { VerifierUsersRegistrationService } from '@mrtm/api';
 
@@ -10,6 +10,7 @@ import { ErrorCodes } from '@netz/common/error';
 import { ActivatedRouteStub, BasePage, mockClass } from '@netz/common/testing';
 
 import { VerifierInvitationComponent } from '@invitation/verifier-invitation/verifier-invitation.component';
+import { Mocked } from 'vitest';
 
 describe('VerifierInvitationComponent', () => {
   let component: VerifierInvitationComponent;
@@ -17,7 +18,7 @@ describe('VerifierInvitationComponent', () => {
   let page: Page;
   let router: Router;
   let route: ActivatedRoute;
-  let verifierUsersRegistrationService: jest.Mocked<VerifierUsersRegistrationService>;
+  let verifierUsersRegistrationService: Mocked<VerifierUsersRegistrationService>;
 
   class Page extends BasePage<VerifierInvitationComponent> {
     get emailValue() {
@@ -64,7 +65,7 @@ describe('VerifierInvitationComponent', () => {
     page = new Page(fixture);
     router = TestBed.inject(Router);
     route = TestBed.inject(ActivatedRoute);
-    fixture.componentInstance.form.controls['password'].clearAsyncValidators();
+    fixture.componentInstance['form'].controls['password'].clearAsyncValidators();
     fixture.detectChanges();
   });
 
@@ -73,7 +74,7 @@ describe('VerifierInvitationComponent', () => {
   });
 
   it('should populate the form with email information', () => {
-    expect(component.form.get('email').value).toEqual('user@netz.uk');
+    expect(component['form'].get('email').value).toEqual('user@netz.uk');
     expect(page.emailValue).toEqual('user@netz.uk');
   });
 
@@ -81,10 +82,10 @@ describe('VerifierInvitationComponent', () => {
     verifierUsersRegistrationService.acceptAuthorityAndActivateVerifierUserFromInvite.mockReturnValue(
       throwError(() => new HttpErrorResponse({ error: { code: ErrorCodes.EMAIL1001 }, status: 400 })),
     );
-    const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation();
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
-    component.form.get('password').setValue('ThisIsAStrongP@ssw0rd');
-    component.form.get('validatePassword').setValue('ThisIsAStrongP@ssw0rd');
+    component['form'].get('password').setValue('ThisIsAStrongP@ssw0rd');
+    component['form'].get('validatePassword').setValue('ThisIsAStrongP@ssw0rd');
     page.submitButton.click();
     fixture.detectChanges();
 
@@ -98,7 +99,7 @@ describe('VerifierInvitationComponent', () => {
       throwError(() => new HttpErrorResponse({ error: { code: ErrorCodes.TOKEN1001 }, status: 400 })),
     );
 
-    component.form.get('password').setValue('ThisIsAStrongP@ssw0rd');
+    component['form'].get('password').setValue('ThisIsAStrongP@ssw0rd');
     page.submitButton.click();
     fixture.detectChanges();
 
@@ -127,6 +128,7 @@ describe('VerifierInvitationComponent', () => {
     page.repeatedPasswordValue = 'ThisIsAStrongP@ssw0rd';
     fixture.detectChanges();
 
+    verifierUsersRegistrationService.acceptAuthorityAndActivateVerifierUserFromInvite.mockReturnValue(of(undefined));
     page.submitButton.click();
     fixture.detectChanges();
     expect(verifierUsersRegistrationService.acceptAuthorityAndActivateVerifierUserFromInvite).toHaveBeenCalledTimes(1);

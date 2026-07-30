@@ -55,7 +55,7 @@ describe('RequestNotAllowedComponent', () => {
   });
 
   it('should navigate to related task when click on button', () => {
-    const routerSpy = jest.spyOn(router, 'navigate');
+    const routerSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     page.standardButton.click();
 

@@ -35,7 +35,7 @@ describe('PeerReviewDecisionComponent', () => {
   });
 
   it('should not proceed to summary if form is empty', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     fixture.debugElement.query(By.css('button[type=submit]')).nativeElement.click();
     fixture.detectChanges();
 
@@ -53,7 +53,7 @@ describe('PeerReviewDecisionComponent', () => {
   });
 
   it('should proceed to summary if form filled correctly', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     component.form.setValue({
       accepted: true,
       notes: 'test notes',

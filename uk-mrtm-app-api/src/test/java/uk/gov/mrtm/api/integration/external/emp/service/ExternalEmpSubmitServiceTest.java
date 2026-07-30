@@ -2,6 +2,7 @@ package uk.gov.mrtm.api.integration.external.emp.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -29,6 +30,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -76,15 +78,15 @@ class ExternalEmpSubmitServiceTest {
             .build();
 
         when(mapper.toStagingEmissionsMonitoringPlan(external)).thenReturn(staging);
-        when(mrtmAccountRepository.findByImoNumber(companyImoNumber)).thenReturn(Optional.ofNullable(account));
+        when(mrtmAccountRepository.findByImoNumberForUpdate(companyImoNumber)).thenReturn(Optional.ofNullable(account));
         when(thirdPartyDataProviderRepository.findById(thirdPartyDataProviderId)).thenReturn(Optional.ofNullable(thirdPartyDataProvider));
         when(stagingEmpRepository.findByAccountId(accountId)).thenReturn(Optional.empty());
         when(dateService.getLocalDateTime()).thenReturn(now);
 
         externalEmpSubmitService.submitEmissionsMonitoringPlanData(external, companyImoNumber, appUser);
+        verify(mrtmAccountRepository).findByImoNumberForUpdate(companyImoNumber);
         verify(mapper).toStagingEmissionsMonitoringPlan(external);
         verify(validator).validate(staging, companyImoNumber);
-        verify(mrtmAccountRepository).findByImoNumber(companyImoNumber);
         verify(stagingEmpRepository).findByAccountId(accountId);
         verify(dateService).getLocalDateTime();
         verify(thirdPartyDataProviderRepository).findById(thirdPartyDataProviderId);
@@ -125,15 +127,15 @@ class ExternalEmpSubmitServiceTest {
             .build();
 
         when(mapper.toStagingEmissionsMonitoringPlan(external)).thenReturn(staging);
-        when(mrtmAccountRepository.findByImoNumber(companyImoNumber)).thenReturn(Optional.ofNullable(account));
+        when(mrtmAccountRepository.findByImoNumberForUpdate(companyImoNumber)).thenReturn(Optional.ofNullable(account));
         when(thirdPartyDataProviderRepository.findById(thirdPartyDataProviderId)).thenReturn(Optional.ofNullable(thirdPartyDataProvider));
         when(stagingEmpRepository.findByAccountId(accountId)).thenReturn(Optional.of(stagingEmpPlanEntity));
         when(dateService.getLocalDateTime()).thenReturn(now);
 
         externalEmpSubmitService.submitEmissionsMonitoringPlanData(external, companyImoNumber, appUser);
+        verify(mrtmAccountRepository).findByImoNumberForUpdate(companyImoNumber);
         verify(mapper).toStagingEmissionsMonitoringPlan(external);
         verify(validator).validate(staging, companyImoNumber);
-        verify(mrtmAccountRepository).findByImoNumber(companyImoNumber);
         verify(stagingEmpRepository).findByAccountId(accountId);
         verify(thirdPartyDataProviderRepository).findById(thirdPartyDataProviderId);
         verify(dateService).getLocalDateTime();
@@ -141,5 +143,33 @@ class ExternalEmpSubmitServiceTest {
 
         verifyNoMoreInteractions(mapper, validator, mrtmAccountRepository,
             stagingEmpRepository, dateService, thirdPartyDataProviderRepository);
+    }
+
+    @Test
+    void submitEmissionsMonitoringPlanData_acquiresAccountWriteLockBeforeStagingLookup() {
+        ExternalEmissionsMonitoringPlan external = mock(ExternalEmissionsMonitoringPlan.class);
+        String companyImoNumber = "1234567";
+        long thirdPartyDataProviderId = 1L;
+        AppUser appUser = AppUser.builder()
+            .authorities(List.of(AppAuthority.builder().thirdPartyDataProviderId(thirdPartyDataProviderId).build()))
+            .build();
+        ThirdPartyDataProvider thirdPartyDataProvider = ThirdPartyDataProvider.builder().name("provider name").build();
+        Long accountId = 1234L;
+        LocalDateTime now = LocalDateTime.now();
+        MrtmAccount account = MrtmAccount.builder().id(accountId).build();
+        StagingEmissionsMonitoringPlan staging = mock(StagingEmissionsMonitoringPlan.class);
+
+        when(mrtmAccountRepository.findByImoNumberForUpdate(companyImoNumber)).thenReturn(Optional.of(account));
+        when(mapper.toStagingEmissionsMonitoringPlan(external)).thenReturn(staging);
+        when(thirdPartyDataProviderRepository.findById(thirdPartyDataProviderId)).thenReturn(Optional.of(thirdPartyDataProvider));
+        when(stagingEmpRepository.findByAccountId(accountId)).thenReturn(Optional.empty());
+        when(dateService.getLocalDateTime()).thenReturn(now);
+
+        externalEmpSubmitService.submitEmissionsMonitoringPlanData(external, companyImoNumber, appUser);
+
+        InOrder inOrder = inOrder(mrtmAccountRepository, validator, stagingEmpRepository);
+        inOrder.verify(mrtmAccountRepository).findByImoNumberForUpdate(companyImoNumber);
+        inOrder.verify(validator).validate(staging, companyImoNumber);
+        inOrder.verify(stagingEmpRepository).findByAccountId(accountId);
     }
 }

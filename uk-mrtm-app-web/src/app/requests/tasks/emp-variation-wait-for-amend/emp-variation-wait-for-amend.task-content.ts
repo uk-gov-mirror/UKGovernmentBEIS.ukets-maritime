@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 
+import { FeedbackBannerComponent } from '@netz/common/components';
 import { RequestTaskPageContentFactory } from '@netz/common/request-task';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
 
@@ -37,6 +38,7 @@ export const empVariationWaitForAmendTaskContent: RequestTaskPageContentFactory 
   const requestTaskType = store.select(requestTaskQuery.selectRequestTaskType)();
 
   return {
+    pageTopComponent: FeedbackBannerComponent,
     header: taskActionTypeToTitleMap?.[requestTaskType],
     sections: [
       {

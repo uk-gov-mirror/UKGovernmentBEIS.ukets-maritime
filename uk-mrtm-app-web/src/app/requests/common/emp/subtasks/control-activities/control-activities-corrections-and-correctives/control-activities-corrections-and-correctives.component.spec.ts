@@ -39,17 +39,17 @@ describe('ControlActivitiesCorrectivesComponent', () => {
 
   const activatedRouteStub = new ActivatedRouteStub();
   const taskServiceMock: MockType<TaskService<any>> = {
-    saveSubtask: jest.fn().mockReturnValue(of({})),
+    saveSubtask: vi.fn().mockReturnValue(of({})),
   };
 
-  const taskServiceSpy = jest.spyOn(taskServiceMock, 'saveSubtask');
+  const taskServiceSpy = vi.spyOn(taskServiceMock, 'saveSubtask');
 
   const createComponent = () => {
     fixture = TestBed.createComponent(ControlActivitiesCorrectionsAndCorrectivesComponent);
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(() => {

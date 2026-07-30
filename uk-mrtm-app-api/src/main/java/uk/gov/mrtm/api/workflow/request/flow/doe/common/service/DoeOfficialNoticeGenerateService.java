@@ -3,8 +3,11 @@ package uk.gov.mrtm.api.workflow.request.flow.doe.common.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import uk.gov.mrtm.api.account.domain.dto.MrtmDocumentTemplateAccountData;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateGenerationContextActionType;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateType;
+import uk.gov.mrtm.api.workflow.request.flow.common.service.MrtmDocumentTemplateAccountDataCollectFromAccountService;
 import uk.gov.mrtm.api.workflow.request.flow.doe.common.domain.DoeDeterminationType;
 import uk.gov.mrtm.api.workflow.request.flow.doe.common.domain.DoeRequestPayload;
 import uk.gov.netz.api.documenttemplate.domain.templateparams.TemplateParams;
@@ -32,6 +35,7 @@ public class DoeOfficialNoticeGenerateService {
     private final DocumentTemplateOfficialNoticeParamsProvider documentTemplateOfficialNoticeParamsProvider;
     private final FileDocumentGenerateServiceDelegator fileDocumentGenerateServiceDelegator;
     private final DoeSubmittedDocumentTemplateWorkflowParamsProvider doeSubmittedDocumentTemplateWorkflowParamsProvider;
+    private final MrtmDocumentTemplateAccountDataCollectFromAccountService accountTemplateDataFromAccountService;
 
     @Transactional
     public void generateOfficialNotice(String requestId) {
@@ -41,6 +45,9 @@ public class DoeOfficialNoticeGenerateService {
         Optional<UserInfoDTO> accountPrimaryContact = requestAccountContactQueryService.getRequestAccountPrimaryContact(request);
 
         List<String> ccRecipientsEmails = decisionNotificationUsersService.findUserEmails(requestPayload.getDecisionNotification());
+        
+		final MrtmDocumentTemplateAccountData accountData = accountTemplateDataFromAccountService
+				.collect(request.getAccountId());
 
         TemplateParams templateParams = documentTemplateOfficialNoticeParamsProvider
             .constructTemplateParams(DocumentTemplateParamsSourceData.builder()
@@ -50,6 +57,7 @@ public class DoeOfficialNoticeGenerateService {
                 .accountPrimaryContact(accountPrimaryContact.orElse(null))
                 .toRecipientEmail(accountPrimaryContact.map(UserInfoDTO::getEmail).orElse(null))
                 .ccRecipientsEmails(ccRecipientsEmails)
+                .accountData(accountData)
                 .build());
         final Map<String, Object> params =
                 doeSubmittedDocumentTemplateWorkflowParamsProvider.constructParams(requestPayload);

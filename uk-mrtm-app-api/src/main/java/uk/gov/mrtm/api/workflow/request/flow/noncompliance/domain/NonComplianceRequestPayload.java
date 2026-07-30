@@ -1,13 +1,12 @@
 package uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain;
 
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import uk.gov.netz.api.workflow.request.core.domain.RequestPayload;
 
@@ -20,6 +19,7 @@ import java.util.UUID;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
+@NoArgsConstructor
 @AllArgsConstructor
 public class NonComplianceRequestPayload extends RequestPayload {
 

@@ -6,7 +6,12 @@ import { take } from 'rxjs';
 
 import { EmpRegisteredOwner, RegisteredOwnerShipDetails } from '@mrtm/api';
 
-import { PageHeadingComponent, ReturnToTaskOrActionPageComponent } from '@netz/common/components';
+import {
+  FeedbackBannerComponent,
+  FeedbackBannerStore,
+  PageHeadingComponent,
+  ReturnToTaskOrActionPageComponent,
+} from '@netz/common/components';
 import { TaskService } from '@netz/common/forms';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
 import { ButtonDirective, LinkDirective, WarningTextComponent } from '@netz/govuk-components';
@@ -16,8 +21,7 @@ import { empCommonQuery } from '@requests/common/emp/+state';
 import { EmpTaskPayload } from '@requests/common/emp/emp.types';
 import { MANDATE_SUB_TASK, MandateWizardStep } from '@requests/common/emp/subtasks/mandate';
 import { mandateMap } from '@requests/common/emp/subtasks/subtask-list.map';
-import { NotificationBannerComponent, XmlErrorSummaryComponent } from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
+import { XmlErrorSummaryComponent } from '@shared/components';
 import { NestedMessageValidationError, XmlValidationError } from '@shared/types';
 import { isNil } from '@shared/utils';
 
@@ -32,7 +36,7 @@ import { isNil } from '@shared/utils';
     XmlErrorSummaryComponent,
     WarningTextComponent,
     MandateRegisteredOwnersTableComponent,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
     LinkDirective,
   ],
   standalone: true,
@@ -44,7 +48,7 @@ export class MandateRegisteredOwnersListComponent {
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private readonly notificationBannerStore: NotificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
   private readonly taskService: TaskService<EmpTaskPayload> = inject(TaskService);
 
   public readonly wizardMap = mandateMap;
@@ -98,7 +102,7 @@ export class MandateRegisteredOwnersListComponent {
 
     if (errors.length > 0) {
       this.validationErrors.set(errors);
-      this.notificationBannerStore.reset();
+      this.feedbackBannerStore.reset();
       return;
     }
 

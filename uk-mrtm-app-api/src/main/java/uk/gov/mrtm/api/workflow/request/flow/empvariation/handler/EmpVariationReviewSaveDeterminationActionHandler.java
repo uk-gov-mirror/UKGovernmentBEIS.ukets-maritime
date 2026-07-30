@@ -29,7 +29,7 @@ public class EmpVariationReviewSaveDeterminationActionHandler implements Request
 
     @Override
     public RequestTaskPayload process(Long requestTaskId, String requestTaskActionType, AppUser appUser, EmpVariationSaveReviewDeterminationRequestTaskActionPayload taskActionPayload) {
-        RequestTask requestTask = requestTaskService.findTaskById(requestTaskId);
+        RequestTask requestTask = requestTaskService.findTaskByIdForUpdate(requestTaskId);
 
         checkDeterminationValidity(taskActionPayload.getDetermination(), requestTask);
         empVariationReviewService.saveDetermination(taskActionPayload, requestTask);

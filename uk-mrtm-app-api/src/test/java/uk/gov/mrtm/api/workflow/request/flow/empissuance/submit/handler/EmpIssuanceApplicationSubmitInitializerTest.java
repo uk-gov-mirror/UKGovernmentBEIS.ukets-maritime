@@ -49,7 +49,7 @@ class EmpIssuanceApplicationSubmitInitializerTest {
         Long accountId = 1L;
         Request request = Request.builder().requestResources(List.of(RequestResource.builder().resourceId(String.valueOf(accountId)).resourceType(ResourceType.ACCOUNT).build())).build();
 
-        when(addressStateMapper.toAddressState(createAddress("line1", "line2", "city", "GR", "state", "postcode"))).thenReturn(createAddressDTO("line1", "line2", "city", "GR", "state", "postcode"));
+        when(addressStateMapper.toAddressStateDTO(createAddress("line1", "line2", "city", "GR", "state", "postcode"))).thenReturn(createAddressDTO("line1", "line2", "city", "GR", "state", "postcode"));
         when(mrtmAccountQueryService.getAccountById(accountId)).thenReturn(createMrtmAccount());
 
         EmpIssuanceApplicationSubmitRequestTaskPayload requestTaskPayload =
@@ -59,9 +59,9 @@ class EmpIssuanceApplicationSubmitInitializerTest {
         assertNotNull(requestTaskPayload.getEmissionsMonitoringPlan());
         assertEquals(requestTaskPayload.getEmissionsMonitoringPlan().getOperatorDetails().getImoNumber(), createMrtmAccount().getImoNumber());
         assertEquals(requestTaskPayload.getEmissionsMonitoringPlan().getOperatorDetails().getOperatorName(), createMrtmAccount().getName());
-        assertEquals(requestTaskPayload.getEmissionsMonitoringPlan().getOperatorDetails().getContactAddress(), addressStateMapper.toAddressState(createMrtmAccount().getAddress()));
+        assertEquals(requestTaskPayload.getEmissionsMonitoringPlan().getOperatorDetails().getContactAddress(), addressStateMapper.toAddressStateDTO(createMrtmAccount().getAddress()));
 
-        verify(addressStateMapper, atLeast(2)).toAddressState(createAddress("line1", "line2", "city", "GR", "state", "postcode"));
+        verify(addressStateMapper, atLeast(2)).toAddressStateDTO(createAddress("line1", "line2", "city", "GR", "state", "postcode"));
         verify(mrtmAccountQueryService).getAccountById(accountId);
         verifyNoMoreInteractions(addressStateMapper, mrtmAccountQueryService);
     }

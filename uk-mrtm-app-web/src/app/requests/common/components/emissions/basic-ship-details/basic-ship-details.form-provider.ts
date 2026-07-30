@@ -12,20 +12,36 @@ import { ActivatedRoute } from '@angular/router';
 
 import { isAfter } from 'date-fns';
 
-import { AerShipDetails, AerShipEmissions, EmpShipEmissions, ShipDetails } from '@mrtm/api';
+import { AerShipDetails, AerShipEmissions, EmpOperatorDetails, EmpShipEmissions, ShipDetails } from '@mrtm/api';
 
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
 import { getYearFromRequestId } from '@netz/common/utils';
 import { GovukValidators, MessageValidatorFn } from '@netz/govuk-components';
 
 import { REQUEST_TASK_COMMON_SUBTASK_STEPS_QUERY } from '@requests/+state';
+import { empCommonQuery } from '@requests/common';
 import { TASK_FORM } from '@requests/common/task-form.token';
 import { isAer } from '@shared/utils';
 
 const uniqueImoNumberValidation =
-  (ships: AerShipEmissions[] | EmpShipEmissions[], shipId: string): ValidatorFn =>
+  (
+    ships: AerShipEmissions[] | EmpShipEmissions[],
+    shipId: string,
+    operatorImoNumber: EmpOperatorDetails['imoNumber'],
+    delegatedResponsibilityImoNumber?: string[],
+  ): ValidatorFn =>
   (control: AbstractControl): ValidationErrors => {
-    if (ships.filter((x) => x.uniqueIdentifier !== shipId && x.details?.imoNumber === control.value).length > 0) {
+    const imoNumbers = new Set<string>(
+      [
+        operatorImoNumber,
+        delegatedResponsibilityImoNumber ?? [],
+        ships.filter((x) => x.uniqueIdentifier !== shipId).map((x) => x?.details?.imoNumber),
+      ]
+        .flat()
+        .filter(Boolean),
+    );
+
+    if (imoNumbers.has(control.value)) {
       return { imoNumber: 'This IMO number already exists. Enter a new IMO number' };
     }
 
@@ -47,7 +63,14 @@ export const basicShipDetailsFormProvider: Provider = {
         validators: [
           GovukValidators.required('Enter a IMO number'),
           GovukValidators.pattern(/^\d{7}$/, 'The IMO Number must be 7 digits long'),
-          uniqueImoNumberValidation(store.select(commonSubtaskStepsQuery.selectShips)(), shipId),
+          uniqueImoNumberValidation(
+            store.select(commonSubtaskStepsQuery.selectShips)(),
+            shipId,
+            store.select(empCommonQuery.selectOperatorDetails)()?.imoNumber,
+            (store.select(empCommonQuery.selectMandate)()?.registeredOwners ?? [])
+              .map((registeredOwner) => registeredOwner?.imoNumber)
+              .filter(Boolean),
+          ),
         ],
       }),
       name: fb.control<ShipDetails['name'] | null>(shipDetails?.name, {

@@ -60,7 +60,7 @@ describe('AerAggregatedEmissionsFormComponent', () => {
     page.setInputValue('#testGroup.n2o', '12');
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    fixture.detectChanges(true);
+    fixture.detectChanges();
 
     expect(page.paragraphs.at(1).textContent?.trim()).toEqual('36');
   });

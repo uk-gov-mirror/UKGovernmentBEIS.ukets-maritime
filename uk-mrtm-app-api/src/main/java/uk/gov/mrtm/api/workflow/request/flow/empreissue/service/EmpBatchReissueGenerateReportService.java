@@ -12,7 +12,7 @@ import uk.gov.mrtm.api.workflow.request.flow.empreissue.domain.EmpBatchReissueRe
 import uk.gov.mrtm.api.workflow.request.flow.empreissue.domain.EmpBatchReissueRequestMetadata;
 import uk.gov.mrtm.api.workflow.request.flow.empreissue.domain.EmpEmpReissueAccountReport;
 import uk.gov.netz.api.files.common.domain.dto.FileInfoDTO;
-import uk.gov.netz.api.files.documents.service.FileDocumentService;
+import uk.gov.netz.api.files.documents.service.storage.FileDocumentStorageService;
 import uk.gov.netz.api.workflow.request.core.domain.Request;
 import uk.gov.netz.api.workflow.request.core.service.RequestService;
 
@@ -29,7 +29,7 @@ public class EmpBatchReissueGenerateReportService {
 	private static final DateTimeFormatter CSV_DATE_ISSUE_FORMATTER = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
 	
 	private final RequestService requestService;
-	private final FileDocumentService fileDocumentService;
+	private final FileDocumentStorageService fileDocumentStorageService;
 	
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void generateReport(String requestId) {
@@ -56,7 +56,8 @@ public class EmpBatchReissueGenerateReportService {
 			}
 			
 			final byte[] generatedFile = sw.toString().getBytes(StandardCharsets.UTF_8);
-			final FileInfoDTO reportFile = fileDocumentService.createFileDocument(generatedFile, request.getId() + ".csv");
+			final FileInfoDTO reportFile = fileDocumentStorageService.createFileDocument(generatedFile,
+					request.getId() + ".csv");
 			
 			//update payload
 			payload.setReport(reportFile);

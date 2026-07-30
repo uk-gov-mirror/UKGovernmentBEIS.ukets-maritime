@@ -1,0 +1,750 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema version="1.4" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="monitoringPlans" type="mpExportListDTO"/>
+
+  <xs:complexType name="mpExportListDTO">
+    <xs:sequence>
+      <xs:element name="monitoringPlan" type="mpExportDTO" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpExportDTO">
+    <xs:sequence>
+      <xs:element name="particulars" type="mpParticularsExportDTO" minOccurs="0"/>
+      <xs:element name="ship" type="mpShipExportDTO" minOccurs="0"/>
+      <xs:element name="company" type="mpCompanyExportDTO" minOccurs="0"/>
+      <xs:element name="measuringEquipment" type="mpMeasuringEquipmentExportDTO" minOccurs="0"/>
+      <xs:element name="emissionSources" type="mpEmissionSourcesExportDTO" minOccurs="0"/>
+      <xs:element name="fuelTanks" type="mpFuelTankExportDTO" minOccurs="0"/>
+      <xs:element name="fuelTypes" type="mpFuelTypeEmissionFactorExportDTO" minOccurs="0"/>
+      <xs:element name="fuelConsumption" type="mpFuelConsumptionExportDTO" minOccurs="0"/>
+      <xs:element name="ccsCcuRecords" type="mpCcsCcuSection" minOccurs="0"/>
+      <xs:element name="navigation" type="mpNavigationSection" minOccurs="0"/>
+      <xs:element name="cargo" type="mpCargoSection" minOccurs="0"/>
+      <xs:element name="controlActivities" type="mpControlActivitiesSection" minOccurs="0"/>
+      <xs:element name="furtherInformation" type="mpFurtherInformationSection" minOccurs="0"/>
+      <xs:element name="nonConformities" type="mpNonConformitiesSection" minOccurs="0"/>
+      <xs:element name="revisions" type="mpRevisionSection" minOccurs="0"/>
+      <xs:element name="docs" type="mpDocsSection" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="shipImoNumber" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="mpParticularsExportDTO">
+    <xs:complexContent>
+      <xs:extension base="mpParticularsDTO">
+        <xs:sequence>
+          <xs:element name="monitoringPlanStatusCode" type="xs:string" minOccurs="0"/>
+          <xs:element name="firstSubmissionToVerifierDate" type="xs:string" minOccurs="0"/>
+          <xs:element name="firstSubmissionToAdminAuthorityDate" type="xs:string" minOccurs="0"/>
+          <xs:element name="firstApprovalByAdminAuthorityDate" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="mpParticularsDTO">
+    <xs:sequence>
+      <xs:element name="creationDate" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpShipExportDTO">
+    <xs:complexContent>
+      <xs:extension base="shipUpdateDTO">
+        <xs:sequence>
+          <xs:element name="ownerTaxNumber" type="xs:string" minOccurs="0"/>
+          <xs:element name="ownerContactPerson" type="xs:string" minOccurs="0"/>
+          <xs:element name="ownerTelephone" type="xs:string" minOccurs="0"/>
+          <xs:element name="ownerEmail" type="xs:string" minOccurs="0"/>
+          <xs:element name="pscShipType" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="shipUpdateDTO">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="shipType" type="xs:string" minOccurs="0"/>
+      <xs:element name="shipSubtype" type="xs:string" minOccurs="0"/>
+      <xs:element name="grossTonnage" type="xs:int" minOccurs="0"/>
+      <xs:element name="deadweight" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="flag" type="xs:string" minOccurs="0"/>
+      <xs:element name="portOfRegistry" type="xs:string" minOccurs="0"/>
+      <xs:element name="homePort" type="xs:string" minOccurs="0"/>
+      <xs:element name="classificationSociety" type="xs:string" minOccurs="0"/>
+      <xs:element name="iceClassPolarCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="technicalEfficiencyCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="technicalEfficiencyValue" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="otherCharacteristics" type="xs:string" minOccurs="0"/>
+      <xs:element name="ownerNumber" type="xs:string" minOccurs="0"/>
+      <xs:element name="ownerName" type="xs:string" minOccurs="0"/>
+      <xs:element name="ownerAddress" type="xs:string" minOccurs="0"/>
+      <xs:element name="ownerCity" type="xs:string" minOccurs="0"/>
+      <xs:element name="ownerCountry" type="xs:string" minOccurs="0"/>
+      <xs:element name="ownerPrincipalPlace" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpCompanyExportDTO">
+    <xs:sequence>
+      <xs:element name="number" type="xs:string" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="nature" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="address" type="xs:string" minOccurs="0"/>
+      <xs:element name="city" type="xs:string" minOccurs="0"/>
+      <xs:element name="countryCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="principalPlaceOfBusiness" type="xs:string" minOccurs="0"/>
+      <xs:element name="countryOfRegistrationCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="contactPersonName" type="xs:string" minOccurs="0"/>
+      <xs:element name="contactPersonAddress" type="xs:string" minOccurs="0"/>
+      <xs:element name="contactPersonTitle" type="xs:string" minOccurs="0"/>
+      <xs:element name="contactPersonEmail" type="xs:string" minOccurs="0"/>
+      <xs:element name="contactPersonJobTitle" type="xs:string" minOccurs="0"/>
+      <xs:element name="contactPersonTelephone" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpMeasuringEquipmentExportDTO">
+    <xs:sequence>
+      <xs:element name="measuringEquipmentEntry" type="mpMeasuringEquipmentEntryExportDTO" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="procedureAnnexITableC25" type="procedureAnnexITableC25DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableC28" type="procedureAnnexITableC28DTO" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpMeasuringEquipmentEntryExportDTO">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="appliedToCode" type="xs:string" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="otherAppliedTo" type="xs:string" minOccurs="0"/>
+      <xs:element name="technicalDescription" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableC25DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableC28DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpEmissionSourcesExportDTO">
+    <xs:sequence>
+      <xs:element name="emissionSourceEntry" type="mpEmissionSourceEntryExportDTO" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="procedureAnnexITableB5" type="procedureAnnexITableB5DTO" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpEmissionSourceEntryExportDTO">
+    <xs:sequence>
+      <xs:element name="emissionSourceTypeCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="identificationNumber" type="xs:string" minOccurs="0"/>
+      <xs:element name="ratingPower" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="specFuelOilCons" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="yearOfInstallation" type="xs:int" minOccurs="0"/>
+      <xs:element name="otherTechnicalDescription" type="xs:string" minOccurs="0"/>
+      <xs:element name="fuelTypeCode" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="otherFuelType" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="measuringEquipmentName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="monitoringMethodCode" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="levelOfUncertaintyTypeCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="emissionSourceClassCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="slippageEntry" type="mpSlippageExportDTO" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpSlippageExportDTO">
+    <xs:sequence>
+      <xs:element name="factorReferenceCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="fuelOriginCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="otherFuelType" type="xs:string" minOccurs="0"/>
+      <xs:element name="fuelTypeCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="legalFrameworkCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="slipPercentage" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="additionalNotes" type="xs:string" minOccurs="0"/>
+      <xs:element name="reasonForChangeCode" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableB5DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpFuelTankExportDTO">
+    <xs:sequence>
+      <xs:element name="fuelTankEntry" type="mpFuelTankEntryExportDTO" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpFuelTankEntryExportDTO">
+    <xs:sequence>
+      <xs:element name="identification" type="xs:string" minOccurs="0"/>
+      <xs:element name="otherTechnicalDescription" type="xs:string" minOccurs="0"/>
+      <xs:element name="fuelTypeCode" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="measuringEquipmentName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="monitoringMethodCode" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="methodDensityTankCode" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="levelOfUncertaintyTypeCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="shipSpecificUncertainty" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="otherFuelType" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpFuelTypeEmissionFactorExportDTO">
+    <xs:sequence>
+      <xs:element name="fuelTypeEntry" type="mpFuelTypeEmissionFactorEntryExportDTO" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="procedureAnnexITableB8" type="procedureAnnexITableB8DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexIITableB9" type="procedureAnnexIITableB9DTO" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpFuelTypeEmissionFactorEntryExportDTO">
+    <xs:sequence>
+      <xs:element name="otherFuelType" type="xs:string" minOccurs="0"/>
+      <xs:element name="fuelOriginCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="fuelTypeCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="methodDensityBunkerCode" type="xs:string" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="fuelDescription" type="xs:string" minOccurs="0"/>
+      <xs:element name="emissionFactors" type="mpEmissionFactorEntryExportDTO" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpEmissionFactorEntryExportDTO">
+    <xs:sequence>
+      <xs:element name="factorReferenceCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="legalFrameworkCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="ghgCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="ttwEF" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="slipEF" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="methodologies" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableB8DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexIITableB9DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpFuelConsumptionExportDTO">
+    <xs:sequence>
+      <xs:element name="monitoredDiffCriterionCode" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="procedureAnnexITableC210" type="procedureAnnexITableC210DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableC211" type="procedureAnnexITableC211DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableC212" type="procedureAnnexITableC212DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableC22" type="procedureAnnexITableC22DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableC23" type="procedureAnnexITableC23DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableC29" type="procedureAnnexITableC29DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableD1" type="procedureAnnexITableD1DTO" minOccurs="0"/>
+      <xs:element name="procedureVolMonNotIrAnnexI" type="procedureVolMonNotIrAnnexIDTO" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableC210DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="formulaeAndDataSources" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableC211DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="formulaeAndDataSources" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableC212DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="formulaeAndDataSources" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableC22DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableC23DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableC29DTO">
+    <xs:sequence>
+      <xs:element name="titleOfMethod" type="xs:string" minOccurs="0"/>
+      <xs:element name="methodMassFreight" type="xs:string" minOccurs="0"/>
+      <xs:element name="methodDeckArea" type="xs:string" minOccurs="0"/>
+      <xs:element name="fuelConsumptionSplit" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="formulaeAndDataSources" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+      <xs:element name="appliedAllocationMethodCode" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableD1DTO">
+    <xs:sequence>
+      <xs:element name="titleOfMethod" type="xs:string" minOccurs="0"/>
+      <xs:element name="formulaeUsed" type="xs:string" minOccurs="0"/>
+      <xs:element name="methodFuelConsumption" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="dataSources" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+      <xs:element name="backupMonitoringMethodCode" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureVolMonNotIrAnnexIDTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="formulaeAndDataSources" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpCcsCcuSection">
+    <xs:sequence>
+      <xs:element name="ccsCcuEntry" type="mpCcsCcuDTO" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpCcsCcuDTO">
+    <xs:sequence>
+      <xs:element name="emissionSourceName" type="xs:string" minOccurs="0"/>
+      <xs:element name="emissionSourceTypeCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="emissionSourceNumber" type="xs:string" minOccurs="0"/>
+      <xs:element name="technology" type="xs:string" minOccurs="0"/>
+      <xs:element name="supportingEvidence" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpNavigationSection">
+    <xs:sequence>
+      <xs:element name="procedureAnnexITableC1" type="procedureAnnexITableC1DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableC3" type="procedureAnnexITableC3DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableC4" type="procedureAnnexITableC4DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableC42" type="procedureAnnexITableC42DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableC6" type="procedureAnnexITableC6DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableC62" type="procedureAnnexITableC62DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableD2" type="procedureAnnexITableD2DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableD4" type="procedureAnnexITableD4DTO" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableC1DTO">
+    <xs:sequence>
+      <xs:element name="minimumNumberOfVoyages" type="xs:string" minOccurs="0"/>
+      <xs:element name="useOfDerogationCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="voyagesNotInMrvScopeCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="conditionsForDerogationCode" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableC3DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="dataSources" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableC4DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="dataSources" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableC42DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="formulaeAndDataSources" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableC6DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="formulaeAndDataSources" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableC62DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="formulaeAndDataSources" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableD2DTO">
+    <xs:sequence>
+      <xs:element name="titleOfMethod" type="xs:string" minOccurs="0"/>
+      <xs:element name="formulaeUsed" type="xs:string" minOccurs="0"/>
+      <xs:element name="methodTreatDataGaps" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="dataSources" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableD4DTO">
+    <xs:sequence>
+      <xs:element name="titleOfMethod" type="xs:string" minOccurs="0"/>
+      <xs:element name="formulaeUsed" type="xs:string" minOccurs="0"/>
+      <xs:element name="methodTreatDataGaps" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="dataSources" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpCargoSection">
+    <xs:sequence>
+      <xs:element name="procedureAnnexITableC5" type="procedureAnnexITableC5DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableC52" type="procedureAnnexITableC52DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableD3" type="procedureAnnexITableD3DTO" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableC5DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="unitOfCargoPassengers" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="formulaeAndDataSources" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableC52DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="formulaeAndDataSources" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableD3DTO">
+    <xs:sequence>
+      <xs:element name="titleOfMethod" type="xs:string" minOccurs="0"/>
+      <xs:element name="formulaeUsed" type="xs:string" minOccurs="0"/>
+      <xs:element name="methodTreatDataGaps" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="dataSources" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpControlActivitiesSection">
+    <xs:sequence>
+      <xs:element name="procedureAnnexITableE1" type="procedureAnnexITableE1DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableE2" type="procedureAnnexITableE2DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableE3" type="procedureAnnexITableE3DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableE4" type="procedureAnnexITableE4DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableE5" type="procedureAnnexITableE5DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableE6" type="procedureAnnexITableE6DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableE7" type="procedureAnnexITableE7DTO" minOccurs="0"/>
+      <xs:element name="procedureAnnexITableE8" type="procedureAnnexITableE8DTO" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableE1DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableE2DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceForProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableE3DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceForProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableE4DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceForProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="briefDescriptionOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+      <xs:element name="existingManagementSystems" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableE5DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableE6DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableE7DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="procedureAnnexITableE8DTO">
+    <xs:sequence>
+      <xs:element name="titleOfProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="referenceExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="versionExistingProcedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="procedures" type="xs:string" minOccurs="0"/>
+      <xs:element name="responsiblePerson" type="xs:string" minOccurs="0"/>
+      <xs:element name="locationOfRecords" type="xs:string" minOccurs="0"/>
+      <xs:element name="itSystem" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpFurtherInformationSection">
+    <xs:sequence>
+      <xs:element name="additionalInformation" type="xs:string" minOccurs="0"/>
+      <xs:element name="furtherInformationEntry" type="furtherInformationDefinitionEditDTO" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="furtherInformationDefinitionEditDTO">
+    <xs:sequence>
+      <xs:element name="abbreviation" type="xs:string"/>
+      <xs:element name="explanation" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpNonConformitiesSection">
+    <xs:sequence>
+      <xs:element name="nonConformityEntry" type="mpNonConformityExportDTO" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpNonConformityExportDTO">
+    <xs:sequence>
+      <xs:element name="reportedOn" type="xs:string" minOccurs="0"/>
+      <xs:element name="lastEditedOn" type="xs:string" minOccurs="0"/>
+      <xs:element name="reportedBy" type="xs:string" minOccurs="0"/>
+      <xs:element name="lastEditedBy" type="xs:string" minOccurs="0"/>
+      <xs:element name="verifier" type="xs:string" minOccurs="0"/>
+      <xs:element name="regulationCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="statusCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpRevisionSection">
+    <xs:sequence>
+      <xs:element name="revisionEntry" type="mpRevisionEntryExportDTO" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpRevisionEntryExportDTO">
+    <xs:sequence>
+      <xs:element name="date" type="xs:string" minOccurs="0"/>
+      <xs:element name="version" type="xs:int" minOccurs="0"/>
+      <xs:element name="statusCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="user" type="xs:string" minOccurs="0"/>
+      <xs:element name="userEntityTypeCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="userEntityName" type="xs:string" minOccurs="0"/>
+      <xs:element name="observations" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpDocsSection">
+    <xs:sequence>
+      <xs:element name="documentEntry" type="mpShipDocumentEntryExportDTO" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="documentFromPreviousCompanyEntry" type="mpShipDocumentFromPreviousCompanyExportDTO" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpShipDocumentEntryExportDTO">
+    <xs:sequence>
+      <xs:element name="uploadDate" type="xs:string" minOccurs="0"/>
+      <xs:element name="modificationDate" type="xs:string" minOccurs="0"/>
+      <xs:element name="filename" type="xs:string" minOccurs="0"/>
+      <xs:element name="documentTypeCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="documentTypeFreeText" type="xs:string" minOccurs="0"/>
+      <xs:element name="reportingPeriod" type="xs:string" minOccurs="0"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="mpShipDocumentFromPreviousCompanyExportDTO">
+    <xs:sequence>
+      <xs:element name="document" type="xs:string" minOccurs="0"/>
+      <xs:element name="filename" type="xs:string" minOccurs="0"/>
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
+      <xs:element name="reportingPeriod" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

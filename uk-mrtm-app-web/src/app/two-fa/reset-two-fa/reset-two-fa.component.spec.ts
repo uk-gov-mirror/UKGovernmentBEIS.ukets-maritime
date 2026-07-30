@@ -51,7 +51,7 @@ describe('ResetTwoFaComponent', () => {
   });
 
   it('should reset 2fa after clicking button', () => {
-    jest.spyOn(fixture.componentInstance, 'reset');
+    vi.spyOn(fixture.componentInstance, 'reset');
     regulatorUsersService.resetRegulator2Fa.mockReturnValueOnce(of());
     verifierUsersService.resetVerifier2Fa.mockReturnValueOnce(of());
     operatorUsersService.resetOperator2Fa.mockReturnValueOnce(of());

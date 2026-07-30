@@ -5,12 +5,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { BehaviorSubject, EMPTY, take } from 'rxjs';
 
-import { PageHeadingComponent } from '@netz/common/components';
+import { FeedbackBannerComponent, FeedbackBannerStore, PageHeadingComponent } from '@netz/common/components';
 import { BusinessErrorService, catchBadRequest, ErrorCodes } from '@netz/common/error';
 import { TabDirective, TabLazyDirective, TabsComponent } from '@netz/govuk-components';
 
 import { VerifierUsersListComponent } from '@shared/components';
-import { NotificationBannerComponent, NotificationBannerStore } from '@shared/components/notification-banner';
 import { savePartiallyNotFoundVerifierError } from '@shared/errors';
 import { FormUtils } from '@shared/utils/form.utils';
 import {
@@ -28,7 +27,7 @@ import { DataSupplierComponent, SiteContactsComponent } from '@verifiers/compone
     AsyncPipe,
     TabDirective,
     VerifierUsersListComponent,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
     SiteContactsComponent,
     TabLazyDirective,
     DataSupplierComponent,
@@ -45,7 +44,7 @@ export class VerifiersComponent {
   private readonly store: VerifierUserStore = inject(VerifierUserStore);
   public readonly authorities$ = this.store.pipe(selectVerifierUsersListItems);
   public readonly verifiersEditable$ = this.store.pipe(selectIsEditableVerifierUsersList);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
 
   public handleSelectedTab(tab: string): void {
     this.router.navigate([], {
@@ -66,7 +65,7 @@ export class VerifiersComponent {
         ),
         catchBadRequest(ErrorCodes.AUTHORITY1007, () => {
           (form as FormGroup).setErrors({ noAdmin: 'You must have an active verifier admin on your account' });
-          this.notificationBannerStore.setInvalidForm(form);
+          this.feedbackBannerStore.setInvalidForm(form);
           this.onDiscardChanges();
           return EMPTY;
         }),
@@ -81,7 +80,7 @@ export class VerifiersComponent {
           }
           return `${message} updated`;
         });
-        this.notificationBannerStore.setSuccessMessages(successMessages);
+        this.feedbackBannerStore.setSuccessMessages(successMessages);
       });
   }
 

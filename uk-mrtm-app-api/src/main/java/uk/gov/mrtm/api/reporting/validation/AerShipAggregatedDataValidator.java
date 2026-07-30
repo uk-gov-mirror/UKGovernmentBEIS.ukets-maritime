@@ -190,24 +190,5 @@ public class AerShipAggregatedDataValidator implements AerContextValidator {
             aerViolations,
             AerShipAggregatedData.class
         );
-
-        BigDecimal totalEmissions = sumAndScale(
-            aggregatedData.getEmissionsBetweenUKPorts().getCo2(),
-            aggregatedData.getEmissionsBetweenUKPorts().getCh4(),
-            aggregatedData.getEmissionsBetweenUKPorts().getN2o(),
-            aggregatedData.getEmissionsBetweenUKAndNIVoyages().getCo2(),
-            aggregatedData.getEmissionsBetweenUKAndNIVoyages().getCh4(),
-            aggregatedData.getEmissionsBetweenUKAndNIVoyages().getN2o(),
-            aggregatedData.getEmissionsWithinUKPorts().getCo2(),
-            aggregatedData.getEmissionsWithinUKPorts().getCh4(),
-            aggregatedData.getEmissionsWithinUKPorts().getN2o());
-
-        if (totalEmissions.compareTo(BigDecimal.ZERO) == 0) {
-
-            aerViolations.add(new AerViolation(
-                "emissions",
-                AerViolation.ViolationMessage.TOTAL_EMISSIONS_IS_ZERO,
-                aggregatedData.getImoNumber()));
-        }
     }
 }

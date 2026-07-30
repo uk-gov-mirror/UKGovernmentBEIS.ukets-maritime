@@ -4,7 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { take } from 'rxjs';
 
-import { PageHeadingComponent } from '@netz/common/components';
+import { FeedbackBannerComponent, FeedbackBannerStore, PageHeadingComponent } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { TaskService } from '@netz/common/forms';
 import { RequestTaskStore } from '@netz/common/store';
@@ -17,8 +17,6 @@ import {
   AerAggregatedDataWizardStep,
 } from '@requests/common/aer/subtasks/aer-aggregated-data/aer-aggregated-data.helpers';
 import { aerAggregatedDataSubtasksListMap } from '@requests/common/aer/subtasks/aer-aggregated-data/aer-aggregated-data-subtasks-list.map';
-import { NotificationBannerComponent } from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { PersistablePaginationService } from '@shared/services';
 import { AerJourneyTypeEnum } from '@shared/types';
 
@@ -31,7 +29,7 @@ import { AerJourneyTypeEnum } from '@shared/types';
     RouterLink,
     LinkDirective,
     PendingButtonDirective,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
   ],
   standalone: true,
   templateUrl: './aer-fetch-from-voyages-and-ports.component.html',
@@ -45,7 +43,7 @@ export class AerFetchFromVoyagesAndPortsComponent {
   private readonly store = inject(RequestTaskStore);
   private readonly service: TaskService<AerSubmitTaskPayload> = inject(TaskService);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private readonly form: UntypedFormGroup = new UntypedFormGroup({});
 
   public readonly hasAggregatedData = computed(
@@ -53,11 +51,11 @@ export class AerFetchFromVoyagesAndPortsComponent {
   );
 
   public onSubmit(): void {
-    this.notificationBannerStore.reset();
+    this.feedbackBannerStore.reset();
     this.form.setErrors(this.validateCanExecuteFetchFromVoyagesAndPorts());
 
     if (!this.form.valid) {
-      this.notificationBannerStore.setInvalidForm(this.form);
+      this.feedbackBannerStore.setInvalidForm(this.form);
       return;
     }
 

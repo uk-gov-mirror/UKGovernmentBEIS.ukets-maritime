@@ -1,3 +1,5 @@
+import { MrtmAccountStatus } from '@mrtm/api';
+
 import { AccountStatusPipe } from '@shared/pipes';
 
 describe('AccountStatusPipe', () => {
@@ -14,11 +16,11 @@ describe('AccountStatusPipe', () => {
     transformation = pipe.transform(undefined);
     expect(transformation).toEqual(null);
 
-    transformation = pipe.transform('NEW');
+    transformation = pipe.transform(MrtmAccountStatus.NEW);
     expect(transformation).toEqual('New');
-    transformation = pipe.transform('LIVE');
+    transformation = pipe.transform(MrtmAccountStatus.LIVE);
     expect(transformation).toEqual('Live');
-    transformation = pipe.transform('CLOSED');
+    transformation = pipe.transform(MrtmAccountStatus.CLOSED);
     expect(transformation).toEqual('Closed');
   });
 });

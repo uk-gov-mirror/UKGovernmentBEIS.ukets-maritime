@@ -12,8 +12,8 @@ import uk.gov.netz.api.common.config.MapperConfig;
 )
 public interface AddressStateMapper {
 
-    AddressStateDTO toAddressState(AddressState addressState);
+    AddressStateDTO toAddressStateDTO(AddressState addressState);
 
-    AddressState toAddressStateDTO(AddressStateDTO addressStateDTO);
+    AddressState toAddressState(AddressStateDTO addressStateDTO);
 
 }

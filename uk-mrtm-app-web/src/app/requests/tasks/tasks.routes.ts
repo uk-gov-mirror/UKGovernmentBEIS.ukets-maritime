@@ -14,6 +14,7 @@ import {
   AER_ROUTE_PREFIX,
   AER_VERIFICATION_SUBMIT_ROUTE_PREFIX,
 } from '@requests/common/aer/aer.consts';
+import { EU_XML_IMPORT_ROUTE_PREFIX } from '@requests/common/eu-xml-import';
 import {
   NON_COMPLIANCE_AMEND_DETAILS_ROUTE_PREFIX,
   NON_COMPLIANCE_CIVIL_PENALTY_PEER_REVIEW_ROUTE_PREFIX,
@@ -35,6 +36,10 @@ import { taskProviders } from '@requests/common/task.providers';
 import { AER_REVIEW_ROUTE_PREFIX } from '@requests/tasks/aer-review';
 import { EMP_SUBMIT_ROUTE_PREFIX } from '@requests/tasks/emp-submit/emp-submit.const';
 import { canActivatePendingPaymentProcess } from '@requests/tasks/payment/payment.guard';
+import { SITE_VISIT_AMENDS_ROUTE_PREFIX } from '@requests/tasks/site-visit-amends';
+import { SITE_VISIT_PEER_REVIEW_ROUTE_PREFIX } from '@requests/tasks/site-visit-peer-review';
+import { SITE_VISIT_REVIEW_ROUTE_PREFIX } from '@requests/tasks/site-visit-review';
+import { SITE_VISIT_ROUTE_PREFIX } from '@requests/tasks/site-visit-submit/site-visit-submit.constants';
 import { tasksContent } from '@requests/tasks/tasks-content';
 import { VIR_RESPOND_TO_REGULATOR_COMMENTS_PREFIX } from '@requests/tasks/vir-respond-to-regulator-comments';
 import { VIR_REVIEW_PREFIX } from '@requests/tasks/vir-review';
@@ -342,6 +347,28 @@ export const TASKS_ROUTES: Routes = [
           import('@requests/common/non-compliance/non-compliance-amend-details').then(
             (r) => r.NON_COMPLIANCE_AMEND_DETAILS_ROUTES,
           ),
+      },
+      {
+        path: SITE_VISIT_ROUTE_PREFIX,
+        loadChildren: () => import('@requests/tasks/site-visit-submit').then((r) => r.SITE_VISIT_SUBMIT_ROUTES),
+      },
+      {
+        path: SITE_VISIT_REVIEW_ROUTE_PREFIX,
+        loadChildren: () => import('@requests/tasks/site-visit-review').then((r) => r.SITE_VISIT_REVIEW_ROUTES),
+      },
+      {
+        path: SITE_VISIT_PEER_REVIEW_ROUTE_PREFIX,
+        loadChildren: () =>
+          import('@requests/tasks/site-visit-peer-review').then((r) => r.SITE_VISIT_PEER_REVIEW_ROUTES),
+      },
+      {
+        path: SITE_VISIT_AMENDS_ROUTE_PREFIX,
+        loadChildren: () => import('@requests/tasks/site-visit-amends').then((r) => r.SITE_VISIT_AMENDS_ROUTES),
+      },
+      {
+        path: EU_XML_IMPORT_ROUTE_PREFIX,
+        loadChildren: () =>
+          import('@requests/common/eu-xml-import/eu-xml-import.routes').then((r) => r.EU_XML_IMPORT_ROUTES),
       },
     ],
   },

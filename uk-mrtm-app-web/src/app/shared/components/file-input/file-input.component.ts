@@ -14,7 +14,7 @@ import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm, UntypedFor
 
 import { BehaviorSubject, combineLatest, filter, map, merge, Observable, startWith, tap, withLatestFrom } from 'rxjs';
 
-import { ErrorMessageComponent, FormService, LabelSizeType } from '@netz/govuk-components';
+import { ErrorMessageComponent, FormService, LabelSizeType, SafeHtmlPipe } from '@netz/govuk-components';
 
 import { FileUploadListComponent } from '@shared/components';
 import { FileUploadService } from '@shared/services';
@@ -22,7 +22,7 @@ import { FileUpload, FileUploadEvent } from '@shared/types';
 
 @Component({
   selector: 'mrtm-file-input',
-  imports: [forwardRef(() => FileUploadListComponent), ErrorMessageComponent, AsyncPipe],
+  imports: [forwardRef(() => FileUploadListComponent), ErrorMessageComponent, AsyncPipe, SafeHtmlPipe],
   standalone: true,
   templateUrl: './file-input.component.html',
   styleUrl: '../multiple-file-input/multiple-file-input.component.scss',

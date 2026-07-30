@@ -13,8 +13,8 @@ export interface PasswordValidationErrorDTO {
     | 'INVALID_MIN_LENGTH'
     | 'INVALID_MAX_LENGTH'
     | 'BLACKLISTED_PATTERN'
-    | 'WEAK'
     | 'PWNED'
-    | 'PWNED_SERVICE_UNAVAILABLE';
+    | 'PWNED_SERVICE_UNAVAILABLE'
+    | 'OTHER';
   message?: string;
 }

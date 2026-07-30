@@ -14,4 +14,5 @@ public class MrtmRequestType {
     public static final String DOE = "DOE";
     public static final String VIR = "VIR";
     public static final String NON_COMPLIANCE = "NON_COMPLIANCE";
+    public static final String SITE_VISIT = "SITE_VISIT";
 }

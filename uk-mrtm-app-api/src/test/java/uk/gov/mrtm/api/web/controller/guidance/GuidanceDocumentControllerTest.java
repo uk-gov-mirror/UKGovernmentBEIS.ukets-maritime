@@ -222,6 +222,7 @@ class GuidanceDocumentControllerTest {
                 .fileType(contentType)
                 .fileContent(content)
                 .fileSize(multipartFile.getSize())
+                .createdBy(authUser.getUserId())
                 .build();
         final UUID fileUUID = UUID.randomUUID();
 

@@ -3,6 +3,12 @@ const tseslint = require('typescript-eslint');
 const rootConfig = require('../../eslint.config.js');
 
 module.exports = tseslint.config(...rootConfig, {
+  languageOptions: {
+    parserOptions: {
+      project: ['./tsconfig.lib.json'],
+      tsconfigRootDir: __dirname,
+    },
+  },
   files: ['**/*.ts'],
   rules: {
     'no-control-regex': 'off',

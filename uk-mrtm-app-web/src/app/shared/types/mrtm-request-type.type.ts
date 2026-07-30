@@ -11,4 +11,5 @@ export type MrtmRequestType =
   | 'EMP_BATCH_REISSUE'
   | 'DOE'
   | 'VIR'
-  | 'NON_COMPLIANCE';
+  | 'NON_COMPLIANCE'
+  | 'SITE_VISIT';

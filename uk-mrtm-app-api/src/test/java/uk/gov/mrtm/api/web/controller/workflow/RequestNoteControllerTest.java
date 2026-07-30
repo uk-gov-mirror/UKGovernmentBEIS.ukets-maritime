@@ -218,12 +218,13 @@ class RequestNoteControllerTest {
             .fileType(noteContentType)
             .fileContent(noteContent)
             .fileSize(noteFile.getSize())
+            .createdBy(authUser.getUserId())
             .build();
         final UUID noteUuid = UUID.randomUUID();
         final String requestId = "reqId";
 
         when(appSecurityComponent.getAuthenticatedUser()).thenReturn(authUser);
-        when(fileNoteService.uploadRequestFile(authUser.getUserId(), fileDTO, requestId))
+        when(fileNoteService.uploadRequestFile(fileDTO, requestId))
             .thenReturn(FileUuidDTO.builder().uuid(noteUuid.toString()).build());
 
         mockMvc.perform(

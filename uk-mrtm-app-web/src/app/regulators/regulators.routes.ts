@@ -1,29 +1,25 @@
 import { Routes } from '@angular/router';
 
 import { PendingRequestGuard } from '@core/guards/pending-request.guard';
-import { DeleteComponent } from '@regulators/delete/delete.component';
 import { DeleteResolver } from '@regulators/delete/delete.resolver';
-import { DetailsComponent } from '@regulators/details/details.component';
 import { detailsResolver } from '@regulators/details/details.resolver';
 import { permissionsResolver } from '@regulators/details/permissions.resolver';
-import { SignatureFileDownloadComponent } from '@regulators/file-download/signature-file-download.component';
-import { RegulatorsComponent } from '@regulators/regulators.component';
 import { RegulatorsGuard } from '@regulators/regulators.guard';
 
 export const REGULATORS_ROUTES: Routes = [
   {
     path: '',
     title: 'Regulator users',
-    component: RegulatorsComponent,
     resolve: { regulators: RegulatorsGuard },
     canDeactivate: [PendingRequestGuard],
+    loadComponent: () => import('@regulators/regulators.component').then((c) => c.RegulatorsComponent),
   },
   {
     path: 'add',
     title: 'Add a new user',
     data: { breadcrumb: true },
-    component: DetailsComponent,
     canDeactivate: [PendingRequestGuard],
+    loadComponent: () => import('@regulators/details/details.component').then((c) => c.DetailsComponent),
   },
   {
     path: ':userId',
@@ -33,20 +29,20 @@ export const REGULATORS_ROUTES: Routes = [
         title: 'User details',
         data: { breadcrumb: ({ user }) => `${user.firstName} ${user.lastName}` },
         pathMatch: 'full',
-        component: DetailsComponent,
         resolve: {
           user: detailsResolver,
           permissions: permissionsResolver,
         },
         canDeactivate: [PendingRequestGuard],
+        loadComponent: () => import('@regulators/details/details.component').then((c) => c.DetailsComponent),
       },
       {
         path: 'delete',
         title: 'Confirm that this user account will be deleted',
         data: { breadcrumb: ({ user }) => `Delete ${user.firstName} ${user.lastName}` },
-        component: DeleteComponent,
         resolve: { user: DeleteResolver },
         canDeactivate: [PendingRequestGuard],
+        loadComponent: () => import('@regulators/delete/delete.component').then((c) => c.DeleteComponent),
       },
       {
         path: '2fa',
@@ -55,14 +51,20 @@ export const REGULATORS_ROUTES: Routes = [
       {
         path: 'file-download/:uuid',
         title: 'Your download has started',
-        component: SignatureFileDownloadComponent,
+        loadComponent: () =>
+          import('@regulators/file-download/signature-file-download.component').then(
+            (c) => c.SignatureFileDownloadComponent,
+          ),
       },
     ],
   },
   {
     path: 'file-download/:uuid',
     title: 'Your download has started',
-    component: SignatureFileDownloadComponent,
+    loadComponent: () =>
+      import('@regulators/file-download/signature-file-download.component').then(
+        (c) => c.SignatureFileDownloadComponent,
+      ),
   },
   {
     path: 'external-contacts',

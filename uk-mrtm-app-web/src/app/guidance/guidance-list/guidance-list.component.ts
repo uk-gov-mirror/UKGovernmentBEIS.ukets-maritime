@@ -5,12 +5,11 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { GuidanceSectionDTO } from '@mrtm/api';
 
+import { FeedbackBannerComponent, FeedbackBannerStore } from '@netz/common/components';
 import { GovukSelectOption, LinkDirective, SelectComponent } from '@netz/govuk-components';
 
 import { guidanceQuery, GuidanceStore } from '@guidance/+state';
-import { NotificationBannerComponent } from '@shared/components';
 import { DropdownButtonGroupComponent, DropdownButtonItemComponent } from '@shared/components/dropdown-button-group';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { CompetentAuthorityPipe } from '@shared/pipes';
 
 @Component({
@@ -23,7 +22,7 @@ import { CompetentAuthorityPipe } from '@shared/pipes';
     SelectComponent,
     ReactiveFormsModule,
     CompetentAuthorityPipe,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
   ],
   standalone: true,
   templateUrl: './guidance-list.component.html',
@@ -33,7 +32,7 @@ export class GuidanceListComponent {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly store = inject(GuidanceStore);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private readonly competentAuthorityPipe = new CompetentAuthorityPipe();
   private readonly availableCompetentAuthorities = this.store.select(guidanceQuery.selectAvailableCompetentAuthorities);
   private readonly formGroup = new UntypedFormGroup({});
@@ -90,7 +89,7 @@ export class GuidanceListComponent {
       this.formGroup.setErrors({
         noSections: 'No files have been uploaded. Add a section to upload and manage files',
       });
-      this.notificationBannerStore.setInvalidForm(this.formGroup);
+      this.feedbackBannerStore.setInvalidForm(this.formGroup);
       return;
     }
 

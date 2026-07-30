@@ -1,3 +1,5 @@
+<h2 class="govuk-heading-m">External contacts</h2>
+
 @if (isEditable$ | async) {
   <button (click)="router.navigate(['external-contacts', 'add'], { relativeTo: route })" govukButton type="button">
     Add an external contact

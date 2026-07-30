@@ -39,6 +39,7 @@ interface ReviewDecisionDtoBase<T> {
     }[];
     variationScheduleItems?: Array<string>;
     notes?: string;
+    summary?: string;
   };
 }
 

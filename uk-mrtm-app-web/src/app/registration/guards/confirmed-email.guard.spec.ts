@@ -35,7 +35,7 @@ describe('ConfirmedEmailGuard', () => {
   });
 
   it('should not allow access if the token is not in store', () => {
-    const navigateByUrlSpy = jest.spyOn(router, 'navigateByUrl').mockImplementation();
+    const navigateByUrlSpy = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
     store.setState({ token: null });
 
     let response = guard.canActivate();

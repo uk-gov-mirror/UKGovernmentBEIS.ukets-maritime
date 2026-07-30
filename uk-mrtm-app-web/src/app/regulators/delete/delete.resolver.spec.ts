@@ -11,11 +11,12 @@ import { ActivatedRouteSnapshotStub, asyncData, expectBusinessErrorToBe } from '
 
 import { DeleteResolver } from '@regulators/delete/delete.resolver';
 import { saveNotFoundRegulatorError } from '@regulators/errors/business-error';
+import { Mocked } from 'vitest';
 
 describe('DeleteResolver', () => {
   let resolver: DeleteResolver;
-  let regulatorUsersService: Partial<jest.Mocked<RegulatorUsersService>>;
-  let usersService: Partial<jest.Mocked<UsersService>>;
+  let regulatorUsersService: Partial<Mocked<RegulatorUsersService>>;
+  let usersService: Partial<Mocked<UsersService>>;
   let authStore: AuthStore;
 
   const user: RegulatorUserDTO = {
@@ -28,11 +29,11 @@ describe('DeleteResolver', () => {
 
   beforeEach(() => {
     regulatorUsersService = {
-      getRegulatorUserByCaAndId: jest.fn().mockReturnValue(asyncData(user)),
+      getRegulatorUserByCaAndId: vi.fn().mockReturnValue(asyncData(user)),
     };
 
     usersService = {
-      getCurrentUser: jest.fn().mockReturnValue(asyncData(user)),
+      getCurrentUser: vi.fn().mockReturnValue(asyncData(user)),
     };
 
     TestBed.configureTestingModule({
@@ -55,12 +56,15 @@ describe('DeleteResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
+  // The resolver's first value comes from `toObservable` (authStore.rxSelect), which only emits
+  // once its effect flushes. `TestBed.tick()` drives that flush so these tests don't depend on the
+  // auto-scheduler, which can be wedged by cross-file state under the non-isolated runner.
   it('should provide regulator information', async () => {
-    await expect(
-      lastValueFrom(
-        TestBed.runInInjectionContext(() => resolver.resolve(new ActivatedRouteSnapshotStub({ userId: '1234567' }))),
-      ),
-    ).resolves.toEqual(user);
+    const result = lastValueFrom(
+      TestBed.runInInjectionContext(() => resolver.resolve(new ActivatedRouteSnapshotStub({ userId: '1234567' }))),
+    );
+    TestBed.tick();
+    await expect(result).resolves.toEqual(user);
   });
 
   it('should return to regulator list when visiting a deleted user', async () => {
@@ -74,18 +78,18 @@ describe('DeleteResolver', () => {
       ),
     );
 
-    await expect(
-      lastValueFrom(
-        TestBed.runInInjectionContext(() =>
-          resolver.resolve(
-            new ActivatedRouteSnapshotStub({
-              accountId: '1',
-              userId: 'ABC1',
-            }),
-          ),
+    const result = lastValueFrom(
+      TestBed.runInInjectionContext(() =>
+        resolver.resolve(
+          new ActivatedRouteSnapshotStub({
+            accountId: '1',
+            userId: 'ABC1',
+          }),
         ),
       ),
-    ).rejects.toBeTruthy();
+    );
+    TestBed.tick();
+    await expect(result).rejects.toBeTruthy();
     await expectBusinessErrorToBe(saveNotFoundRegulatorError);
   });
 });

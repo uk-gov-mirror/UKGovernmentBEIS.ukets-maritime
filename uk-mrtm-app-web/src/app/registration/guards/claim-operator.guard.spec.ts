@@ -11,16 +11,17 @@ import { ActivatedRouteSnapshotStub, asyncData } from '@netz/common/testing';
 
 import { ClaimOperatorGuard } from '@registration/guards/claim-operator.guard';
 import { UserRegistrationStore } from '@registration/store/user-registration.store';
+import { Mocked } from 'vitest';
 
 describe('ClaimOperatorGuard', () => {
   let guard: ClaimOperatorGuard;
-  let operatorUsersRegistrationService: Partial<jest.Mocked<OperatorUsersRegistrationService>>;
+  let operatorUsersRegistrationService: Partial<Mocked<OperatorUsersRegistrationService>>;
 
   const user: OperatorInvitedUserInfoDTO = { firstName: 'Boy', lastName: 'Cott', email: 'test@test.gr' };
 
   beforeEach(() => {
     operatorUsersRegistrationService = {
-      acceptOperatorInvitation: jest.fn(),
+      acceptOperatorInvitation: vi.fn() as any,
     };
 
     TestBed.configureTestingModule({
@@ -40,7 +41,7 @@ describe('ClaimOperatorGuard', () => {
   it('should resolve the installation name', async () => {
     const resolvedData = { accountName: 'My Account', roleCode: 'operator' };
     operatorUsersRegistrationService.acceptOperatorInvitation.mockReturnValue(
-      asyncData({ invitationStatus: 'ACCEPTED', ...resolvedData }),
+      asyncData({ invitationStatus: 'ACCEPTED', ...resolvedData }) as any,
     );
 
     await expect(
@@ -58,7 +59,7 @@ describe('ClaimOperatorGuard', () => {
   });
 
   it('should navigate to invalid link when the link has expired', async () => {
-    const navigateSpy = jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     operatorUsersRegistrationService.acceptOperatorInvitation.mockReturnValue(
       throwError(() => new HttpErrorResponse({ error: { code: ErrorCodes.EMAIL1001 }, status: 400 })),
     );
@@ -72,7 +73,7 @@ describe('ClaimOperatorGuard', () => {
   });
 
   it('should navigate to invalid link when the link is invalid', async () => {
-    const navigateSpy = jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     operatorUsersRegistrationService.acceptOperatorInvitation.mockReturnValue(
       throwError(() => new HttpErrorResponse({ error: { code: ErrorCodes.TOKEN1001 }, status: 400 })),
     );
@@ -87,14 +88,14 @@ describe('ClaimOperatorGuard', () => {
 
   it('should navigate to contact details for new users', async () => {
     const token = 'email-token';
-    const navigateSpy = jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     operatorUsersRegistrationService.acceptOperatorInvitation.mockReturnValue(
       asyncData({
         invitationStatus: 'PENDING_TO_REGISTERED_SET_REGISTER_FORM',
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-      }),
+      }) as any,
     );
 
     await expect(
@@ -116,14 +117,14 @@ describe('ClaimOperatorGuard', () => {
 
   it('should navigate to choose password when an emitter is invited to join as an operator', async () => {
     const token = 'email-token';
-    const navigateSpy = jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     operatorUsersRegistrationService.acceptOperatorInvitation.mockReturnValue(
       asyncData({
         invitationStatus: 'ALREADY_REGISTERED_SET_PASSWORD_ONLY',
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-      }),
+      }) as any,
     );
 
     await expect(

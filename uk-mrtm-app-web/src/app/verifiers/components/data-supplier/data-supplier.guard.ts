@@ -6,16 +6,17 @@ import { map } from 'rxjs';
 
 import { VerificationBodyThirdPartyDataProvidersService } from '@mrtm/api';
 
-import { NotificationBannerStore } from '@shared/components/notification-banner';
+import { FeedbackBannerStore } from '@netz/common/components';
+
 import { isNil } from '@shared/utils';
 
 export const canActivateAppointDataSupplier = (activatedRoute: ActivatedRouteSnapshot) => {
   const dataSupplierId = activatedRoute.queryParams?.dataSupplierId;
   const formGroup = new UntypedFormGroup({});
   const service = inject(VerificationBodyThirdPartyDataProvidersService);
-  const notificationBannerStore = inject(NotificationBannerStore);
+  const feedbackBannerStore = inject(FeedbackBannerStore);
 
-  notificationBannerStore.reset();
+  feedbackBannerStore.reset();
 
   return service.getThirdPartyDataProviderOfVerificationBody().pipe(
     map((res) => {
@@ -27,7 +28,7 @@ export const canActivateAppointDataSupplier = (activatedRoute: ActivatedRouteSna
         invalid:
           'This role has already been updated by another user. You can refresh the page to view the current information.',
       });
-      notificationBannerStore.setInvalidForm(formGroup);
+      feedbackBannerStore.setInvalidForm(formGroup);
       return createUrlTreeFromSnapshot(activatedRoute, ['../../'], undefined, 'data-supplier');
     }),
   );

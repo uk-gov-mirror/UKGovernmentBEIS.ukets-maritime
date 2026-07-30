@@ -17,7 +17,7 @@ describe('EmailTemplateGuard', () => {
 
   beforeEach(() => {
     notificationTemplatesService = mockClass(NotificationTemplatesService);
-    notificationTemplatesService.getNotificationTemplateById.mockReturnValueOnce(of(mockedEmailTemplate));
+    notificationTemplatesService.getNotificationTemplateById.mockReturnValueOnce(of(mockedEmailTemplate) as any);
 
     TestBed.configureTestingModule({
       providers: [

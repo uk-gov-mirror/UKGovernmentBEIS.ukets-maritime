@@ -26,7 +26,7 @@ describe('BusinessErrorService', () => {
   it('should show an error', async () => {
     await expect(firstValueFrom(service.error$)).resolves.toBeNull();
 
-    const navigateSpy = jest.spyOn(TestBed.inject(Router), 'navigate');
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate');
     const error = buildSaveNotFoundError().withLink({ linkText: 'Back', link: ['/'] });
 
     await expect(firstValueFrom(service.showError(error))).rejects.toBeTruthy();

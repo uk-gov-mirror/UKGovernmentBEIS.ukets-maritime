@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlanContainer;
 import uk.gov.netz.api.common.exception.BusinessException;
-import uk.gov.netz.api.files.attachments.service.FileAttachmentTokenService;
+import uk.gov.netz.api.files.attachments.service.storage.FileAttachmentStorageService;
 import uk.gov.netz.api.token.FileToken;
 
 import java.util.Map;
@@ -34,7 +34,7 @@ class EmpAttachmentServiceTest {
     private EmissionsMonitoringPlanQueryService emissionsMonitoringPlanQueryService;
 
     @Mock
-    private FileAttachmentTokenService fileAttachmentTokenService;
+    private FileAttachmentStorageService fileAttachmentStorageService;
 
     @Test
     void generateGetFileAttachmentToken() {
@@ -45,12 +45,12 @@ class EmpAttachmentServiceTest {
             .build();
 
         when(emissionsMonitoringPlanQueryService.getEmpContainerById(EMP_ID)).thenReturn(empContainer);
-        when(fileAttachmentTokenService.generateGetFileAttachmentToken(FILE_UUID.toString())).thenReturn(fileToken);
+        when(fileAttachmentStorageService.generateGetFileAttachmentToken(FILE_UUID.toString())).thenReturn(fileToken);
 
         FileToken actual = empAttachmentService.generateGetFileAttachmentToken(EMP_ID, FILE_UUID);
 
         assertThat(actual).isEqualTo(fileToken);
-        verifyNoMoreInteractions(emissionsMonitoringPlanQueryService, fileAttachmentTokenService);
+        verifyNoMoreInteractions(emissionsMonitoringPlanQueryService, fileAttachmentStorageService);
     }
 
     @Test
@@ -70,6 +70,6 @@ class EmpAttachmentServiceTest {
         assertEquals(RESOURCE_NOT_FOUND, exception.getErrorCode());
 
         verifyNoMoreInteractions(emissionsMonitoringPlanQueryService);
-        verifyNoInteractions(fileAttachmentTokenService);
+        verifyNoInteractions(fileAttachmentStorageService);
     }
 }

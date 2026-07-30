@@ -3,6 +3,8 @@ package uk.gov.mrtm.api.workflow.request.core.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.common.domain.SiteVisitRequestCreateActionPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.common.validation.SiteVisitRequestCreateAccountRelatedValidator;
 import uk.gov.netz.api.authorization.core.domain.AppUser;
 import uk.gov.netz.api.authorization.rules.domain.ResourceType;
 import uk.gov.netz.api.authorization.rules.services.resource.AccountRequestAuthorizationResourceService;
@@ -19,6 +21,7 @@ import uk.gov.netz.api.workflow.request.flow.common.domain.ReportRelatedRequestC
 import uk.gov.netz.api.workflow.request.flow.common.domain.dto.RequestCreateValidationResult;
 import uk.gov.netz.api.workflow.request.flow.common.service.RequestCreateByRequestValidator;
 
+import java.time.Year;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +36,7 @@ public class MrtmAvailableRequestService {
     private final EnabledWorkflowValidator enabledWorkflowValidator;
     private final AccountRequestAuthorizationResourceService accountRequestAuthorizationResourceService;
     private final List<RequestCreateByRequestValidator> requestCreateByRequestValidators;
-
+    private final SiteVisitRequestCreateAccountRelatedValidator siteVisitRequestCreateAccountRelatedValidator;
 
     @Transactional
     public Map<String, RequestCreateValidationResult> getAvailableAerWorkflows(
@@ -63,6 +66,22 @@ public class MrtmAvailableRequestService {
                 .entrySet().stream()
                 .filter(a -> a.getValue().isAvailable())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    @Transactional
+    public Map<Year, RequestCreateValidationResult> getAvailableSiteVisitWorkflows(final long accountId) {
+        final Year currentYear = Year.now();
+        final Year lastYear = currentYear.minusYears(1);
+
+        RequestCreateValidationResult currentYearValidationResult = siteVisitRequestCreateAccountRelatedValidator
+            .validateCreation(accountId, SiteVisitRequestCreateActionPayload.builder().year(currentYear).build());
+        RequestCreateValidationResult lastYearValidationResult = siteVisitRequestCreateAccountRelatedValidator
+            .validateCreation(accountId, SiteVisitRequestCreateActionPayload.builder().year(lastYear).build());
+
+        return Map.of(
+            currentYear, currentYearValidationResult,
+            lastYear, lastYearValidationResult
+        );
     }
 
     private Set<String> getAvailableCreateActions(final Long accountId,

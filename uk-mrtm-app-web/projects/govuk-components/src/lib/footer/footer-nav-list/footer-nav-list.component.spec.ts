@@ -11,7 +11,7 @@ describe('FooterNavListComponent', () => {
     imports: [FooterNavListComponent],
     standalone: true,
     template: `
-      <govuk-footer-nav-list [title]="title" [columns]="columns" />
+      <govuk-footer-nav-list [title]="title" [columns]="$any(columns)" />
     `,
   })
   class TestComponent {

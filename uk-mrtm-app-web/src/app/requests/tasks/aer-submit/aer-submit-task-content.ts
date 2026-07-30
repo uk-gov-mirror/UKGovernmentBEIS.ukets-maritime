@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 
+import { FeedbackBannerComponent } from '@netz/common/components';
 import { RequestTaskPageContentFactory } from '@netz/common/request-task';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
 
@@ -20,7 +21,6 @@ import {
   SEND_REPORT_SUB_TASK,
   SEND_REPORT_SUB_TASK_PATH,
 } from '@requests/tasks/aer-submit/subtasks/send-report/send-report.helpers';
-import { NotificationBannerComponent } from '@shared/components';
 import { taskActionTypeToTitleTransformer } from '@shared/utils';
 
 export const aerSubmitTaskContent: RequestTaskPageContentFactory = () => {
@@ -33,7 +33,7 @@ export const aerSubmitTaskContent: RequestTaskPageContentFactory = () => {
   const shouldSubmitToRegulator = store.select(aerSubmitQuery.selectShouldSubmitToRegulator)();
 
   return {
-    pageTopComponent: NotificationBannerComponent,
+    pageTopComponent: FeedbackBannerComponent,
     header: taskActionTypeToTitleTransformer(requestTaskType, year),
     preContentComponent: [
       allowedRequestTaskActions.includes('AER_IMPORT_THIRD_PARTY_DATA_APPLICATION') && hasReportingObligation

@@ -46,7 +46,7 @@ class EmpDataGapsTest {
     @Test
     void when_data_gaps_with_responsible_person_more_than_250_chars_then_invalid() {
 
-        String responsiblePersonOrPosition = RandomStringUtils.random(251);
+        String responsiblePersonOrPosition = RandomStringUtils.secure().next(251);
         EmpDataGaps empDataGaps = createDataGaps("Some formulae used", responsiblePersonOrPosition);
         final Set<ConstraintViolation<EmpDataGaps>> violations = validator.validate(empDataGaps);
 
@@ -55,9 +55,9 @@ class EmpDataGapsTest {
     }
 
     @Test
-    void when_data_gaps_with_formulaeused_more_than_1000_chars_then_invalid() {
+    void when_data_gaps_with_formulae_used_more_than_1000_chars_then_invalid() {
 
-        String formulaeUsed = RandomStringUtils.random(10001);
+        String formulaeUsed = RandomStringUtils.secure().next(10001);
         EmpDataGaps empDataGaps = createDataGaps(formulaeUsed, "Some Responsible person or position");
         final Set<ConstraintViolation<EmpDataGaps>> violations = validator.validate(empDataGaps);
 

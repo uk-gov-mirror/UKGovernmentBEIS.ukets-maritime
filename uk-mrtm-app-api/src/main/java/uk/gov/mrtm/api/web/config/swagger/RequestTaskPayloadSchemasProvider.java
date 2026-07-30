@@ -26,6 +26,9 @@ import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceC
 import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceFinalDeterminationRequestTaskPayload;
 import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceInitialPenaltyNoticeRequestTaskPayload;
 import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceNoticeOfIntentRequestTaskPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.review.domain.SiteVisitApplicationAmendsSubmitRequestTaskPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.review.domain.SiteVisitApplicationReviewRequestTaskPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.submit.domain.SiteVisitApplicationSubmitRequestTaskPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirApplicationRespondToRegulatorCommentsRequestTaskPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirApplicationReviewRequestTaskPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirApplicationSubmitRequestTaskPayload;
@@ -115,6 +118,14 @@ public class RequestTaskPayloadSchemasProvider extends SwaggerSchemasAbstractPro
 			NonComplianceCivilPenaltyRequestTaskPayload.class);
 		addResolvedShemas(NonComplianceFinalDeterminationRequestTaskPayload.class.getSimpleName(),
 			NonComplianceFinalDeterminationRequestTaskPayload.class);
+
+		//SITE_VISIT
+		addResolvedShemas(SiteVisitApplicationSubmitRequestTaskPayload.class.getSimpleName(),
+			SiteVisitApplicationSubmitRequestTaskPayload.class);
+		addResolvedShemas(SiteVisitApplicationReviewRequestTaskPayload.class.getSimpleName(),
+			SiteVisitApplicationReviewRequestTaskPayload.class);
+		addResolvedShemas(SiteVisitApplicationAmendsSubmitRequestTaskPayload.class.getSimpleName(),
+			SiteVisitApplicationAmendsSubmitRequestTaskPayload.class);
 	}
     
 }

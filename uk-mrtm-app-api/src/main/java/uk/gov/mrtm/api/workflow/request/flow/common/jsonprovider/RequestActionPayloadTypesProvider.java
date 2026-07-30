@@ -40,6 +40,10 @@ import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceN
 import uk.gov.mrtm.api.workflow.request.flow.registry.domain.RegistryAccountUpdatedEventSubmittedRequestActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.registry.domain.RegistryRegulatorNoticeEventSubmittedRequestActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.registry.domain.RegistryUpdatedEmissionsEventSubmittedRequestActionPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.review.domain.SiteVisitApplicationAmendsSubmittedRequestActionPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.review.domain.SiteVisitApplicationReturnedForAmendsRequestActionPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.review.domain.SiteVisitApplicationReviewSubmittedRequestActionPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.submit.domain.SiteVisitApplicationSubmittedRequestActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirApplicationRespondedToRegulatorCommentsRequestActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirApplicationReviewedRequestActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirApplicationSubmittedRequestActionPayload;
@@ -96,6 +100,11 @@ import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequest
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestActionPayloadType.REGISTRY_REGULATOR_NOTICE_EVENT_SUBMITTED_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestActionPayloadType.REGISTRY_UPDATED_ACCOUNT_EVENT_SUBMITTED_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestActionPayloadType.REGISTRY_UPDATED_EMISSIONS_EVENT_SUBMITTED_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestActionPayloadType.SITE_VISIT_APPLICATION_AMENDS_SUBMITTED_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestActionPayloadType.SITE_VISIT_APPLICATION_REVIEW_SUBMITTED_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestActionPayloadType.SITE_VISIT_APPLICATION_RETURNED_FOR_AMENDS_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestActionPayloadType.SITE_VISIT_APPLICATION_SUBMITTED_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestActionPayloadType.SITE_VISIT_PEER_REVIEW_DECISION_SUBMITTED_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestActionPayloadType.VIR_APPLICATION_RESPONDED_TO_REGULATOR_COMMENTS_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestActionPayloadType.VIR_APPLICATION_REVIEWED_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestActionPayloadType.VIR_APPLICATION_SUBMITTED_PAYLOAD;
@@ -174,7 +183,14 @@ public class RequestActionPayloadTypesProvider implements JsonSubTypesProvider {
 				new NamedType(PeerReviewDecisionSubmittedRequestActionPayload.class, NON_COMPLIANCE_CIVIL_PENALTY_PEER_REVIEW_DECISION_SUBMITTED_PAYLOAD),
 				new NamedType(NonComplianceFinalDeterminationApplicationSubmittedRequestActionPayload.class, NON_COMPLIANCE_FINAL_DETERMINATION_APPLICATION_SUBMITTED_PAYLOAD),
 				new NamedType(NonComplianceApplicationClosedRequestActionPayload.class, NON_COMPLIANCE_APPLICATION_CLOSED_PAYLOAD),
-				new NamedType(NonComplianceDetailsAmendedRequestActionPayload.class, NON_COMPLIANCE_DETAILS_AMENDED_PAYLOAD)
+				new NamedType(NonComplianceDetailsAmendedRequestActionPayload.class, NON_COMPLIANCE_DETAILS_AMENDED_PAYLOAD),
+
+			    //SITE_VISIT
+			    new NamedType(SiteVisitApplicationSubmittedRequestActionPayload.class, SITE_VISIT_APPLICATION_SUBMITTED_PAYLOAD),
+				new NamedType(PeerReviewDecisionSubmittedRequestActionPayload.class, SITE_VISIT_PEER_REVIEW_DECISION_SUBMITTED_PAYLOAD),
+				new NamedType(SiteVisitApplicationReturnedForAmendsRequestActionPayload.class, SITE_VISIT_APPLICATION_RETURNED_FOR_AMENDS_PAYLOAD),
+				new NamedType(SiteVisitApplicationAmendsSubmittedRequestActionPayload.class, SITE_VISIT_APPLICATION_AMENDS_SUBMITTED_PAYLOAD),
+				new NamedType(SiteVisitApplicationReviewSubmittedRequestActionPayload.class, SITE_VISIT_APPLICATION_REVIEW_SUBMITTED_PAYLOAD)
 		);
 	}
 

@@ -5,12 +5,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { BehaviorSubject, catchError, map, shareReplay, take, throwError } from 'rxjs';
 
-import { PageHeadingComponent } from '@netz/common/components';
+import { FeedbackBannerComponent, FeedbackBannerStore, PageHeadingComponent } from '@netz/common/components';
 import { BusinessErrorService, ErrorCodes, isBadRequest } from '@netz/common/error';
 import { TabDirective, TabLazyDirective, TabsComponent } from '@netz/govuk-components';
 
 import { VerifierUsersListComponent } from '@shared/components';
-import { NotificationBannerComponent, NotificationBannerStore } from '@shared/components/notification-banner';
 import { deleteUniqueActiveVerifierError, savePartiallyNotFoundVerifierError } from '@shared/errors';
 import { FormUtils } from '@shared/utils';
 import {
@@ -32,7 +31,7 @@ import { VerifierUserStore } from '@verifiers/+state/verifier-user.store';
     TabLazyDirective,
     VerificationBodySummaryComponent,
     AsyncPipe,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
     VerifierUsersListComponent,
     DataSupplierTabComponent,
   ],
@@ -51,7 +50,7 @@ export class VerificationBodyDetailsComponent implements OnInit {
   private readonly businessErrorService: BusinessErrorService = inject(BusinessErrorService);
   private readonly verificationBodiesStoreService: VerificationBodiesStoreService =
     inject(VerificationBodiesStoreService);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   public readonly summaryInfo$ = this.verificationBodiesStoreService.pipe(selectCurrentVerificationBody);
   private readonly verifierUsers$ = this.verificationBodiesStoreService.pipe(
     selectVerificationBodyContactsState,
@@ -66,7 +65,7 @@ export class VerificationBodyDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.verificationBodiesStoreService.pipe(selectIsVerificationBodySubmitted, take(1)).subscribe((isSubmitted) => {
       if (isSubmitted) {
-        this.notificationBannerStore.setSuccessMessages(['Verification body details updated']);
+        this.feedbackBannerStore.setSuccessMessages(['Verification body details updated']);
         this.verificationBodiesStoreService.setUpdateVerificationBodyIsSubmitted(false);
       }
     });
@@ -102,7 +101,7 @@ export class VerificationBodyDetailsComponent implements OnInit {
         take(1),
       )
       .subscribe(() => {
-        this.notificationBannerStore.setSuccessMessages(
+        this.feedbackBannerStore.setSuccessMessages(
           dirtyControlsKeys.map((key) => {
             let message = '';
             if (key === 'authorityStatus') {

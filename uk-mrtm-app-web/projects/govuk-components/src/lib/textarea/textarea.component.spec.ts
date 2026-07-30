@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ControlContainer, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -12,13 +12,13 @@ describe('TextareaComponent', () => {
     imports: [TextareaComponent, ReactiveFormsModule],
     standalone: true,
     template:
-      '<div [labelSize]="labelSize" [isLabelHidden]="isLabelHidden" govuk-textarea [formControl]="control" [maxLength]="maxLength"></div>',
+      '<div [labelSize]="labelSize()" [isLabelHidden]="isLabelHidden()" govuk-textarea [formControl]="control" [maxLength]="maxLength()"></div>',
   })
   class TestComponent {
     control = new FormControl();
-    maxLength: number;
-    isLabelHidden = false;
-    labelSize: LabelSizeType = 'normal';
+    readonly maxLength = signal<number>(undefined);
+    readonly isLabelHidden = signal(false);
+    readonly labelSize = signal<LabelSizeType>('normal');
   }
 
   let component: TextareaComponent;
@@ -76,7 +76,7 @@ describe('TextareaComponent', () => {
     const element: HTMLElement = fixture.nativeElement;
     expect(element.querySelector('.govuk-character-count__message')).toBeNull();
 
-    hostComponent.maxLength = 10;
+    hostComponent.maxLength.set(10);
     hostComponent.control.clearValidators();
     hostComponent.control.setValidators(GovukValidators.maxLength(10, 'no more than 10'));
     hostComponent.control.updateValueAndValidity();
@@ -109,27 +109,27 @@ describe('TextareaComponent', () => {
     const hostElement: HTMLElement = fixture.nativeElement;
     const label = hostElement.querySelector('label');
 
-    hostComponent.isLabelHidden = false;
+    hostComponent.isLabelHidden.set(false);
     fixture.detectChanges();
 
     expect(label.className).toEqual('govuk-label');
 
-    hostComponent.labelSize = 'normal';
+    hostComponent.labelSize.set('normal');
     fixture.detectChanges();
 
     expect(label.className).toEqual('govuk-label');
 
-    hostComponent.labelSize = 'small';
+    hostComponent.labelSize.set('small');
     fixture.detectChanges();
 
     expect(label.className).toEqual('govuk-label govuk-label--s');
 
-    hostComponent.labelSize = 'medium';
+    hostComponent.labelSize.set('medium');
     fixture.detectChanges();
 
     expect(label.className).toEqual('govuk-label govuk-label--m');
 
-    hostComponent.labelSize = 'large';
+    hostComponent.labelSize.set('large');
     fixture.detectChanges();
 
     expect(label.className).toEqual('govuk-label govuk-label--l');

@@ -32,7 +32,7 @@ describe('UploadShipsComponent', () => {
   let store: RequestTaskStore;
   let page: Page;
 
-  const getFixedUUID = jest.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
+  const getFixedUUID = vi.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
   Object.defineProperty(window, 'crypto', {
     value: { getRandomValues: getFixedUUID, randomUUID: getFixedUUID },
   });
@@ -44,7 +44,7 @@ describe('UploadShipsComponent', () => {
           name: 'ships.xml',
           size: 1024,
           type: 'text/xml',
-          text: jest.fn().mockResolvedValue(xml),
+          text: vi.fn().mockResolvedValue(xml),
         },
       ],
       value: 'test',
@@ -53,9 +53,9 @@ describe('UploadShipsComponent', () => {
 
   const route = new ActivatedRouteStub();
   const taskService: MockType<TaskService<any>> = {
-    saveSubtask: jest.fn().mockReturnValue(of({})),
+    saveSubtask: vi.fn().mockReturnValue(of({})),
   };
-  const taskServiceSpy = jest.spyOn(taskService, 'saveSubtask');
+  const taskServiceSpy = vi.spyOn(taskService, 'saveSubtask');
 
   class Page extends BasePage<UploadShipsComponent> {
     get tableContents(): string[] {

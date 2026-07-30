@@ -4,7 +4,6 @@ import { Routes } from '@angular/router';
 import { PendingRequestGuard } from '@core/guards';
 import { VerificationBodiesStoreService } from '@verification-bodies/+state/verification-bodies-store.service';
 import { canDeactivateCreateVerificationBodyGuard } from '@verification-bodies/create-verification-body';
-import { VerificationBodiesComponent } from '@verification-bodies/verification-bodies.component';
 import { verificationBodiesGuard } from '@verification-bodies/verification-bodies.guard';
 import { verificationBodyDetailsGuard } from '@verification-bodies/verification-body-details';
 
@@ -12,10 +11,11 @@ export const VERIFICATION_BODIES_ROUTES: Routes = [
   {
     path: '',
     title: 'Verification Bodies',
-    component: VerificationBodiesComponent,
     canActivate: [verificationBodiesGuard],
     canDeactivate: [PendingRequestGuard],
     data: { breadcrumb: 'Manage verification bodies' },
+    loadComponent: () =>
+      import('@verification-bodies/verification-bodies.component').then((c) => c.VerificationBodiesComponent),
   },
   {
     path: 'add',

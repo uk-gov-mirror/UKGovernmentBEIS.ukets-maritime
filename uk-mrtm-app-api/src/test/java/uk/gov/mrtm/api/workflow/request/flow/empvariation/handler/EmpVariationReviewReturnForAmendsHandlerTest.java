@@ -117,13 +117,13 @@ public class EmpVariationReviewReturnForAmendsHandlerTest {
                 .payload(newEmpVariationRequestPayload)
                 .build();
 
-        when(requestTaskService.findTaskById(taskId)).thenReturn(requestTask);
+        when(requestTaskService.findTaskByIdForUpdate(taskId)).thenReturn(requestTask);
 
         // Invoke
         handler.process(taskId, MrtmRequestTaskActionType.EMP_VARIATION_REVIEW_RETURN_FOR_AMENDS, appUser, emptyPayload);
 
         // Verify
-        verify(requestTaskService, times(1)).findTaskById(taskId);
+        verify(requestTaskService, times(1)).findTaskByIdForUpdate(taskId);
         verify(validatorService, times(1)).validate(payload);
         verify(service, times(1)).saveRequestReturnForAmends(requestTask, appUser);
         verify(requestService, times(1))
@@ -160,7 +160,7 @@ public class EmpVariationReviewReturnForAmendsHandlerTest {
                 .request(Request.builder().build())
                 .build();
 
-        when(requestTaskService.findTaskById(taskId)).thenReturn(requestTask);
+        when(requestTaskService.findTaskByIdForUpdate(taskId)).thenReturn(requestTask);
         doThrow(new BusinessException((MrtmErrorCode.INVALID_EMP_VARIATION_REVIEW))).when(validatorService)
                 .validate(payload);
 
@@ -170,7 +170,7 @@ public class EmpVariationReviewReturnForAmendsHandlerTest {
 
         // Verify
         assertEquals(MrtmErrorCode.INVALID_EMP_VARIATION_REVIEW, businessException.getErrorCode());
-        verify(requestTaskService, times(1)).findTaskById(taskId);
+        verify(requestTaskService, times(1)).findTaskByIdForUpdate(taskId);
         verify(validatorService, times(1)).validate(payload);
         verify(service, never()).saveRequestReturnForAmends(any(), any());
         verify(requestService, never()).addActionToRequest(any(), any(), any(), anyString());

@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -23,7 +22,7 @@ public class ExternalAerAggregatedDataAnnualEmission {
     @Valid
     @NotEmpty
     @JsonDeserialize(as = LinkedHashSet.class)
-    private Set<@NotNull @Valid ExternalAerAggregatedDataFuelConsumption> emissions = new HashSet<>();
+    private Set<@NotNull @Valid ExternalAerAggregatedDataFuelConsumption> emissions = new LinkedHashSet<>();
 
     @NotNull
     @Valid

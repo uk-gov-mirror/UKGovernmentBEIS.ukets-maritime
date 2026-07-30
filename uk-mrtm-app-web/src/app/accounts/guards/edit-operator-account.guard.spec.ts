@@ -49,12 +49,17 @@ describe('EditOperatorAccountGuard -> canActivate', () => {
   it('should allow only for regulators and not closed accounts', async () => {
     authStore.setUserState({ roleType: 'REGULATOR' });
     store.setCurrentAccount(mockedAccount);
-    const allowReg = await firstValueFrom(guard.canActivate());
-    expect(allowReg).toEqual(true);
+    // `canActivate()` combines `authStore.rxSelect` (toObservable), which only emits once its
+    // effect flushes. `TestBed.tick()` drives that flush so the test doesn't depend on the
+    // auto-scheduler, which can be wedged by cross-file state under the non-isolated runner.
+    const allowRegResult = firstValueFrom(guard.canActivate());
+    TestBed.tick();
+    expect(await allowRegResult).toEqual(true);
 
     authStore.setUserState({ roleType: 'OPERATOR' });
     store.setCurrentAccount({ account: { ...mockedAccount.account, status: 'CLOSED' } });
-    const allowOp = await firstValueFrom(guard.canActivate());
-    expect(allowOp).toEqual(false);
+    const allowOpResult = firstValueFrom(guard.canActivate());
+    TestBed.tick();
+    expect(await allowOpResult).toEqual(false);
   });
 });

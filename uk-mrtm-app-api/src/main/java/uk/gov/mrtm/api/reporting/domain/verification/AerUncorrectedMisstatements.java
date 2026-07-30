@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import uk.gov.mrtm.api.reporting.domain.common.UncorrectedItem;
 import uk.gov.netz.api.common.validation.SpELExpression;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -29,5 +28,5 @@ public class AerUncorrectedMisstatements {
     @Builder.Default
     @Valid
     @JsonDeserialize(as = LinkedHashSet.class)
-    private Set<@NotNull UncorrectedItem> uncorrectedMisstatements = new HashSet<>();
+    private Set<@NotNull UncorrectedItem> uncorrectedMisstatements = new LinkedHashSet<>();
 }

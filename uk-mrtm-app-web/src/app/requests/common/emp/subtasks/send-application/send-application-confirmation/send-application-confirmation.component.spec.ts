@@ -18,10 +18,10 @@ describe('SendApplicationConfirmationComponent', () => {
 
   const activatedRouteStub = new ActivatedRouteStub();
   const taskServiceMock: MockType<TaskService<EmpTaskPayload>> = {
-    submit: jest.fn().mockReturnValue(of({})),
+    submit: vi.fn().mockReturnValue(of({})),
   };
 
-  const taskServiceSpy = jest.spyOn(taskServiceMock, 'submit');
+  const taskServiceSpy = vi.spyOn(taskServiceMock, 'submit');
 
   class Page extends BasePage<SendApplicationConfirmationComponent> {}
 
@@ -51,7 +51,7 @@ describe('SendApplicationConfirmationComponent', () => {
   });
 
   it('should submit task', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     page.standardButton.click();
     fixture.detectChanges();
     expect(taskServiceSpy).toHaveBeenCalledTimes(1);

@@ -20,7 +20,7 @@ describe('DeleteNoteComponent', () => {
 
   const activatedRoute = new ActivatedRouteStub({ accountId: 1, noteId: 2 });
   const accountNotesService: MockType<AccountNotesService> = {
-    deleteAccountNote: jest.fn().mockReturnValue(of(null)),
+    deleteAccountNote: vi.fn().mockReturnValue(of(null)),
   };
 
   @Component({
@@ -58,7 +58,7 @@ describe('DeleteNoteComponent', () => {
   });
 
   it('should delete', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     page.submitButton.click();
 

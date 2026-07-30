@@ -209,4 +209,23 @@ export const taskActionTypeToTitleMap: Record<
   NON_COMPLIANCE_FINAL_DETERMINATION_APPLICATION_SUBMITTED: 'Conclusion provided',
   NON_COMPLIANCE_APPLICATION_CLOSED: 'Non-compliance closed',
   NON_COMPLIANCE_DETAILS_AMENDED: 'Non-compliance details updated',
+
+  //SITE VISIT
+  SITE_VISIT: 'Annual virtual site visit',
+  SITE_VISIT_APPLICATION_SUBMIT: 'Apply for a virtual site visit for annual',
+  SITE_VISIT_WAIT_FOR_REVIEW: 'Virtual site visit application for annual sent to regulator',
+  SITE_VISIT_APPLICATION_SUBMITTED: 'Virtual site visit application for annual',
+  SITE_VISIT_APPLICATION_REVIEW: 'Review virtual site visit application for annual',
+  SITE_VISIT_WAIT_FOR_PEER_REVIEW: 'Virtual site visit application for annual sent to peer reviewer',
+  SITE_VISIT_APPLICATION_PEER_REVIEW: 'Virtual site visit application for annual peer review',
+  SITE_VISIT_WAIT_FOR_AMENDS: 'Virtual site visit application for annual returned to operator',
+  SITE_VISIT_APPLICATION_AMENDS_SUBMIT: 'Amend virtual site visit application for annual',
+  SITE_VISIT_APPLICATION_AMENDS_SUBMITTED: 'Virtual site visit application amends for annual submitted',
+  SITE_VISIT_APPLICATION_PEER_REVIEWER_ACCEPTED: 'Peer review agreement submitted',
+  SITE_VISIT_APPLICATION_PEER_REVIEWER_REJECTED: 'Peer review disagreement submitted',
+  SITE_VISIT_APPLICATION_RETURNED_FOR_AMENDS:
+    'Virtual site visit application for annual returned to operator for amends',
+  SITE_VISIT_APPLICATION_APPROVED: 'Virtual site visit application for annual accepted',
+  SITE_VISIT_APPLICATION_REJECTED: 'Virtual site visit application for annual rejected',
+  SITE_VISIT_APPLICATION_CANCELLED: 'Virtual site visit application for annual cancelled',
 };

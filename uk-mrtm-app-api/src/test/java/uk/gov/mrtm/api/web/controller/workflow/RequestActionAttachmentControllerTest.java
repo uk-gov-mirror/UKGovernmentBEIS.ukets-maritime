@@ -23,7 +23,7 @@ import uk.gov.mrtm.api.web.controller.exception.ExceptionControllerAdvice;
 import uk.gov.netz.api.security.AppSecurityComponent;
 import uk.gov.netz.api.security.AuthorizationAspectUserResolver;
 import uk.gov.netz.api.security.AuthorizedAspect;
-import uk.gov.netz.api.workflow.request.application.attachment.requestaction.RequestActionAttachmentService;
+import uk.gov.netz.api.workflow.request.application.attachment.requestaction.RequestActionFileAttachmentService;
 
 import java.util.UUID;
 
@@ -46,7 +46,7 @@ class RequestActionAttachmentControllerTest {
     private RequestActionAttachmentController controller;
 
     @Mock
-    private RequestActionAttachmentService requestActionAttachmentService;
+    private RequestActionFileAttachmentService requestActionAttachmentService;
 
     @Mock
     private AppSecurityComponent appSecurityComponent;

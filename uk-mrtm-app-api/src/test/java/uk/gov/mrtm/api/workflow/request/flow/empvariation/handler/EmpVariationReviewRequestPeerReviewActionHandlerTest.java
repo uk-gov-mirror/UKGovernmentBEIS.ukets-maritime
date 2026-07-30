@@ -69,7 +69,7 @@ class EmpVariationReviewRequestPeerReviewActionHandlerTest {
         		.build();
         AppUser appUser = AppUser.builder().userId("userId").build();
 
-        when(requestTaskService.findTaskById(requestTaskId)).thenReturn(requestTask);
+        when(requestTaskService.findTaskByIdForUpdate(requestTaskId)).thenReturn(requestTask);
 
         RequestTaskPayload requestTaskPayload =
             handler.process(requestTaskId, requestTaskActionType, appUser, taskActionPayload);

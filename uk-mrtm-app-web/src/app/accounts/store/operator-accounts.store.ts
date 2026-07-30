@@ -13,6 +13,7 @@ import {
   MaritimeAccountUpdateService,
   MrtmAccountDTO,
   MrtmAccountEmpDTO,
+  MrtmAccountSearchCriteria,
 } from '@mrtm/api';
 
 import { PendingRequestService } from '@netz/common/services';
@@ -97,10 +98,13 @@ export class OperatorAccountsStore extends Store<OperatorAccountsState> {
     return this.updateService.updateMaritimeAccount(accountId, this.getState().currentAccount.account, 'response');
   }
 
-  setSearchTerm(searchTerm: string) {
+  setSearchFilters(searchFilters: MrtmAccountSearchCriteria) {
     this.setState(
       produce(this.getState(), (state) => {
-        state.accountsSearch.searchTerm = searchTerm;
+        state.accountsSearch = {
+          ...state.accountsSearch,
+          ...searchFilters,
+        };
       }),
     );
   }

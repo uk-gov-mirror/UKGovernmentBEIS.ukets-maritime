@@ -4,7 +4,12 @@ import { RouterLink } from '@angular/router';
 
 import { take } from 'rxjs';
 
-import { PageHeadingComponent, ReturnToTaskOrActionPageComponent } from '@netz/common/components';
+import {
+  FeedbackBannerComponent,
+  FeedbackBannerStore,
+  PageHeadingComponent,
+  ReturnToTaskOrActionPageComponent,
+} from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { TaskService } from '@netz/common/forms';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
@@ -17,8 +22,7 @@ import { aerPortsMap } from '@requests/common/aer/subtasks/aer-ports/aer-ports-s
 import { FilterByShipAndDateRange, FilterByShipAndDateRangeComponent } from '@requests/common/components';
 import { TaskItemStatus } from '@requests/common/task-item-status';
 import { PaginationStatePersistableComponent } from '@shared/abstraction';
-import { NotificationBannerComponent, PortCallsListSummaryTemplateComponent } from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
+import { PortCallsListSummaryTemplateComponent } from '@shared/components';
 import { PersistablePaginationState } from '@shared/services';
 import { AerPortSummaryItemDto } from '@shared/types';
 import { isSameDayOrAfter, isSameDayOrBefore } from '@shared/utils/dates.utils';
@@ -35,7 +39,7 @@ import { isSameDayOrAfter, isSameDayOrBefore } from '@shared/utils/dates.utils';
     ReactiveFormsModule,
     PendingButtonDirective,
     FilterByShipAndDateRangeComponent,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
   ],
   standalone: true,
   templateUrl: './aer-ports-list.component.html',
@@ -43,7 +47,7 @@ import { isSameDayOrAfter, isSameDayOrBefore } from '@shared/utils/dates.utils';
 })
 export class AerPortsListComponent extends PaginationStatePersistableComponent {
   private readonly formGroup = new UntypedFormGroup({});
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private readonly store = inject(RequestTaskStore);
   private readonly service: TaskService<AerSubmitTaskPayload> = inject(TaskService);
   private readonly filter = signal<FilterByShipAndDateRange | null>(
@@ -122,7 +126,7 @@ export class AerPortsListComponent extends PaginationStatePersistableComponent {
   onDelete(portCalls: Array<AerPortSummaryItemDto>): void {
     if (portCalls.length) {
       this.formGroup.reset();
-      this.notificationBannerStore.reset();
+      this.feedbackBannerStore.reset();
 
       this.service
         .saveSubtask(AER_PORTS_SUB_TASK, AerPortsWizardStep.DELETE_PORT, this.activatedRoute, portCalls)
@@ -130,7 +134,7 @@ export class AerPortsListComponent extends PaginationStatePersistableComponent {
         .subscribe();
     } else {
       this.formGroup.setErrors({ NONE_SELECTED: 'Select the port calls to delete' });
-      this.notificationBannerStore.setInvalidForm(this.formGroup);
+      this.feedbackBannerStore.setInvalidForm(this.formGroup);
     }
   }
 
@@ -159,12 +163,12 @@ export class AerPortsListComponent extends PaginationStatePersistableComponent {
 
     if (!isValid) {
       this.formGroup.setErrors(errors);
-      this.notificationBannerStore.setInvalidForm(this.formGroup);
+      this.feedbackBannerStore.setInvalidForm(this.formGroup);
       return;
     }
 
     this.formGroup.reset();
-    this.notificationBannerStore.reset();
+    this.feedbackBannerStore.reset();
 
     this.router.navigate(['../'], { relativeTo: this.activatedRoute });
   }

@@ -50,8 +50,8 @@ describe('ProcessActionsComponent', () => {
     roleType: UserStateDTO['roleType'],
     mockedWorkflows?: Partial<Record<MrtmRequestType, RequestCreateValidationResult>>,
   ) => {
-    requestService.processRequestCreateAction = jest.fn().mockReturnValue(of(processRequestCreateActionResponse));
-    requestService.getAvailableWorkflows = jest.fn().mockReturnValue(of(mockedWorkflows ?? {}));
+    requestService.processRequestCreateAction = vi.fn().mockReturnValue(of(processRequestCreateActionResponse));
+    requestService.getAvailableWorkflows = vi.fn().mockReturnValue(of(mockedWorkflows ?? {}));
     await TestBed.configureTestingModule({
       providers: [
         provideRouter([
@@ -145,11 +145,11 @@ describe('ProcessActionsComponent', () => {
     it('should processRequestCreateAction, navigate to the task item page, when a single Task Item is received', async () => {
       const expectedRequestType = 'ACCOUNT_CLOSURE';
       const getItemsResponse: ItemDTOResponse = { items: [{ requestType: expectedRequestType, taskId }] };
-      requestItemsService.getItemsByRequest = jest.fn().mockReturnValueOnce(of(getItemsResponse));
+      requestItemsService.getItemsByRequest = vi.fn().mockReturnValueOnce(of(getItemsResponse));
       await createModule('REGULATOR', { ACCOUNT_CLOSURE: { valid: true } });
 
-      const onRequestButtonClickSpy = jest.spyOn(component, 'onRequestButtonClick');
-      const navigateSpy = jest.spyOn(router, 'navigate');
+      const onRequestButtonClickSpy = vi.spyOn(component, 'onRequestButtonClick');
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
       page.buttons[0].click();
 
@@ -170,17 +170,17 @@ describe('ProcessActionsComponent', () => {
     });
 
     it('should processRequestCreateAction, navigate to dashboard, when multiple or 0 task Items are received', async () => {
-      requestItemsService.getItemsByRequest = jest.fn().mockReturnValueOnce(of({ items: [] }));
+      requestItemsService.getItemsByRequest = vi.fn().mockReturnValueOnce(of({ items: [] }));
       await createModule('REGULATOR', { ACCOUNT_CLOSURE: { valid: true } });
 
-      const navigateSpy = jest.spyOn(router, 'navigate');
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
       page.buttons[0].click();
       fixture.detectChanges();
 
       expect(navigateSpy).toHaveBeenCalledTimes(1);
       expect(navigateSpy).toHaveBeenLastCalledWith(['/dashboard']);
 
-      requestItemsService.getItemsByRequest = jest.fn().mockReturnValueOnce(
+      requestItemsService.getItemsByRequest = vi.fn().mockReturnValueOnce(
         of({
           items: [
             { requestType: 'NOTIFICATION_OF_COMPLIANCE_P3', taskId: taskId },

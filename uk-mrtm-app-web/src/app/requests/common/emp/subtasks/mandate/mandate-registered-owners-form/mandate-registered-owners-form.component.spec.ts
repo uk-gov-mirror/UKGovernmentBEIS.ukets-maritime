@@ -14,7 +14,7 @@ describe('MandateRegisteredOwnersFormComponent', () => {
   const taskServiceMock: MockType<TaskService<any>> = {};
 
   beforeEach(() => {
-    const getFixedUUID = jest.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
+    const getFixedUUID = vi.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
     Object.defineProperty(window, 'crypto', {
       value: { getRandomValues: getFixedUUID, randomUUID: getFixedUUID },
     });

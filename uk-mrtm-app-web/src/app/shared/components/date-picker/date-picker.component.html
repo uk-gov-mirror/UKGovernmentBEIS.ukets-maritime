@@ -10,9 +10,7 @@
   }
 </label>
 @if (hint()) {
-  <div [id]="`${identifier}-hint`" class="govuk-hint">
-    {{ hint() }}
-  </div>
+  <div [id]="`${identifier}-hint`" class="govuk-hint" [innerHTML]="hint() | safeHtml"></div>
 }
 @if (shouldDisplayErrors) {
   <govuk-error-message [errors]="control.errors" [identifier]="identifier" />

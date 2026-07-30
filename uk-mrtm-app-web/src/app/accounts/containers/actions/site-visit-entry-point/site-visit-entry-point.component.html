@@ -1,0 +1,17 @@
+@if (availableYears(); as availableYears) {
+  <mrtm-wizard-step heading="Select the reporting year" [formGroup]="formGroup" (formSubmit)="onSubmit()">
+    <div
+      formControlName="year"
+      govuk-radio
+      hint="You are eligible to apply for a virtual site visit for the displayed years">
+      <ng-container govukLegend><span class="govuk-visually-hidden">Select the reporting year</span></ng-container>
+      @for (year of availableYears; track year) {
+        <govuk-radio-option label="{{ year }}" [value]="year" />
+      }
+    </div>
+  </mrtm-wizard-step>
+  <div>
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" aria-hidden="true" />
+    <a govukLink routerLink="../">Return to: Start task</a>
+  </div>
+}

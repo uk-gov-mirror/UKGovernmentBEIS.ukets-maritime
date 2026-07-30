@@ -99,13 +99,14 @@ describe('LinkDirective', () => {
     expect(parentElement.classList).toContain('govuk-breadcrumbs__list-item');
   });
 
-  it('should apply the active class to li element', () => {
+  it('should apply the active class to li element', async () => {
     const element: HTMLElement = fixture.nativeElement;
 
     expect(element.querySelector('.govuk-header-legacy__navigation-item--active')).toBeFalsy();
 
     hostComponent.headerLink().nativeElement.click();
 
+    await fixture.whenStable();
     fixture.detectChanges();
 
     expect(element.querySelector('.govuk-header-legacy__navigation-item--active')).toBeTruthy();

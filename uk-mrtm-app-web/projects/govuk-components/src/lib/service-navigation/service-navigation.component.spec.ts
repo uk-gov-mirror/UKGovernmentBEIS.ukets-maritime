@@ -10,15 +10,15 @@ describe('ServiceNavigationComponent', () => {
   beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
-      value: jest.fn().mockImplementation((query) => ({
+      value: vi.fn().mockImplementation((query) => ({
         matches: false,
         media: query,
         onchange: null,
-        addListener: jest.fn(), // deprecated
-        removeListener: jest.fn(), // deprecated
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
+        addListener: vi.fn(), // deprecated
+        removeListener: vi.fn(), // deprecated
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
       })),
     });
   });
@@ -98,7 +98,7 @@ describe('ServiceNavigationComponent', () => {
     fixture.componentRef.setInput('navigationItems', [{ href: '/page-1', text: 'Page 1' }]);
     fixture.componentRef.setInput('collapseNavigationOnMobile', true);
     // Mock isDesktop to return false
-    jest.spyOn(component, 'isDesktop').mockReturnValue(false);
+    vi.spyOn(component, 'isDesktop').mockReturnValue(false);
     fixture.detectChanges();
 
     const menuButton = fixture.nativeElement.querySelector('.govuk-service-navigation__toggle');
@@ -108,7 +108,7 @@ describe('ServiceNavigationComponent', () => {
 
   it('should update aria-expanded on the menu button when toggled', () => {
     fixture.componentRef.setInput('navigationItems', [{ href: '/page-1', text: 'Page 1' }]);
-    jest.spyOn(component, 'isDesktop').mockReturnValue(false);
+    vi.spyOn(component, 'isDesktop').mockReturnValue(false);
     fixture.detectChanges();
 
     const menuButton = fixture.nativeElement.querySelector('.govuk-service-navigation__toggle');

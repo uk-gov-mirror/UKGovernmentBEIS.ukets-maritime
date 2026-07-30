@@ -2,39 +2,42 @@ package uk.gov.mrtm.api.workflow.request.flow.empissuance.review.handler;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskActionType;
+import uk.gov.mrtm.api.workflow.request.flow.common.domain.RequestGeneratedFileType;
+import uk.gov.mrtm.api.workflow.request.flow.common.emp.event.EmpReviewDocumentGenerateDto;
+import uk.gov.mrtm.api.workflow.request.flow.common.emp.handler.EmpReviewDocumentGenerateService;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpIssuanceDetermination;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpIssuanceDeterminationType;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceApplicationReviewRequestTaskPayload;
-import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.service.RequestEmpReviewService;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.validation.EmpIssuanceReviewNotifyOperatorValidatorService;
+import uk.gov.mrtm.api.workflow.request.flow.empissuance.submit.domain.EmpIssuanceRequestPayload;
 import uk.gov.netz.api.authorization.core.domain.AppUser;
-import uk.gov.netz.api.workflow.request.WorkflowService;
+import uk.gov.netz.api.documenttemplate.domain.DocumentTemplateStage;
 import uk.gov.netz.api.workflow.request.core.domain.Request;
 import uk.gov.netz.api.workflow.request.core.domain.RequestTask;
-import uk.gov.netz.api.workflow.request.core.domain.RequestTaskPayload;
 import uk.gov.netz.api.workflow.request.core.service.RequestTaskService;
-import uk.gov.netz.api.workflow.request.flow.common.constants.BpmnProcessConstants;
 import uk.gov.netz.api.workflow.request.flow.common.domain.DecisionNotification;
-import uk.gov.netz.api.workflow.request.flow.common.domain.ReviewOutcome;
+import uk.gov.netz.api.workflow.request.flow.common.domain.NotifyOperatorForDecisionRequestTaskActionPayload;
 
-import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class EmpIssuanceReviewNotifyOperatorActionHandlerTest {
 
     @InjectMocks
-    private EmpIssuanceReviewNotifyOperatorActionHandler handler;
+    private EmpIssuanceReviewNotifyOperatorActionHandler cut;
 
     @Mock
     private RequestTaskService requestTaskService;
@@ -43,62 +46,82 @@ class EmpIssuanceReviewNotifyOperatorActionHandlerTest {
     private RequestEmpReviewService requestEmpReviewService;
 
     @Mock
-    private EmpIssuanceReviewNotifyOperatorValidatorService reviewNotifyOperatorValidatorService;
+    private EmpIssuanceReviewNotifyOperatorValidatorService empIssuanceReviewNotifyOperatorValidatorService;
 
     @Mock
-    private WorkflowService workflowService;
+    private EmpReviewDocumentGenerateService empReviewDocumentGenerateService;
 
-    @Test
-    void process() {
+    @ParameterizedTest
+    @MethodSource
+    void process(EmpIssuanceDeterminationType determinationType, int generateEmpInvocations) {
         Long requestTaskId = 1L;
         String requestId = "REQUEST-1";
         String requestTaskActionType = MrtmRequestTaskActionType.EMP_ISSUANCE_NOTIFY_OPERATOR_FOR_DECISION;
         AppUser appUser = AppUser.builder().build();
+
         DecisionNotification decisionNotification = DecisionNotification.builder().build();
-        EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload requestTaskActionPayload =
-            EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload.builder()
+
+        NotifyOperatorForDecisionRequestTaskActionPayload requestTaskActionPayload =
+            NotifyOperatorForDecisionRequestTaskActionPayload.builder()
                 .decisionNotification(decisionNotification)
                 .build();
-        EmpIssuanceDetermination determination = EmpIssuanceDetermination.builder()
-            .type(EmpIssuanceDeterminationType.APPROVED).build();
-        EmpIssuanceApplicationReviewRequestTaskPayload expectedRequestTaskPayload =
-            EmpIssuanceApplicationReviewRequestTaskPayload.builder()
-                .determination(determination)
-                .build();
-        Request request = Request.builder().id(requestId).build();
+
+        EmpIssuanceRequestPayload requestPayload = EmpIssuanceRequestPayload.builder()
+            .determination(EmpIssuanceDetermination.builder().type(determinationType).build())
+            .build();
+
+        Request request = Request.builder().id(requestId).payload(requestPayload).build();
+
+        EmpIssuanceApplicationReviewRequestTaskPayload requestTaskPayload = EmpIssuanceApplicationReviewRequestTaskPayload.builder()
+            .determination(EmpIssuanceDetermination.builder()
+                .type(determinationType)
+                .build())
+            .build();
+
         RequestTask requestTask = RequestTask.builder()
             .id(requestTaskId)
             .processTaskId("process-task-id")
-            .payload(expectedRequestTaskPayload)
             .request(request)
+            .payload(requestTaskPayload)
             .build();
 
-        when(requestTaskService.findTaskById(requestTaskId)).thenReturn(requestTask);
+        when(requestTaskService.findTaskByIdForUpdate(requestTaskId)).thenReturn(requestTask);
 
         //invoke
-        RequestTaskPayload requestTaskPayload = handler.process(requestTaskId,
-            requestTaskActionType, appUser, requestTaskActionPayload);
+        cut.process(requestTaskId, requestTaskActionType, appUser, requestTaskActionPayload);
 
-        assertThat(requestTaskPayload).isEqualTo(expectedRequestTaskPayload);
-        verify(requestTaskService, times(1)).findTaskById(requestTaskId);
+        assertThat(requestTaskPayload.getFinalDocumentsGenerationInProgress()).isTrue();
+        assertThat(requestTaskPayload.getFinalDocumentsGenerationSuccessful()).isNull();
+
+        verify(requestTaskService, times(1)).findTaskByIdForUpdate(requestTaskId);
         verify(requestEmpReviewService,times(1))
             .saveDecisionNotification(requestTask, decisionNotification, appUser);
-        verify(reviewNotifyOperatorValidatorService, times(1))
+        verify(empIssuanceReviewNotifyOperatorValidatorService, times(1))
             .validate(requestTask, requestTaskActionPayload, appUser);
-        verify(workflowService, times(1))
-            .completeTask(requestTask.getProcessTaskId(), Map.of(
-                BpmnProcessConstants.REQUEST_ID, requestId,
-                BpmnProcessConstants.REVIEW_DETERMINATION, determination.getType(),
-                BpmnProcessConstants.REVIEW_OUTCOME, ReviewOutcome.NOTIFY_OPERATOR));
+        verify(empReviewDocumentGenerateService, times(generateEmpInvocations)).generate(EmpReviewDocumentGenerateDto.builder()
+            .requestTaskId(requestTask.getId())
+            .type(RequestGeneratedFileType.EMP)
+            .stage(DocumentTemplateStage.FINAL)
+            .decisionNotification(decisionNotification)
+            .build());
+        verify(empReviewDocumentGenerateService, times(1)).generate(EmpReviewDocumentGenerateDto.builder()
+            .requestTaskId(requestTask.getId())
+            .type(RequestGeneratedFileType.OFFICIAL_NOTICE)
+            .stage(DocumentTemplateStage.FINAL)
+            .decisionNotification(decisionNotification)
+            .build());
+    }
 
-        verifyNoMoreInteractions(requestTaskService, requestEmpReviewService,
-            reviewNotifyOperatorValidatorService, workflowService);
+    private static Stream<Arguments> process() {
+        return Stream.of(
+            Arguments.of(EmpIssuanceDeterminationType.APPROVED, 1),
+            Arguments.of(EmpIssuanceDeterminationType.DEEMED_WITHDRAWN, 0)
+        );
     }
 
     @Test
     void getTypes() {
-        assertThat(handler.getTypes())
+        assertThat(cut.getTypes())
             .containsExactly(MrtmRequestTaskActionType.EMP_ISSUANCE_NOTIFY_OPERATOR_FOR_DECISION);
     }
-
 }

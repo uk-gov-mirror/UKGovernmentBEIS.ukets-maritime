@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import uk.gov.mrtm.api.account.domain.dto.MrtmDocumentTemplateAccountData;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.dto.EmissionsMonitoringPlanDTO;
 import uk.gov.mrtm.api.emissionsmonitoringplan.service.EmissionsMonitoringPlanQueryService;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateType;
 import uk.gov.mrtm.api.workflow.request.flow.common.service.EmpCreateDocumentService;
+import uk.gov.mrtm.api.workflow.request.flow.common.service.MrtmDocumentTemplateAccountDataCollectFromAccountService;
 import uk.gov.mrtm.api.workflow.request.flow.empreissue.domain.EmpReissueRequestMetadata;
 import uk.gov.mrtm.api.workflow.request.flow.empreissue.mapper.EmpReissueRequestMapper;
 import uk.gov.mrtm.api.workflow.request.flow.empvariation.domain.EmpVariationRequestInfo;
@@ -31,12 +34,13 @@ class EmpReissueCreateEmpDocumentService {
 	private final EmpVariationRequestQueryService empVariationRequestQueryService;
 	private final EmpReissueRequestMapper empReissueRequestMapper = Mappers.getMapper(EmpReissueRequestMapper.class);
 	private final DateService dateService;
+	private final MrtmDocumentTemplateAccountDataCollectFromAccountService mrtmAccountTemplateDataCollectFromAccountService;
 
 	@Transactional
     public CompletableFuture<FileInfoDTO> create(Request request) {
 		final EmpReissueRequestMetadata requestMetadata = (EmpReissueRequestMetadata) request.getMetadata();
 		final Long accountId = request.getAccountId();
-
+		
 		final List<EmpVariationRequestInfo> variationHistoricalRequests =
 			empVariationRequestQueryService.findEmpVariationRequests(accountId);
 		final EmpVariationRequestInfo variationCurrentRequest = empReissueRequestMapper
@@ -49,6 +53,8 @@ class EmpReissueCreateEmpDocumentService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND));
 
 		Request empRequest = emissionsMonitoringPlanQueryService.findApprovedByAccountId(accountId);
+		
+		MrtmDocumentTemplateAccountData accountData = mrtmAccountTemplateDataCollectFromAccountService.collect(accountId);
 
 		return empCreateDocumentService.generateDocumentAsync(request,
 				requestMetadata.getSignatory(),
@@ -56,6 +62,8 @@ class EmpReissueCreateEmpDocumentService {
 				MrtmDocumentTemplateType.EMP,
 				variationHistory,
 				empRequest.getSubmissionDate(),
-				empRequest.getEndDate());
+				empRequest.getEndDate(),
+				accountData
+				);
     }
 }

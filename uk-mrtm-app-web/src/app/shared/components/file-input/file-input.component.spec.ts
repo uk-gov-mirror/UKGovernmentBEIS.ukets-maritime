@@ -33,7 +33,7 @@ describe('FileInputComponent', () => {
   })
   class TestComponent {
     form = new FormGroup({ file: new FormControl({ file: new File(['abc'], 'uploaded-file.txt'), uuid: '1234' }) });
-    getDownloadUrl = jest.fn((uuid: string) => `/download/${uuid}`);
+    getDownloadUrl = vi.fn((uuid: string) => `/download/${uuid}`);
   }
 
   class Page extends BasePage<TestComponent> {
@@ -97,7 +97,7 @@ describe('FileInputComponent', () => {
     control.setValidators(FileValidators.maxFileSize(1));
     control.setAsyncValidators(TestBed.inject(FileUploadService).upload(() => uploadSubject));
     const file = new File(['test content'], 'Big file');
-    jest.spyOn(file, 'size', 'get').mockReturnValue(1024 * 1024 * 1024);
+    vi.spyOn(file, 'size', 'get').mockReturnValue(1024 * 1024 * 1024);
     page.file = file;
     fixture.detectChanges();
 

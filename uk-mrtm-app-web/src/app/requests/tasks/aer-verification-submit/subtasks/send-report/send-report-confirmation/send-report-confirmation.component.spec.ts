@@ -18,10 +18,10 @@ describe('SendReportConfirmationComponent', () => {
 
   const activatedRouteStub = new ActivatedRouteStub();
   const taskServiceMock: MockType<TaskService<AerVerificationSubmitTaskPayload>> = {
-    submit: jest.fn().mockReturnValue(of({})),
+    submit: vi.fn().mockReturnValue(of({})),
   };
 
-  const taskServiceSpy = jest.spyOn(taskServiceMock, 'submit');
+  const taskServiceSpy = vi.spyOn(taskServiceMock, 'submit');
 
   class Page extends BasePage<SendReportConfirmationComponent> {}
 
@@ -51,7 +51,7 @@ describe('SendReportConfirmationComponent', () => {
   });
 
   it('should submit task', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     page.standardButton.click();
     fixture.detectChanges();
 

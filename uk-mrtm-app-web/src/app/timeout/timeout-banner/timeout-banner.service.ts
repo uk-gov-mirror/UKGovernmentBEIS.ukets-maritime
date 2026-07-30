@@ -1,6 +1,7 @@
 import { computed, effect, inject, Injectable, OnDestroy, signal } from '@angular/core';
 
-import { AuthService, KeycloakEventType, KeycloakService } from '@core/services';
+import { KeycloakEventType } from '@core/interfaces';
+import { AuthService, KeycloakService } from '@core/services';
 import { environment } from '@environments/environment';
 
 @Injectable({ providedIn: 'root' })

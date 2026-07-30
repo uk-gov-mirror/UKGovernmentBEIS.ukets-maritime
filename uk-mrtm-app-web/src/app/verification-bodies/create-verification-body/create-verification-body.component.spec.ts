@@ -41,7 +41,7 @@ describe('CreateVerificationBodyComponent', () => {
     store = TestBed.inject(VerificationBodiesStoreService);
   });
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   beforeEach(() => createComponent());
 
@@ -63,8 +63,8 @@ describe('CreateVerificationBodyComponent', () => {
   });
 
   it('should save form values to store and navigate to summary on form submit', () => {
-    const navigateSpy = jest.spyOn((component as any).router, 'navigate').mockResolvedValue(true);
-    const setNewVerificationBodySpy = jest.spyOn(store, 'setNewVerificationBody');
+    const navigateSpy = vi.spyOn((component as any).router, 'navigate').mockResolvedValue(true);
+    const setNewVerificationBodySpy = vi.spyOn(store, 'setNewVerificationBody');
 
     component.handleFormSubmit();
 

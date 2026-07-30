@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+		logicalFilePath="v0.2.0/main.xml"
+		xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd">
+
+	<!-- application changelogs -->
+    <include file="au_authority.xml" relativeToChangelogFile="true" />
+    <include file="au_authorization_rules.xml" relativeToChangelogFile="true" />
+    <include file="request_mrtm.xml" relativeToChangelogFile="true" />
+	<include file="site_visit.xml" relativeToChangelogFile="true" />
+	<include file="notification_template.xml" relativeToChangelogFile="true" />
+
+	<include file="changelog_flowable_schema_tables_management.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>

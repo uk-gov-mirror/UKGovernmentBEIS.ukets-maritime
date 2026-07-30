@@ -1,9 +1,0 @@
-@use 'base' as govuk;
-
-:host {
-  display: block;
-  margin-bottom: govuk.govuk-spacing(7);
-}
-.filter-by-ship__button {
-  margin-bottom: govuk.$govuk-border-width-form-element;
-}

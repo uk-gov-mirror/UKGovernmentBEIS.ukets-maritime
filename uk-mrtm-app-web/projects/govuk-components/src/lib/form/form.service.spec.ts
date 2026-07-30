@@ -40,7 +40,7 @@ describe('FormService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, FormsModule, TestComponent],
+      imports: [ReactiveFormsModule, TestComponent],
     });
     service = TestBed.inject(FormService);
   });

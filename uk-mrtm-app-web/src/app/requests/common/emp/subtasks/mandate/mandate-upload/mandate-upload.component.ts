@@ -5,7 +5,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { EmpRegisteredOwner } from '@mrtm/api';
 
-import { PageHeadingComponent } from '@netz/common/components';
+import { FeedbackBannerStore, PageHeadingComponent } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { TaskService } from '@netz/common/forms';
 import { RequestTaskStore } from '@netz/common/store';
@@ -25,7 +25,6 @@ import {
 } from '@requests/common/emp/subtasks/mandate/mandate-upload/mandate-upload.map';
 import { mandateMap } from '@requests/common/emp/subtasks/subtask-list.map';
 import { DataParserWizardStepComponent } from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { MandateRegisteredOwnersListSummaryTemplateComponent } from '@shared/components/summaries/emp/mandate/mandate-registered-owners-list-summary-template';
 import { formatDateFromString } from '@shared/utils';
 import Papa from 'papaparse';
@@ -52,7 +51,7 @@ export class MandateUploadComponent {
   private readonly store = inject(RequestTaskStore);
   private readonly taskService = inject(TaskService);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private readonly title = inject(Title);
 
   private readonly dataParserWizardStep = viewChild.required(DataParserWizardStepComponent);
@@ -190,7 +189,7 @@ export class MandateUploadComponent {
         .saveSubtask(MANDATE_SUB_TASK, MandateWizardStep.UPLOAD_OWNERS, this.activatedRoute, this.owners())
         .subscribe(() => {
           const actionMsg = this.showConfirmation ? 'replaced' : 'uploaded';
-          this.notificationBannerStore.setSuccessMessages([
+          this.feedbackBannerStore.setSuccessMessages([
             `The registered owners file has been ${actionMsg} successfully`,
           ]);
         });

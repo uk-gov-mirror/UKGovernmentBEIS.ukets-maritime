@@ -10,4 +10,5 @@ export const requestTypesWhitelistForItemLinkPipe = [
   'VIR',
   'NON_COMPLIANCE',
   'SYSTEM_MESSAGE_NOTIFICATION',
+  'SITE_VISIT',
 ];

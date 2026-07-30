@@ -1,10 +1,5 @@
 import { Routes } from '@angular/router';
 
-import {
-  AccountClosureConfirmationComponent,
-  AccountClosureSuccessComponent,
-} from '@requests/tasks/account-closure/components';
-
 export const ACCOUNT_CLOSURE_ROUTES: Routes = [
   {
     path: '',
@@ -13,12 +8,14 @@ export const ACCOUNT_CLOSURE_ROUTES: Routes = [
         path: 'confirmation',
         title: 'Close account',
         data: { backlink: '../../', breadcrumb: false },
-        component: AccountClosureConfirmationComponent,
+        loadComponent: () =>
+          import('@requests/tasks/account-closure/components').then((c) => c.AccountClosureConfirmationComponent),
       },
       {
         path: 'success',
         title: 'Account closed successfully',
-        component: AccountClosureSuccessComponent,
+        loadComponent: () =>
+          import('@requests/tasks/account-closure/components').then((c) => c.AccountClosureSuccessComponent),
       },
     ],
   },

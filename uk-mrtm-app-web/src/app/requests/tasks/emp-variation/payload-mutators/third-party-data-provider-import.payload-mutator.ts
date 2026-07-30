@@ -27,7 +27,7 @@ export class ThirdPartyDataProviderImportPayloadMutator extends PayloadMutator {
       produce(currentPayload, (payload: EmpVariationTaskPayload) => {
         this.affectedTasks.forEach((subtask) => {
           payload.emissionsMonitoringPlan[subtask] = userInput[subtask];
-          payload.empSectionsCompleted[subtask] = TaskItemStatus.IN_PROGRESS;
+          payload.empSectionsCompleted[subtask] = TaskItemStatus.COMPLETED;
 
           if (subtask === EMISSIONS_SUB_TASK) {
             Object.keys(payload.empSectionsCompleted).forEach((key) => {

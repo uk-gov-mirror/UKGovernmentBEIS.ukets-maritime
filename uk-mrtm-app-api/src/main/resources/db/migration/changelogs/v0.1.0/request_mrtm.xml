@@ -3639,4 +3639,329 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="0_1_0_insert_EMP_VARIATION_REVIEW_PREVIEW_EMP_DOCUMENT_request_task_action_type_and_assoc_with_request_tasks" author="P35066">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'EMP_VARIATION_REVIEW_PREVIEW_EMP_DOCUMENT', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_APPLICATION_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_REVIEW_PREVIEW_EMP_DOCUMENT')
+                  );
+                  
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_APPLICATION_PEER_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_REVIEW_PREVIEW_EMP_DOCUMENT')
+                  );
+                  
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_WAIT_FOR_PEER_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_REVIEW_PREVIEW_EMP_DOCUMENT')
+                  );
+                  
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_WAIT_FOR_AMENDS'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_REVIEW_PREVIEW_EMP_DOCUMENT')
+                  );
+        </sql>
+         <rollback>
+            <sql>
+            	DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_WAIT_FOR_AMENDS')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_REVIEW_PREVIEW_EMP_DOCUMENT');
+                
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_WAIT_FOR_PEER_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_REVIEW_PREVIEW_EMP_DOCUMENT');
+                
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_APPLICATION_PEER_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_REVIEW_PREVIEW_EMP_DOCUMENT');
+                
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_APPLICATION_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_REVIEW_PREVIEW_EMP_DOCUMENT');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'EMP_VARIATION_REVIEW_PREVIEW_EMP_DOCUMENT';
+            </sql>
+        </rollback>
+    </changeSet>
+    
+    <changeSet id="0_1_0_insert_EMP_VARIATION_REVIEW_PREVIEW_OFFICIAL_DOCUMENT_request_task_action_type_and_assoc_with_request_tasks" author="P35066">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'EMP_VARIATION_REVIEW_PREVIEW_OFFICIAL_DOCUMENT', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_APPLICATION_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_REVIEW_PREVIEW_OFFICIAL_DOCUMENT')
+                  );
+                  
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_APPLICATION_PEER_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_REVIEW_PREVIEW_OFFICIAL_DOCUMENT')
+                  );
+                  
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_WAIT_FOR_PEER_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_REVIEW_PREVIEW_OFFICIAL_DOCUMENT')
+                  );
+                  
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_WAIT_FOR_AMENDS'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_REVIEW_PREVIEW_OFFICIAL_DOCUMENT')
+                  );
+        </sql>
+         <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_WAIT_FOR_AMENDS')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_REVIEW_PREVIEW_OFFICIAL_DOCUMENT');
+                
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_WAIT_FOR_PEER_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_REVIEW_PREVIEW_OFFICIAL_DOCUMENT');
+                
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_APPLICATION_PEER_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_REVIEW_PREVIEW_OFFICIAL_DOCUMENT');
+                
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_APPLICATION_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_REVIEW_PREVIEW_OFFICIAL_DOCUMENT');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'EMP_VARIATION_REVIEW_PREVIEW_OFFICIAL_DOCUMENT';
+            </sql>
+        </rollback>
+    </changeSet>
+    
+    <changeSet id="0_1_0_insert_EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_EMP_DOCUMENT_request_task_action_type_and_assoc_request_tasks" author="P35066">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_EMP_DOCUMENT', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_REGULATOR_LED_APPLICATION_SUBMIT'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_EMP_DOCUMENT')
+                  );
+                  
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_REGULATOR_LED_APPLICATION_PEER_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_EMP_DOCUMENT')
+                  );
+                  
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_REGULATOR_LED_WAIT_FOR_PEER_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_EMP_DOCUMENT')
+                  );
+        </sql>
+         <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_REGULATOR_LED_WAIT_FOR_PEER_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_EMP_DOCUMENT');
+                
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_REGULATOR_LED_APPLICATION_PEER_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_EMP_DOCUMENT');
+                
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_REGULATOR_LED_APPLICATION_SUBMIT')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_EMP_DOCUMENT');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_EMP_DOCUMENT';
+            </sql>
+        </rollback>
+    </changeSet>
+    
+    <changeSet id="0_1_0_insert_EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_OFFICIAL_DOCUMENT_request_task_action_type_and_assoc_request_tasks" author="P35066">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_OFFICIAL_DOCUMENT', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_REGULATOR_LED_APPLICATION_SUBMIT'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_OFFICIAL_DOCUMENT')
+                  );
+                  
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_REGULATOR_LED_APPLICATION_PEER_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_OFFICIAL_DOCUMENT')
+                  );
+                  
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_REGULATOR_LED_WAIT_FOR_PEER_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_OFFICIAL_DOCUMENT')
+                  );
+        </sql>
+         <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_REGULATOR_LED_WAIT_FOR_PEER_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_OFFICIAL_DOCUMENT');
+                
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_REGULATOR_LED_APPLICATION_PEER_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_OFFICIAL_DOCUMENT');
+                
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_REGULATOR_LED_APPLICATION_SUBMIT')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_OFFICIAL_DOCUMENT');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'EMP_VARIATION_SUBMIT_REGULATOR_LED_PREVIEW_OFFICIAL_DOCUMENT';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_EMP_ISSUANCE_REVIEW_PREVIEW_EMP_DOCUMENT_request_task_action_type_and_assoc_with_request_tasks" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'EMP_ISSUANCE_REVIEW_PREVIEW_EMP_DOCUMENT', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_APPLICATION_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_REVIEW_PREVIEW_EMP_DOCUMENT')
+                  );
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_APPLICATION_PEER_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_REVIEW_PREVIEW_EMP_DOCUMENT')
+                  );
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_WAIT_FOR_PEER_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_REVIEW_PREVIEW_EMP_DOCUMENT')
+                  );
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_WAIT_FOR_AMENDS'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_REVIEW_PREVIEW_EMP_DOCUMENT')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_WAIT_FOR_AMENDS')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_REVIEW_PREVIEW_EMP_DOCUMENT');
+
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_WAIT_FOR_PEER_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_REVIEW_PREVIEW_EMP_DOCUMENT');
+
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_APPLICATION_PEER_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_REVIEW_PREVIEW_EMP_DOCUMENT');
+
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_APPLICATION_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_REVIEW_PREVIEW_EMP_DOCUMENT');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'EMP_ISSUANCE_REVIEW_PREVIEW_EMP_DOCUMENT';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_EMP_ISSUANCE_REVIEW_PREVIEW_OFFICIAL_DOCUMENT_request_task_action_type_and_assoc_with_request_tasks" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'EMP_ISSUANCE_REVIEW_PREVIEW_OFFICIAL_DOCUMENT', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_APPLICATION_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_REVIEW_PREVIEW_OFFICIAL_DOCUMENT')
+                  );
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_APPLICATION_PEER_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_REVIEW_PREVIEW_OFFICIAL_DOCUMENT')
+                  );
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_WAIT_FOR_PEER_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_REVIEW_PREVIEW_OFFICIAL_DOCUMENT')
+                  );
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_WAIT_FOR_AMENDS'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_REVIEW_PREVIEW_OFFICIAL_DOCUMENT')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_WAIT_FOR_AMENDS')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_REVIEW_PREVIEW_OFFICIAL_DOCUMENT');
+
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_WAIT_FOR_PEER_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_REVIEW_PREVIEW_OFFICIAL_DOCUMENT');
+
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_APPLICATION_PEER_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_REVIEW_PREVIEW_OFFICIAL_DOCUMENT');
+
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_APPLICATION_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_REVIEW_PREVIEW_OFFICIAL_DOCUMENT');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'EMP_ISSUANCE_REVIEW_PREVIEW_OFFICIAL_DOCUMENT';
+            </sql>
+        </rollback>
+    </changeSet>
 </databaseChangeLog>

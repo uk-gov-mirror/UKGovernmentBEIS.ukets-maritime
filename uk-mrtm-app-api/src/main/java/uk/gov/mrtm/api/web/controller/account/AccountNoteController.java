@@ -134,8 +134,8 @@ public class AccountNoteController {
             @RequestPart("file") @Parameter(description = "The note file", required = true)
                     MultipartFile file) throws IOException {
 
-        final FileDTO fileDTO = fileDtoMapper.toFileDTO(file);
-        final FileUuidDTO fileUuidDTO = fileNoteService.uploadAccountFile(authUser.getUserId(), fileDTO, accountId);
+        final FileDTO fileDTO = fileDtoMapper.toFileDTO(file, authUser.getUserId());
+        final FileUuidDTO fileUuidDTO = fileNoteService.uploadAccountFile(fileDTO, accountId);
 
         return new ResponseEntity<>(fileUuidDTO, HttpStatus.OK);
     }

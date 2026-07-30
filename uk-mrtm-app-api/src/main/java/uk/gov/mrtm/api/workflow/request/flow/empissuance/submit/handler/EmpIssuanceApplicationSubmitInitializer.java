@@ -31,7 +31,7 @@ public class EmpIssuanceApplicationSubmitInitializer implements InitializeReques
                         .operatorDetails(EmpOperatorDetails.builder()
                                 .operatorName(mrtmAccount.getName())
                                 .imoNumber(mrtmAccount.getImoNumber())
-                                .contactAddress(addressStateMapper.toAddressState(mrtmAccount.getAddress()))
+                                .contactAddress(addressStateMapper.toAddressStateDTO(mrtmAccount.getAddress()))
                        .build())
                    .build())
                 .build();

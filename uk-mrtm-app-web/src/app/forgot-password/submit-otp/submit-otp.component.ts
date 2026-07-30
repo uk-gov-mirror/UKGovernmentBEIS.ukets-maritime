@@ -1,7 +1,7 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { BehaviorSubject, combineLatest, EMPTY, first, switchMap } from 'rxjs';
 
@@ -18,7 +18,6 @@ import { BackToTopComponent, WizardStepComponent } from '@shared/components';
   imports: [
     ErrorSummaryComponent,
     WizardStepComponent,
-    FormsModule,
     ReactiveFormsModule,
     TextInputComponent,
     LinkDirective,
@@ -32,6 +31,7 @@ import { BackToTopComponent, WizardStepComponent } from '@shared/components';
 })
 export class SubmitOtpComponent {
   private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
   private readonly forgotPasswordService = inject(ForgotPasswordService);
   private readonly fb = inject(UntypedFormBuilder);
   private readonly store = inject(ResetPasswordStore);
@@ -63,7 +63,7 @@ export class SubmitOtpComponent {
             password: password,
           }),
         ),
-        catchBadRequest([ErrorCodes.OTP1001, ErrorCodes.USER1004, ErrorCodes.USER1005], (res) => {
+        catchBadRequest([ErrorCodes.OTP1001, ErrorCodes.USER1004, ErrorCodes.USER1005, ErrorCodes.EMAIL1001], (res) => {
           switch (res.error.code) {
             case ErrorCodes.OTP1001:
               this.form.get('otp').setErrors({ otpInvalid: 'Invalid OTP' });
@@ -71,6 +71,10 @@ export class SubmitOtpComponent {
             case ErrorCodes.USER1004:
             case ErrorCodes.USER1005:
               this.router.navigate(['error', '404']);
+              break;
+            case ErrorCodes.EMAIL1001:
+              this.router.navigate(['../', 'invalid-link'], { relativeTo: this.activatedRoute });
+              break;
           }
           this.isSummaryDisplayed$.next(true);
           return EMPTY;

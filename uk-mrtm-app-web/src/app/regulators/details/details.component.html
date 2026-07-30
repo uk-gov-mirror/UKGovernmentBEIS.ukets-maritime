@@ -2,80 +2,82 @@
   @if (isSummaryDisplayed$ | async) {
     <govuk-error-summary [form]="form" />
   }
-  <netz-page-heading>{{ (userId$ | async) ? 'User details' : 'Add a new user' }}</netz-page-heading>
+  <netz-page-heading [caption]="(userId$ | async) ? 'Edit regulator user' : 'Add a new regulator user'">
+    {{ (userId$ | async) ? 'Edit user details' : 'Enter user details' }}
+  </netz-page-heading>
   <form (ngSubmit)="submitForm()" [formGroup]="form">
     <div formGroupName="user">
       <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
+        <div class="govuk-grid-column-two-thirds">
           <fieldset govukFieldset id="name">
-            <legend govukLegend>Name</legend>
+            <legend govukLegend legendSize="medium">Name</legend>
             <div
               autoComplete="given-name"
               formControlName="firstName"
               govuk-text-input
               label="First name"
-              widthClass="govuk-!-width-one-half"></div>
+              widthClass="govuk-!-width-two-thirds"></div>
             <div
               autoComplete="family-name"
               class="govuk-!-margin-bottom-8"
               formControlName="lastName"
               govuk-text-input
               label="Last name"
-              widthClass="govuk-!-width-one-half"></div>
+              widthClass="govuk-!-width-two-thirds"></div>
             <div
               autoComplete="organisation-title"
               formControlName="jobTitle"
               govuk-text-input
               label="Job title"
-              widthClass="govuk-!-width-one-half"></div>
+              widthClass="govuk-!-width-two-thirds"></div>
             <div
               autoComplete="email"
               formControlName="email"
               govuk-text-input
-              hint="All system alerts, notices and official communications will always be sent by email."
+              hint="All system alerts, notices and official communications<br />will always be sent by email."
               label="Email address"
-              widthClass="govuk-!-width-one-half"></div>
+              widthClass="govuk-!-width-two-thirds"></div>
           </fieldset>
           <fieldset govukFieldset id="phoneNumber">
-            <legend govukLegend>Phone number</legend>
+            <legend govukLegend legendSize="medium">Phone number</legend>
             <div
               autoComplete="tel-national"
               formControlName="phoneNumber"
               govuk-text-input
-              label="Phone number 1"
-              widthClass="govuk-!-width-one-half"></div>
+              label="Telephone number"
+              hint="You must include the country code"
+              widthClass="govuk-!-width-one-third"></div>
             <div
               autoComplete="mobile tel-national"
               class="govuk-!-margin-bottom-8"
               formControlName="mobileNumber"
               govuk-text-input
-              label="Phone number 2 (optional)"
-              widthClass="govuk-!-width-one-half"></div>
+              label="Mobile number (optional)"
+              hint="You must include the country code"
+              widthClass="govuk-!-width-one-third"></div>
           </fieldset>
-          <div class="govuk-grid-column-full">
-            <h2 class="govuk-heading-s">Files uploaded</h2>
-            <span class="govuk-hint">
-              The file must be:
-              <ul>
-                <li>a BMP file</li>
-                <li>no more than 240 x 140 pixels</li>
-                <li>no more than 200KB</li>
-              </ul>
-            </span>
-            <h3 class="govuk-heading-s">Upload a file</h3>
-            <mrtm-file-input
-              [downloadUrl]="(isLoggedUser$ | async) ? getCurrentUserDownloadUrl : getDownloadUrl"
-              [showFilesizeHint]="false"
-              formControlName="signature"
-              label="Signature" />
-          </div>
+          <h2 class="govuk-heading-m">Files uploaded</h2>
+          <span class="govuk-hint">
+            The file must be:
+            <ul>
+              <li>a BMP file</li>
+              <li>no more than 240 x 140 pixels</li>
+              <li>no more than 200KB</li>
+            </ul>
+          </span>
+          <h2 class="govuk-heading-m">Upload a file</h2>
+          <mrtm-file-input
+            [downloadUrl]="(isLoggedUser$ | async) ? getCurrentUserDownloadUrl : getDownloadUrl"
+            [showFilesizeHint]="false"
+            formControlName="signature"
+            label="Signature" />
         </div>
       </div>
     </div>
     @if (allowEditPermissions$ | async; as permissions) {
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-          <h2 class="govuk-heading-s">Set base permissions</h2>
+          <h2 class="govuk-heading-m">Set base permissions</h2>
           <div class="govuk-button-group">
             <button
               (click)="setBasePermissions('regulator_admin_team')"
@@ -123,7 +125,7 @@
     }
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-full">
-        <h2 class="govuk-heading-s">Customise Permissions</h2>
+        <h2 class="govuk-heading-m">Customise Permissions</h2>
         <div formGroupName="permissions">
           <govuk-table [columns]="tableColumns" [data]="tableRows">
             <ng-template let-column="column" let-row="row">

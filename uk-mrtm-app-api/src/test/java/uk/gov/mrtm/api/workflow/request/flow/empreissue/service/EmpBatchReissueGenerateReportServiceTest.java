@@ -11,7 +11,7 @@ import uk.gov.mrtm.api.workflow.request.flow.empreissue.domain.EmpBatchReissueRe
 import uk.gov.mrtm.api.workflow.request.flow.empreissue.domain.EmpBatchReissueRequestMetadata;
 import uk.gov.mrtm.api.workflow.request.flow.empreissue.domain.EmpEmpReissueAccountReport;
 import uk.gov.netz.api.files.common.domain.dto.FileInfoDTO;
-import uk.gov.netz.api.files.documents.service.FileDocumentService;
+import uk.gov.netz.api.files.documents.service.storage.FileDocumentStorageService;
 import uk.gov.netz.api.workflow.request.core.domain.Request;
 import uk.gov.netz.api.workflow.request.core.service.RequestService;
 
@@ -38,7 +38,7 @@ class EmpBatchReissueGenerateReportServiceTest {
 	private RequestService requestService;
 	
 	@Mock
-	private FileDocumentService fileDocumentService;
+	private FileDocumentStorageService fileDocumentStorageService;
 	
 	@Test
 	void generateReport() {
@@ -67,7 +67,7 @@ class EmpBatchReissueGenerateReportServiceTest {
 				.build();
 		
     	when(requestService.findRequestById(requestId)).thenReturn(request);
-    	when(fileDocumentService.createFileDocument(Mockito.any(), Mockito.eq("req.csv"))).thenReturn(reportFile);
+    	when(fileDocumentStorageService.createFileDocument(Mockito.any(), Mockito.eq("req.csv"))).thenReturn(reportFile);
     	
     	cut.generateReport(requestId);
     	
@@ -75,7 +75,7 @@ class EmpBatchReissueGenerateReportServiceTest {
     	
     	verify(requestService, times(1)).findRequestById(requestId);
     	ArgumentCaptor<byte[]> fileContentCaptor = ArgumentCaptor.forClass(byte[].class);
-    	verify(fileDocumentService, times(1)).createFileDocument(fileContentCaptor.capture(), Mockito.eq("req.csv"));
+    	verify(fileDocumentStorageService, times(1)).createFileDocument(fileContentCaptor.capture(), Mockito.eq("req.csv"));
     	byte[] fileContentCaptured = fileContentCaptor.getValue();
     	String fileContentAsStringCaptured = new String(fileContentCaptured);
     	

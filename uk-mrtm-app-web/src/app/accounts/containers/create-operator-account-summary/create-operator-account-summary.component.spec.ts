@@ -19,7 +19,7 @@ describe('CreateOperatorAccountSummaryComponent', () => {
   let store: OperatorAccountsStore;
 
   const accountsService: Partial<MaritimeAccountsService> = {
-    createMaritimeAccount: jest.fn().mockReturnValue(of({ res: 200 })),
+    createMaritimeAccount: vi.fn().mockReturnValue(of({ res: 200 })),
   };
   const route = new ActivatedRouteStub();
 
@@ -58,7 +58,7 @@ describe('CreateOperatorAccountSummaryComponent', () => {
     component = fixture.componentInstance;
     store = TestBed.inject(OperatorAccountsStore);
 
-    await fixture.ngZone.run(() => router.navigate(['summary']));
+    await router.navigate(['summary']);
     fixture.detectChanges();
   });
 

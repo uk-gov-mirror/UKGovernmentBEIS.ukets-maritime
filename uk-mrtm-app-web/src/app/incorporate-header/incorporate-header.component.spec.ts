@@ -59,7 +59,7 @@ describe('IncorporateHeaderComponent', () => {
   });
 
   it('should display content if account details available', () => {
-    maritimeAccountsService.getMaritimeAccount = jest.fn().mockReturnValue(of(mockAccountDetails));
+    maritimeAccountsService.getMaritimeAccount = vi.fn().mockReturnValue(of(mockAccountDetails));
     requestTaskStore.setRequestTaskItem({
       requestInfo: {
         resourceType: 'ACCOUNT',
@@ -87,7 +87,7 @@ describe('IncorporateHeaderComponent', () => {
   });
 
   it('should hide emp-id and account-status section if emp info not available', () => {
-    maritimeAccountsService.getMaritimeAccount = jest.fn().mockReturnValue(of(mockAccountDetails));
+    maritimeAccountsService.getMaritimeAccount = vi.fn().mockReturnValue(of(mockAccountDetails));
     requestTaskStore.setRequestTaskItem({
       requestInfo: {
         resourceType: 'ACCOUNT',
@@ -102,7 +102,7 @@ describe('IncorporateHeaderComponent', () => {
   });
 
   it('should display emp-id and account-status section if emp info available', () => {
-    maritimeAccountsService.getMaritimeAccount = jest.fn().mockReturnValue(
+    maritimeAccountsService.getMaritimeAccount = vi.fn().mockReturnValue(
       of({
         ...mockAccountDetails,
         emp: {

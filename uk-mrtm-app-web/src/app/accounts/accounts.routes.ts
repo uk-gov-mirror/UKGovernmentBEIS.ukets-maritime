@@ -1,26 +1,8 @@
 import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
 
-import {
-  AccountReportingStatusHistoryComponent,
-  AccountsPageComponent,
-  AppointComponent,
-  CreateOperatorAccountComponent,
-  CreateOperatorAccountSuccessComponent,
-  CreateOperatorAccountSummaryComponent,
-  CreateUserAuthorityComponent,
-  CreateUserAuthoritySuccessComponent,
-  CreateUserAuthoritySummaryComponent,
-  DeleteUserAuthorityComponent,
-  EditOperatorAccountComponent,
-  EditReportingStatusComponent,
-  EditUserAuthorityComponent,
-  UserAuthorityDetailsComponent,
-  ViewOperatorAccountComponent,
-} from '@accounts/containers';
+import { AVAILABLE_ACTIONS_MAP } from '@accounts/containers/actions';
 import { DATA_SUPPLIER_ROUTE_PREFIX } from '@accounts/containers/data-supplier';
-import { EditReportingStatusSummaryComponent } from '@accounts/containers/edit-reporting-status-summary/edit-reporting-status-summary.component';
-import { ProcessActionsComponent } from '@accounts/containers/process-actions';
 import {
   AccountReportingStatusHistoryGuard,
   AppointVerifierGuard,
@@ -42,14 +24,12 @@ import {
 import { userAuthorityResolver } from '@accounts/resolvers';
 import { OperatorAccountsStore } from '@accounts/store';
 import { PendingRequestGuard } from '@core/guards/pending-request.guard';
-import { NoteFileDownloadComponent } from '@notes/components';
-import { FileDownloadComponent } from '@shared/components';
 
 export const ACCOUNTS_ROUTES: Routes = [
   {
     path: '',
     title: 'Accounts',
-    component: AccountsPageComponent,
+    loadComponent: () => import('@accounts/containers').then((c) => c.AccountsPageComponent),
   },
   {
     path: 'create',
@@ -62,7 +42,7 @@ export const ACCOUNTS_ROUTES: Routes = [
         path: '',
         title: 'Operator account',
         data: { breadcrumb: false, backlink: '../' },
-        component: CreateOperatorAccountComponent,
+        loadComponent: () => import('@accounts/containers').then((c) => c.CreateOperatorAccountComponent),
       },
       {
         path: 'summary',
@@ -70,14 +50,14 @@ export const ACCOUNTS_ROUTES: Routes = [
         data: { breadcrumb: false, backlink: '../' },
         canActivate: [CreateOperatorAccountSummaryGuard],
         canDeactivate: [PendingRequestGuard],
-        component: CreateOperatorAccountSummaryComponent,
+        loadComponent: () => import('@accounts/containers').then((c) => c.CreateOperatorAccountSummaryComponent),
       },
       {
         path: 'success',
         title: 'You have successfully created an operator account',
         data: { breadcrumb: 'Dashboard' },
-        component: CreateOperatorAccountSuccessComponent,
         canActivate: [CreateOperatorAccountSuccessGuard],
+        loadComponent: () => import('@accounts/containers').then((c) => c.CreateOperatorAccountSuccessComponent),
       },
     ],
   },
@@ -93,14 +73,14 @@ export const ACCOUNTS_ROUTES: Routes = [
     children: [
       {
         path: '',
-        component: ViewOperatorAccountComponent,
+        loadComponent: () => import('@accounts/containers').then((c) => c.ViewOperatorAccountComponent),
       },
       {
         path: 'edit',
         title: 'Account',
         data: { breadcrumb: false, backlink: '../' },
-        component: EditOperatorAccountComponent,
         canDeactivate: [PendingRequestGuard],
+        loadComponent: () => import('@accounts/containers').then((c) => c.EditOperatorAccountComponent),
       },
       {
         path: 'edit-reporting-status/:reportingYear',
@@ -109,12 +89,15 @@ export const ACCOUNTS_ROUTES: Routes = [
         canActivate: [canActivateEditReportingStatus],
         canDeactivate: [canDeactivateEditReportingStatus],
         children: [
-          { path: '', component: EditReportingStatusComponent },
+          { path: '', loadComponent: () => import('@accounts/containers').then((c) => c.EditReportingStatusComponent) },
           {
             path: 'summary',
             data: { breadcrumb: false, backlink: '../' },
             canActivate: [canActivateEditReportingStatusSummary],
-            component: EditReportingStatusSummaryComponent,
+            loadComponent: () =>
+              import('@accounts/containers/edit-reporting-status-summary/edit-reporting-status-summary.component').then(
+                (c) => c.EditReportingStatusSummaryComponent,
+              ),
           },
         ],
       },
@@ -122,8 +105,8 @@ export const ACCOUNTS_ROUTES: Routes = [
         path: 'reporting-status-history',
         title: 'Reporting status history',
         data: { breadcrumb: true },
-        component: AccountReportingStatusHistoryComponent,
         canActivate: [AccountReportingStatusHistoryGuard],
+        loadComponent: () => import('@accounts/containers').then((c) => c.AccountReportingStatusHistoryComponent),
       },
       {
         path: 'verification-body',
@@ -132,18 +115,18 @@ export const ACCOUNTS_ROUTES: Routes = [
             path: 'appoint',
             title: 'Appoint a verifier',
             data: { breadcrumb: true },
-            component: AppointComponent,
             canActivate: [AppointVerifierGuard],
             canDeactivate: [PendingRequestGuard],
+            loadComponent: () => import('@accounts/containers').then((c) => c.AppointComponent),
           },
           {
             path: 'replace',
             title: 'Replace a verifier',
             data: { breadcrumb: true },
-            component: AppointComponent,
             canActivate: [ReplaceVerifierGuard],
             canDeactivate: [PendingRequestGuard],
             resolve: { verificationBody: ReplaceVerifierGuard },
+            loadComponent: () => import('@accounts/containers').then((c) => c.AppointComponent),
           },
         ],
       },
@@ -161,13 +144,13 @@ export const ACCOUNTS_ROUTES: Routes = [
             children: [
               {
                 path: '',
-                component: UserAuthorityDetailsComponent,
+                loadComponent: () => import('@accounts/containers').then((c) => c.UserAuthorityDetailsComponent),
               },
               {
                 path: 'edit',
                 title: 'Edit account',
                 data: { breadcrumb: false, backlink: '../', backlinkFragment: 'users' },
-                component: EditUserAuthorityComponent,
+                loadComponent: () => import('@accounts/containers').then((c) => c.EditUserAuthorityComponent),
               },
               {
                 path: 'delete',
@@ -175,10 +158,10 @@ export const ACCOUNTS_ROUTES: Routes = [
                 data: {
                   breadcrumb: ({ userAuthority }) => `Delete ${userAuthority.firstName} ${userAuthority.lastName}`,
                 },
-                component: DeleteUserAuthorityComponent,
                 canActivate: [deleteUserAuthorityGuard],
                 canDeactivate: [PendingRequestGuard],
                 resolve: { userAuthority: userAuthorityResolver },
+                loadComponent: () => import('@accounts/containers').then((c) => c.DeleteUserAuthorityComponent),
               },
             ],
           },
@@ -190,21 +173,21 @@ export const ACCOUNTS_ROUTES: Routes = [
                 path: '',
                 data: { breadcrumb: false, backlink: '../../../', backlinkFragment: 'users' },
                 title: 'User account',
-                component: CreateUserAuthorityComponent,
+                loadComponent: () => import('@accounts/containers').then((c) => c.CreateUserAuthorityComponent),
               },
               {
                 path: 'summary',
                 data: { breadcrumb: false, backlink: '../' },
                 title: 'User account summary',
                 canActivate: [createOperatorUserSummaryGuard],
-                component: CreateUserAuthoritySummaryComponent,
+                loadComponent: () => import('@accounts/containers').then((c) => c.CreateUserAuthoritySummaryComponent),
               },
               {
                 path: 'success',
                 title: 'You have successfully created a user account',
                 data: { breadcrumb: 'Dashboard' },
                 canActivate: [createOperatorUserSuccessGuard],
-                component: CreateUserAuthoritySuccessComponent,
+                loadComponent: () => import('@accounts/containers').then((c) => c.CreateUserAuthoritySuccessComponent),
               },
             ],
           },
@@ -213,9 +196,21 @@ export const ACCOUNTS_ROUTES: Routes = [
       {
         path: 'process-actions',
         title: 'Account process actions',
-        data: { breadcrumb: true },
-        component: ProcessActionsComponent,
-        canDeactivate: [PendingRequestGuard],
+        data: { breadcrumb: 'Start task' },
+        children: [
+          {
+            path: '',
+            canDeactivate: [PendingRequestGuard],
+            loadComponent: () => import('@accounts/containers').then((c) => c.ProcessActionsComponent),
+          },
+          {
+            path: AVAILABLE_ACTIONS_MAP.SITE_VISIT.path,
+            title: AVAILABLE_ACTIONS_MAP.SITE_VISIT.title,
+            data: { breadcrumb: true },
+            canDeactivate: [PendingRequestGuard],
+            loadComponent: () => import('@accounts/containers/actions').then((c) => c.SiteVisitEntryPointComponent),
+          },
+        ],
       },
       {
         path: 'notes',
@@ -228,12 +223,12 @@ export const ACCOUNTS_ROUTES: Routes = [
       {
         path: 'file-download/:uuid',
         title: 'Download file',
-        component: NoteFileDownloadComponent,
+        loadComponent: () => import('@notes/components').then((c) => c.NoteFileDownloadComponent),
       },
       {
         path: 'file-download/:fileType/:empId/:uuid',
         title: 'Download file',
-        component: FileDownloadComponent,
+        loadComponent: () => import('@shared/components').then((c) => c.FileDownloadComponent),
       },
     ],
   },

@@ -506,9 +506,9 @@ export class DatePickerService {
    */
   onBackgroundClick(event: Event) {
     const clickedElement = event.target as HTMLElement;
-    const dialogContainer = this.elementRef.nativeElement.querySelector('.moj-datepicker__dialog');
-    const inputContainer = this.elementRef.nativeElement.querySelector('input');
-    const calendarButton = this.elementRef.nativeElement.querySelector('.moj-datepicker__toggle');
+    const dialogContainer = this.elementRef?.nativeElement.querySelector('.moj-datepicker__dialog');
+    const inputContainer = this.elementRef?.nativeElement.querySelector('input');
+    const calendarButton = this.elementRef?.nativeElement.querySelector('.moj-datepicker__toggle');
     if (
       this.isDialogOpen() &&
       !dialogContainer.contains(clickedElement) &&

@@ -15,7 +15,7 @@ import {
   withLatestFrom,
 } from 'rxjs';
 
-import { FormService, MessageValidationErrors } from '@netz/govuk-components';
+import { FormService, MessageValidationErrors, SafeHtmlPipe } from '@netz/govuk-components';
 
 import { FileUploadListComponent } from '@shared/components';
 import { FileUploadService } from '@shared/services';
@@ -24,7 +24,7 @@ import { FileUpload, FileUploadEvent } from '@shared/types';
 /* eslint-disable @angular-eslint/component-selector */
 @Component({
   selector: 'mrtm-multiple-file-input[baseDownloadUrl]',
-  imports: [FileUploadListComponent, AsyncPipe],
+  imports: [FileUploadListComponent, AsyncPipe, SafeHtmlPipe],
   standalone: true,
   templateUrl: './multiple-file-input.component.html',
   styleUrl: './multiple-file-input.component.scss',

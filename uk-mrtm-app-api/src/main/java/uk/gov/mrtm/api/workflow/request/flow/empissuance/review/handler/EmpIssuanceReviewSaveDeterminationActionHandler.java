@@ -29,7 +29,7 @@ public class EmpIssuanceReviewSaveDeterminationActionHandler
     @Override
     public RequestTaskPayload process(Long requestTaskId, String requestTaskActionType, AppUser appUser,
                                       EmpIssuanceSaveReviewDeterminationRequestTaskActionPayload taskActionPayload) {
-        RequestTask requestTask = requestTaskService.findTaskById(requestTaskId);
+        RequestTask requestTask = requestTaskService.findTaskByIdForUpdate(requestTaskId);
 
         checkDeterminationValidity(taskActionPayload.getDetermination(), requestTask);
         requestEmpReviewService.saveDetermination(taskActionPayload, requestTask);

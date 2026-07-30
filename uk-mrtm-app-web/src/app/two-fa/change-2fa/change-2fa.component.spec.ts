@@ -44,7 +44,7 @@ describe('Change2faComponent', () => {
     page = new Page(fixture);
     router = TestBed.inject(Router);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should create', () => {
@@ -75,7 +75,7 @@ describe('Change2faComponent', () => {
   });
 
   it('should submit the request change', () => {
-    usersSecuritySetupService.requestTwoFactorAuthChange.mockReturnValueOnce(of({}));
+    usersSecuritySetupService.requestTwoFactorAuthChange.mockReturnValueOnce(of({}) as any);
     authStore.setUser({ email: 'asd@asd.com', firstName: 'First', lastName: 'Last' });
 
     page.passwordValue = '123456';
@@ -90,7 +90,7 @@ describe('Change2faComponent', () => {
   });
 
   it('on returning error should navigate to invalid code error page', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     usersSecuritySetupService.requestTwoFactorAuthChange.mockReturnValue(
       throwError(() => new HttpErrorResponse({ status: 400, error: { code: ErrorCodes.OTP1001 } })),
     );

@@ -39,11 +39,4 @@ export class CookiesPopUpComponent {
   hideCookieMessage() {
     this.show = false;
   }
-
-  goToSetPreferences() {
-    location.href = new URL(
-      'cookies',
-      this.baseHref ? new URL(this.baseHref, location.origin) : location.origin,
-    ).toString();
-  }
 }

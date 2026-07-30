@@ -20,9 +20,11 @@ import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegula
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.PEER_REVIEW_EMP_NOTIFICATION;
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.PEER_REVIEW_EMP_VARIATION;
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.PEER_REVIEW_NON_COMPLIANCE;
+import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.PEER_REVIEW_SITE_VISIT;
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.REVIEW_AER;
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.REVIEW_EMP_APPLICATION;
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.REVIEW_EMP_NOTIFICATION;
+import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.REVIEW_SITE_VISIT;
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.REVIEW_VIR;
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.SUBMIT_DOE;
 import static uk.gov.mrtm.api.authorization.mrtmauth.regulator.domain.MrtmRegulatorPermissionGroup.SUBMIT_EMP_BATCH_REISSUE;
@@ -253,6 +255,28 @@ public class MrtmRegulatorPermissionsAdapter extends AbstarctRegulatorPermission
         permissionGroupLevelsConfig
             .put(new RegulatorPermissionGroupLevel(MANAGE_THIRD_PARTY_DATA_PROVIDERS, EXECUTE),
                 List.of(MrtmPermission.PERM_MANAGE_THIRD_PARTY_DATA_PROVIDERS));
+
+        // REVIEW_SITE_VISIT
+        permissionGroupLevelsConfig
+            .put(new RegulatorPermissionGroupLevel(REVIEW_SITE_VISIT, NONE), List.of());
+        permissionGroupLevelsConfig
+            .put(new RegulatorPermissionGroupLevel(REVIEW_SITE_VISIT, VIEW_ONLY),
+                List.of(MrtmPermission.PERM_SITE_VISIT_APPLICATION_REVIEW_VIEW_TASK));
+        permissionGroupLevelsConfig
+            .put(new RegulatorPermissionGroupLevel(REVIEW_SITE_VISIT, EXECUTE),
+                List.of(MrtmPermission.PERM_SITE_VISIT_APPLICATION_REVIEW_VIEW_TASK,
+                    MrtmPermission.PERM_SITE_VISIT_APPLICATION_REVIEW_EXECUTE_TASK));
+
+        // PEER_REVIEW_SITE_VISIT
+        permissionGroupLevelsConfig
+            .put(new RegulatorPermissionGroupLevel(PEER_REVIEW_SITE_VISIT, NONE), List.of());
+        permissionGroupLevelsConfig
+            .put(new RegulatorPermissionGroupLevel(PEER_REVIEW_SITE_VISIT, VIEW_ONLY),
+                List.of(MrtmPermission.PERM_SITE_VISIT_PEER_REVIEW_VIEW_TASK));
+        permissionGroupLevelsConfig
+            .put(new RegulatorPermissionGroupLevel(PEER_REVIEW_SITE_VISIT, EXECUTE),
+                List.of(MrtmPermission.PERM_SITE_VISIT_PEER_REVIEW_VIEW_TASK,
+                    MrtmPermission.PERM_SITE_VISIT_PEER_REVIEW_EXECUTE_TASK));
     }
 
 

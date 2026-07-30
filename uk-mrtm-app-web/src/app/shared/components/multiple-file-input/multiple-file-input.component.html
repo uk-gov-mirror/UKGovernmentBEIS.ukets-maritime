@@ -10,7 +10,7 @@
     <div class="govuk-form-group">
       <label [for]="id" [class]="`govuk-label govuk-label--${headerSize()}`" id="{{ `l.${id}` }}">{{ label() }}</label>
       @if (hint()) {
-        <div [id]="`${id}-hint`" class="govuk-hint">{{ hint() }}</div>
+        <div [id]="`${id}-hint`" class="govuk-hint" [innerHTML]="hint() | safeHtml"></div>
       }
       <div [id]="`${id}-hint-file-size`" class="govuk-hint">
         Your document must be a DOC, DOCX, XLS, XLSX, PPT, PPTX, VSD, VSDX, JPG, JPEG, PDF, PNG, TIF, TXT, DIB, BMP or

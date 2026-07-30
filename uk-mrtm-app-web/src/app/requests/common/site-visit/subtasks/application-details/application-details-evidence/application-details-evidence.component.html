@@ -1,0 +1,32 @@
+<mrtm-wizard-step
+  [formGroup]="formGroup"
+  [showReturnLink]="true"
+  [caption]="subtaskMap.title"
+  [isTwoThirds]="true"
+  (formSubmit)="onSubmit()"
+  heading="Upload evidence for a virtual site visit application">
+  <p class="govuk-body">When reviewing your application for a virtual site visit, your regulator will consider:</p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>the information provided by the verifier on the risk analysis outcome</li>
+    <li>information on how the virtual site visit will be carried out</li>
+    <li>evidence that measures are taken to reduce the verification risk to an acceptable level</li>
+    <li>any proposal to carry out a physical site visit after the virtual site visit</li>
+  </ul>
+  <p class="govuk-body govuk-!-margin-bottom-9">
+    Your regulator may request further information to decide whether or not to approve the virtual site visit.
+  </p>
+
+  <mrtm-site-visit-reporting-year-summary-template [reportingYear]="reportingYear()" />
+  <mrtm-multiple-file-input
+    [baseDownloadUrl]="downloadUrl()"
+    formControlName="files"
+    listTitle="Uploaded files"
+    label="Upload supporting files" />
+  <div
+    govuk-textarea
+    formControlName="clarification"
+    label="Notes (optional)"
+    labelSize="medium"
+    hint="This can be viewed by your regulator"
+    [maxLength]="10000"></div>
+</mrtm-wizard-step>

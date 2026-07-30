@@ -29,7 +29,7 @@ class EmpNotificationCreateValidatorTest {
     private RequestCreateValidatorService requestCreateValidatorService;
 
     @Test
-    void validateAction() {
+    void checkAvailability() {
         Long accountId = 1L;
         RequestCreateValidationResult result = RequestCreateValidationResult.builder().valid(true).build();
         Set<AccountStatus> applicableAccountStatuses = Set.of(MrtmAccountStatus.LIVE);
@@ -38,7 +38,7 @@ class EmpNotificationCreateValidatorTest {
                 .thenReturn(result);
 
         // Invoke
-        RequestCreateValidationResult actual = validator.validateAction(accountId);
+        RequestCreateValidationResult actual = validator.checkAvailability(accountId);
 
         // Verify
         assertThat(actual.isValid()).isTrue();

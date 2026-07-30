@@ -16,7 +16,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Validator;
-import uk.gov.netz.api.files.attachments.service.FileAttachmentTokenService;
+
+import uk.gov.netz.api.files.attachments.service.storage.FileAttachmentStorageService;
 import uk.gov.netz.api.files.common.domain.dto.FileDTO;
 import uk.gov.mrtm.api.web.controller.exception.ExceptionControllerAdvice;
 
@@ -38,7 +39,7 @@ class FileAttachmentControllerTest {
     private FileAttachmentController controller;
 
     @Mock
-    private FileAttachmentTokenService fileAttachmentTokenService;
+    private FileAttachmentStorageService fileAttachmentStorageService;
     
     @Mock
     private Validator validator;
@@ -61,7 +62,7 @@ class FileAttachmentControllerTest {
             .fileContent(fileContent)
             .build();
 
-        when(fileAttachmentTokenService.getFileDTOByToken(token))
+        when(fileAttachmentStorageService.getFileDTOByToken(token))
             .thenReturn(file);
 
         MvcResult result = 
@@ -76,6 +77,6 @@ class FileAttachmentControllerTest {
         assertThat(response.getHeader(HttpHeaders.CONTENT_DISPOSITION)).isEqualTo(
                 ContentDisposition.builder("attachment").filename(file.getFileName(), StandardCharsets.UTF_8).build().toString());
         
-        verify(fileAttachmentTokenService, times(1)).getFileDTOByToken(token);
+        verify(fileAttachmentStorageService, times(1)).getFileDTOByToken(token);
     }
 }

@@ -6,7 +6,12 @@ import { take } from 'rxjs';
 
 import { AerSmf } from '@mrtm/api';
 
-import { PageHeadingComponent, ReturnToTaskOrActionPageComponent } from '@netz/common/components';
+import {
+  FeedbackBannerComponent,
+  FeedbackBannerStore,
+  PageHeadingComponent,
+  ReturnToTaskOrActionPageComponent,
+} from '@netz/common/components';
 import { TaskService } from '@netz/common/forms';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
 import { ButtonDirective, WarningTextComponent } from '@netz/govuk-components';
@@ -18,8 +23,7 @@ import {
   ReductionClaimWizardStep,
 } from '@requests/common/aer/subtasks/reduction-claim/reduction-claim.helpers';
 import { reductionClaimMap } from '@requests/common/aer/subtasks/reduction-claim/reduction-claim.map';
-import { NotificationBannerComponent, ReductionClaimDetailsSummaryTemplateComponent } from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
+import { ReductionClaimDetailsSummaryTemplateComponent } from '@shared/components';
 import { ReductionClaimDetailsListItemDto, SubTaskListMap, WithNeedsReview } from '@shared/types';
 
 @Component({
@@ -31,7 +35,7 @@ import { ReductionClaimDetailsListItemDto, SubTaskListMap, WithNeedsReview } fro
     ReturnToTaskOrActionPageComponent,
     RouterLink,
     WarningTextComponent,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
   ],
   standalone: true,
   templateUrl: './reduction-claim-details.component.html',
@@ -43,7 +47,7 @@ export class ReductionClaimDetailsComponent {
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly formGroup = new UntypedFormGroup({});
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
 
   public readonly isEditable: Signal<boolean> = this.store.select(requestTaskQuery.selectIsEditable);
   public readonly wizardMap: SubTaskListMap<AerSmf> = reductionClaimMap;
@@ -77,7 +81,7 @@ export class ReductionClaimDetailsComponent {
 
     if (this.data().find((item) => item.dataInputType === 'EXTERNAL_PROVIDER' && item.needsReview)) {
       this.formGroup.setErrors({ needsReview: 'Import the supporting evidence for the highlighted entries. ' });
-      this.notificationBannerStore.setInvalidForm(this.formGroup);
+      this.feedbackBannerStore.setInvalidForm(this.formGroup);
       return;
     }
 

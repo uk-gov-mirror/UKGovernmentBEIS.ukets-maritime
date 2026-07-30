@@ -50,6 +50,20 @@ main {
   align-items: flex-end;
 }
 
+.col-flex-two-thirds {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: govuk.govuk-grid-width('two-thirds');
+  padding: 0 govuk.govuk-spacing(3);
+}
+
+.col-flex-one-third {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: govuk.govuk-grid-width('one-third');
+  padding: 0 govuk.govuk-spacing(3);
+}
+
 .col-flex-three-quarters {
   box-sizing: border-box;
   flex: 0 0 auto;
@@ -90,4 +104,33 @@ a[role='button'] {
 
 .nowrap {
   white-space: nowrap;
+}
+
+/**
+ * Styles an action <button> to look like a GOV.UK link. The colour states are
+ * set explicitly because govuk-link-style-no-visited-state scopes them under
+ * :link/:visited, which never match a button element.
+ */
+.link-button {
+  @include govuk.govuk-link-common;
+
+  padding: 0;
+  border: 0;
+  background: none;
+  color: govuk.govuk-functional-colour(link);
+  cursor: pointer;
+  font-size: inherit;
+  line-height: inherit;
+
+  &:hover {
+    color: govuk.govuk-functional-colour(link-hover);
+  }
+
+  &:active {
+    color: govuk.govuk-functional-colour(link-active);
+  }
+
+  &:focus {
+    color: govuk.govuk-functional-colour(focus-text);
+  }
 }

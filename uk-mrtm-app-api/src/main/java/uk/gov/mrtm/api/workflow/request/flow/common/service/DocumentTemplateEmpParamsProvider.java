@@ -2,41 +2,35 @@ package uk.gov.mrtm.api.workflow.request.flow.common.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import uk.gov.mrtm.api.account.domain.dto.MrtmDocumentTemplateAccountData;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlanContainer;
 import uk.gov.mrtm.api.workflow.request.flow.common.domain.DocumentTemplateEmpParamsSourceData;
-import uk.gov.mrtm.api.workflow.request.flow.empvariation.domain.EmpVariationRequestInfo;
 import uk.gov.netz.api.documenttemplate.domain.templateparams.TemplateParams;
 import uk.gov.netz.api.referencedata.domain.Country;
 import uk.gov.netz.api.referencedata.service.CountryService;
-import uk.gov.netz.api.workflow.request.core.domain.Request;
 import uk.gov.netz.api.workflow.request.flow.common.service.notification.DocumentTemplateCommonParamsProvider;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class DocumentTemplateEmpParamsProvider {
 
-    private final DocumentTemplateCommonParamsProvider commonParamsProvider;
+    private final DocumentTemplateCommonParamsProvider<MrtmDocumentTemplateAccountData> commonParamsProvider;
     private final CountryService countryService;
 
-    public TemplateParams constructTemplateParams(
-            final DocumentTemplateEmpParamsSourceData sourceData) {
-
-        final Request request = sourceData.getRequest();
-        final String signatory = sourceData.getSignatory();
-        final TemplateParams templateParams = commonParamsProvider.constructCommonTemplateParams(request, signatory);
+	public TemplateParams constructTemplateParams(final DocumentTemplateEmpParamsSourceData sourceData) {
+		final TemplateParams templateParams = commonParamsProvider.constructCommonTemplateParams(
+				sourceData.getRequest(), sourceData.getSignatory(), sourceData.getAccountData());
 
         final EmissionsMonitoringPlanContainer empContainer = sourceData.getEmpContainer();
-        final int consolidationNumber = sourceData.getConsolidationNumber();
-        final List<EmpVariationRequestInfo> variationRequestInfoList = sourceData.getVariationRequestInfoList();
 
         Map<String, Object> params = new HashMap<>();
         params.put("empContainer", empContainer);
-        params.put("consolidationNumber", consolidationNumber);
-        params.put("variationRequestInfoList", variationRequestInfoList);
+        params.put("consolidationNumber", sourceData.getConsolidationNumber());
+        params.put("variationRequestInfoList", sourceData.getVariationRequestInfoList());
         params.put("empSubmissionDate", sourceData.getEmpSubmissionDate());
         params.put("empEndDate", sourceData.getEmpEndDate());
         params.put("contactCountry",

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -11,26 +11,26 @@ describe('MultiSelectTableComponent', () => {
     imports: [MultiSelectTableComponent],
     standalone: true,
     template: `
-      <mrtm-multi-select-table [caption]="caption" [columns]="columns" [data]="data" (sort)="onSort($event)" />
+      <mrtm-multi-select-table [caption]="caption()" [columns]="columns()" [data]="data()" (sort)="onSort($event)" />
     `,
   })
   class TestComponent {
-    columns: GovukTableColumn[] = [
+    readonly columns = signal<GovukTableColumn[]>([
       { header: 'Name', field: 'name', widthClass: 'govuk-!-width-one-quarter', isHeader: true },
       { header: 'Surname', field: 'surname' },
       { header: 'Age', field: 'age', isNumeric: true },
-    ];
-    data: any[] = [];
-    caption: string;
+    ]);
+    readonly data = signal<any[]>([]);
+    readonly caption = signal<string>(undefined);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onSort = jest.fn((_: SortEvent) => null);
+    onSort = vi.fn((_: SortEvent) => null);
   }
 
   @Component({
     imports: [MultiSelectTableComponent],
     standalone: true,
     template: `
-      <mrtm-multi-select-table [caption]="caption" [columns]="columns" [data]="data" (sort)="onSort($event)">
+      <mrtm-multi-select-table [caption]="caption()" [columns]="columns()" [data]="data()" (sort)="onSort($event)">
         <ng-template let-column="column" let-row="row">
           @if (column.field === 'link') {
             <a>{{ row[column.field] }}</a>
@@ -42,14 +42,14 @@ describe('MultiSelectTableComponent', () => {
     `,
   })
   class TestTemplateComponent {
-    columns: GovukTableColumn[] = [
+    readonly columns = signal<GovukTableColumn[]>([
       { header: 'Link', field: 'link' },
       { header: 'Text', field: 'text' },
-    ];
-    data: any[] = [];
-    caption: string;
+    ]);
+    readonly data = signal<any[]>([]);
+    readonly caption = signal<string>(undefined);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onSort = jest.fn((_: SortEvent) => null);
+    onSort = vi.fn((_: SortEvent) => null);
   }
 
   let component: MultiSelectTableComponent<any>;
@@ -79,7 +79,7 @@ describe('MultiSelectTableComponent', () => {
 
     expect(caption).toBeNull();
 
-    hostComponent.caption = 'Test Caption';
+    hostComponent.caption.set('Test Caption');
     fixture.detectChanges();
 
     caption = hostElement.querySelector<HTMLTableCaptionElement>('caption');
@@ -101,11 +101,11 @@ describe('MultiSelectTableComponent', () => {
   });
 
   it('should render the data', () => {
-    hostComponent.data = [
+    hostComponent.data.set([
       { name: 'Name 1', surname: 'Surname 1', age: 23 },
       { name: 'Name 2', surname: 'Surname 2', age: 48 },
       { name: 'Name 3', surname: 'Surname 3', age: 32 },
-    ];
+    ]);
     fixture.detectChanges();
 
     const hostElement: HTMLElement = fixture.nativeElement;
@@ -122,7 +122,7 @@ describe('MultiSelectTableComponent', () => {
   });
 
   it('should assign width classes', () => {
-    hostComponent.data = [{ name: 'Name 1', surname: 'Surname 1', age: 23 }];
+    hostComponent.data.set([{ name: 'Name 1', surname: 'Surname 1', age: 23 }]);
     fixture.detectChanges();
     const hostElement: HTMLElement = fixture.nativeElement;
     const headers = hostElement.querySelectorAll<HTMLTableCellElement>('thead th');
@@ -131,11 +131,11 @@ describe('MultiSelectTableComponent', () => {
   });
 
   it('should assign numeric class', () => {
-    hostComponent.data = [
+    hostComponent.data.set([
       { name: 'Name 1', surname: 'Surname 1', age: 23 },
       { name: 'Name 2', surname: 'Surname 2', age: 48 },
       { name: 'Name 3', surname: 'Surname 3', age: 32 },
-    ];
+    ]);
     fixture.detectChanges();
 
     const hostElement: HTMLElement = fixture.nativeElement;
@@ -148,11 +148,11 @@ describe('MultiSelectTableComponent', () => {
   });
 
   it('should correctly check items', () => {
-    hostComponent.data = [
+    hostComponent.data.set([
       { name: 'Name 1', surname: 'Surname 1', age: 23 },
       { name: 'Name 2', surname: 'Surname 2', age: 48 },
       { name: 'Name 3', surname: 'Surname 3', age: 32 },
-    ];
+    ]);
     fixture.detectChanges();
 
     const hostElement: HTMLElement = fixture.nativeElement;
@@ -163,7 +163,7 @@ describe('MultiSelectTableComponent', () => {
     // Click 3rd checkbox(since there is global-select) for 2nd row of data
     checkBoxes[2].click();
     fixture.detectChanges();
-    expect(hostComponent.data[1]).toEqual({
+    expect(hostComponent.data()[1]).toEqual({
       name: 'Name 2',
       surname: 'Surname 2',
       age: 48,
@@ -173,7 +173,7 @@ describe('MultiSelectTableComponent', () => {
     // Click global-select checkbox
     checkBoxes[0].click();
     fixture.detectChanges();
-    expect(hostComponent.data).toEqual([
+    expect(hostComponent.data()).toEqual([
       { name: 'Name 1', surname: 'Surname 1', age: 23, isSelected: true },
       { name: 'Name 2', surname: 'Surname 2', age: 48, isSelected: true },
       { name: 'Name 3', surname: 'Surname 3', age: 32, isSelected: true },
@@ -181,15 +181,15 @@ describe('MultiSelectTableComponent', () => {
   });
 
   it('should display sort buttons and emit event on click', () => {
-    hostComponent.columns = [
+    hostComponent.columns.set([
       { header: 'One', field: 'first', isSortable: true },
       { header: 'Second', field: 'second', isSortable: true },
       { header: 'Third', field: 'third', isSortable: false },
-    ];
-    hostComponent.data = [
+    ]);
+    hostComponent.data.set([
       { first: 1, second: new Date('2020-07-23T10:00:00Z'), third: 'abc' },
       { first: 2, second: new Date('2020-07-23T11:00:00Z'), third: 'cda' },
-    ];
+    ]);
 
     fixture.detectChanges();
     const sortButtons = fixture.debugElement.queryAll(By.css('[aria-sort] button'));
@@ -220,7 +220,7 @@ describe('MultiSelectTableComponent', () => {
 
   it('should display custom template', () => {
     const templateFixture = TestBed.createComponent(TestTemplateComponent);
-    templateFixture.componentInstance.data = [{ link: 'Go to', text: 'Something to watch' }];
+    templateFixture.componentInstance.data.set([{ link: 'Go to', text: 'Something to watch' }]);
     templateFixture.detectChanges();
 
     const element: HTMLElement = templateFixture.nativeElement;

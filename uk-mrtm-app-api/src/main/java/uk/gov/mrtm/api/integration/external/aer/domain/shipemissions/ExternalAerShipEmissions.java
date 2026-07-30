@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import uk.gov.mrtm.api.integration.external.emp.domain.shipemissions.ExternalEmpUncertaintyLevel;
 import uk.gov.netz.api.common.validation.uniqueelements.UniqueField;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -32,20 +31,20 @@ public class ExternalAerShipEmissions {
     @Valid
     @NotEmpty
     @JsonDeserialize(as = LinkedHashSet.class)
-    private Set<@NotNull ExternalAerFuelsAndEmissionsFactors> fuelTypes = new HashSet<>();
+    private Set<@NotNull ExternalAerFuelsAndEmissionsFactors> fuelTypes = new LinkedHashSet<>();
 
     @Builder.Default
     @JsonDeserialize(as = LinkedHashSet.class)
     @NotEmpty
     @Valid
-    private Set<@NotNull ExternalAerEmissionsSources> emissionsSources = new HashSet<>();
+    private Set<@NotNull ExternalAerEmissionsSources> emissionsSources = new LinkedHashSet<>();
 
     @Schema(description = "Level of uncertainty associated with the fuel monitoring methods")
     @Builder.Default
     @JsonDeserialize(as = LinkedHashSet.class)
     @NotEmpty
     @Valid
-    private Set<@NotNull ExternalEmpUncertaintyLevel> uncertaintyLevel = new HashSet<>();
+    private Set<@NotNull ExternalEmpUncertaintyLevel> uncertaintyLevel = new LinkedHashSet<>();
 
     @Schema(description = "Exemption from per voyage monitoring")
     @Valid

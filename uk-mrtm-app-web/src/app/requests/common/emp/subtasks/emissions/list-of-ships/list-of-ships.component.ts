@@ -2,7 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { PageHeadingComponent, ReturnToTaskOrActionPageComponent } from '@netz/common/components';
+import {
+  FeedbackBannerComponent,
+  FeedbackBannerStore,
+  PageHeadingComponent,
+  ReturnToTaskOrActionPageComponent,
+} from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { RequestTaskStore } from '@netz/common/store';
 import { ButtonDirective } from '@netz/govuk-components';
@@ -12,15 +17,14 @@ import { ListOfShipsTableComponent } from '@requests/common/components/emissions
 import { empCommonQuery } from '@requests/common/emp/+state';
 import { EmissionsWizardStep } from '@requests/common/emp/subtasks/emissions/emissions.helpers';
 import { emissionsSubTasksMap } from '@requests/common/emp/subtasks/subtask-list.map';
-import { MultiSelectedItem, NotificationBannerComponent } from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
+import { MultiSelectedItem } from '@shared/components';
 import { ShipEmissionTableListItem } from '@shared/types';
 
 @Component({
   selector: 'mrtm-list-of-ships',
   imports: [
     ListOfShipsTableComponent,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
     PendingButtonDirective,
     ButtonDirective,
     PageHeadingComponent,
@@ -32,7 +36,7 @@ import { ShipEmissionTableListItem } from '@shared/types';
 })
 export class ListOfShipsComponent {
   private readonly formGroup: UntypedFormGroup = new UntypedFormGroup({});
-  private readonly notificationBannerStore: NotificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly router: Router = inject(Router);
@@ -49,12 +53,12 @@ export class ListOfShipsComponent {
   onContinue() {
     if (this.notCompletedMessage()) {
       this.formGroup.setErrors({ NOT_COMPLETED: this.notCompletedMessage() });
-      this.notificationBannerStore.setInvalidForm(this.formGroup);
+      this.feedbackBannerStore.setInvalidForm(this.formGroup);
       return;
     }
 
     this.formGroup.reset();
-    this.notificationBannerStore.reset();
+    this.feedbackBannerStore.reset();
 
     this.router.navigate(['../'], { relativeTo: this.activatedRoute, queryParams: { submit: true } });
   }
@@ -70,7 +74,7 @@ export class ListOfShipsComponent {
   onDeleteShips(ships: MultiSelectedItem<ShipEmissionTableListItem>[]) {
     if (ships.length) {
       this.formGroup.reset();
-      this.notificationBannerStore.reset();
+      this.feedbackBannerStore.reset();
 
       this.router.navigate(['../', EmissionsWizardStep.DELETE_SHIPS], {
         relativeTo: this.activatedRoute,
@@ -80,7 +84,7 @@ export class ListOfShipsComponent {
       });
     } else {
       this.formGroup.setErrors({ NONE_SELECTED: 'Select the ships to delete' });
-      this.notificationBannerStore.setInvalidForm(this.formGroup);
+      this.feedbackBannerStore.setInvalidForm(this.formGroup);
     }
   }
 }

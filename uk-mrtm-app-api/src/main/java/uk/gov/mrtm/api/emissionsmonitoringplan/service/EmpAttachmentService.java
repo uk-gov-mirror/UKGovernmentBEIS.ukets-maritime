@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlanContainer;
 import uk.gov.netz.api.common.exception.BusinessException;
 import uk.gov.netz.api.common.exception.ErrorCode;
-import uk.gov.netz.api.files.attachments.service.FileAttachmentTokenService;
+import uk.gov.netz.api.files.attachments.service.storage.FileAttachmentStorageService;
 import uk.gov.netz.api.token.FileToken;
 
 import java.util.UUID;
@@ -15,7 +15,7 @@ import java.util.UUID;
 public class EmpAttachmentService {
 
     private final EmissionsMonitoringPlanQueryService emissionsMonitoringPlanQueryService;
-    private final FileAttachmentTokenService fileAttachmentTokenService;
+    private final FileAttachmentStorageService fileAttachmentStorageService;
 
     public FileToken generateGetFileAttachmentToken(String empId, UUID attachmentUuid) {
         EmissionsMonitoringPlanContainer empContainer = emissionsMonitoringPlanQueryService.getEmpContainerById(empId);
@@ -25,7 +25,7 @@ public class EmpAttachmentService {
             throw new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, attachmentUuid);
         }
 
-        return fileAttachmentTokenService.generateGetFileAttachmentToken(attachmentUuid.toString());
+        return fileAttachmentStorageService.generateGetFileAttachmentToken(attachmentUuid.toString());
     }
 
 }

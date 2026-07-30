@@ -15,8 +15,8 @@ describe('ReturnToShipsListTableComponent', () => {
       return this.query<HTMLHeadingElement>('hr');
     }
 
-    get link(): HTMLHeadingElement {
-      return this.query<HTMLHeadingElement>('a');
+    get link(): HTMLAnchorElement {
+      return this.query<HTMLAnchorElement>('a');
     }
   }
 

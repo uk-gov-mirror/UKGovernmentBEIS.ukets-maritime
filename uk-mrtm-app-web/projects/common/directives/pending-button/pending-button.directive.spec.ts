@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { timer } from 'rxjs';
@@ -48,15 +48,17 @@ describe('PendingButtonDirective', () => {
     expect(directive).toBeTruthy();
   });
 
-  it('should disable the button if a request is pending', fakeAsync(() => {
+  it('should disable the button if a request is pending', () => {
+    vi.useFakeTimers();
     expect(page.button.disabled).toBeFalsy();
 
     page.button.click();
     fixture.detectChanges();
     expect(page.button.disabled).toBeTruthy();
 
-    tick(500);
+    vi.advanceTimersByTime(500);
     fixture.detectChanges();
     expect(page.button.disabled).toBeFalsy();
-  }));
+    vi.useFakeTimers();
+  });
 });

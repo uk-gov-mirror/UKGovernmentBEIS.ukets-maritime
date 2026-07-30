@@ -8,7 +8,7 @@ const totalEmissionsValidator =
   (message: string): ValidatorFn =>
   (abstractControl: FormGroup<AerAggregatedEmissionsFormGroupModel>) => {
     const { total } = abstractControl.value;
-    if (abstractControl.valid && !isNil(total) && new BigNumber(total).lte(0)) {
+    if (abstractControl.valid && !isNil(total) && new BigNumber(total).lt(0)) {
       return {
         invalidGroupValues: message,
       };

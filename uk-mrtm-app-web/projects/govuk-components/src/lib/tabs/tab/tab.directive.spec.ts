@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 
@@ -53,13 +53,13 @@ describe('TabDirective', () => {
       expect(component).toBeTruthy();
     });
 
-    it('should render tabs content asynchronously', fakeAsync(async () => {
+    it('should render tabs content asynchronously', async () => {
       const tabsElement: HTMLElement = fixture.debugElement.query(By.directive(TabsComponent)).nativeElement;
       expect(tabsElement.querySelector('#paragraph').textContent).toContain('This is a paragraph');
-    }));
+    });
 
     it('should show only the content of the active tab', async () => {
-      await fixture.whenStable();
+      await new Promise((resolve) => setTimeout(resolve, 200));
       fixture.detectChanges();
       const tabsElement: HTMLElement = fixture.debugElement.query(By.directive(TabsComponent)).nativeElement;
       const tabLinks = tabsElement.querySelectorAll<HTMLAnchorElement>('a.govuk-tabs__tab');

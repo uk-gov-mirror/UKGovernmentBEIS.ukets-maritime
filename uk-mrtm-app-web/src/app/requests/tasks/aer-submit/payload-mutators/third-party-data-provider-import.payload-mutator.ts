@@ -7,6 +7,7 @@ import { PayloadMutator } from '@netz/common/forms';
 
 import { AerSubmitTaskPayload } from '@requests/common/aer/aer.types';
 import { AER_AGGREGATED_DATA_SUB_TASK } from '@requests/common/aer/subtasks/aer-aggregated-data';
+import { AER_REDUCTION_CLAIM_SUB_TASK } from '@requests/common/aer/subtasks/reduction-claim';
 import { EMISSIONS_SUB_TASK } from '@requests/common/components/emissions/emissions.helpers';
 import { TaskItemStatus } from '@requests/common/task-item-status';
 import {
@@ -28,7 +29,8 @@ export class ThirdPartyDataProviderImportPayloadMutator extends PayloadMutator {
       produce(currentPayload, (payload: AerSubmitTaskPayload) => {
         this.affectedTasks.forEach((subtask) => {
           payload.aer[subtask] = userInput[subtask];
-          payload.aerSectionsCompleted[subtask] = TaskItemStatus.IN_PROGRESS;
+          payload.aerSectionsCompleted[subtask] =
+            subtask === AER_REDUCTION_CLAIM_SUB_TASK ? TaskItemStatus.IN_PROGRESS : TaskItemStatus.COMPLETED;
 
           if (subtask === EMISSIONS_SUB_TASK) {
             Object.keys(payload.aerSectionsCompleted).forEach((key) => {

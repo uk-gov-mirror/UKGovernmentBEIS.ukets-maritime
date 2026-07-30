@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, computed, contentChild, input } from '@angular/core';
+import { AfterViewInit, Component, computed, contentChild, input, signal } from '@angular/core';
 import { ControlValueAccessor, ReactiveFormsModule } from '@angular/forms';
 
-import { distinctUntilChanged, takeUntil, tap } from 'rxjs';
+import { distinctUntilChanged, startWith, takeUntil, tap } from 'rxjs';
 
 import { LabelDirective } from '../directives';
 import { ErrorMessageComponent } from '../error-message';
@@ -32,6 +32,7 @@ export class TextareaComponent extends FormInput implements ControlValueAccessor
 
   readonly templateLabel = contentChild(LabelDirective);
 
+  readonly valueLength = signal(0);
   readonly currentLabelSize = computed(() => {
     switch (this.labelSize()) {
       case 'small':
@@ -80,6 +81,7 @@ export class TextareaComponent extends FormInput implements ControlValueAccessor
   ngAfterViewInit(): void {
     this.control.valueChanges
       .pipe(
+        startWith(this.control.value),
         distinctUntilChanged((prev, curr) => prev === curr),
         tap((value) => {
           const trimmedValue = value ? (value.trim() === '' ? null : value.trim()) : value;
@@ -88,6 +90,7 @@ export class TextareaComponent extends FormInput implements ControlValueAccessor
             emitViewToModelChange: false,
             emitModelToViewChange: false,
           });
+          this.valueLength.set(trimmedValue?.length ?? 0);
         }),
         takeUntil(this.destroy$),
       )

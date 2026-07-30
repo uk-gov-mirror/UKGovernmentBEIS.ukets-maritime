@@ -4,6 +4,7 @@ import { ControlValueAccessor, ReactiveFormsModule } from '@angular/forms';
 import { FormErrorDirective, LabelDirective } from '../directives';
 import { ErrorMessageComponent } from '../error-message';
 import { FormInput } from '../form/form-input';
+import { SafeHtmlPipe } from '../pipes';
 import { LabelSizeType } from '../text-input/label-size.type';
 import { GovukSelectOption } from './select.interface';
 import { GovukSelectWidthClass } from './select.type';
@@ -15,7 +16,7 @@ import { GovukSelectWidthClass } from './select.type';
 */
 @Component({
   selector: 'div[govuk-select]',
-  imports: [ReactiveFormsModule, FormErrorDirective, ErrorMessageComponent],
+  imports: [ReactiveFormsModule, FormErrorDirective, ErrorMessageComponent, SafeHtmlPipe],
   standalone: true,
   templateUrl: './select.component.html',
 })

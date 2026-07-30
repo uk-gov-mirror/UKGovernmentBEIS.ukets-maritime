@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { VerificationBodyDTO } from '@mrtm/api';
@@ -25,7 +25,6 @@ import { VerificationBodyStatusPipe } from '@verification-bodies/pipes/verificat
     TableComponent,
     LinkDirective,
     RouterLink,
-    FormsModule,
     ReactiveFormsModule,
     SelectComponent,
     VerificationBodyStatusPipe,

@@ -8,19 +8,7 @@ import Keycloak, {
   type KeycloakTokenParsed,
 } from 'keycloak-js';
 
-export enum KeycloakEventType {
-  OnAuthSuccess = 'onAuthSuccess',
-  OnAuthRefreshSuccess = 'onAuthRefreshSuccess',
-  OnAuthRefreshError = 'onAuthRefreshError',
-  OnAuthLogout = 'onAuthLogout',
-  OnActionUpdate = 'onActionUpdate',
-  OnTokenExpired = 'onTokenExpired',
-  OnReady = 'onReady',
-}
-
-export interface KeycloakEvent {
-  type: KeycloakEventType;
-}
+import { KeycloakEvent, KeycloakEventType } from '@core/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class KeycloakService {

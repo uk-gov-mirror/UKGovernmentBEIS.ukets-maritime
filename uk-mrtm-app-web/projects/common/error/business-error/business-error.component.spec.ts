@@ -24,8 +24,6 @@ describe('BusinessErrorComponent', () => {
           { path: 'error/business', component: BusinessErrorComponent },
         ]),
       ],
-    }).overrideComponent(BusinessErrorComponent, {
-      set: { host: { 'test-id': 'component-spec' } },
     });
 
     TestBed.inject(BusinessErrorService).showError(error);

@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 
+import { FeedbackBannerComponent } from '@netz/common/components';
 import { RequestTaskPageContentFactory } from '@netz/common/request-task';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
 
@@ -30,7 +31,6 @@ import {
 import { VARIATION_DETAILS_SUB_TASK } from '@requests/common/emp/subtasks/variation-details/variation-details.helper';
 import { ThirdPartyDataProviderInfoComponent } from '@requests/common/third-party-data-provider';
 import { ADDITIONAL_DOCUMENTS_SUB_TASK } from '@requests/common/utils/additional-documents';
-import { NotificationBannerComponent } from '@shared/components';
 import { taskActionTypeToTitleMap } from '@shared/constants';
 
 const routePrefix = 'emp-variation';
@@ -42,7 +42,7 @@ export const empVariationTaskContent: RequestTaskPageContentFactory = () => {
   const allowedRequestTaskActions = store.select(requestTaskQuery.selectAllowedRequestTaskActions)();
 
   return {
-    pageTopComponent: NotificationBannerComponent,
+    pageTopComponent: FeedbackBannerComponent,
     header: taskActionTypeToTitleMap?.[requestTaskType],
     preContentComponent: allowedRequestTaskActions.includes('EMP_VARIATION_IMPORT_THIRD_PARTY_DATA_APPLICATION')
       ? ThirdPartyDataProviderInfoComponent

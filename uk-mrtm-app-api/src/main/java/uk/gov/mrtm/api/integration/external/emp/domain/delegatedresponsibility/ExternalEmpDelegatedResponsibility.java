@@ -13,7 +13,6 @@ import lombok.experimental.SuperBuilder;
 import uk.gov.netz.api.common.validation.SpELExpression;
 import uk.gov.netz.api.common.validation.uniqueelements.UniqueElements;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -36,7 +35,7 @@ public class ExternalEmpDelegatedResponsibility {
     @JsonDeserialize(as = LinkedHashSet.class)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @UniqueElements
-    private Set<@NotNull @Valid ExternalEmpRegisteredOwner> registeredOwners = new HashSet<>();
+    private Set<@NotNull @Valid ExternalEmpRegisteredOwner> registeredOwners = new LinkedHashSet<>();
 
     @Schema(nullable = true, description = "Maritime Operator declares that the information provided is true. If delegatedResponsibilityUsed is true it must be true, otherwise it must be omitted")
     private Boolean responsibilityDeclaration;

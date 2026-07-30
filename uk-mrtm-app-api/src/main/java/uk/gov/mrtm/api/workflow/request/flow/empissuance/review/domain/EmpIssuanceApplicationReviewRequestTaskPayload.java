@@ -7,11 +7,14 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.util.CollectionUtils;
+import uk.gov.mrtm.api.workflow.request.flow.common.domain.RequestGeneratedFileType;
+import uk.gov.mrtm.api.workflow.request.flow.common.domain.RequestTaskDocumentAsyncGeneratedDataPayload;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpIssuanceApplicationRequestTaskPayload;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpIssuanceDetermination;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpIssuanceReviewDecision;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpReviewDecisionType;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpReviewGroup;
+import uk.gov.netz.api.workflow.request.core.domain.dto.RequestTaskPreviewFileInfoDTO;
 import uk.gov.netz.api.workflow.request.flow.common.domain.review.ChangesRequiredDecisionDetails;
 import uk.gov.netz.api.workflow.request.flow.common.domain.review.ReviewDecisionRequiredChange;
 import uk.gov.netz.api.workflow.request.flow.rfi.domain.RequestTaskPayloadRfiAttachable;
@@ -31,7 +34,7 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 @SuperBuilder
 public class EmpIssuanceApplicationReviewRequestTaskPayload extends EmpIssuanceApplicationRequestTaskPayload
-        implements RequestTaskPayloadRfiAttachable {
+        implements RequestTaskPayloadRfiAttachable, RequestTaskDocumentAsyncGeneratedDataPayload {
 
     private EmpIssuanceDetermination determination;
 
@@ -39,6 +42,12 @@ public class EmpIssuanceApplicationReviewRequestTaskPayload extends EmpIssuanceA
 
     @Builder.Default
     private Map<EmpReviewGroup, EmpIssuanceReviewDecision> reviewGroupDecisions = new EnumMap<>(EmpReviewGroup.class);
+
+    private Boolean finalDocumentsGenerationInProgress;
+    private Boolean finalDocumentsGenerationSuccessful;
+
+    @Builder.Default
+    private Map<RequestGeneratedFileType, RequestTaskPreviewFileInfoDTO> previewFiles = new HashMap<>();
 
     @Builder.Default
     private Map<UUID, String> reviewAttachments = new HashMap<>();
@@ -51,7 +60,7 @@ public class EmpIssuanceApplicationReviewRequestTaskPayload extends EmpIssuanceA
 
     @Override
     public Map<UUID, String> getAttachments() {
-        return Stream.of(super.getAttachments(), getReviewAttachments(), getRfiAttachments())
+        return Stream.of(super.getAttachments(), getReviewAttachments(), getRfiAttachments(), getPreviewFileAttachments())
                 .flatMap(map -> map.entrySet().stream())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
@@ -79,5 +88,17 @@ public class EmpIssuanceApplicationReviewRequestTaskPayload extends EmpIssuanceA
         getEmpAttachments().keySet().removeIf(uuids::contains);
         getReviewAttachments().keySet().removeIf(uuids::contains);
         getRfiAttachments().keySet().removeIf(uuids::contains);
+    }
+
+    @Override
+    public boolean canPreviewOfficialDocument() {
+        return determination != null;
+    }
+
+    private Map<UUID, String> getPreviewFileAttachments(){
+        return getPreviewFiles().values().stream()
+            .filter(file -> file.getFile() != null && file.getFile().getUuid() != null)
+            .collect(Collectors.toMap(file -> UUID.fromString(file.getFile().getUuid()),
+                file -> file.getFile().getName()));
     }
 }

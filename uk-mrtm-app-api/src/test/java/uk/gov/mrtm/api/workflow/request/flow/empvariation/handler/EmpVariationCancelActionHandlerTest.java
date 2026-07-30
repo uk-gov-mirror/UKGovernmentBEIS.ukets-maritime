@@ -55,7 +55,7 @@ class EmpVariationCancelActionHandlerTest {
             .processTaskId(processTaskId)
             .build();
 
-        when(requestTaskService.findTaskById(1L)).thenReturn(requestTask);
+        when(requestTaskService.findTaskByIdForUpdate(1L)).thenReturn(requestTask);
 
         //invoke
         RequestTaskPayload requestTaskPayload = handler.process(requestTask.getId(),
@@ -66,7 +66,7 @@ class EmpVariationCancelActionHandlerTest {
         // Verify
         assertThat(requestTaskPayload).isEqualTo(expectedRequestTaskPayload);
         verifyNoMoreInteractions(expectedRequestTaskPayload);
-        verify(requestTaskService, times(1)).findTaskById(requestTask.getId());
+        verify(requestTaskService, times(1)).findTaskByIdForUpdate(requestTask.getId());
         verify(workflowService, times(1)).completeTask(processTaskId,
             Map.of(MrtmBpmnProcessConstants.EMP_VARIATION_SUBMIT_OUTCOME, EmpVariationSubmitOutcome.CANCELLED,
                 BpmnProcessConstants.REQUEST_INITIATOR_ROLE_TYPE, RoleTypeConstants.OPERATOR));

@@ -1,6 +1,6 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 
 import { of } from 'rxjs';
@@ -20,7 +20,7 @@ describe('PeerReviewDecisionSummaryComponent', () => {
   let store: PeerReviewStore;
   let router: Router;
   const tasksService = mockClass(TasksService);
-  tasksService.processRequestTaskAction.mockReturnValue(of({}));
+  tasksService.processRequestTaskAction.mockReturnValue(of({}) as any);
   const route = new ActivatedRouteStub();
 
   beforeEach(async () => {
@@ -47,7 +47,7 @@ describe('PeerReviewDecisionSummaryComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display agreement text and notes when user agrees', fakeAsync(() => {
+  it('should display agreement text and notes when user agrees', () => {
     store.setDecision({
       accepted: true,
       isSubmitted: false,
@@ -58,9 +58,9 @@ describe('PeerReviewDecisionSummaryComponent', () => {
     expect(ddElements.some((el) => el.textContent.trim() === 'I agree with the determination')).toEqual(true);
     expect(ddElements.some((el) => el.textContent.trim() === 'I do not agree with the determination')).toEqual(false);
     expect(ddElements.some((el) => el.textContent.trim() === 'agreement notes')).toEqual(true);
-  }));
+  });
 
-  it('should display disagreement text and notes when user disagrees', fakeAsync(() => {
+  it('should display disagreement text and notes when user disagrees', () => {
     store.setDecision({
       accepted: false,
       isSubmitted: false,
@@ -71,18 +71,17 @@ describe('PeerReviewDecisionSummaryComponent', () => {
     expect(ddElements.some((el) => el.textContent.trim() === 'I agree with the determination')).toEqual(false);
     expect(ddElements.some((el) => el.textContent.trim() === 'I do not agree with the determination')).toEqual(true);
     expect(ddElements.some((el) => el.textContent.trim() === 'disagreement notes')).toEqual(true);
-  }));
+  });
 
-  it('should redirect to success page when user completes the process', fakeAsync(() => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
+  it('should redirect to success page when user completes the process', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     store.setDecision({
       accepted: true,
       isSubmitted: false,
       notes: 'test notes',
     });
     component.onSubmit();
-    flush();
     expect(store.select(selectIsDecisionSubmitted)()).toEqual(true);
     expect(navigateSpy).toHaveBeenCalledWith(['../success'], { relativeTo: route });
-  }));
+  });
 });

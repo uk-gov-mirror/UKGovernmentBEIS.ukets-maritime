@@ -72,7 +72,7 @@ describe('ServiceBannerComponent', () => {
     page = new Page(fixture);
 
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should create', () => {

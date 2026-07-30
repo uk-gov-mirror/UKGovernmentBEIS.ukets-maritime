@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { TextInputComponent } from '@netz/govuk-components';
 
@@ -9,7 +9,7 @@ import { existingControlContainer } from '@shared/providers';
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: 'mrtm-user-input',
-  imports: [TextInputComponent, FormsModule, ReactiveFormsModule, PhoneInputComponent],
+  imports: [TextInputComponent, ReactiveFormsModule, PhoneInputComponent],
   standalone: true,
   templateUrl: './user-input.component.html',
   styles: `

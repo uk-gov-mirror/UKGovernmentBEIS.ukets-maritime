@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 
 import { throwError } from 'rxjs';
 
@@ -16,6 +16,7 @@ import { ActivatedRouteStub, asyncData, BasePage, expectBusinessErrorToBe, MockT
 
 import { savePartiallyNotFoundSiteContactError } from '@verifiers//errors/business-error';
 import { SiteContactsComponent } from '@verifiers/components/site-contacts/site-contacts.component';
+import { Mocked } from 'vitest';
 
 describe('SiteContactsComponent', () => {
   let component: SiteContactsComponent;
@@ -96,13 +97,13 @@ describe('SiteContactsComponent', () => {
     totalItems: 2,
   };
 
-  const siteContactsService: jest.Mocked<Partial<VBSiteContactsService>> = {
-    getVbSiteContacts: jest.fn().mockReturnValue(asyncData(siteContacts)),
-    updateVbSiteContacts: jest.fn().mockReturnValue(asyncData(null)),
+  const siteContactsService: Mocked<Partial<VBSiteContactsService>> = {
+    getVbSiteContacts: vi.fn().mockReturnValue(asyncData(siteContacts)),
+    updateVbSiteContacts: vi.fn().mockReturnValue(asyncData(null)),
   };
 
   const verifierAuthoritiesService: MockType<VerifierAuthoritiesService> = {
-    getVerifierAuthorities: jest.fn().mockReturnValue(asyncData(verifiers)),
+    getVerifierAuthorities: vi.fn().mockReturnValue(asyncData(verifiers)),
   };
 
   beforeEach(async () => {
@@ -128,7 +129,7 @@ describe('SiteContactsComponent', () => {
 
   beforeEach(createComponent);
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -174,6 +175,7 @@ describe('SiteContactsComponent', () => {
   });
 
   it('should show error page in case the authority has been deleted meanwhile', async () => {
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     siteContactsService.updateVbSiteContacts.mockReturnValue(
       throwError(() => new HttpErrorResponse({ error: { code: ErrorCodes.AUTHORITY1003 }, status: 400 })),
     );
@@ -192,6 +194,7 @@ describe('SiteContactsComponent', () => {
   });
 
   it('should show error page in case the user has been deleted meanwhile', async () => {
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     siteContactsService.updateVbSiteContacts.mockReturnValue(
       throwError(() => new HttpErrorResponse({ error: { code: ErrorCodes.ACCOUNT1004 }, status: 400 })),
     );
@@ -210,7 +213,7 @@ describe('SiteContactsComponent', () => {
   });
 
   it('should display assignees as plain text if the user does not have permissions', async () => {
-    siteContactsService.getVbSiteContacts.mockReturnValueOnce(asyncData({ ...siteContacts, editable: false }));
+    siteContactsService.getVbSiteContacts.mockReturnValueOnce(asyncData({ ...siteContacts, editable: false }) as any);
     activatedRoute.setFragment('site-contacts');
 
     await fixture.whenStable();

@@ -25,8 +25,8 @@ describe('MaritimeEmissionsSummaryComponent', () => {
   let authStore: AuthStore;
 
   const route = new ActivatedRouteStub();
-  const taskService: MockType<TaskService<unknown>> = { submitSubtask: jest.fn().mockReturnValue(of({})) };
-  const taskServiceSpy = jest.spyOn(taskService, 'submitSubtask');
+  const taskService: MockType<TaskService<unknown>> = { submitSubtask: vi.fn().mockReturnValue(of({})) };
+  const taskServiceSpy = vi.spyOn(taskService, 'submitSubtask');
 
   class Page extends BasePage<MaritimeEmissionsSummaryComponent> {
     get submitButton(): HTMLButtonElement {
@@ -39,7 +39,7 @@ describe('MaritimeEmissionsSummaryComponent', () => {
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(async () => {

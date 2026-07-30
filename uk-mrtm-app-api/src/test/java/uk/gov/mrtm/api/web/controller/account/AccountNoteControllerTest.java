@@ -242,12 +242,13 @@ class AccountNoteControllerTest {
             .fileType(noteContentType)
             .fileContent(noteContent)
             .fileSize(noteFile.getSize())
+            .createdBy(authUser.getUserId())
             .build();
         final UUID noteUuid = UUID.randomUUID();
         final Long accountId = 1L;
 
         when(appSecurityComponent.getAuthenticatedUser()).thenReturn(authUser);
-        when(fileNoteService.uploadAccountFile(authUser.getUserId(), fileDTO, accountId))
+        when(fileNoteService.uploadAccountFile(fileDTO, accountId))
             .thenReturn(FileUuidDTO.builder().uuid(noteUuid.toString()).build());
 
         mockMvc.perform(

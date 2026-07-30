@@ -16,7 +16,7 @@ describe('FeedbackComponent', () => {
 
   const activatedRoute = new ActivatedRouteStub();
   const usersService: MockType<UsersService> = {
-    provideUserFeedback: jest.fn().mockReturnValue(of(null)),
+    provideUserFeedback: vi.fn().mockReturnValue(of(null)),
   };
   let page: Page;
 
@@ -83,7 +83,7 @@ describe('FeedbackComponent', () => {
     router = TestBed.inject(Router);
   });
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FeedbackComponent);
@@ -97,7 +97,7 @@ describe('FeedbackComponent', () => {
   });
 
   it('should send feedback form', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     expect(page.userRegistrationRateRadios.length).toEqual(5);
     expect(page.onlineGuidanceRateRadios.length).toEqual(6);

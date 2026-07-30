@@ -16,6 +16,7 @@ import {
 } from '@mrtm/api';
 
 import { AuthStore, selectUserId, selectUserRoleType } from '@netz/common/auth';
+import { FeedbackBannerStore } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { BusinessErrorService, catchBadRequest, catchElseRethrow, ErrorCodes, HttpStatuses } from '@netz/common/error';
 import { UserFullNamePipe } from '@netz/common/pipes';
@@ -43,7 +44,6 @@ import {
 import { savePartiallyNotFoundOperatorError } from '@accounts/errors';
 import { OperatorAccountsStore, selectAccount } from '@accounts/store';
 import { RadioOptionComponent } from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { ScrollablePaneDirective, UsersTableDirective } from '@shared/directives';
 import { IncludesPipe } from '@shared/pipes';
 import { FormUtils } from '@shared/utils/form.utils';
@@ -84,7 +84,7 @@ export class UserContactsVerifiersTabComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly destroy$ = inject(DestroySubject);
   private readonly route = inject(ActivatedRoute);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
 
   readonly currentTab = input<string>();
 
@@ -187,7 +187,7 @@ export class UserContactsVerifiersTabComponent implements OnInit {
     }
     if (!this.usersForm.valid) {
       this.usersForm.markAllAsTouched();
-      this.notificationBannerStore.setInvalidForm(this.usersForm);
+      this.feedbackBannerStore.setInvalidForm(this.usersForm);
     } else {
       this.operatorAuthoritiesService
         .updateAccountOperatorAuthorities(this.accountId, {
@@ -208,10 +208,10 @@ export class UserContactsVerifiersTabComponent implements OnInit {
             const updatedControlsKeys = FormUtils.findDirtyControlsKeys(this.usersForm);
 
             if (updatedControlsKeys.length !== 0) {
-              this.notificationBannerStore.setSuccessMessages(this.createSuccessMessages(updatedControlsKeys));
+              this.feedbackBannerStore.setSuccessMessages(this.createSuccessMessages(updatedControlsKeys));
               this.usersForm.markAsPristine();
             } else {
-              this.notificationBannerStore.reset();
+              this.feedbackBannerStore.reset();
             }
           }),
         )

@@ -9,6 +9,7 @@ import uk.gov.mrtm.api.workflow.request.flow.empnotification.domain.EmpNotificat
 import uk.gov.mrtm.api.workflow.request.flow.empreissue.domain.EmpBatchReissueRequestMetadata;
 import uk.gov.mrtm.api.workflow.request.flow.empreissue.domain.EmpReissueRequestMetadata;
 import uk.gov.mrtm.api.workflow.request.flow.empvariation.domain.EmpVariationRequestMetadata;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.common.domain.SiteVisitRequestMetadata;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirRequestMetadata;
 import uk.gov.netz.api.common.config.jackson.JsonSubTypesProvider;
 
@@ -33,7 +34,10 @@ public class RequestMetadataTypesProvider implements JsonSubTypesProvider {
 			//DOE
 			new NamedType(DoeRequestMetadata.class, MrtmRequestMetadataType.DOE),
 			//VIR
-			new NamedType(VirRequestMetadata.class, MrtmRequestMetadataType.VIR)
+			new NamedType(VirRequestMetadata.class, MrtmRequestMetadataType.VIR),
+			// SITE_VISIT
+			new NamedType(SiteVisitRequestMetadata.class, MrtmRequestMetadataType.SITE_VISIT)
+
 		);
 	}
 

@@ -94,7 +94,7 @@ class AerBuildEmpOriginatedDataServiceTest {
             .thenReturn(Optional.of(emp));
         when(mrtmAccountQueryService.getAccountById(accountId))
             .thenReturn(mrtmAccount);
-        when(addressStateMapper.toAddressState(addressState)).thenReturn(addressStateDTO);
+        when(addressStateMapper.toAddressStateDTO(addressState)).thenReturn(addressStateDTO);
 
         EmpOriginatedData expectedResult = EmpOriginatedData.builder()
             .operatorDetails(EmpOperatorDetails.builder()
@@ -112,7 +112,7 @@ class AerBuildEmpOriginatedDataServiceTest {
         assertThat(expectedResult).isEqualTo(actualResult);
 
         verify(emissionsMonitoringPlanQueryService).getEmissionsMonitoringPlanDTOByAccountId(accountId);
-        verify(addressStateMapper).toAddressState(addressState);
+        verify(addressStateMapper).toAddressStateDTO(addressState);
         verify(mrtmAccountQueryService).getAccountById(accountId);
         verifyNoMoreInteractions(emissionsMonitoringPlanQueryService, addressStateMapper, mrtmAccountQueryService);
     }
@@ -142,7 +142,7 @@ class AerBuildEmpOriginatedDataServiceTest {
             .thenReturn(Optional.empty());
         when(mrtmAccountQueryService.getAccountById(accountId))
             .thenReturn(mrtmAccount);
-        when(addressStateMapper.toAddressState(addressState)).thenReturn(addressStateDTO);
+        when(addressStateMapper.toAddressStateDTO(addressState)).thenReturn(addressStateDTO);
 
         EmpOriginatedData expectedResult = EmpOriginatedData.builder()
             .operatorDetails(EmpOperatorDetails.builder()
@@ -157,7 +157,7 @@ class AerBuildEmpOriginatedDataServiceTest {
         assertThat(expectedResult).isEqualTo(actualResult);
 
         verify(emissionsMonitoringPlanQueryService).getEmissionsMonitoringPlanDTOByAccountId(accountId);
-        verify(addressStateMapper).toAddressState(addressState);
+        verify(addressStateMapper).toAddressStateDTO(addressState);
         verify(mrtmAccountQueryService).getAccountById(accountId);
         verifyNoMoreInteractions(emissionsMonitoringPlanQueryService, addressStateMapper, mrtmAccountQueryService);
     }

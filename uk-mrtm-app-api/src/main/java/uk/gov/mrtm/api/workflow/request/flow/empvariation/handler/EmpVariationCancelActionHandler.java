@@ -30,7 +30,7 @@ public class EmpVariationCancelActionHandler implements RequestTaskActionHandler
                                       final AppUser appUser,
                                       final RequestTaskActionEmptyPayload taskActionPayload) {
 
-        final RequestTask requestTask = requestTaskService.findTaskById(requestTaskId);
+        final RequestTask requestTask = requestTaskService.findTaskByIdForUpdate(requestTaskId);
         final String userRole = appUser.getRoleType();
 
         workflowService.completeTask(requestTask.getProcessTaskId(),

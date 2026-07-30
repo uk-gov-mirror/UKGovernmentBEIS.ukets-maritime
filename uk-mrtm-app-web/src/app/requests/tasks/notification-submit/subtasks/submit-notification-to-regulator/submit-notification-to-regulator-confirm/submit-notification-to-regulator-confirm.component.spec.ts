@@ -19,9 +19,9 @@ describe('SubmitNotificationToRegulatorConfirmComponent', () => {
 
   const route = new ActivatedRouteStub();
   const taskService: MockType<NotificationService> = {
-    submit: jest.fn().mockReturnValue(of({})),
+    submit: vi.fn().mockReturnValue(of({})),
   };
-  const taskServiceSpy = jest.spyOn(taskService, 'submit');
+  const taskServiceSpy = vi.spyOn(taskService, 'submit');
 
   @Component({
     standalone: true,
@@ -69,7 +69,7 @@ describe('SubmitNotificationToRegulatorConfirmComponent', () => {
   });
 
   it('should submit subtask', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     page.submitButton.click();
     fixture.detectChanges();

@@ -8,6 +8,8 @@ import { MrtmAccountDTO } from '@mrtm/api';
 import { BasePage } from '@netz/common/testing';
 
 import { OperatorAccountFormComponent } from '@accounts/components';
+import { CountryService } from '@core/services/country.service';
+import { CountryServiceStub } from '@registration/testing/country-service-stub';
 
 describe('OperatorAccountFormComponent', () => {
   let page: Page;
@@ -46,7 +48,7 @@ describe('OperatorAccountFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [provideHttpClient()],
+      providers: [provideHttpClient(), { provide: CountryService, useClass: CountryServiceStub }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestComponent);

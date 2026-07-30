@@ -40,7 +40,7 @@ public class ExternalAerService {
     public void submitAerData(ExternalAer external, String companyImoNumber,
                               Year year, AppUser appUser) {
         MrtmAccount account = mrtmAccountRepository
-            .findByImoNumber(companyImoNumber)
+            .findByImoNumberForUpdate(companyImoNumber)
             .orElseThrow(() -> new BusinessException(RESOURCE_NOT_FOUND));
         validator.validateAerRequestTaskExists(year, account.getId());
 

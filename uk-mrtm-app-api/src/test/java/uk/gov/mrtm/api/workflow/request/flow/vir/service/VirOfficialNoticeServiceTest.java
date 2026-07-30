@@ -5,9 +5,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import uk.gov.mrtm.api.account.domain.dto.MrtmDocumentTemplateAccountData;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateGenerationContextActionType;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateType;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestPayloadType;
+import uk.gov.mrtm.api.workflow.request.flow.common.service.MrtmDocumentTemplateAccountDataCollectFromAccountService;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirRequestPayload;
 import uk.gov.netz.api.authorization.rules.domain.ResourceType;
 import uk.gov.netz.api.documenttemplate.domain.templateparams.TemplateParams;
@@ -58,6 +61,9 @@ class VirOfficialNoticeServiceTest {
 
     @Mock
     private OfficialNoticeSendService officialNoticeSendService;
+    
+    @Mock
+    private MrtmDocumentTemplateAccountDataCollectFromAccountService accountTemplateDataFromAccountService;
 
     private final String FILE_NAME = "Recommended_improvements.pdf";
 
@@ -82,6 +88,7 @@ class VirOfficialNoticeServiceTest {
         final UserInfoDTO accountPrimaryContact = UserInfoDTO.builder()
                 .firstName("fn").lastName("ln").email("primary@email").userId("op1").build();
         final List<String> ccRecipientsEmails = List.of("operator1@email");
+        MrtmDocumentTemplateAccountData accountData = MrtmDocumentTemplateAccountData.builder().name("accName").build();
         final DocumentTemplateParamsSourceData paramsSourceData = DocumentTemplateParamsSourceData.builder()
                 .contextActionType(MrtmDocumentTemplateGenerationContextActionType.VIR_REVIEWED)
                 .request(request)
@@ -89,6 +96,7 @@ class VirOfficialNoticeServiceTest {
                 .accountPrimaryContact(accountPrimaryContact)
                 .toRecipientEmail(accountPrimaryContact.getEmail())
                 .ccRecipientsEmails(ccRecipientsEmails)
+                .accountData(accountData)
                 .build();
         final TemplateParams templateParams = TemplateParams.builder().build();
         final FileInfoDTO officialNotice = FileInfoDTO.builder()
@@ -105,6 +113,7 @@ class VirOfficialNoticeServiceTest {
                 .thenReturn(templateParams);
         when(fileDocumentGenerateServiceDelegator.generateAndSaveFileDocument(MrtmDocumentTemplateType.VIR_REVIEWED,
                 templateParams, FILE_NAME)).thenReturn(officialNotice);
+        when(accountTemplateDataFromAccountService.collect(request.getAccountId())).thenReturn(accountData);
 
         // Invoke
         service.generateAndSaveRecommendedImprovementsOfficialNotice(requestId);
@@ -125,6 +134,7 @@ class VirOfficialNoticeServiceTest {
                         eq(templateParams),
                         eq(FILE_NAME)
                 );
+        verify(accountTemplateDataFromAccountService, times(1)).collect(request.getAccountId());
     }
 
     @Test

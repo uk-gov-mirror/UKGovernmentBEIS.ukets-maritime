@@ -5,15 +5,31 @@
       <div class="govuk-grid-column-full">
         <h2 class="govuk-heading-m">{{ task.title }}</h2>
         @if (!task.errors) {
-          <button netzPendingButton govukButton (click)="onRequestButtonClick(task.type)" type="button">
-            {{ task.button }}
-          </button>
+          @if (task.routerLink) {
+            <a [routerLink]="task.routerLink" govukButton type="button">{{ task.button }}</a>
+          } @else {
+            <button netzPendingButton govukButton (click)="onRequestButtonClick(task.type)" type="button">
+              {{ task.button }}
+            </button>
+          }
         } @else {
-          <ul class="govuk-list">
-            @for (error of task?.errors; track error) {
-              <li>{{ error }}</li>
+          @switch (task.type) {
+            @case ('SITE_VISIT') {
+              <p class="govuk-body">You cannot start a virtual site visit application as either:</p>
+              <ul class="govuk-list govuk-list--bullet">
+                @for (error of task?.errors; track error) {
+                  <li>{{ error }}</li>
+                }
+              </ul>
             }
-          </ul>
+            @default {
+              <ul class="govuk-list">
+                @for (error of task?.errors; track error) {
+                  <li>{{ error }}</li>
+                }
+              </ul>
+            }
+          }
         }
       </div>
     </div>

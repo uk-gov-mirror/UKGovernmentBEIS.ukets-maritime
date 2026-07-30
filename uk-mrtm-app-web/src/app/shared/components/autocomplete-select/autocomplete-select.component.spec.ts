@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ControlContainer, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 
-import { GovukValidators } from '@netz/govuk-components';
+import { GovukValidators, LabelSizeType } from '@netz/govuk-components';
 
 import { AutocompleteSelectComponent } from '@shared/components/autocomplete-select/autocomplete-select.component';
 import { AutocompleteSelectOption } from '@shared/components/autocomplete-select/autocomplete-select.interface';
@@ -16,21 +16,21 @@ describe('AutocompleteSelectComponent', () => {
       <div
         mrtm-autocomplete-select
         [formControl]="control"
-        [options]="countryOptions"
+        [options]="countryOptions()"
         label="Select or type to filter"
-        [labelSize]="labelSize"
-        [typeaheadMode]="typeaheadMode"
-        [autoselectOnBlur]="autoselectOnBlur"
-        [minLength]="minLength"></div>
+        [labelSize]="labelSize()"
+        [typeaheadMode]="typeaheadMode()"
+        [autoselectOnBlur]="autoselectOnBlur()"
+        [minLength]="minLength()"></div>
     `,
   })
   class TestComponent {
     control = new FormControl();
-    countryOptions = COUNTRY_OPTIONS;
-    labelSize: string;
-    minLength = 0;
-    typeaheadMode = true;
-    autoselectOnBlur = false;
+    readonly countryOptions = signal<AutocompleteSelectOption[]>(COUNTRY_OPTIONS);
+    readonly labelSize = signal<LabelSizeType>(undefined);
+    readonly minLength = signal<number>(0);
+    readonly typeaheadMode = signal<boolean>(true);
+    readonly autoselectOnBlur = signal<boolean>(false);
   }
 
   let component: AutocompleteSelectComponent;
@@ -75,19 +75,19 @@ describe('AutocompleteSelectComponent', () => {
 
     expect(label.className).toEqual(baseCssClasses);
 
-    hostComponent.labelSize = 'normal';
+    hostComponent.labelSize.set('normal');
     fixture.detectChanges();
     expect(label.className).toEqual(baseCssClasses);
 
-    hostComponent.labelSize = 'small';
+    hostComponent.labelSize.set('small');
     fixture.detectChanges();
     expect(label.className).toEqual(baseCssClasses + ' govuk-label--s');
 
-    hostComponent.labelSize = 'medium';
+    hostComponent.labelSize.set('medium');
     fixture.detectChanges();
     expect(label.className).toEqual(baseCssClasses + ' govuk-label--m');
 
-    hostComponent.labelSize = 'large';
+    hostComponent.labelSize.set('large');
     fixture.detectChanges();
     expect(label.className).toEqual(baseCssClasses + ' govuk-label--l');
   });
@@ -116,7 +116,7 @@ describe('AutocompleteSelectComponent', () => {
     });
 
     it('should not show "No results found" when no options exist and queryInput is empty', () => {
-      hostComponent.countryOptions = [];
+      hostComponent.countryOptions.set([]);
       queryInput.value = '';
       queryInput.dispatchEvent(new Event('input'));
       fixture.detectChanges();
@@ -129,7 +129,7 @@ describe('AutocompleteSelectComponent', () => {
     });
 
     it('should not show options if input length is less than minLength', () => {
-      hostComponent.minLength = 3;
+      hostComponent.minLength.set(3);
       queryInput.value = 'Do';
       queryInput.dispatchEvent(new Event('input'));
       fixture.detectChanges();
@@ -320,7 +320,7 @@ describe('AutocompleteSelectComponent', () => {
     it('should autoselect the highlighted option if autoselectOnBlur is enabled and queryInput is not empty', () => {
       const downEvent = new KeyboardEvent('keydown', { code: 'ArrowDown' });
 
-      hostComponent.autoselectOnBlur = true;
+      hostComponent.autoselectOnBlur.set(true);
       fixture.detectChanges();
 
       // should open the listbox on (input) and automatically mark the first option
@@ -345,7 +345,7 @@ describe('AutocompleteSelectComponent', () => {
 
   describe('Typeahead behavior', () => {
     it('should show typeahead suggestion for matching option when typeahead mode is enabled', () => {
-      hostComponent.typeaheadMode = true;
+      hostComponent.typeaheadMode.set(true);
       fixture.detectChanges();
 
       queryInput.value = 'Gre';
@@ -357,7 +357,7 @@ describe('AutocompleteSelectComponent', () => {
     });
 
     it('should not show typeahead suggestion for matching option when typeahead mode is disabled', () => {
-      hostComponent.typeaheadMode = false;
+      hostComponent.typeaheadMode.set(false);
       fixture.detectChanges();
 
       queryInput.value = 'Gre';
@@ -369,7 +369,7 @@ describe('AutocompleteSelectComponent', () => {
     });
 
     it('should automatically mark-for-selection first option when typeahead mode is enabled', () => {
-      hostComponent.typeaheadMode = true;
+      hostComponent.typeaheadMode.set(true);
       fixture.detectChanges();
 
       queryInput.value = 'G';
@@ -380,7 +380,7 @@ describe('AutocompleteSelectComponent', () => {
     });
 
     it('should not automatically mark-for-selection first option when typeahead mode is disabled', () => {
-      hostComponent.typeaheadMode = false;
+      hostComponent.typeaheadMode.set(false);
       fixture.detectChanges();
 
       queryInput.value = 'G';

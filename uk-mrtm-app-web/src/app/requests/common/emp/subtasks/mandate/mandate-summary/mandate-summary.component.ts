@@ -6,7 +6,12 @@ import { take } from 'rxjs';
 
 import { EmpMandate, EmpOperatorDetails } from '@mrtm/api';
 
-import { PageHeadingComponent, ReturnToTaskOrActionPageComponent } from '@netz/common/components';
+import {
+  FeedbackBannerComponent,
+  FeedbackBannerStore,
+  PageHeadingComponent,
+  ReturnToTaskOrActionPageComponent,
+} from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { TaskService } from '@netz/common/forms';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
@@ -21,12 +26,7 @@ import {
 import { EmpTaskPayload } from '@requests/common/emp/emp.types';
 import { MANDATE_SUB_TASK, MandateWizardStep } from '@requests/common/emp/subtasks/mandate/mandate.helper';
 import { mandateMap } from '@requests/common/emp/subtasks/subtask-list.map';
-import {
-  MandateSummaryTemplateComponent,
-  NotificationBannerComponent,
-  ReviewDecisionSummaryTemplateComponent,
-} from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
+import { MandateSummaryTemplateComponent, ReviewDecisionSummaryTemplateComponent } from '@shared/components';
 import { VariationRegulatorDecisionPartialSummaryTemplateComponent } from '@shared/components/summaries/variation-regulator-decision-partial-summary-template';
 import { EmpVariationReviewDecisionDto } from '@shared/types';
 
@@ -40,7 +40,7 @@ import { EmpVariationReviewDecisionDto } from '@shared/types';
     ReviewDecisionSummaryTemplateComponent,
     VariationRegulatorDecisionPartialSummaryTemplateComponent,
     MandateSummaryTemplateComponent,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
   ],
   standalone: true,
   templateUrl: './mandate-summary.component.html',
@@ -50,7 +50,7 @@ export class MandateSummaryComponent {
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
   private readonly service: TaskService<EmpTaskPayload> = inject(TaskService);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private readonly form = new UntypedFormGroup({});
 
   readonly wizardStep = MandateWizardStep;
@@ -87,7 +87,7 @@ export class MandateSummaryComponent {
           'The list of ships includes ships where the nature of responsibility lies with the ISM company, and no registered owner has been added. All relevant ships must be associated with a registered owner.',
       });
 
-      this.notificationBannerStore.setInvalidForm(this.form);
+      this.feedbackBannerStore.setInvalidForm(this.form);
       return;
     }
 

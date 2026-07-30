@@ -71,10 +71,18 @@ describe('AerSubmittedReportComponent', () => {
     store = TestBed.inject(RequestActionStore);
     store.setState(mockRequestActionAerSubmittedState);
 
+    // The component auto-prints via `setTimeout(..., 500)` in ngAfterViewInit; fake timers so that
+    // pending timer is never a real (leaking) resource. The tests don't depend on it firing.
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+
     fixture = TestBed.createComponent(AerSubmittedReportComponent);
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('should create', () => {

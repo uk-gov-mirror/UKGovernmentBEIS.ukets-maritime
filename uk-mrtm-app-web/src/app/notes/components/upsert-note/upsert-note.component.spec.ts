@@ -22,10 +22,10 @@ describe('UpsertNoteComponent', () => {
   const activatedRoute = new ActivatedRouteStub();
 
   const accountNotesService: MockType<AccountNotesService> = {
-    createAccountNote: jest.fn().mockReturnValue(asyncData(null)),
-    updateAccountNote: jest.fn().mockReturnValue(asyncData(null)),
-    getAccountNote: jest.fn().mockReturnValue(asyncData(mockAccountNotesResults.accountNotes[0])),
-    uploadAccountNoteFile: jest.fn().mockReturnValue(asyncData({ uuid: '11111111-1111-4111-a111-111111111111' })),
+    createAccountNote: vi.fn().mockReturnValue(asyncData(null)),
+    updateAccountNote: vi.fn().mockReturnValue(asyncData(null)),
+    getAccountNote: vi.fn().mockReturnValue(asyncData(mockAccountNotesResults.accountNotes[0])),
+    uploadAccountNoteFile: vi.fn().mockReturnValue(asyncData({ uuid: '11111111-1111-4111-a111-111111111111' })),
   };
 
   const runOnPushChangeDetection = async (fixture: ComponentFixture<any>): Promise<void> => {

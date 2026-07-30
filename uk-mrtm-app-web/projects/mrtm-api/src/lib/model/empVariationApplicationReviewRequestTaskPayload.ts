@@ -12,6 +12,7 @@ import { EmissionsMonitoringPlanContainer } from './emissionsMonitoringPlanConta
 import { EmpVariationDetails } from './empVariationDetails';
 import { EmpVariationDetermination } from './empVariationDetermination';
 import { EmpVariationReviewDecision } from './empVariationReviewDecision';
+import { RequestTaskPreviewFileInfoDTO } from './requestTaskPreviewFileInfoDTO';
 
 export interface EmpVariationApplicationReviewRequestTaskPayload {
   payloadType?: string;
@@ -38,6 +39,9 @@ export interface EmpVariationApplicationReviewRequestTaskPayload {
   empVariationDetailsReviewCompleted?: string;
   reviewGroupDecisions?: { [key: string]: EmpVariationReviewDecision };
   determination?: EmpVariationDetermination;
+  finalDocumentsGenerationInProgress?: boolean;
+  finalDocumentsGenerationSuccessful?: boolean;
+  previewFiles?: { [key: string]: RequestTaskPreviewFileInfoDTO };
   reviewAttachments?: { [key: string]: string };
   rfiAttachments?: { [key: string]: string };
 }

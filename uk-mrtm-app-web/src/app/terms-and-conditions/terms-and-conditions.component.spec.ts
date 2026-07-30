@@ -13,14 +13,15 @@ import { AuthService } from '@core/services/auth.service';
 import { LatestTermsStore } from '@core/store/latest-terms/latest-terms.store';
 import { LandingPageComponent } from '@landing-page/landing-page.component';
 import { TermsAndConditionsComponent } from '@terms-and-conditions/terms-and-conditions.component';
+import { Mocked } from 'vitest';
 
 describe('TermsAndConditionsComponent', () => {
   let component: TermsAndConditionsComponent;
   let fixture: ComponentFixture<TestComponent>;
   let httpTestingController: HttpTestingController;
   let latestTermsStore: LatestTermsStore;
-  const authService: Partial<jest.Mocked<AuthService>> = {
-    loadUserTerms: jest.fn(() => of({})),
+  const authService: Partial<Mocked<AuthService>> = {
+    loadUserTerms: vi.fn(() => of({})),
   };
 
   @Component({
@@ -85,7 +86,7 @@ describe('TermsAndConditionsComponent', () => {
   });
 
   it('should post if user accepts terms', inject([Router], (router: Router) => {
-    const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation();
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     const checkbox = fixture.debugElement.query(By.css('input[type=checkbox]'));
     const submitButton = fixture.debugElement.query(By.css('button[type=submit]'));
 

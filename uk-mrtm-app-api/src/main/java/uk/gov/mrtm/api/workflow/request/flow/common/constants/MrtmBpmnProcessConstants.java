@@ -10,6 +10,7 @@ public class MrtmBpmnProcessConstants {
     public static final String FOLLOW_UP_RESPONSE_NEEDED = "followUpResponseNeeded";
     public static final String FOLLOW_UP_RESPONSE_EXPIRATION_DATE = "followUpResponseExpirationDate";
     public static final String FOLLOW_UP_TIMER_EXTENDED = "followUpTimerExtended";
+    
     public static final String EMP_VARIATION_SUBMIT_OUTCOME = "empVariationSubmitOutcome";
     public static final String BATCH_NUMBER_OF_ACCOUNTS_COMPLETED = "batchAccountsCompleted";
     public static final String EMP_REISSUE_REQUEST_ID = "empReissueRequestId";
@@ -20,7 +21,6 @@ public class MrtmBpmnProcessConstants {
     public static final String AER_EXPIRATION_DATE = MrtmRequestExpirationType.AER + _EXPIRATION_DATE;
     public static final String AER_YEAR = "aerYear";
     public static final String AER_OUTCOME = "aerOutcome";
-    public static final String AER_JULY_FIRST_EXPIRATION_DATE = "aerJulyFirstExpirationDate";
 
     public static final String AER_REVIEW_OUTCOME = "aerReviewOutcome";
 
@@ -38,4 +38,8 @@ public class MrtmBpmnProcessConstants {
     public static final String CIVIL_PENALTY_LIABLE = "civilPenaltyLiable";
     public static final String INITIAL_PENALTY_LIABLE = "initialPenaltyLiable";
     public static final String NOI_PENALTY_LIABLE = "noiPenaltyLiable";
+
+    //SITE_VISIT
+    public static final String SITE_VISIT_SUBMIT_OUTCOME = "siteVisitSubmitOutcome";
+
 }

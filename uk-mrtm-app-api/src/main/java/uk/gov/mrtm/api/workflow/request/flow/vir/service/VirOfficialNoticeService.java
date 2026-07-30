@@ -3,8 +3,11 @@ package uk.gov.mrtm.api.workflow.request.flow.vir.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import uk.gov.mrtm.api.account.domain.dto.MrtmDocumentTemplateAccountData;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateGenerationContextActionType;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateType;
+import uk.gov.mrtm.api.workflow.request.flow.common.service.MrtmDocumentTemplateAccountDataCollectFromAccountService;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirRequestPayload;
 import uk.gov.netz.api.common.exception.BusinessException;
 import uk.gov.netz.api.common.exception.ErrorCode;
@@ -35,6 +38,7 @@ public class VirOfficialNoticeService {
     private final DocumentTemplateOfficialNoticeParamsProvider documentTemplateOfficialNoticeParamsProvider;
     private final FileDocumentGenerateServiceDelegator fileDocumentGenerateServiceDelegator;
     private final OfficialNoticeSendService officialNoticeSendService;
+    private final MrtmDocumentTemplateAccountDataCollectFromAccountService accountTemplateDataFromAccountService;
 
     @Transactional
     public void generateAndSaveRecommendedImprovementsOfficialNotice(final String requestId) {
@@ -76,6 +80,9 @@ public class VirOfficialNoticeService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.ACCOUNT_CONTACT_TYPE_PRIMARY_CONTACT_NOT_FOUND));
         final List<String> ccRecipientsEmails = decisionNotificationUsersService.findUserEmails(requestPayload.getDecisionNotification());
 
+        final MrtmDocumentTemplateAccountData accountData = accountTemplateDataFromAccountService
+				.collect(request.getAccountId());
+        
         return documentTemplateOfficialNoticeParamsProvider.constructTemplateParams(
                  DocumentTemplateParamsSourceData.builder()
                         .contextActionType(MrtmDocumentTemplateGenerationContextActionType.VIR_REVIEWED)
@@ -84,6 +91,7 @@ public class VirOfficialNoticeService {
                         .accountPrimaryContact(accountPrimaryContact)
                         .toRecipientEmail(accountPrimaryContact.getEmail())
                         .ccRecipientsEmails(ccRecipientsEmails)
+                        .accountData(accountData)
                         .build()
         );
     }

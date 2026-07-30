@@ -105,7 +105,7 @@ When developing for MRTM web application try to keep the coverage in a good leve
 To execute the application's unit tests run:
 
 ```shell script
-yarn test:frontend
+yarn test:app
 ```
 
 To execute the govuk-components library tests you can run:
@@ -118,7 +118,7 @@ If you want to find out the coverage of the both the application and the govuk-c
 library you can apply the `:coverage` flag in the above commands, e.g.:
 
 ```shell script
-yarn test:frontend:coverage
+yarn test:app:coverage
 ```
 
 The coverage can the be found in the command line or in the `coverage/` folder which

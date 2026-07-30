@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ControlContainer, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -18,14 +18,14 @@ describe('DatePickerComponent', () => {
         mrtm-date-picker
         [formControl]="control"
         [datePickerConfig]="DatePickerConfigDefaults"
-        [isLabelHidden]="isLabelHidden"
-        [labelSize]="labelSize"></div>
+        [isLabelHidden]="isLabelHidden()"
+        [labelSize]="labelSize()"></div>
     `,
   })
   class TestComponent {
     control = new FormControl();
-    isLabelHidden = false;
-    labelSize: LabelSizeType = 'normal';
+    readonly isLabelHidden = signal<boolean>(false);
+    readonly labelSize = signal<LabelSizeType>('normal');
     protected readonly DatePickerConfigDefaults = datePickerConfigDefaults;
   }
 
@@ -85,22 +85,22 @@ describe('DatePickerComponent', () => {
     const hostElement: HTMLElement = fixture.nativeElement;
     const label = hostElement.querySelector('label');
 
-    hostComponent.isLabelHidden = false;
+    hostComponent.isLabelHidden.set(false);
     fixture.detectChanges();
 
     expect(label.className).toEqual('govuk-label');
 
-    hostComponent.labelSize = 'small';
+    hostComponent.labelSize.set('small');
     fixture.detectChanges();
 
     expect(label.className).toEqual('govuk-label govuk-label--s');
 
-    hostComponent.labelSize = 'medium';
+    hostComponent.labelSize.set('medium');
     fixture.detectChanges();
 
     expect(label.className).toEqual('govuk-label govuk-label--m');
 
-    hostComponent.labelSize = 'large';
+    hostComponent.labelSize.set('large');
     fixture.detectChanges();
 
     expect(label.className).toEqual('govuk-label govuk-label--l');

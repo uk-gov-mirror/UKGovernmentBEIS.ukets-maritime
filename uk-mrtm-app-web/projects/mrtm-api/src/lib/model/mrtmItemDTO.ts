@@ -21,5 +21,6 @@ export interface MrtmItemDTO {
   accountId?: number;
   accountName?: string;
   competentAuthority?: 'ENGLAND' | 'NORTHERN_IRELAND' | 'OPRED' | 'SCOTLAND' | 'WALES';
+  _new?: boolean;
   isNew?: boolean;
 }

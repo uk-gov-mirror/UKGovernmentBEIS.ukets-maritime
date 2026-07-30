@@ -41,7 +41,7 @@ public class EmpVariationReviewReturnForAmendsHandler implements RequestTaskActi
     @Override
     @Transactional
     public RequestTaskPayload process(Long requestTaskId, String requestTaskActionType, AppUser appUser, RequestTaskActionEmptyPayload payload) {
-        final RequestTask requestTask = requestTaskService.findTaskById(requestTaskId);
+        final RequestTask requestTask = requestTaskService.findTaskByIdForUpdate(requestTaskId);
 
         // Validate that at least one review group is 'Operator to amend'
         empVariationReviewReturnForAmendsValidatorService.validate(

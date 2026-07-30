@@ -17,7 +17,7 @@ describe('TimeoutBannerComponent', () => {
     const authServiceMock = mockClass(AuthService);
 
     (keycloakServiceMock.keycloakEvents as any) = signal(null);
-    (keycloakServiceMock.updateToken as any) = jest.fn().mockResolvedValue(true);
+    (keycloakServiceMock.updateToken as any) = vi.fn().mockResolvedValue(true);
     Object.defineProperty(keycloakServiceMock, 'keycloakInstance', {
       value: {},
       configurable: true,
@@ -38,7 +38,7 @@ describe('TimeoutBannerComponent', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should create', () => {
@@ -68,7 +68,7 @@ describe('TimeoutBannerComponent', () => {
   });
 
   it('should call extendSession when continue button clicked', () => {
-    const spy = jest.spyOn(timeoutBannerService, 'extendSession');
+    const spy = vi.spyOn(timeoutBannerService, 'extendSession');
     fixture.detectChanges();
     timeoutBannerService.isVisible.set(true);
     fixture.detectChanges();
@@ -80,7 +80,7 @@ describe('TimeoutBannerComponent', () => {
   });
 
   it('should call signOut when sign out button clicked', () => {
-    const spy = jest.spyOn(timeoutBannerService, 'signOut');
+    const spy = vi.spyOn(timeoutBannerService, 'signOut');
     fixture.detectChanges();
     timeoutBannerService.isVisible.set(true);
     fixture.detectChanges();

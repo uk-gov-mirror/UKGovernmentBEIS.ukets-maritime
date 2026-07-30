@@ -12,11 +12,12 @@ import { ActivatedRouteSnapshotStub, asyncData, expectBusinessErrorToBe } from '
 
 import { detailsResolver } from '@regulators/details/details.resolver';
 import { viewNotFoundRegulatorError } from '@regulators/errors/business-error';
+import { Mocked } from 'vitest';
 
 describe('DetailsResolver', () => {
   const resolver = detailsResolver;
-  let regulatorUsersService: Partial<jest.Mocked<RegulatorUsersService>>;
-  let usersService: Partial<jest.Mocked<UsersService>>;
+  let regulatorUsersService: Partial<Mocked<RegulatorUsersService>>;
+  let usersService: Partial<Mocked<UsersService>>;
   let authStore: AuthStore;
 
   const callResolver: (route: ActivatedRouteSnapshot) => Observable<RegulatorUserDTO> = (route) =>
@@ -31,8 +32,8 @@ describe('DetailsResolver', () => {
   };
 
   beforeEach(() => {
-    regulatorUsersService = { getRegulatorUserByCaAndId: jest.fn().mockReturnValue(asyncData(user)) };
-    usersService = { getCurrentUser: jest.fn().mockReturnValue(asyncData(user)) };
+    regulatorUsersService = { getRegulatorUserByCaAndId: vi.fn().mockReturnValue(asyncData(user)) };
+    usersService = { getCurrentUser: vi.fn().mockReturnValue(asyncData(user)) };
 
     TestBed.configureTestingModule({
       providers: [
@@ -53,18 +54,21 @@ describe('DetailsResolver', () => {
     expect(resolver).toBeTruthy();
   });
 
+  // The resolver's first value comes from `toObservable` (authStore.rxSelect), which only emits
+  // once its effect flushes. `TestBed.tick()` drives that flush so these tests don't depend on the
+  // auto-scheduler, which can be wedged by cross-file state under the non-isolated runner.
   it('should provide the information of another user', async () => {
-    await expect(lastValueFrom(callResolver(new ActivatedRouteSnapshotStub({ userId: '1234567' })))).resolves.toEqual(
-      user,
-    );
+    const result = lastValueFrom(callResolver(new ActivatedRouteSnapshotStub({ userId: '1234567' })));
+    TestBed.tick();
+    await expect(result).resolves.toEqual(user);
 
     expect(regulatorUsersService.getRegulatorUserByCaAndId).toHaveBeenCalledWith('1234567');
   });
 
   it('should provide current user information', async () => {
-    await expect(
-      lastValueFrom(callResolver(new ActivatedRouteSnapshotStub({ accountId: '1', userId: 'ABC1' }))),
-    ).resolves.toEqual(user);
+    const result = lastValueFrom(callResolver(new ActivatedRouteSnapshotStub({ accountId: '1', userId: 'ABC1' })));
+    TestBed.tick();
+    await expect(result).resolves.toEqual(user);
 
     expect(usersService.getCurrentUser).toHaveBeenCalled();
   });
@@ -80,9 +84,9 @@ describe('DetailsResolver', () => {
       ),
     );
 
-    await expect(
-      lastValueFrom(callResolver(new ActivatedRouteSnapshotStub({ accountId: '1', userId: 'ABC1' }))),
-    ).rejects.toBeTruthy();
+    const result = lastValueFrom(callResolver(new ActivatedRouteSnapshotStub({ accountId: '1', userId: 'ABC1' })));
+    TestBed.tick();
+    await expect(result).rejects.toBeTruthy();
     await expectBusinessErrorToBe(viewNotFoundRegulatorError);
   });
 });

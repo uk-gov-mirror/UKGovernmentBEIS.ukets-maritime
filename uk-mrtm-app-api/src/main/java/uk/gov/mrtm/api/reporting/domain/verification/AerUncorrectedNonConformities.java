@@ -12,7 +12,6 @@ import uk.gov.mrtm.api.reporting.domain.common.UncorrectedItem;
 import uk.gov.mrtm.api.reporting.domain.common.VerifierComment;
 import uk.gov.netz.api.common.validation.SpELExpression;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -31,7 +30,7 @@ public class AerUncorrectedNonConformities {
     @Builder.Default
     @Valid
     @JsonDeserialize(as = LinkedHashSet.class)
-    private Set<@NotNull UncorrectedItem> uncorrectedNonConformities = new HashSet<>();
+    private Set<@NotNull UncorrectedItem> uncorrectedNonConformities = new LinkedHashSet<>();
 
     @NotNull
     private Boolean existPriorYearIssues;
@@ -40,5 +39,5 @@ public class AerUncorrectedNonConformities {
     @Builder.Default
     @Valid
     @JsonDeserialize(as = LinkedHashSet.class)
-    private Set<@NotNull VerifierComment> priorYearIssues = new HashSet<>();
+    private Set<@NotNull VerifierComment> priorYearIssues = new LinkedHashSet<>();
 }

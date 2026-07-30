@@ -5,10 +5,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import uk.gov.mrtm.api.account.domain.dto.MrtmDocumentTemplateAccountData;
 import uk.gov.mrtm.api.common.config.RegistryConfig;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateGenerationContextActionType;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateType;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestPayloadType;
+import uk.gov.mrtm.api.workflow.request.flow.common.service.MrtmDocumentTemplateAccountDataCollectFromAccountService;
 import uk.gov.mrtm.api.workflow.request.flow.empreissue.domain.EmpReissueRequestMetadata;
 import uk.gov.mrtm.api.workflow.request.flow.empreissue.domain.EmpReissueRequestPayload;
 import uk.gov.netz.api.authorization.rules.domain.ResourceType;
@@ -53,6 +56,9 @@ class EmpReissueOfficialNoticeServiceTest {
 
 	@Mock
 	private RegistryConfig registryConfig;
+	
+	@Mock
+	private MrtmDocumentTemplateAccountDataCollectFromAccountService accountTemplateDataFromAccountService;
 
 	@Test
 	void generateOfficialNotice() throws InterruptedException, ExecutionException {
@@ -74,17 +80,21 @@ class EmpReissueOfficialNoticeServiceTest {
 						.build())
 				.build();
 		
+		MrtmDocumentTemplateAccountData accountData = MrtmDocumentTemplateAccountData.builder().name("accname").build();
+		
 		DocumentTemplateParamsSourceData paramsSourceData = DocumentTemplateParamsSourceData.builder()
 				.contextActionType(MrtmDocumentTemplateGenerationContextActionType.EMP_REISSUE)
 				.request(request)
 				.signatory(requestMetadata.getSignatory())
+				.accountData(accountData)
 				.build();
 		
 		FileInfoDTO fileInfoDTO = FileInfoDTO.builder()
 				.name("offnotice")
 				.build();
 		
-
+		
+		when(accountTemplateDataFromAccountService.collect(accountId)).thenReturn(accountData);
 		when(documentTemplateOfficialNoticeParamsProvider.constructTemplateParams(paramsSourceData))
 				.thenReturn(templateParams);
 
@@ -95,6 +105,7 @@ class EmpReissueOfficialNoticeServiceTest {
 		
 		assertThat(result).isEqualTo(fileInfoDTO);
 
+		verify(accountTemplateDataFromAccountService, times(1)).collect(accountId);
 		verify(documentTemplateOfficialNoticeParamsProvider, times(1))
 				.constructTemplateParams(paramsSourceData);
 		verify(fileDocumentGenerateServiceDelegator, times(1))

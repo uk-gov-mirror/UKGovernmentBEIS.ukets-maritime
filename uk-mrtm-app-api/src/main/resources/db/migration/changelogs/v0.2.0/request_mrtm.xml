@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="v0.2.0/changelog_request_mrtm.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd">
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_PROCESS" author="P44065">
+        <sql>
+            INSERT INTO public.request_type
+            (id, code, description, process_definition_id, history_category, hold_history, displayed_in_progress, cascadable, can_create_manually, resource_type)
+            VALUES(nextval('request_type_seq'), 'SITE_VISIT', 'SITE_VISIT', 'PROCESS_SITE_VISIT', 'REPORTING', false, true, false, true, 'ACCOUNT');
+
+            INSERT INTO public.request_task_type
+                (id, code, assignable, expiration_key, supporting, request_type_id)
+            VALUES(nextval('request_task_type_seq'), 'SITE_VISIT_APPLICATION_SUBMIT', true, null, null,
+                   (SELECT id FROM public.request_type WHERE code = 'SITE_VISIT'));
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_type
+                WHERE code = 'SITE_VISIT';
+
+                DELETE FROM public.request_task_type
+                WHERE code = 'SITE_VISIT_APPLICATION_SUBMIT';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_SAVE_APPLICATION" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'SITE_VISIT_SAVE_APPLICATION', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_SUBMIT'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_SAVE_APPLICATION')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_SUBMIT')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_SAVE_APPLICATION');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'SITE_VISIT_SAVE_APPLICATION';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_UPLOAD_ATTACHMENT" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'SITE_VISIT_UPLOAD_ATTACHMENT', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_SUBMIT'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_UPLOAD_ATTACHMENT')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_SUBMIT')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_UPLOAD_ATTACHMENT');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'SITE_VISIT_UPLOAD_ATTACHMENT';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_CANCEL_APPLICATION" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'SITE_VISIT_CANCEL_APPLICATION', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_SUBMIT'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_CANCEL_APPLICATION')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_SUBMIT')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_CANCEL_APPLICATION');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'SITE_VISIT_CANCEL_APPLICATION';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_SUBMIT_APPLICATION" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'SITE_VISIT_SUBMIT_APPLICATION', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_SUBMIT'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_SUBMIT_APPLICATION')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_SUBMIT')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_SUBMIT_APPLICATION');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'SITE_VISIT_SUBMIT_APPLICATION';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_APPLICATION_REVIEW_AND_SITE_VISIT_WAIT_FOR_REVIEW" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_type
+                (id, code, assignable, expiration_key, supporting, request_type_id)
+            VALUES(nextval('request_task_type_seq'), 'SITE_VISIT_APPLICATION_REVIEW', true, null, null,
+                   (SELECT id FROM public.request_type WHERE code = 'SITE_VISIT'));
+
+
+            INSERT INTO public.request_task_type
+                (id, code, assignable, expiration_key, supporting, request_type_id)
+            VALUES(nextval('request_task_type_seq'), 'SITE_VISIT_WAIT_FOR_REVIEW', true, null, null,
+                   (SELECT id FROM public.request_type WHERE code = 'SITE_VISIT'));
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type
+                WHERE code = 'SITE_VISIT_WAIT_FOR_REVIEW';
+
+                DELETE FROM public.request_task_type
+                WHERE code = 'SITE_VISIT_APPLICATION_REVIEW';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_SAVE_REVIEW_GROUP_DECISION" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'SITE_VISIT_SAVE_REVIEW_GROUP_DECISION', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_SAVE_REVIEW_GROUP_DECISION')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_SAVE_REVIEW_GROUP_DECISION');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'SITE_VISIT_SAVE_REVIEW_GROUP_DECISION';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_UPLOAD_REVIEW_GROUP_DECISION_ATTACHMENT" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'SITE_VISIT_UPLOAD_REVIEW_GROUP_DECISION_ATTACHMENT', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_UPLOAD_REVIEW_GROUP_DECISION_ATTACHMENT')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_UPLOAD_REVIEW_GROUP_DECISION_ATTACHMENT');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'SITE_VISIT_UPLOAD_REVIEW_GROUP_DECISION_ATTACHMENT';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_REQUEST_PEER_REVIEW" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'SITE_VISIT_REQUEST_PEER_REVIEW', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_REQUEST_PEER_REVIEW')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_REQUEST_PEER_REVIEW');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'SITE_VISIT_REQUEST_PEER_REVIEW';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_APPLICATION_PEER_REVIEW" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_type
+                (id, code, assignable, expiration_key, supporting, request_type_id)
+            VALUES(nextval('request_task_type_seq'), 'SITE_VISIT_APPLICATION_PEER_REVIEW', true, null, 'PEER_REVIEW',
+                   (SELECT id FROM public.request_type WHERE code = 'SITE_VISIT'));
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type
+                WHERE code = 'SITE_VISIT_APPLICATION_PEER_REVIEW';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_WAIT_FOR_PEER_REVIEW" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_type
+                (id, code, assignable, expiration_key, supporting, request_type_id)
+            VALUES(nextval('request_task_type_seq'), 'SITE_VISIT_WAIT_FOR_PEER_REVIEW', true, null, null,
+                   (SELECT id FROM public.request_type WHERE code = 'SITE_VISIT'));
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type
+                WHERE code = 'SITE_VISIT_WAIT_FOR_PEER_REVIEW';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_REVIEW_SUBMIT_PEER_REVIEW_DECISION" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'SITE_VISIT_REVIEW_SUBMIT_PEER_REVIEW_DECISION', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_PEER_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_REVIEW_SUBMIT_PEER_REVIEW_DECISION')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_PEER_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_REVIEW_SUBMIT_PEER_REVIEW_DECISION');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'SITE_VISIT_REVIEW_SUBMIT_PEER_REVIEW_DECISION';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_REVIEW_RETURN_FOR_AMENDS" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'SITE_VISIT_REVIEW_RETURN_FOR_AMENDS', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_REVIEW_RETURN_FOR_AMENDS')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_REVIEW_RETURN_FOR_AMENDS');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'SITE_VISIT_REVIEW_RETURN_FOR_AMENDS';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_APPLICATION_AMENDS_SUBMIT" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_type
+                (id, code, assignable, expiration_key, supporting, request_type_id)
+            VALUES(nextval('request_task_type_seq'), 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT', true, null, null,
+                   (SELECT id FROM public.request_type WHERE code = 'SITE_VISIT'));
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type
+                WHERE code = 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_WAIT_FOR_AMENDS" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_type
+                (id, code, assignable, expiration_key, supporting, request_type_id)
+            VALUES(nextval('request_task_type_seq'), 'SITE_VISIT_WAIT_FOR_AMENDS', true, null, null,
+                   (SELECT id FROM public.request_type WHERE code = 'SITE_VISIT'));
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type
+                WHERE code = 'SITE_VISIT_WAIT_FOR_AMENDS';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_SAVE_APPLICATION_AMEND" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'SITE_VISIT_SAVE_APPLICATION_AMEND', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_SAVE_APPLICATION_AMEND')
+                  );
+
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_UPLOAD_ATTACHMENT')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_UPLOAD_ATTACHMENT');
+
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_SAVE_APPLICATION_AMEND');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'SITE_VISIT_SAVE_APPLICATION_AMEND';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_SUBMIT_APPLICATION_AMEND" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'SITE_VISIT_SUBMIT_APPLICATION_AMEND', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_SUBMIT_APPLICATION_AMEND')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_SUBMIT_APPLICATION_AMEND');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'SITE_VISIT_SUBMIT_APPLICATION_AMEND';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_SET_UP_SITE_VISIT_NOTIFY_OPERATOR_FOR_DECISION" author="P44065">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'SITE_VISIT_NOTIFY_OPERATOR_FOR_DECISION', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_REVIEW'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_NOTIFY_OPERATOR_FOR_DECISION')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_APPLICATION_REVIEW')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_NOTIFY_OPERATOR_FOR_DECISION');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'SITE_VISIT_NOTIFY_OPERATOR_FOR_DECISION';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_2_0_SET_UP_SITE_VISIT_RECALL_FROM_AMENDS" author="pkouris">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'SITE_VISIT_RECALL_FROM_AMENDS', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_WAIT_FOR_AMENDS'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_RECALL_FROM_AMENDS')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'SITE_VISIT_WAIT_FOR_AMENDS')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'SITE_VISIT_RECALL_FROM_AMENDS');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'SITE_VISIT_RECALL_FROM_AMENDS';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_2_0_SET_UP_EMP_ISSUANCE_IMPORT_THETIS_XML" author="pkouris">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'EMP_ISSUANCE_IMPORT_THETIS_XML', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_APPLICATION_SUBMIT'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_IMPORT_THETIS_XML')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_ISSUANCE_APPLICATION_SUBMIT')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_ISSUANCE_IMPORT_THETIS_XML');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'EMP_ISSUANCE_IMPORT_THETIS_XML';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_2_0_SET_UP_EMP_VARIATION_IMPORT_THETIS_XML" author="pkouris">
+        <sql>
+            INSERT INTO public.request_task_action_type
+                (id, code, blocked_by_payment)
+            VALUES(nextval('request_task_action_type_seq'), 'EMP_VARIATION_IMPORT_THETIS_XML', false);
+
+            INSERT INTO public.request_task_type_action_type
+                (request_task_type_id, request_task_action_type_id)
+            VALUES(
+                      (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_APPLICATION_SUBMIT'),
+                      (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_IMPORT_THETIS_XML')
+                  );
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM public.request_task_type_action_type
+                WHERE request_task_type_id = (SELECT rtt.id FROM request_task_type rtt WHERE rtt.code = 'EMP_VARIATION_APPLICATION_SUBMIT')
+                AND request_task_action_type_id = (SELECT rtat.id FROM request_task_action_type rtat WHERE rtat.code = 'EMP_VARIATION_IMPORT_THETIS_XML');
+
+                DELETE FROM public.request_task_action_type
+                WHERE code = 'EMP_VARIATION_IMPORT_THETIS_XML';
+            </sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

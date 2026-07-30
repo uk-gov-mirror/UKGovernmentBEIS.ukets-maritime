@@ -1,5 +1,5 @@
 import { Component, ElementRef, viewChild } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { DebounceClickDirective } from './debounce-click.directive';
@@ -34,20 +34,24 @@ describe('DebounceClickDirective', () => {
     expect(directive).toBeTruthy();
   });
 
-  it('should click on single click', fakeAsync(() => {
-    jest.spyOn(fixture.componentInstance, 'onClick');
+  it('should click on single click', () => {
+    vi.useFakeTimers();
+    vi.spyOn(fixture.componentInstance, 'onClick');
     const button: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('button');
     button.click();
-    tick(500);
+    vi.advanceTimersByTime(500);
     expect(fixture.componentInstance.onClick).toHaveBeenCalled();
-  }));
+    vi.useRealTimers();
+  });
 
-  it('should click once on double click', fakeAsync(() => {
-    jest.spyOn(fixture.componentInstance, 'onClick');
+  it('should click once on double click', () => {
+    vi.useFakeTimers();
+    vi.spyOn(fixture.componentInstance, 'onClick');
     const button: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('button');
     button.click();
     button.click();
-    tick(500);
+    vi.advanceTimersByTime(500);
     expect(fixture.componentInstance.onClick).toHaveBeenCalledTimes(1);
-  }));
+    vi.useRealTimers();
+  });
 });

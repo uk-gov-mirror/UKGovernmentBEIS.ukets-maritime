@@ -15,7 +15,14 @@ import {
 
 import { AuthStore } from '@netz/common/auth';
 import { ErrorCodes } from '@netz/common/error';
-import { ActivatedRouteStub, asyncData, BasePage, expectBusinessErrorToBe, MockType } from '@netz/common/testing';
+import {
+  ActivatedRouteStub,
+  asyncData,
+  BasePage,
+  BusinessErrorStubComponent,
+  expectBusinessErrorToBe,
+  MockType,
+} from '@netz/common/testing';
 
 import { DetailsComponent } from '@regulators/details/details.component';
 import { saveNotFoundRegulatorError } from '@regulators/errors/business-error';
@@ -115,21 +122,21 @@ describe('RegulatorDetailsComponent', () => {
   beforeEach(async () => {
     activatedRoute = new ActivatedRouteStub();
     regulatorUsersService = {
-      inviteRegulatorUserToCA: jest.fn().mockReturnValue(asyncData(null)),
-      updateCurrentRegulatorUser: jest.fn().mockReturnValue(asyncData(null)),
-      updateRegulatorUserByCaAndId: jest.fn().mockReturnValue(asyncData(null)),
+      inviteRegulatorUserToCA: vi.fn().mockReturnValue(asyncData(null)),
+      updateCurrentRegulatorUser: vi.fn().mockReturnValue(asyncData(null)),
+      updateRegulatorUserByCaAndId: vi.fn().mockReturnValue(asyncData(null)),
     };
     authoritiesService = {
-      getRegulatorRoles: jest.fn().mockReturnValue(asyncData(mockRegulatorBasePermissions)),
+      getRegulatorRoles: vi.fn().mockReturnValue(asyncData(mockRegulatorBasePermissions)),
     };
     regulatorAuthoritiesService = {
-      getRegulatorPermissionGroupLevels: jest.fn().mockReturnValue(asyncData(mockRegulatorPermissionGroups)),
+      getRegulatorPermissionGroupLevels: vi.fn().mockReturnValue(asyncData(mockRegulatorPermissionGroups)),
     };
 
     await TestBed.configureTestingModule({
       imports: [DetailsComponent],
       providers: [
-        provideRouter([]),
+        provideRouter([{ path: 'error/business', component: BusinessErrorStubComponent }]),
         FormBuilder,
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: AuthoritiesService, useValue: authoritiesService },
@@ -145,10 +152,18 @@ describe('RegulatorDetailsComponent', () => {
   });
 
   beforeEach(() => {
+    // Rendering the error summary calls `.focus()`, and jsdom schedules a `selectionchange` event
+    // via `setTimeout(0)`; fake timers so that internal timer is never a real (leaking) resource.
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+
     fixture = TestBed.createComponent(DetailsComponent);
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   describe('Edit user', () => {
@@ -163,7 +178,7 @@ describe('RegulatorDetailsComponent', () => {
     });
 
     it('should change header and button text', () => {
-      expect(fixture.nativeElement.querySelector('h1').textContent).toEqual('User details');
+      expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toEqual('Edit user details');
       expect(page.submitButton.textContent.trim()).toEqual('Save');
     });
 
@@ -251,13 +266,14 @@ describe('RegulatorDetailsComponent', () => {
       );
     });
 
-    it('should redirect to the list after save', () => {
-      const navSpy = jest.spyOn(router, 'navigate');
+    it('should redirect to the list after save', async () => {
+      const navSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
       page.firstNameValue = 'Mary';
       fixture.detectChanges();
 
       page.submitButton.click();
+      await fixture.whenStable();
       fixture.detectChanges();
 
       expect(navSpy).toHaveBeenCalledTimes(1);
@@ -279,7 +295,7 @@ describe('RegulatorDetailsComponent', () => {
       await expectBusinessErrorToBe(saveNotFoundRegulatorError);
     });
 
-    it('should fill the form with predefined permissions when user role buttons are clicked', () => {
+    it('should fill the form with predefined permissions when user role buttons are clicked', async () => {
       const getPermission = (name: string) =>
         mockRegulatorBasePermissions.find((permission) => permission.code === name);
       const element: HTMLElement = fixture.nativeElement;
@@ -292,9 +308,10 @@ describe('RegulatorDetailsComponent', () => {
         'service_super_user',
       ];
 
-      buttonIds.forEach((buttonId) => {
+      for (const buttonId of buttonIds) {
         const btnElement = element.querySelector<HTMLButtonElement>('#' + buttonId);
         btnElement.click();
+        await fixture.whenStable();
         fixture.detectChanges();
 
         expect(authoritiesService.getRegulatorRoles).toHaveBeenCalled();
@@ -305,7 +322,7 @@ describe('RegulatorDetailsComponent', () => {
             basePermission.rolePermissions[rolePermission],
           ),
         );
-      });
+      }
     });
 
     it('should display the change 2fa link when editing current user', async () => {
@@ -380,7 +397,7 @@ describe('RegulatorDetailsComponent', () => {
     });
 
     it('should render header and button text for add new user', () => {
-      expect(fixture.nativeElement.querySelector('h1').textContent).toEqual('Add a new user');
+      expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toEqual('Enter user details');
       expect(page.submitButton.textContent.trim()).toEqual('Submit');
       expect(fixture.nativeElement.querySelector('button[id="regulator_admin_team"]')).toBeTruthy();
     });
@@ -431,7 +448,7 @@ describe('RegulatorDetailsComponent', () => {
     });
 
     it('should show errors if email already exists', () => {
-      const navigateSpy = jest.spyOn(router, 'navigate');
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
       fixture.detectChanges();
 
@@ -488,7 +505,7 @@ describe('RegulatorDetailsComponent', () => {
 
     it('should show confirmation when saving', () => {
       regulatorUsersService.inviteRegulatorUserToCA.mockReturnValueOnce(of(null));
-      const navSpy = jest.spyOn(router, 'navigate');
+      const navSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
       page.firstNameValue = mockRegulatorUser.user.firstName;
       page.lastNameValue = mockRegulatorUser.user.lastName;

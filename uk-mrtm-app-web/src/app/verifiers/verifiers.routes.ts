@@ -3,26 +3,16 @@ import { Routes } from '@angular/router';
 
 import { PendingRequestGuard } from '@core/guards';
 import { VerifierUserStore } from '@verifiers/+state/verifier-user.store';
-import {
-  AddComponent,
-  addGuard,
-  AddSuccessComponent,
-  addSuccessGuard,
-  AddSummaryComponent,
-  addSummaryGuard,
-} from '@verifiers/add';
+import { addGuard, addSuccessGuard, addSummaryGuard } from '@verifiers/add';
 import { DATA_SUPPLIER_ROUTE_PREFIX } from '@verifiers/components';
-import { DeleteComponent } from '@verifiers/delete/delete.component';
-import { SuccessComponent } from '@verifiers/delete/success/success.component';
-import { DetailsComponent, detailsGuard, EditComponent } from '@verifiers/details';
-import { VerifiersComponent } from '@verifiers/verifiers.component';
+import { detailsGuard } from '@verifiers/details';
 import { verifiersGuard } from '@verifiers/verifiers.guard';
 
 export const VERIFIERS_ROUTES: Routes = [
   {
     path: '',
     canActivate: [verifiersGuard],
-    component: VerifiersComponent,
+    loadComponent: () => import('@verifiers/verifiers.component').then((c) => c.VerifiersComponent),
   },
   {
     path: ':userId',
@@ -36,13 +26,13 @@ export const VERIFIERS_ROUTES: Routes = [
         data: {
           breadcrumb: (data) => `${data.verifierUser.firstName} ${data.verifierUser.lastName}`,
         },
-        component: DetailsComponent,
+        loadComponent: () => import('@verifiers/details').then((c) => c.DetailsComponent),
       },
       {
         path: 'edit',
         data: { breadcrumb: false, backlink: '../' },
         canDeactivate: [PendingRequestGuard],
-        component: EditComponent,
+        loadComponent: () => import('@verifiers/details').then((c) => c.EditComponent),
       },
       {
         path: 'delete',
@@ -51,12 +41,12 @@ export const VERIFIERS_ROUTES: Routes = [
           {
             path: '',
             data: { breadcrumb: false, backlink: '../../' },
-            component: DeleteComponent,
+            loadComponent: () => import('@verifiers/delete/delete.component').then((c) => c.DeleteComponent),
           },
           {
             path: 'success',
             data: { breadcrumb: 'Dashboard' },
-            component: SuccessComponent,
+            loadComponent: () => import('@verifiers/delete/success/success.component').then((c) => c.SuccessComponent),
           },
         ],
       },
@@ -69,19 +59,19 @@ export const VERIFIERS_ROUTES: Routes = [
       {
         path: '',
         data: { breadcrumb: false, backlink: '../../' },
-        component: AddComponent,
+        loadComponent: () => import('@verifiers/add').then((c) => c.AddComponent),
       },
       {
         path: 'summary',
         data: { breadcrumb: false, backlink: '../' },
         canActivate: [addSummaryGuard],
         canDeactivate: [PendingRequestGuard],
-        component: AddSummaryComponent,
+        loadComponent: () => import('@verifiers/add').then((c) => c.AddSummaryComponent),
       },
       {
         path: 'success',
         canActivate: [addSuccessGuard],
-        component: AddSuccessComponent,
+        loadComponent: () => import('@verifiers/add').then((c) => c.AddSuccessComponent),
       },
     ],
   },

@@ -15,13 +15,13 @@ describe('WorkflowItemsService', () => {
   let service: WorkflowItemsService;
 
   const itemsAssignedToMeService = {
-    getAssignedItems: jest.fn().mockReturnValue(of({})),
+    getAssignedItems: vi.fn().mockReturnValue(of({})),
   };
   const itemsAssignedToOthersService = {
-    getAssignedToOthersItems: jest.fn().mockReturnValue(of({})),
+    getAssignedToOthersItems: vi.fn().mockReturnValue(of({})),
   };
   const unassignedItemsService = {
-    getUnassignedItems: jest.fn().mockReturnValue(of({})),
+    getUnassignedItems: vi.fn().mockReturnValue(of({})),
   };
 
   const searchCriteria: ItemSearchCriteriaDTO = {

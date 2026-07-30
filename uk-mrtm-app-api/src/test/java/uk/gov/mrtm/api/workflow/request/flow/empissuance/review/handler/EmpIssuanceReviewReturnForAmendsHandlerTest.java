@@ -108,7 +108,7 @@ class EmpIssuanceReviewReturnForAmendsHandlerTest {
             .payload(newEmpIssuanceRequestPayload)
             .build();
 
-        when(requestTaskService.findTaskById(taskId)).thenReturn(requestTask);
+        when(requestTaskService.findTaskByIdForUpdate(taskId)).thenReturn(requestTask);
 
         // Invoke
         RequestTaskPayload requestTaskPayload = handler.process(taskId,
@@ -116,7 +116,7 @@ class EmpIssuanceReviewReturnForAmendsHandlerTest {
 
         // Verify
         assertThat(requestTaskPayload).isEqualTo(payload);
-        verify(requestTaskService).findTaskById(taskId);
+        verify(requestTaskService).findTaskByIdForUpdate(taskId);
         verify(validatorService).validate(payload);
         verify(service).saveRequestReturnForAmends(requestTask, appUser);
         verify(requestService)

@@ -37,7 +37,7 @@ export class ThirdPartyDataProviderImportPayloadMutator extends PayloadMutator {
           }
 
           payload.verificationReport[subtask] = userInput[subtask];
-          payload.verificationSectionsCompleted[subtask] = TaskItemStatus.IN_PROGRESS;
+          payload.verificationSectionsCompleted[subtask] = TaskItemStatus.COMPLETED;
         }
       }),
     );

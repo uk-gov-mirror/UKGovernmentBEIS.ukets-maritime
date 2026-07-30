@@ -1,0 +1,1908 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="v0.2.0/changelog_authorization_rules.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd">
+
+    <changeSet id="0_1_0_create_rule_for_ACCOUNT_resource_and_SITE_VISIT_subresource_and_request_create_handler_for_operator" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'), 'ACCOUNT', 'SITE_VISIT', 'accountRequestCreateHandler', 'OPERATOR', 'REQUEST_CREATE');
+        </sql>
+        <rollback>
+            <sql>
+                delete
+                from au_rule
+                where resource_type = 'ACCOUNT'
+                and resource_sub_type = 'SITE_VISIT'
+                and handler = 'accountRequestCreateHandler'
+                and role_type = 'OPERATOR'
+                and scope = 'REQUEST_CREATE';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_create_rule_for_REQUEST_resource_and_SITE_VISIT_subresource_and_request_create_handler_for_operator" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'), 'REQUEST', 'SITE_VISIT', 'accountRequestCreateHandler', 'OPERATOR', null);
+        </sql>
+        <rollback>
+            <sql>
+                delete
+                from au_rule
+                where resource_type = 'REQUEST'
+                and resource_sub_type = 'SITE_VISIT'
+                and handler = 'accountRequestCreateHandler'
+                and role_type = 'OPERATOR'
+                and scope is null;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_create_rule_for_REQUEST_resource_and_SITE_VISIT_subresource_and_request_access_handler" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'), 'REQUEST', 'SITE_VISIT', 'requestAccessHandler', 'OPERATOR', null);
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'), 'REQUEST', 'SITE_VISIT', 'requestAccessHandler', 'REGULATOR', null);
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'), 'REQUEST', 'SITE_VISIT', 'requestAccountBasedAccessHandler', 'VERIFIER', null);
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('getRequestActionsByRequestId', 'getItemsByRequest', 'getRequestDetailsById', 'getNotesByRequestId', 'createRequestNote', 'uploadRequestNoteFile', 'generateGetRequestFileNoteToken', 'getAvailableAerWorkflows')
+              and r.resource_type = 'REQUEST'
+              and r.resource_sub_type = 'SITE_VISIT'
+              and r.handler = 'requestAccessHandler'
+              and r.role_type in ('REGULATOR', 'OPERATOR')
+              and r.scope is null;
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('getRequestActionsByRequestId', 'getItemsByRequest', 'getRequestDetailsById', 'getNotesByRequestId', 'createRequestNote', 'uploadRequestNoteFile', 'generateGetRequestFileNoteToken', 'getAvailableAerWorkflows')
+              and r.resource_type = 'REQUEST'
+              and r.resource_sub_type = 'SITE_VISIT'
+              and r.handler = 'requestAccountBasedAccessHandler'
+              and r.role_type = 'VERIFIER'
+              and r.scope is null;
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('getRequestActionsByRequestId', 'getItemsByRequest', 'getRequestDetailsById', 'getNotesByRequestId', 'createRequestNote', 'uploadRequestNoteFile', 'generateGetRequestFileNoteToken', 'getAvailableAerWorkflows')
+                and r.resource_type = 'REQUEST'
+                and r.resource_sub_type = 'SITE_VISIT'
+                and r.handler = 'requestAccessHandler'
+                and r.role_type in ('REGULATOR', 'OPERATOR')
+                and r.scope is null;
+
+                delete
+                from au_rule
+                where resource_type = 'REQUEST'
+                and resource_sub_type = 'SITE_VISIT'
+                and handler = 'requestAccessHandler'
+                and role_type in ('REGULATOR', 'OPERATOR')
+                and scope is null;
+
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('getRequestActionsByRequestId', 'getItemsByRequest', 'getRequestDetailsById', 'getNotesByRequestId', 'createRequestNote', 'uploadRequestNoteFile', 'generateGetRequestFileNoteToken', 'getAvailableAerWorkflows')
+                and r.resource_type = 'REQUEST'
+                and r.resource_sub_type = 'SITE_VISIT'
+                and r.handler = 'requestAccountBasedAccessHandler'
+                and r.role_type = 'VERIFIER'
+                and r.scope is null;
+
+                delete
+                from au_rule
+                where resource_type = 'REQUEST'
+                and resource_sub_type = 'SITE_VISIT'
+                and handler = 'requestAccountBasedAccessHandler'
+                and role_type = 'VERIFIER'
+                and scope is null;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_associate_processRequestCreateAction_service_with_ACCOUNT_SITE_VISIT_create_handler_rule" author="P44065">
+        <sql>
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name = 'processRequestCreateAction'
+              and r.resource_type = 'ACCOUNT'
+              and r.resource_sub_type = 'SITE_VISIT'
+              and r.handler = 'accountRequestCreateHandler'
+              and r.role_type = 'OPERATOR'
+              and r.scope = 'REQUEST_CREATE';
+
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name = 'processRequestCreateAction'
+                and r.resource_type = 'ACCOUNT'
+                and r.resource_sub_type = 'SITE_VISIT'
+                and r.handler = 'accountRequestCreateHandler'
+                and r.role_type = 'OPERATOR'
+                and r.scope = 'REQUEST_CREATE';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_create_resource_scope_permission_for_ACCOUNT_resource_type_and_SITE_VISIT_subtype_for_request_create_scope" author="P44065">
+        <sql>
+            insert into au_resource_scope_permission(id, resource_type, resource_sub_type, scope, permission, role_type)
+                (select nextval('au_resource_scope_permission_seq'),
+                        'ACCOUNT',
+                        'SITE_VISIT',
+                        'REQUEST_CREATE',
+                        'PERM_SITE_VISIT_APPLICATION_SUBMIT_EXECUTE_TASK',
+                        'OPERATOR');
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_resource_scope_permission
+                where resource_type = 'ACCOUNT'
+                and resource_sub_type = 'SITE_VISIT'
+                and scope = 'REQUEST_CREATE'
+                and permission = 'PERM_SITE_VISIT_APPLICATION_SUBMIT_EXECUTE_TASK'
+                and role_type = 'OPERATOR';
+            </sql>
+        </rollback>
+    </changeSet>
+
+
+    <changeSet id="0_1_0_create_view_execute_scope_permission_for_request_task_type_SITE_VISIT_APPLICATION_SUBMIT_and_role_OPERATOR" author="P44065">
+        <sql>
+            insert into au_resource_scope_permission(id, resource_type, resource_sub_type, scope, permission, role_type)
+                (select nextval('au_resource_scope_permission_seq'),
+                        'REQUEST_TASK',
+                        'SITE_VISIT_APPLICATION_SUBMIT',
+                        'REQUEST_TASK_VIEW',
+                        'PERM_SITE_VISIT_APPLICATION_SUBMIT_VIEW_TASK',
+                        'OPERATOR');
+
+            insert into au_resource_scope_permission(id, resource_type, resource_sub_type, scope, permission, role_type)
+                (select nextval('au_resource_scope_permission_seq'),
+                        'REQUEST_TASK',
+                        'SITE_VISIT_APPLICATION_SUBMIT',
+                        'REQUEST_TASK_EXECUTE',
+                        'PERM_SITE_VISIT_APPLICATION_SUBMIT_EXECUTE_TASK',
+                        'OPERATOR');
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_resource_scope_permission
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_SUBMIT'
+                and scope = 'REQUEST_TASK_VIEW'
+                and permission = 'PERM_SITE_VISIT_APPLICATION_SUBMIT_VIEW_TASK'
+                and role_type = 'OPERATOR';
+
+                delete from au_resource_scope_permission
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_SUBMIT'
+                and scope = 'REQUEST_TASK_EXECUTE'
+                and permission = 'PERM_SITE_VISIT_APPLICATION_SUBMIT_EXECUTE_TASK'
+                and role_type = 'OPERATOR';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_create_view_execute_rule_for_request_task_type_SITE_VISIT_APPLICATION_SUBMIT_and_role_OPERATOR" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_TASK' ,
+                    'SITE_VISIT_APPLICATION_SUBMIT',
+                    'requestTaskAccessHandler',
+                    'OPERATOR',
+                    'REQUEST_TASK_VIEW');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_TASK' ,
+                    'SITE_VISIT_APPLICATION_SUBMIT',
+                    'requestTaskAccessHandler',
+                    'OPERATOR',
+                    'REQUEST_TASK_EXECUTE');
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('assignTask', 'getCandidateAssigneesByTaskId', 'releaseTask', 'getTaskItemInfoById', 'generateRequestTaskGetFileAttachmentToken')
+              and r.resource_type = 'REQUEST_TASK'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_SUBMIT'
+              and r.handler = 'requestTaskAccessHandler'
+              and r.role_type = 'OPERATOR'
+              and r.scope = 'REQUEST_TASK_VIEW';
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('processRequestTaskAction', 'uploadRequestTaskAttachment')
+              and r.resource_type = 'REQUEST_TASK'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_SUBMIT'
+              and r.handler = 'requestTaskAccessHandler'
+              and r.role_type = 'OPERATOR'
+              and r.scope = 'REQUEST_TASK_EXECUTE';
+        </sql>
+        <rollback>
+            <sql>
+                delete
+                from au_service_rule sr
+                using au_rule r, au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('assignTask', 'getCandidateAssigneesByTaskId', 'releaseTask', 'getTaskItemInfoById', 'generateRequestTaskGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_TASK'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_SUBMIT'
+                and r.handler = 'requestTaskAccessHandler'
+                and r.role_type = 'OPERATOR'
+                and r.scope = 'REQUEST_TASK_VIEW';
+
+                delete
+                from au_service_rule sr
+                using au_rule r, au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('processRequestTaskAction', 'uploadRequestTaskAttachment')
+                and r.resource_type = 'REQUEST_TASK'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_SUBMIT'
+                and r.handler = 'requestTaskAccessHandler'
+                and r.role_type = 'OPERATOR'
+                and r.scope = 'REQUEST_TASK_EXECUTE';
+
+                delete from au_rule
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_SUBMIT'
+                and handler = 'requestTaskAccessHandler'
+                and role_type = 'OPERATOR'
+                and scope = 'REQUEST_TASK_VIEW';
+
+                delete from au_rule
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_SUBMIT'
+                and handler = 'requestTaskAccessHandler'
+                and role_type = 'OPERATOR'
+                and scope = 'REQUEST_TASK_EXECUTE';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_add_rule_and_associate_services_for_request_action_SITE_VISIT_APPLICATION_CANCELLED" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_CANCELLED',
+                    'requestActionViewHandler',
+                    'OPERATOR');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_CANCELLED',
+                    'requestActionViewHandler',
+                    'REGULATOR');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_CANCELLED',
+                    'requestActionAccountBasedViewHandler',
+                    'VERIFIER');
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name = 'getRequestActionById'
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_CANCELLED'
+              and r.handler = 'requestActionViewHandler'
+              and r.role_type in ('OPERATOR', 'REGULATOR')
+              and r.scope is null;
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name = 'getRequestActionById'
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_CANCELLED'
+              and r.handler = 'requestActionAccountBasedViewHandler'
+              and r.role_type in ('VERIFIER')
+              and r.scope is null;
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name = 'getRequestActionById'
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_CANCELLED'
+                and r.handler = 'requestActionViewHandler'
+                and r.role_type in ('OPERATOR', 'REGULATOR')
+                and r.scope is null;
+
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name = 'getRequestActionById'
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_CANCELLED'
+                and r.handler = 'requestActionAccountBasedViewHandler'
+                and r.role_type in ('VERIFIER')
+                and r.scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_CANCELLED'
+                and handler = 'requestActionViewHandler'
+                and role_type in ('OPERATOR', 'REGULATOR')
+                and scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_CANCELLED'
+                and handler = 'requestActionAccountBasedViewHandler'
+                and role_type in ('VERIFIER')
+                and scope is null;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_add_rule_and_associate_services_for_request_action_SITE_VISIT_APPLICATION_SUBMITTED" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_SUBMITTED',
+                    'requestActionViewHandler',
+                    'OPERATOR');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_SUBMITTED',
+                    'requestActionViewHandler',
+                    'REGULATOR');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_SUBMITTED',
+                    'requestActionAccountBasedViewHandler',
+                    'VERIFIER');
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_SUBMITTED'
+              and r.handler = 'requestActionViewHandler'
+              and r.role_type in ('OPERATOR', 'REGULATOR')
+              and r.scope is null;
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_SUBMITTED'
+              and r.handler = 'requestActionAccountBasedViewHandler'
+              and r.role_type in ('VERIFIER')
+              and r.scope is null;
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_SUBMITTED'
+                and r.handler = 'requestActionViewHandler'
+                and r.role_type in ('OPERATOR', 'REGULATOR')
+                and r.scope is null;
+
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_SUBMITTED'
+                and r.handler = 'requestActionAccountBasedViewHandler'
+                and r.role_type in ('VERIFIER')
+                and r.scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_SUBMITTED'
+                and handler = 'requestActionViewHandler'
+                and role_type in ('OPERATOR', 'REGULATOR')
+                and scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_SUBMITTED'
+                and handler = 'requestActionAccountBasedViewHandler'
+                and role_type in ('VERIFIER')
+                and scope is null;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_create_view_execute_scope_permission_for_request_task_type_SITE_VISIT_APPLICATION_REVIEW_and_role_REGULATOR" author="P44065">
+        <sql>
+            insert into au_resource_scope_permission(id, resource_type, resource_sub_type, scope, permission, role_type)
+                (select nextval('au_resource_scope_permission_seq'),
+                        'REQUEST_TASK',
+                        'SITE_VISIT_APPLICATION_REVIEW',
+                        'REQUEST_TASK_VIEW',
+                        'PERM_SITE_VISIT_APPLICATION_REVIEW_VIEW_TASK',
+                        'REGULATOR');
+
+            insert into au_resource_scope_permission(id, resource_type, resource_sub_type, scope, permission, role_type)
+                (select nextval('au_resource_scope_permission_seq'),
+                        'REQUEST_TASK',
+                        'SITE_VISIT_APPLICATION_REVIEW',
+                        'REQUEST_TASK_EXECUTE',
+                        'PERM_SITE_VISIT_APPLICATION_REVIEW_EXECUTE_TASK',
+                        'REGULATOR');
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_resource_scope_permission
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_REVIEW'
+                and scope = 'REQUEST_TASK_VIEW'
+                and permission = 'PERM_SITE_VISIT_APPLICATION_REVIEW_VIEW_TASK'
+                and role_type = 'REGULATOR';
+
+                delete from au_resource_scope_permission
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_REVIEW'
+                and scope = 'REQUEST_TASK_EXECUTE'
+                and permission = 'PERM_SITE_VISIT_APPLICATION_REVIEW_EXECUTE_TASK'
+                and role_type = 'REGULATOR';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_create_view_execute_rule_for_request_task_type_SITE_VISIT_APPLICATION_REVIEW_and_role_REGULATOR" author="dimopoulosc@unisystems.gr">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_TASK' ,
+                    'SITE_VISIT_APPLICATION_REVIEW',
+                    'requestTaskAccessHandler',
+                    'REGULATOR',
+                    'REQUEST_TASK_VIEW');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_TASK' ,
+                    'SITE_VISIT_APPLICATION_REVIEW',
+                    'requestTaskAccessHandler',
+                    'REGULATOR',
+                    'REQUEST_TASK_EXECUTE');
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('assignTask', 'getCandidateAssigneesByTaskId', 'releaseTask', 'getTaskItemInfoById', 'generateRequestTaskGetFileAttachmentToken')
+              and r.resource_type = 'REQUEST_TASK'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_REVIEW'
+              and r.handler = 'requestTaskAccessHandler'
+              and r.role_type = 'REGULATOR'
+              and r.scope = 'REQUEST_TASK_VIEW';
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('processRequestTaskAction', 'uploadRequestTaskAttachment', 'getCandidateAssigneesByTaskType', 'getDocumentPreview')
+              and r.resource_type = 'REQUEST_TASK'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_REVIEW'
+              and r.handler = 'requestTaskAccessHandler'
+              and r.role_type = 'REGULATOR'
+              and r.scope = 'REQUEST_TASK_EXECUTE';
+        </sql>
+        <rollback>
+            <sql>
+                delete
+                from au_service_rule sr
+                using au_rule r, au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('assignTask', 'getCandidateAssigneesByTaskId', 'releaseTask', 'getTaskItemInfoById', 'generateRequestTaskGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_TASK'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_REVIEW'
+                and r.handler = 'requestTaskAccessHandler'
+                and r.role_type = 'REGULATOR'
+                and r.scope = 'REQUEST_TASK_VIEW';
+
+                delete
+                from au_service_rule sr
+                using au_rule r, au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('processRequestTaskAction', 'uploadRequestTaskAttachment', 'getCandidateAssigneesByTaskType', 'getDocumentPreview')
+                and r.resource_type = 'REQUEST_TASK'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_REVIEW'
+                and r.handler = 'requestTaskAccessHandler'
+                and r.role_type = 'REGULATOR'
+                and r.scope = 'REQUEST_TASK_EXECUTE';
+
+                delete from au_rule
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_REVIEW'
+                and handler = 'requestTaskAccessHandler'
+                and role_type = 'REGULATOR'
+                and scope = 'REQUEST_TASK_VIEW';
+
+                delete from au_rule
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_REVIEW'
+                and handler = 'requestTaskAccessHandler'
+                and role_type = 'REGULATOR'
+                and scope = 'REQUEST_TASK_EXECUTE';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_create_view_execute_scope_permission_for_request_task_type_SITE_VISIT_WAIT_FOR_REVIEW_and_role_OPERATOR" author="P44065">
+        <sql>
+            insert into au_resource_scope_permission(id, resource_type, resource_sub_type, scope, permission, role_type)
+                (select nextval('au_resource_scope_permission_seq'),
+                        'REQUEST_TASK',
+                        'SITE_VISIT_WAIT_FOR_REVIEW',
+                        'REQUEST_TASK_VIEW',
+                        'PERM_SITE_VISIT_APPLICATION_SUBMIT_VIEW_TASK',
+                        'OPERATOR');
+
+            insert into au_resource_scope_permission(id, resource_type, resource_sub_type, scope, permission, role_type)
+                (select nextval('au_resource_scope_permission_seq'),
+                        'REQUEST_TASK',
+                        'SITE_VISIT_WAIT_FOR_REVIEW',
+                        'REQUEST_TASK_EXECUTE',
+                        'PERM_SITE_VISIT_APPLICATION_SUBMIT_EXECUTE_TASK',
+                        'OPERATOR');
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_resource_scope_permission
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_WAIT_FOR_REVIEW'
+                and scope = 'REQUEST_TASK_VIEW'
+                and permission = 'PERM_SITE_VISIT_APPLICATION_SUBMIT_VIEW_TASK'
+                and role_type = 'OPERATOR';
+
+                delete from au_resource_scope_permission
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_WAIT_FOR_REVIEW'
+                and scope = 'REQUEST_TASK_EXECUTE'
+                and permission = 'PERM_SITE_VISIT_APPLICATION_SUBMIT_EXECUTE_TASK'
+                and role_type = 'OPERATOR';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_create_view_execute_rule_for_request_task_type_SITE_VISIT_WAIT_FOR_REVIEW_and_role_OPERATOR" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_TASK' ,
+                    'SITE_VISIT_WAIT_FOR_REVIEW',
+                    'requestTaskAccessHandler',
+                    'OPERATOR',
+                    'REQUEST_TASK_VIEW');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_TASK' ,
+                    'SITE_VISIT_WAIT_FOR_REVIEW',
+                    'requestTaskAccessHandler',
+                    'OPERATOR',
+                    'REQUEST_TASK_EXECUTE');
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('assignTask', 'getCandidateAssigneesByTaskId', 'releaseTask', 'getTaskItemInfoById', 'generateRequestTaskGetFileAttachmentToken')
+              and r.resource_type = 'REQUEST_TASK'
+              and r.resource_sub_type = 'SITE_VISIT_WAIT_FOR_REVIEW'
+              and r.handler = 'requestTaskAccessHandler'
+              and r.role_type = 'OPERATOR'
+              and r.scope = 'REQUEST_TASK_VIEW';
+        </sql>
+        <rollback>
+            <sql>
+                delete
+                from au_service_rule sr
+                using au_rule r, au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('assignTask', 'getCandidateAssigneesByTaskId', 'releaseTask', 'getTaskItemInfoById', 'generateRequestTaskGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_TASK'
+                and r.resource_sub_type = 'SITE_VISIT_WAIT_FOR_REVIEW'
+                and r.handler = 'requestTaskAccessHandler'
+                and r.role_type = 'OPERATOR'
+                and r.scope = 'REQUEST_TASK_VIEW';
+
+                delete from au_rule
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_WAIT_FOR_REVIEW'
+                and handler = 'requestTaskAccessHandler'
+                and role_type = 'OPERATOR'
+                and scope = 'REQUEST_TASK_VIEW';
+
+                delete from au_rule
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_WAIT_FOR_REVIEW'
+                and handler = 'requestTaskAccessHandler'
+                and role_type = 'OPERATOR'
+                and scope = 'REQUEST_TASK_EXECUTE';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_add_rule_and_associate_services_for_request_action_SITE_VISIT_PEER_REVIEW_REQUESTED_for_regulator" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_PEER_REVIEW_REQUESTED',
+                    'requestActionViewHandler',
+                    'REGULATOR');
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name = 'getRequestActionById'
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_PEER_REVIEW_REQUESTED'
+              and r.handler = 'requestActionViewHandler'
+              and r.role_type = 'REGULATOR'
+              and r.scope is null;
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name = 'getRequestActionById'
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_PEER_REVIEW_REQUESTED'
+                and r.handler = 'requestActionViewHandler'
+                and r.role_type = 'REGULATOR'
+                and r.scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_PEER_REVIEW_REQUESTED'
+                and handler = 'requestActionViewHandler'
+                and role_type = 'REGULATOR'
+                and scope is null;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_view_scope_permission_for_SITE_VISIT_APPLICATION_PEER_REVIEW_request_task_type" author="P44065">
+        <sql>
+            insert into au_resource_scope_permission(id, resource_type, resource_sub_type, scope, permission, role_type)
+                (select nextval('au_resource_scope_permission_seq'),
+                        'REQUEST_TASK',
+                        'SITE_VISIT_APPLICATION_PEER_REVIEW',
+                        'REQUEST_TASK_VIEW',
+                        'PERM_SITE_VISIT_PEER_REVIEW_VIEW_TASK',
+                        'REGULATOR');
+        </sql>
+        <rollback>
+            <sql>
+                delete
+                from au_resource_scope_permission
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_PEER_REVIEW'
+                and scope = 'REQUEST_TASK_VIEW'
+                and permission = 'PERM_SITE_VISIT_PEER_REVIEW_VIEW_TASK'
+                and role_type = 'REGULATOR';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_execute_scope_permission_for_SITE_VISIT_APPLICATION_PEER_REVIEW_request_task_type" author="P44065">
+        <sql>
+            insert into au_resource_scope_permission(id, resource_type, resource_sub_type, scope, permission, role_type)
+                (select nextval('au_resource_scope_permission_seq'),
+                        'REQUEST_TASK',
+                        'SITE_VISIT_APPLICATION_PEER_REVIEW',
+                        'REQUEST_TASK_EXECUTE',
+                        'PERM_SITE_VISIT_PEER_REVIEW_EXECUTE_TASK',
+                        'REGULATOR');
+        </sql>
+        <rollback>
+            <sql>
+                delete
+                from au_resource_scope_permission
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_PEER_REVIEW'
+                and scope = 'REQUEST_TASK_EXECUTE'
+                and permission = 'PERM_SITE_VISIT_PEER_REVIEW_EXECUTE_TASK'
+                and role_type = 'REGULATOR';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_execute_scope_rule_for_request_task_SITE_VISIT_APPLICATION_PEER_REVIEW_and_role_REGULATOR" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_TASK' ,
+                    'SITE_VISIT_APPLICATION_PEER_REVIEW',
+                    'requestTaskAccessHandler',
+                    'REGULATOR',
+                    'REQUEST_TASK_EXECUTE');
+        </sql>
+
+        <rollback>
+            <sql>
+                delete
+                from au_rule
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_PEER_REVIEW'
+                and handler = 'requestTaskAccessHandler'
+                and role_type = 'REGULATOR'
+                and scope = 'REQUEST_TASK_EXECUTE';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_view_scope_rule_for_request_task_SITE_VISIT_APPLICATION_PEER_REVIEW_and_role_REGULATOR" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_TASK' ,
+                    'SITE_VISIT_APPLICATION_PEER_REVIEW',
+                    'requestTaskAccessHandler',
+                    'REGULATOR',
+                    'REQUEST_TASK_VIEW');
+        </sql>
+
+        <rollback>
+            <sql>
+                delete
+                from au_rule
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_PEER_REVIEW'
+                and handler = 'requestTaskAccessHandler'
+                and role_type = 'REGULATOR'
+                and scope = 'REQUEST_TASK_VIEW';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_associate_view_scope_rules_for_request_task_SITE_VISIT_APPLICATION_PEER_REVIEW_with_the_appropriate_services" author="P44065">
+        <sql>
+            insert into au_service_rule(service_id, rule_id)
+            select aus.id, aur.id
+            from au_service aus
+                     cross join au_rule aur
+            where aus.name in (
+                               'assignTask',
+                               'releaseTask',
+                               'getCandidateAssigneesByTaskId',
+                               'getTaskItemInfoById',
+                               'generateRequestTaskGetFileAttachmentToken')
+              and aur.resource_type = 'REQUEST_TASK'
+              and aur.resource_sub_type = 'SITE_VISIT_APPLICATION_PEER_REVIEW'
+              and aur.handler = 'requestTaskAccessHandler'
+              and aur.scope = 'REQUEST_TASK_VIEW'
+              and aur.role_type = 'REGULATOR';
+        </sql>
+        <rollback>
+            <sql>
+                delete
+                from au_service_rule sr using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in (
+                'assignTask',
+                'releaseTask',
+                'getCandidateAssigneesByTaskId',
+                'getTaskItemInfoById',
+                'generateRequestTaskGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_TASK'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_PEER_REVIEW'
+                and r.handler = 'requestTaskAccessHandler'
+                and r.scope = 'REQUEST_TASK_VIEW'
+                and r.role_type = 'REGULATOR';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_associate_execute_scope_rules_for_request_task_SITE_VISIT_APPLICATION_PEER_REVIEW_with_the_appropriate_services" author="P44065">
+        <sql>
+            insert into au_service_rule(service_id, rule_id)
+            select aus.id, aur.id
+            from au_service aus
+                     cross join au_rule aur
+            where aus.name in ('processRequestTaskAction', 'getDocumentPreview')
+              and aur.resource_type = 'REQUEST_TASK'
+              and aur.resource_sub_type = 'SITE_VISIT_APPLICATION_PEER_REVIEW'
+              and aur.handler = 'requestTaskAccessHandler'
+              and aur.scope = 'REQUEST_TASK_EXECUTE'
+              and aur.role_type = 'REGULATOR';
+        </sql>
+        <rollback>
+            <sql>
+                delete
+                from au_service_rule sr using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('processRequestTaskAction', 'getDocumentPreview')
+                and r.resource_type = 'REQUEST_TASK'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_PEER_REVIEW'
+                and r.handler = 'requestTaskAccessHandler'
+                and r.scope = 'REQUEST_TASK_EXECUTE'
+                and r.role_type = 'REGULATOR';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_view_scope_permission_for_SITE_VISIT_WAIT_FOR_PEER_REVIEW_request_task_type" author="P44065">
+        <sql>
+            insert into au_resource_scope_permission(id, resource_type, resource_sub_type, scope, permission, role_type)
+                (select nextval('au_resource_scope_permission_seq'),
+                        'REQUEST_TASK',
+                        'SITE_VISIT_WAIT_FOR_PEER_REVIEW',
+                        'REQUEST_TASK_VIEW',
+                        'PERM_SITE_VISIT_APPLICATION_REVIEW_VIEW_TASK',
+                        'REGULATOR');
+        </sql>
+        <rollback>
+            <sql>
+                delete
+                from au_resource_scope_permission
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_WAIT_FOR_PEER_REVIEW'
+                and scope = 'REQUEST_TASK_VIEW'
+                and permission = 'PERM_SITE_VISIT_APPLICATION_REVIEW_VIEW_TASK'
+                and role_type = 'REGULATOR';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_execute_scope_permission_for_SITE_VISIT_WAIT_FOR_PEER_REVIEW_request_task_type" author="P44065">
+        <sql>
+            insert into au_resource_scope_permission(id, resource_type, resource_sub_type, scope, permission, role_type)
+                (select nextval('au_resource_scope_permission_seq'),
+                        'REQUEST_TASK',
+                        'SITE_VISIT_WAIT_FOR_PEER_REVIEW',
+                        'REQUEST_TASK_EXECUTE',
+                        'PERM_SITE_VISIT_APPLICATION_REVIEW_EXECUTE_TASK',
+                        'REGULATOR');
+        </sql>
+        <rollback>
+            <sql>
+                delete
+                from au_resource_scope_permission
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_WAIT_FOR_PEER_REVIEW'
+                and scope = 'REQUEST_TASK_EXECUTE'
+                and permission = 'PERM_SITE_VISIT_APPLICATION_REVIEW_EXECUTE_TASK'
+                and role_type = 'REGULATOR';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_execute_scope_rule_for_request_task_SITE_VISIT_WAIT_FOR_PEER_REVIEW_and_role_REGULATOR" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_TASK' ,
+                    'SITE_VISIT_WAIT_FOR_PEER_REVIEW',
+                    'requestTaskAccessHandler',
+                    'REGULATOR',
+                    'REQUEST_TASK_EXECUTE');
+        </sql>
+
+        <rollback>
+            <sql>
+                delete
+                from au_rule
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_WAIT_FOR_PEER_REVIEW'
+                and handler = 'requestTaskAccessHandler'
+                and role_type = 'REGULATOR'
+                and scope = 'REQUEST_TASK_EXECUTE';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_view_scope_rule_for_request_task_SITE_VISIT_WAIT_FOR_PEER_REVIEW_and_role_REGULATOR" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_TASK' ,
+                    'SITE_VISIT_WAIT_FOR_PEER_REVIEW',
+                    'requestTaskAccessHandler',
+                    'REGULATOR',
+                    'REQUEST_TASK_VIEW');
+        </sql>
+
+        <rollback>
+            <sql>
+                delete
+                from au_rule
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_WAIT_FOR_PEER_REVIEW'
+                and handler = 'requestTaskAccessHandler'
+                and role_type = 'REGULATOR'
+                and scope = 'REQUEST_TASK_VIEW';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_associate_view_scope_rules_for_request_task_SITE_VISIT_WAIT_FOR_PEER_REVIEW_with_the_appropriate_services" author="P44065">
+        <sql>
+            insert into au_service_rule(service_id, rule_id)
+            select aus.id, aur.id
+            from au_service aus
+                     cross join au_rule aur
+            where aus.name in (
+                               'assignTask',
+                               'releaseTask',
+                               'getCandidateAssigneesByTaskId',
+                               'getTaskItemInfoById',
+                               'generateRequestTaskGetFileAttachmentToken')
+              and aur.resource_type = 'REQUEST_TASK'
+              and aur.resource_sub_type = 'SITE_VISIT_WAIT_FOR_PEER_REVIEW'
+              and aur.handler = 'requestTaskAccessHandler'
+              and aur.scope = 'REQUEST_TASK_VIEW'
+              and aur.role_type = 'REGULATOR';
+        </sql>
+        <rollback>
+            <sql>
+                delete
+                from au_service_rule sr using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in (
+                'assignTask',
+                'releaseTask',
+                'getCandidateAssigneesByTaskId',
+                'getTaskItemInfoById',
+                'generateRequestTaskGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_TASK'
+                and r.resource_sub_type = 'SITE_VISIT_WAIT_FOR_PEER_REVIEW'
+                and r.handler = 'requestTaskAccessHandler'
+                and r.scope = 'REQUEST_TASK_VIEW'
+                and r.role_type = 'REGULATOR';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_add_getDocumentPreview_permission_for_SITE_VISIT_WAIT_FOR_PEER_REVIEW" author="P44065">
+        <sql>
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s cross join au_rule r
+            where s.name = 'getDocumentPreview'
+              and r.resource_type = 'REQUEST_TASK'
+              and r.resource_sub_type = 'SITE_VISIT_WAIT_FOR_PEER_REVIEW'
+              and r.handler = 'requestTaskAccessHandler'
+              and r.role_type = 'REGULATOR'
+              and r.scope = 'REQUEST_TASK_EXECUTE';
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name = 'getDocumentPreview'
+                and r.resource_type = 'REQUEST_TASK'
+                and r.resource_sub_type = 'SITE_VISIT_WAIT_FOR_PEER_REVIEW'
+                and r.handler = 'requestTaskAccessHandler'
+                and r.role_type = 'REGULATOR'
+                and r.scope = 'REQUEST_TASK_EXECUTE';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_add_rule_and_associate_services_for_request_action_SITE_VISIT_APPLICATION_PEER_REVIEWER_ACCEPTED_for_regulator" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_PEER_REVIEWER_ACCEPTED',
+                    'requestActionViewHandler',
+                    'REGULATOR');
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name = 'getRequestActionById'
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_PEER_REVIEWER_ACCEPTED'
+              and r.handler = 'requestActionViewHandler'
+              and r.role_type = 'REGULATOR'
+              and r.scope is null;
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name = 'getRequestActionById'
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_PEER_REVIEWER_ACCEPTED'
+                and r.handler = 'requestActionViewHandler'
+                and r.role_type = 'REGULATOR'
+                and r.scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_PEER_REVIEWER_ACCEPTED'
+                and handler = 'requestActionViewHandler'
+                and role_type = 'REGULATOR'
+                and scope is null;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_add_rule_and_associate_services_for_request_action_SITE_VISIT_APPLICATION_PEER_REVIEWER_REJECTED_for_regulator" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_PEER_REVIEWER_REJECTED',
+                    'requestActionViewHandler',
+                    'REGULATOR');
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name = 'getRequestActionById'
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_PEER_REVIEWER_REJECTED'
+              and r.handler = 'requestActionViewHandler'
+              and r.role_type = 'REGULATOR'
+              and r.scope is null;
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name = 'getRequestActionById'
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_PEER_REVIEWER_REJECTED'
+                and r.handler = 'requestActionViewHandler'
+                and r.role_type = 'REGULATOR'
+                and r.scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_PEER_REVIEWER_REJECTED'
+                and handler = 'requestActionViewHandler'
+                and role_type = 'REGULATOR'
+                and scope is null;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_add_rule_and_associate_services_for_request_action_SITE_VISIT_APPLICATION_RETURNED_FOR_AMENDS" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_RETURNED_FOR_AMENDS',
+                    'requestActionViewHandler',
+                    'OPERATOR');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_RETURNED_FOR_AMENDS',
+                    'requestActionViewHandler',
+                    'REGULATOR');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_RETURNED_FOR_AMENDS',
+                    'requestActionAccountBasedViewHandler',
+                    'VERIFIER');
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_RETURNED_FOR_AMENDS'
+              and r.handler = 'requestActionViewHandler'
+              and r.role_type in ('OPERATOR', 'REGULATOR')
+              and r.scope is null;
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_RETURNED_FOR_AMENDS'
+              and r.handler = 'requestActionAccountBasedViewHandler'
+              and r.role_type in ('VERIFIER')
+              and r.scope is null;
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_RETURNED_FOR_AMENDS'
+                and r.handler = 'requestActionViewHandler'
+                and r.role_type in ('OPERATOR', 'REGULATOR')
+                and r.scope is null;
+
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_RETURNED_FOR_AMENDS'
+                and r.handler = 'requestActionAccountBasedViewHandler'
+                and r.role_type in ('VERIFIER')
+                and r.scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_RETURNED_FOR_AMENDS'
+                and handler = 'requestActionViewHandler'
+                and role_type in ('OPERATOR', 'REGULATOR')
+                and scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_RETURNED_FOR_AMENDS'
+                and handler = 'requestActionAccountBasedViewHandler'
+                and role_type in ('VERIFIER')
+                and scope is null;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_add_rule_for_request_task_type_SITE_VISIT_APPLICATION_AMENDS_SUBMIT_for_role_OPERATOR" author="P44065">
+        <comment>Populate request task SITE_VISIT_APPLICATION_AMENDS_SUBMIT execute view rule</comment>
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'), 'REQUEST_TASK', 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT', 'requestTaskAccessHandler', 'OPERATOR', 'REQUEST_TASK_EXECUTE');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'), 'REQUEST_TASK', 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT', 'requestTaskAccessHandler', 'OPERATOR', 'REQUEST_TASK_VIEW');
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_rule
+                where resource_type = 'REQUEST_TASK' and handler = 'requestTaskAccessHandler' and resource_sub_type = 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT'
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_create_view_execute_scope_permission_for_SITE_VISIT_APPLICATION_AMENDS_SUBMIT_request_task_type" author="P44065">
+        <comment>Populate request task SITE_VISIT_APPLICATION_AMENDS_SUBMIT execute view scope</comment>
+        <sql>
+            insert into au_resource_scope_permission(id, resource_type, resource_sub_type, scope, permission, role_type)
+                (select nextval('au_resource_scope_permission_seq'),
+                        'REQUEST_TASK',
+                        'SITE_VISIT_APPLICATION_AMENDS_SUBMIT',
+                        'REQUEST_TASK_VIEW',
+                        'PERM_SITE_VISIT_APPLICATION_SUBMIT_VIEW_TASK',
+                        'OPERATOR');
+
+            insert into au_resource_scope_permission(id, resource_type, resource_sub_type, scope, permission, role_type)
+                (select nextval('au_resource_scope_permission_seq'),
+                        'REQUEST_TASK',
+                        'SITE_VISIT_APPLICATION_AMENDS_SUBMIT',
+                        'REQUEST_TASK_EXECUTE',
+                        'PERM_SITE_VISIT_APPLICATION_SUBMIT_EXECUTE_TASK',
+                        'OPERATOR');
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_resource_scope_permission
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT'
+                and scope = 'REQUEST_TASK_VIEW'
+                and permission = 'PERM_SITE_VISIT_APPLICATION_SUBMIT_VIEW_TASK'
+                and role_type = 'OPERATOR';
+
+                delete from au_resource_scope_permission
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT'
+                and scope = 'REQUEST_TASK_EXECUTE'
+                and permission = 'PERM_SITE_VISIT_APPLICATION_SUBMIT_EXECUTE_TASK'
+                and role_type = 'OPERATOR';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_associate_services_with_SITE_VISIT_APPLICATION_AMENDS_SUBMIT" author="P44065">
+        <comment>Associate relevant services with SITE_VISIT_APPLICATION_AMENDS_SUBMIT</comment>
+        <sql>
+            insert into au_service_rule(service_id, rule_id)
+            select aus.id, aur.id
+            from au_service aus
+                     cross join au_rule aur
+            where aus.name in ('processRequestTaskAction', 'uploadRequestTaskAttachment')
+              and aur.resource_type = 'REQUEST_TASK'
+              and aur.resource_sub_type = 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT'
+              and aur.handler = 'requestTaskAccessHandler'
+              and aur.role_type = 'OPERATOR'
+              and aur.scope = 'REQUEST_TASK_EXECUTE';
+
+            insert into au_service_rule(service_id, rule_id)
+            select aus.id, aur.id
+            from au_service aus
+                     cross join au_rule aur
+            where aus.name in ('assignTask', 'getCandidateAssigneesByTaskId', 'releaseTask', 'getTaskItemInfoById', 'generateRequestTaskGetFileAttachmentToken')
+              and aur.resource_type = 'REQUEST_TASK'
+              and aur.resource_sub_type = 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT'
+              and aur.handler = 'requestTaskAccessHandler'
+              and aur.role_type = 'OPERATOR'
+              and aur.scope = 'REQUEST_TASK_VIEW';
+
+        </sql>
+        <rollback>
+            <sql>
+                delete
+                from au_service_rule sr using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('processRequestTaskAction', 'uploadRequestTaskAttachment')
+                and r.resource_type = 'REQUEST_TASK'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT'
+                and r.handler = 'requestTaskAccessHandler'
+                and r.role_type = 'OPERATOR'
+                and r.scope = 'REQUEST_TASK_EXECUTE';
+
+                delete
+                from au_service_rule sr using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('assignTask', 'getCandidateAssigneesByTaskId', 'releaseTask', 'getTaskItemInfoById', 'generateRequestTaskGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_TASK'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_AMENDS_SUBMIT'
+                and r.handler = 'requestTaskAccessHandler'
+                and r.role_type = 'OPERATOR'
+                and r.scope = 'REQUEST_TASK_VIEW';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_add_rule_for_request_task_type_SITE_VISIT_WAIT_FOR_AMENDS_for_role_REGULATOR" author="P44065">
+        <comment>Populate request task SITE_VISIT_WAIT_FOR_AMENDS execute view rule</comment>
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'), 'REQUEST_TASK', 'SITE_VISIT_WAIT_FOR_AMENDS', 'requestTaskAccessHandler', 'REGULATOR', 'REQUEST_TASK_EXECUTE');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type, scope)
+            values (nextval('au_rule_seq'), 'REQUEST_TASK', 'SITE_VISIT_WAIT_FOR_AMENDS', 'requestTaskAccessHandler', 'REGULATOR', 'REQUEST_TASK_VIEW');
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_rule
+                where resource_type = 'REQUEST_TASK' and handler = 'requestTaskAccessHandler' and resource_sub_type = 'SITE_VISIT_WAIT_FOR_AMENDS'
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_create_view_execute_scope_permission_for_SITE_VISIT_WAIT_FOR_AMENDS_request_task_type_for_REGULATOR" author="P44065">
+        <comment>Populate request task SITE_VISIT_WAIT_FOR_AMENDS execute view scope</comment>
+        <sql>
+            insert into au_resource_scope_permission(id, resource_type, resource_sub_type, scope, permission, role_type)
+                (select nextval('au_resource_scope_permission_seq'),
+                        'REQUEST_TASK',
+                        'SITE_VISIT_WAIT_FOR_AMENDS',
+                        'REQUEST_TASK_VIEW',
+                        'PERM_SITE_VISIT_APPLICATION_REVIEW_VIEW_TASK',
+                        'REGULATOR');
+
+            insert into au_resource_scope_permission(id, resource_type, resource_sub_type, scope, permission, role_type)
+                (select nextval('au_resource_scope_permission_seq'),
+                        'REQUEST_TASK',
+                        'SITE_VISIT_WAIT_FOR_AMENDS',
+                        'REQUEST_TASK_EXECUTE',
+                        'PERM_SITE_VISIT_APPLICATION_REVIEW_EXECUTE_TASK',
+                        'REGULATOR');
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_resource_scope_permission
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_WAIT_FOR_AMENDS'
+                and scope = 'REQUEST_TASK_VIEW'
+                and permission = 'PERM_SITE_VISIT_APPLICATION_REVIEW_VIEW_TASK'
+                and role_type = 'REGULATOR';
+
+                delete from au_resource_scope_permission
+                where resource_type = 'REQUEST_TASK'
+                and resource_sub_type = 'SITE_VISIT_WAIT_FOR_AMENDS'
+                and scope = 'REQUEST_TASK_EXECUTE'
+                and permission = 'PERM_SITE_VISIT_APPLICATION_REVIEW_EXECUTE_TASK'
+                and role_type = 'REGULATOR';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_associate_services_with_SITE_VISIT_WAIT_FOR_AMENDS" author="P44065">
+        <comment>Associate relevant services with SITE_VISIT_WAIT_FOR_AMENDS</comment>
+        <sql>
+            insert into au_service_rule(service_id, rule_id)
+            select aus.id, aur.id
+            from au_service aus
+                     cross join au_rule aur
+            where aus.name = 'processRequestTaskAction'
+              and aur.resource_type = 'REQUEST_TASK'
+              and aur.resource_sub_type = 'SITE_VISIT_WAIT_FOR_AMENDS'
+              and aur.handler = 'requestTaskAccessHandler'
+              and aur.role_type = 'REGULATOR'
+              and aur.scope = 'REQUEST_TASK_EXECUTE';
+
+            insert into au_service_rule(service_id, rule_id)
+            select aus.id, aur.id
+            from au_service aus
+                     cross join au_rule aur
+            where aus.name in ('assignTask', 'getCandidateAssigneesByTaskId', 'releaseTask', 'getTaskItemInfoById', 'generateRequestTaskGetFileAttachmentToken')
+              and aur.resource_type = 'REQUEST_TASK'
+              and aur.resource_sub_type = 'SITE_VISIT_WAIT_FOR_AMENDS'
+              and aur.handler = 'requestTaskAccessHandler'
+              and aur.role_type = 'REGULATOR'
+              and aur.scope = 'REQUEST_TASK_VIEW';
+        </sql>
+        <rollback>
+            <sql>
+                delete
+                from au_service_rule sr using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name = 'processRequestTaskAction'
+                and r.resource_type = 'REQUEST_TASK'
+                and r.resource_sub_type = 'SITE_VISIT_WAIT_FOR_AMENDS'
+                and r.handler = 'requestTaskAccessHandler'
+                and r.role_type = 'REGULATOR'
+                and r.scope = 'REQUEST_TASK_EXECUTE';
+
+                delete
+                from au_service_rule sr using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('assignTask', 'getCandidateAssigneesByTaskId', 'releaseTask', 'getTaskItemInfoById', 'generateRequestTaskGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_TASK'
+                and r.resource_sub_type = 'SITE_VISIT_WAIT_FOR_AMENDS'
+                and r.handler = 'requestTaskAccessHandler'
+                and r.role_type = 'REGULATOR'
+                and r.scope = 'REQUEST_TASK_VIEW';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_add_rule_and_associate_services_for_request_action_SITE_VISIT_APPLICATION_AMENDS_SUBMITTED" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_AMENDS_SUBMITTED',
+                    'requestActionViewHandler',
+                    'OPERATOR');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_AMENDS_SUBMITTED',
+                    'requestActionViewHandler',
+                    'REGULATOR');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_AMENDS_SUBMITTED',
+                    'requestActionAccountBasedViewHandler',
+                    'VERIFIER');
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_AMENDS_SUBMITTED'
+              and r.handler = 'requestActionViewHandler'
+              and r.role_type in ('OPERATOR', 'REGULATOR')
+              and r.scope is null;
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_AMENDS_SUBMITTED'
+              and r.handler = 'requestActionAccountBasedViewHandler'
+              and r.role_type in ('VERIFIER')
+              and r.scope is null;
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_AMENDS_SUBMITTED'
+                and r.handler = 'requestActionViewHandler'
+                and r.role_type in ('OPERATOR', 'REGULATOR')
+                and r.scope is null;
+
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_AMENDS_SUBMITTED'
+                and r.handler = 'requestActionAccountBasedViewHandler'
+                and r.role_type in ('VERIFIER')
+                and r.scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_AMENDS_SUBMITTED'
+                and handler = 'requestActionViewHandler'
+                and role_type in ('OPERATOR', 'REGULATOR')
+                and scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_AMENDS_SUBMITTED'
+                and handler = 'requestActionAccountBasedViewHandler'
+                and role_type in ('VERIFIER')
+                and scope is null;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_add_rule_and_associate_services_for_request_action_SITE_VISIT_APPLICATION_APPROVED" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_APPROVED',
+                    'requestActionViewHandler',
+                    'OPERATOR');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_APPROVED',
+                    'requestActionViewHandler',
+                    'REGULATOR');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_APPROVED',
+                    'requestActionAccountBasedViewHandler',
+                    'VERIFIER');
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_APPROVED'
+              and r.handler = 'requestActionViewHandler'
+              and r.role_type in ('OPERATOR', 'REGULATOR')
+              and r.scope is null;
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_APPROVED'
+              and r.handler = 'requestActionAccountBasedViewHandler'
+              and r.role_type in ('VERIFIER')
+              and r.scope is null;
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_APPROVED'
+                and r.handler = 'requestActionViewHandler'
+                and r.role_type in ('OPERATOR', 'REGULATOR')
+                and r.scope is null;
+
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_APPROVED'
+                and r.handler = 'requestActionAccountBasedViewHandler'
+                and r.role_type in ('VERIFIER')
+                and r.scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_APPROVED'
+                and handler = 'requestActionViewHandler'
+                and role_type in ('OPERATOR', 'REGULATOR')
+                and scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_APPROVED'
+                and handler = 'requestActionAccountBasedViewHandler'
+                and role_type in ('VERIFIER')
+                and scope is null;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_add_rule_and_associate_services_for_request_action_SITE_VISIT_APPLICATION_REJECTED" author="P44065">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_REJECTED',
+                    'requestActionViewHandler',
+                    'OPERATOR');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_REJECTED',
+                    'requestActionViewHandler',
+                    'REGULATOR');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_APPLICATION_REJECTED',
+                    'requestActionAccountBasedViewHandler',
+                    'VERIFIER');
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_REJECTED'
+              and r.handler = 'requestActionViewHandler'
+              and r.role_type in ('OPERATOR', 'REGULATOR')
+              and r.scope is null;
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_APPLICATION_REJECTED'
+              and r.handler = 'requestActionAccountBasedViewHandler'
+              and r.role_type in ('VERIFIER')
+              and r.scope is null;
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_REJECTED'
+                and r.handler = 'requestActionViewHandler'
+                and r.role_type in ('OPERATOR', 'REGULATOR')
+                and r.scope is null;
+
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('getRequestActionById', 'generateRequestActionGetFileAttachmentToken')
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_APPLICATION_REJECTED'
+                and r.handler = 'requestActionAccountBasedViewHandler'
+                and r.role_type in ('VERIFIER')
+                and r.scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_REJECTED'
+                and handler = 'requestActionViewHandler'
+                and role_type in ('OPERATOR', 'REGULATOR')
+                and scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_APPLICATION_REJECTED'
+                and handler = 'requestActionAccountBasedViewHandler'
+                and role_type in ('VERIFIER')
+                and scope is null;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_populate_getAvailableSiteVisitWorkflows_authorization_service" author="P44065">
+        <sql>
+            insert into au_service(id, name)
+            values (nextval('au_service_seq'), 'getAvailableSiteVisitWorkflows');
+
+            insert into au_service_rule(service_id, rule_id)
+            select aus.id, aur.id
+            from au_service aus
+                     cross join au_rule aur
+            where aus.name = 'getAvailableSiteVisitWorkflows'
+              and aur.resource_type = 'ACCOUNT'
+              and aur.resource_sub_type is null
+              and aur.handler = 'accountAccessHandler'
+              and aur.role_type = 'OPERATOR'
+              and aur.scope is null;
+        </sql>
+        <rollback>
+            <sql>
+                delete
+                from au_service_rule
+                where service_id = (select id from au_service where name = 'getAvailableSiteVisitWorkflows');
+
+                delete
+                from au_service
+                where name = 'getAvailableSiteVisitWorkflows';
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_2_0_associate_generateRequestActionGetFileDocumentToken_service_with_site_visit_approved_and_rejected_request_actions" author="pkouris">
+        <sql>
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name = 'generateRequestActionGetFileDocumentToken'
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type in ('SITE_VISIT_APPLICATION_APPROVED', 'SITE_VISIT_APPLICATION_REJECTED')
+              and r.handler = 'requestActionViewHandler'
+              and r.role_type in ('OPERATOR', 'REGULATOR')
+              and r.scope is null;
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name = 'generateRequestActionGetFileDocumentToken'
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type in ('SITE_VISIT_APPLICATION_APPROVED', 'SITE_VISIT_APPLICATION_REJECTED')
+              and r.handler = 'requestActionAccountBasedViewHandler'
+              and r.role_type in ('VERIFIER')
+              and r.scope is null;
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_service_rule sr
+                using au_rule r, au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name = 'generateRequestActionGetFileDocumentToken'
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type in ('SITE_VISIT_APPLICATION_APPROVED', 'SITE_VISIT_APPLICATION_REJECTED')
+                and r.scope is null;
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_2_0_add_rule_and_associate_services_for_request_action_SITE_VISIT_RECALLED_FROM_AMENDS" author="pkouris">
+        <sql>
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_RECALLED_FROM_AMENDS',
+                    'requestActionViewHandler',
+                    'OPERATOR');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_RECALLED_FROM_AMENDS',
+                    'requestActionViewHandler',
+                    'REGULATOR');
+
+            insert into au_rule(id, resource_type, resource_sub_type, handler, role_type)
+            values (nextval('au_rule_seq'),
+                    'REQUEST_ACTION' ,
+                    'SITE_VISIT_RECALLED_FROM_AMENDS',
+                    'requestActionAccountBasedViewHandler',
+                    'VERIFIER');
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name = 'getRequestActionById'
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_RECALLED_FROM_AMENDS'
+              and r.handler = 'requestActionViewHandler'
+              and r.role_type in ('OPERATOR', 'REGULATOR')
+              and r.scope is null;
+
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name = 'getRequestActionById'
+              and r.resource_type = 'REQUEST_ACTION'
+              and r.resource_sub_type = 'SITE_VISIT_RECALLED_FROM_AMENDS'
+              and r.handler = 'requestActionAccountBasedViewHandler'
+              and r.role_type in ('VERIFIER')
+              and r.scope is null;
+        </sql>
+        <rollback>
+            <sql>
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name = 'getRequestActionById'
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_RECALLED_FROM_AMENDS'
+                and r.handler = 'requestActionViewHandler'
+                and r.role_type in ('OPERATOR', 'REGULATOR')
+                and r.scope is null;
+
+                delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name = 'getRequestActionById'
+                and r.resource_type = 'REQUEST_ACTION'
+                and r.resource_sub_type = 'SITE_VISIT_RECALLED_FROM_AMENDS'
+                and r.handler = 'requestActionAccountBasedViewHandler'
+                and r.role_type in ('VERIFIER')
+                and r.scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_RECALLED_FROM_AMENDS'
+                and handler = 'requestActionAccountBasedViewHandler'
+                and role_type = 'VERIFIER'
+                and scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_RECALLED_FROM_AMENDS'
+                and handler = 'requestActionViewHandler'
+                and role_type = 'REGULATOR'
+                and scope is null;
+
+                delete from au_rule
+                where resource_type = 'REQUEST_ACTION'
+                and resource_sub_type = 'SITE_VISIT_RECALLED_FROM_AMENDS'
+                and handler = 'requestActionViewHandler'
+                and role_type = 'OPERATOR'
+                and scope is null;
+            </sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

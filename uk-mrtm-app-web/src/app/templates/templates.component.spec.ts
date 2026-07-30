@@ -112,7 +112,7 @@ describe('TemplatesComponent', () => {
     hostElement = fixture.nativeElement;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   const createModule = async () => {
@@ -132,13 +132,13 @@ describe('TemplatesComponent', () => {
         of({
           templates: [],
           total: 0,
-        }),
+        }) as any,
       );
       documentTemplatesService.getCurrentUserDocumentTemplates.mockReturnValue(
         of({
           templates: [],
           total: 0,
-        }),
+        }) as any,
       );
     });
 
@@ -161,8 +161,8 @@ describe('TemplatesComponent', () => {
 
   describe('for non empty results', () => {
     beforeEach(async () => {
-      notificationTemplatesService.getCurrentUserNotificationTemplates.mockReturnValue(of(operatorEmails));
-      documentTemplatesService.getCurrentUserDocumentTemplates.mockReturnValue(of(operatorDocuments));
+      notificationTemplatesService.getCurrentUserNotificationTemplates.mockReturnValue(of(operatorEmails) as any);
+      documentTemplatesService.getCurrentUserDocumentTemplates.mockReturnValue(of(operatorDocuments) as any);
     });
     beforeEach(createModule);
     beforeEach(createComponent);
@@ -210,9 +210,10 @@ describe('TemplatesComponent', () => {
       );
     });
 
-    it('should render regulator emails', () => {
-      notificationTemplatesService.getCurrentUserNotificationTemplates.mockReturnValue(of(regulatorEmails));
+    it('should render regulator emails', async () => {
+      notificationTemplatesService.getCurrentUserNotificationTemplates.mockReturnValue(of(regulatorEmails) as any);
       page.regulatorEmailsTabLink.click();
+      await fixture.whenStable();
       fixture.detectChanges();
 
       expect(notificationTemplatesService.getCurrentUserNotificationTemplates).toHaveBeenLastCalledWith(
@@ -252,8 +253,9 @@ describe('TemplatesComponent', () => {
       );
     });
 
-    it('should render operator documents', () => {
+    it('should render operator documents', async () => {
       page.operatorDocumentsTabLink.click();
+      await fixture.whenStable();
       fixture.detectChanges();
 
       expect(documentTemplatesService.getCurrentUserDocumentTemplates).toHaveBeenLastCalledWith(

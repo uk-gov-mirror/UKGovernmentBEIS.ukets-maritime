@@ -10,16 +10,17 @@ import { ActivatedRouteSnapshotStub, expectBusinessErrorToBe } from '@netz/commo
 
 import { viewNotFoundExternalContactError } from '@regulators/errors/business-error';
 import { DetailsGuard } from '@regulators/external-contacts/details/details.guard';
+import { Mocked } from 'vitest';
 
 describe('DetailsGuard', () => {
   let guard: DetailsGuard;
 
   const response = { contact: { id: '1', name: 'Dexter', email: 'dexter@lab.com', description: 'A scientist' } };
-  let caExternalContactsService: Partial<jest.Mocked<CaExternalContactsService>>;
+  let caExternalContactsService: Partial<Mocked<CaExternalContactsService>>;
 
   beforeEach(() => {
     caExternalContactsService = {
-      getCaExternalContactById: jest.fn().mockReturnValue(of(response)),
+      getCaExternalContactById: vi.fn().mockReturnValue(of(response)),
     };
 
     TestBed.configureTestingModule({

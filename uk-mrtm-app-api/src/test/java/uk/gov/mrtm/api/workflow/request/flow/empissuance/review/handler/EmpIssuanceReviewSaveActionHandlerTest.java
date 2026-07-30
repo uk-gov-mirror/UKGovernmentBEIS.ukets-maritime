@@ -46,7 +46,7 @@ class EmpIssuanceReviewSaveActionHandlerTest {
         RequestTask requestTask = RequestTask.builder().id(requestTaskId).payload(expectedRequestTaskPayload).build();
         AppUser appUser = AppUser.builder().build();
 
-        when(requestTaskService.findTaskById(requestTaskId)).thenReturn(requestTask);
+        when(requestTaskService.findTaskByIdForUpdate(requestTaskId)).thenReturn(requestTask);
 
         //invoke
         RequestTaskPayload requestTaskPayload = empIssuanceReviewSaveActionHandler.process(requestTask.getId(),
@@ -56,7 +56,7 @@ class EmpIssuanceReviewSaveActionHandlerTest {
 
         assertThat(requestTaskPayload).isEqualTo(expectedRequestTaskPayload);
         verifyNoMoreInteractions(expectedRequestTaskPayload);
-        verify(requestTaskService).findTaskById(requestTaskId);
+        verify(requestTaskService).findTaskByIdForUpdate(requestTaskId);
         verify(requestEmpReviewService).applySaveAction(requestTaskActionPayload, requestTask);
 
         verifyNoMoreInteractions(requestEmpReviewService, requestTaskService);

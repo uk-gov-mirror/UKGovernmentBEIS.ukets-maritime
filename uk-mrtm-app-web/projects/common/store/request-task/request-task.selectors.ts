@@ -9,6 +9,7 @@ import {
   RequestTaskDTO,
   RequestTaskItemDTO,
   RequestTaskPayload,
+  RequestTaskPreviewFileInfoDTO,
 } from '@mrtm/api';
 
 import { createAggregateSelector, createDescendingSelector, createSelector, StateSelector } from '../index';
@@ -123,6 +124,22 @@ const selectTimeline: StateSelector<RequestTaskState, RequestActionInfoDTO[]> = 
   ),
 );
 
+const selectFinalDocumentsGenerationInProgress: StateSelector<RequestTaskState, boolean | null> =
+  createDescendingSelector(selectRequestTaskPayload, (state) => (state as any)?.finalDocumentsGenerationInProgress);
+
+const selectFinalDocumentsGenerationSuccessful: StateSelector<RequestTaskState, boolean | null> =
+  createDescendingSelector(selectRequestTaskPayload, (state) => (state as any)?.finalDocumentsGenerationSuccessful);
+
+const selectPreviewFiles: StateSelector<
+  RequestTaskState,
+  {
+    [key: string]: RequestTaskPreviewFileInfoDTO;
+  }
+> = createDescendingSelector(
+  selectRequestTaskPayload,
+  (state) => (state as any)?.previewFiles as { [key: string]: RequestTaskPreviewFileInfoDTO },
+);
+
 const selectTaskReassignedTo: StateSelector<RequestTaskState, string> = pipe((state) => state?.taskReassignedTo);
 
 const selectIsEditable: StateSelector<RequestTaskState, boolean> = createSelector((state) => state.isEditable);
@@ -155,6 +172,9 @@ export const requestTaskQuery = {
   selectRelatedTasks,
   selectRelatedActions,
   selectTimeline,
+  selectFinalDocumentsGenerationInProgress,
+  selectFinalDocumentsGenerationSuccessful,
+  selectPreviewFiles,
   selectTaskReassignedTo,
   selectIsEditable,
   selectMetadata,

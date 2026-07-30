@@ -16,7 +16,7 @@ describe('ThirdPartyDataProviderImportComponent', () => {
   let component: ThirdPartyDataProviderImportComponent;
   let fixture: ComponentFixture<ThirdPartyDataProviderImportComponent>;
   const mockTaskService: MockType<TaskService<unknown>> = {
-    submitSubtask: jest.fn().mockReturnValue(of({})),
+    submitSubtask: vi.fn().mockReturnValue(of({})),
   };
 
   beforeEach(async () => {

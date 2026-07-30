@@ -142,7 +142,7 @@ describe('ContactDetailsComponent', () => {
   });
 
   it('should not submit on invalid form', async () => {
-    const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation();
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     page.firstNameValue = 'first name';
     page.lastNameValue = 'last name';
@@ -160,7 +160,7 @@ describe('ContactDetailsComponent', () => {
   });
 
   it('should navigate to choose password', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation();
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     store.setState({ userRegistrationDTO: mockContactDetails, isSummarized: false });
 
@@ -172,7 +172,7 @@ describe('ContactDetailsComponent', () => {
   });
 
   it('should navigate to summary', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation();
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     store.setState({ userRegistrationDTO: mockContactDetails, isSummarized: true });
 
@@ -184,7 +184,7 @@ describe('ContactDetailsComponent', () => {
   });
 
   it('should navigate to summary for emitter users', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation();
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     const token = 'thisisatoken';
 
     store.setState({

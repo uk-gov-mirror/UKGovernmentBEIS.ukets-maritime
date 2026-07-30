@@ -40,17 +40,17 @@ describe('ControlActivitiesInternalReviewsComponent', () => {
 
   const activatedRouteStub = new ActivatedRouteStub();
   const taskServiceMock: MockType<TaskService<EmpTaskPayload>> = {
-    saveSubtask: jest.fn().mockReturnValue(of({})),
+    saveSubtask: vi.fn().mockReturnValue(of({})),
   };
 
-  const taskServiceSpy = jest.spyOn(taskServiceMock, 'saveSubtask');
+  const taskServiceSpy = vi.spyOn(taskServiceMock, 'saveSubtask');
 
   const createComponent = () => {
     fixture = TestBed.createComponent(ControlActivitiesInternalReviewsComponent);
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(() => {

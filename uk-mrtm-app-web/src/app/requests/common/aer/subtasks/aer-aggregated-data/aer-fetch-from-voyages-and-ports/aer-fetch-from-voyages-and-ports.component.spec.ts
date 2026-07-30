@@ -25,10 +25,10 @@ describe('AerFetchFromVoyagesAndPortsComponent', () => {
   let page: Page;
   let store: RequestTaskStore;
   const taskServiceMock: MockType<TaskService<any>> = {
-    saveSubtask: jest.fn().mockReturnValue(of({})),
+    saveSubtask: vi.fn().mockReturnValue(of({})),
   };
   const activatedRouteMock = new ActivatedRouteStub();
-  const taskServiceSpy = jest.spyOn(taskServiceMock, 'saveSubtask');
+  const taskServiceSpy = vi.spyOn(taskServiceMock, 'saveSubtask');
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

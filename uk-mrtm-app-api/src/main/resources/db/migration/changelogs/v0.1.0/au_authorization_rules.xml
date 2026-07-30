@@ -21023,4 +21023,79 @@
         </rollback>
     </changeSet>
 
+
+
+    <changeSet id="0_1_0_associate_service_execute_rule_for_request_task_type_EMP_VARIATION_REGULATOR_LED_WAIT_FOR_PEER_REVIEW_and_role_REGULATOR" author="p35066">
+        <sql>
+            insert into au_service_rule(service_id, rule_id)
+            select s.id, r.id
+            from au_service s
+                     cross join au_rule r
+            where s.name = 'processRequestTaskAction'
+              and r.resource_type = 'REQUEST_TASK'
+              and r.resource_sub_type = 'EMP_VARIATION_REGULATOR_LED_WAIT_FOR_PEER_REVIEW'
+              and r.handler = 'requestTaskAccessHandler'
+              and r.role_type = 'REGULATOR'
+              and r.scope = 'REQUEST_TASK_EXECUTE';
+        </sql>
+        <rollback>
+            <sql>
+                delete
+                from au_service_rule sr
+                using au_rule r, au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name in ('processRequestTaskAction')
+                and r.resource_type = 'REQUEST_TASK'
+                and r.resource_sub_type = 'EMP_VARIATION_REGULATOR_LED_WAIT_FOR_PEER_REVIEW'
+                and r.handler = 'requestTaskAccessHandler'
+                and r.role_type = 'REGULATOR'
+                and r.scope = 'REQUEST_TASK_EXECUTE';
+            </sql>
+        </rollback>
+    </changeSet>
+    
+    <changeSet id="0_1_0_delete_au_service_rule_getDocumentPreview__for_all_emp_variation_tasks" author="p35066">
+        <sql>
+        	delete from au_service_rule sr
+                using
+                au_rule r,
+                au_service s
+                where r.id = sr.rule_id
+                and s.id = sr.service_id
+                and s.name = 'getDocumentPreview'
+                and r.resource_type = 'REQUEST_TASK'
+                and r.resource_sub_type in ('EMP_VARIATION_APPLICATION_REVIEW',
+				'EMP_VARIATION_REGULATOR_LED_APPLICATION_SUBMIT',
+				'EMP_VARIATION_APPLICATION_PEER_REVIEW',
+				'EMP_VARIATION_WAIT_FOR_PEER_REVIEW',
+				'EMP_VARIATION_REGULATOR_LED_APPLICATION_PEER_REVIEW',
+				'EMP_VARIATION_REGULATOR_LED_WAIT_FOR_PEER_REVIEW',
+				'EMP_VARIATION_WAIT_FOR_AMENDS')
+                and r.handler = 'requestTaskAccessHandler'
+                and r.role_type = 'REGULATOR'
+                and r.scope = 'REQUEST_TASK_EXECUTE';
+        </sql>
+        <rollback>
+            <sql>
+                insert into au_service_rule(service_id, rule_id)
+	            select s.id, r.id
+	            from au_service s cross join au_rule r
+	            where s.name = 'getDocumentPreview'
+	              and r.resource_type = 'REQUEST_TASK'
+	              and r.resource_sub_type in ('EMP_VARIATION_APPLICATION_REVIEW',
+					'EMP_VARIATION_REGULATOR_LED_APPLICATION_SUBMIT',
+					'EMP_VARIATION_APPLICATION_PEER_REVIEW',
+					'EMP_VARIATION_WAIT_FOR_PEER_REVIEW',
+					'EMP_VARIATION_REGULATOR_LED_APPLICATION_PEER_REVIEW',
+					'EMP_VARIATION_REGULATOR_LED_WAIT_FOR_PEER_REVIEW',
+					'EMP_VARIATION_WAIT_FOR_AMENDS')
+	              and r.handler = 'requestTaskAccessHandler'
+	              and r.role_type = 'REGULATOR'
+	              and r.scope = 'REQUEST_TASK_EXECUTE';
+            </sql>
+        </rollback>
+    </changeSet>
+
+
 </databaseChangeLog>

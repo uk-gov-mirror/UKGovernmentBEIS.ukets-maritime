@@ -22,6 +22,7 @@ import uk.gov.netz.api.security.Authorized;
 import uk.gov.netz.api.workflow.request.core.service.AvailableRequestService;
 import uk.gov.netz.api.workflow.request.flow.common.domain.dto.RequestCreateValidationResult;
 
+import java.time.Year;
 import java.util.Map;
 
 import static uk.gov.mrtm.api.web.constants.SwaggerApiInfo.INTERNAL_SERVER_ERROR;
@@ -71,5 +72,20 @@ public class AvailableRequestController {
             @PathVariable("aerRequestId") @Parameter(name = "aerRequestId", description = "The AER request id", required = true) String aerRequestId) {
 
         return new ResponseEntity<>(mrtmAvailableRequestService.getAvailableAerWorkflows(aerRequestId, appUser), HttpStatus.OK);
+    }
+
+    @GetMapping("/site-visit/{accountId}")
+    @Operation(summary = "Get available years for site visit workflow")
+    @ApiResponse(responseCode = "200", description = OK, useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "403", description = SwaggerApiInfo.FORBIDDEN, content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
+    @ApiResponse(responseCode = "404", description = NOT_FOUND, content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
+    @ApiResponse(responseCode = "429", description = SwaggerApiInfo.TOO_MANY_REQUESTS,
+        content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
+    @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR, content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
+    @Authorized(resourceId = "#accountId")
+    public ResponseEntity<Map<Year, RequestCreateValidationResult>> getAvailableSiteVisitWorkflows(
+        @PathVariable("accountId") @Parameter(description = "The account id", required = true) Long accountId) {
+
+        return new ResponseEntity<>(mrtmAvailableRequestService.getAvailableSiteVisitWorkflows(accountId), HttpStatus.OK);
     }
 }

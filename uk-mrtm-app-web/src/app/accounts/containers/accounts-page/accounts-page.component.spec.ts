@@ -47,7 +47,7 @@ describe('AccountsPageComponent', () => {
     }
 
     get accountNames() {
-      return this.queryAll<HTMLLIElement>('form#search-form ul.govuk-list > li a');
+      return this.queryAll<HTMLLIElement>('#accounts-list table>tbody>tr>td a');
     }
 
     get accountStatuses() {
@@ -59,7 +59,7 @@ describe('AccountsPageComponent', () => {
     fixture = TestBed.createComponent(AccountsPageComponent);
     component = fixture.componentInstance;
     page = new Page(fixture);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   const createModule = async () => {
@@ -79,7 +79,7 @@ describe('AccountsPageComponent', () => {
 
   describe('for operators', () => {
     beforeEach(async () => {
-      maritimeAccountsService.searchCurrentUserMrtmAccounts = jest.fn().mockReturnValueOnce(of(mockMrtmAccountResults));
+      maritimeAccountsService.searchCurrentUserMrtmAccounts = vi.fn().mockReturnValue(of(mockMrtmAccountResults));
     });
 
     beforeEach(createModule);
@@ -116,11 +116,20 @@ describe('AccountsPageComponent', () => {
     it('should show accounts when term filled and pressing search button', async () => {
       page.termValue = 'term';
       page.submitButton.click();
+      await fixture.whenStable();
       fixture.detectChanges();
 
       expect(page.termErrorMessage).toBeNull();
       expect(maritimeAccountsService.searchCurrentUserMrtmAccounts).toHaveBeenCalledTimes(2);
-      expect(maritimeAccountsService.searchCurrentUserMrtmAccounts).toHaveBeenLastCalledWith(0, 30, 'term');
+      expect(maritimeAccountsService.searchCurrentUserMrtmAccounts).toHaveBeenLastCalledWith({
+        contactEmail: undefined,
+        direction: undefined,
+        page: 0,
+        size: 20,
+        sortBy: undefined,
+        statuses: undefined,
+        term: 'term',
+      });
       expect(page.accountNames.map((accountName) => accountName.textContent.trim())).toEqual([
         'account1',
         'account2',
@@ -136,7 +145,7 @@ describe('AccountsPageComponent', () => {
 
   describe('for non operator users', () => {
     beforeEach(() => {
-      maritimeAccountsService.searchCurrentUserMrtmAccounts = jest.fn().mockReturnValue(of(mockMrtmAccountResults));
+      maritimeAccountsService.searchCurrentUserMrtmAccounts = vi.fn().mockReturnValue(of(mockMrtmAccountResults));
     });
     beforeEach(createModule);
     beforeEach(createComponent);
@@ -157,11 +166,20 @@ describe('AccountsPageComponent', () => {
     it('should show accounts when term filled and pressing search button', async () => {
       page.termValue = 'term';
       page.submitButton.click();
+      await fixture.whenStable();
       fixture.detectChanges();
 
       expect(page.termErrorMessage).toBeNull();
       expect(maritimeAccountsService.searchCurrentUserMrtmAccounts).toHaveBeenCalledTimes(2);
-      expect(maritimeAccountsService.searchCurrentUserMrtmAccounts).toHaveBeenLastCalledWith(0, 30, 'term');
+      expect(maritimeAccountsService.searchCurrentUserMrtmAccounts).toHaveBeenLastCalledWith({
+        contactEmail: undefined,
+        direction: undefined,
+        page: 0,
+        size: 20,
+        sortBy: undefined,
+        statuses: undefined,
+        term: 'term',
+      });
       expect(page.accountNames.map((accountName) => accountName.textContent.trim())).toEqual([
         'account1',
         'account2',
@@ -185,7 +203,7 @@ describe('AccountsPageComponent', () => {
     );
 
     beforeEach(async () => {
-      maritimeAccountsService.searchCurrentUserMrtmAccounts = jest.fn().mockReturnValueOnce(of(mockMrtmAccountResults));
+      maritimeAccountsService.searchCurrentUserMrtmAccounts = vi.fn().mockReturnValue(of(mockMrtmAccountResults));
     });
     beforeEach(async () => {
       await TestBed.configureTestingModule({
@@ -227,7 +245,7 @@ describe('AccountsPageComponent', () => {
 
   describe('for verifier users without accounts appointed to verification body', () => {
     beforeEach(async () => {
-      maritimeAccountsService.searchCurrentUserMrtmAccounts = jest.fn().mockReturnValue(of({ accounts: [], total: 0 }));
+      maritimeAccountsService.searchCurrentUserMrtmAccounts = vi.fn().mockReturnValue(of({ accounts: [], total: 0 }));
     });
     beforeEach(createModule);
     beforeEach(() => {

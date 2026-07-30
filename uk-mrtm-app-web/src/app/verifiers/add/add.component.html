@@ -2,12 +2,10 @@
   (formSubmit)="handleSubmit()"
   [formGroup]="formGroup"
   [caption]="formHint$ | async"
-  heading="Add a new user">
-  <div class="govuk-!-width-three-quarters">
-    <mrtm-user-account-form
-      emailHint="All system alerts, notices and official communications will always be sent by email.
-    Contact your regulator if you require a specific notice to be sent by post"
-      formMode="EDIT"
-      phoneType="national" />
-  </div>
+  heading="Add a new user"
+  [isTwoThirds]="true">
+  <mrtm-user-account-form
+    emailHint="All system alerts, notices and official communications will always be sent by email.<br />Contact your regulator if you require a specific notice to be sent by post"
+    formMode="EDIT"
+    phoneType="national" />
 </mrtm-wizard-step>

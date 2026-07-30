@@ -28,9 +28,9 @@ describe('FeeDetailsComponent', () => {
 
   const route = new ActivatedRouteStub();
   const taskService: MockType<TaskService<any>> = {
-    saveSubtask: jest.fn().mockReturnValue(of({})),
+    saveSubtask: vi.fn().mockReturnValue(of({})),
   };
-  const taskServiceSpy = jest.spyOn(taskService, 'saveSubtask');
+  const taskServiceSpy = vi.spyOn(taskService, 'saveSubtask');
 
   class Page extends BasePage<FeeDetailsComponent> {
     set totalBillableHours(value: number) {
@@ -55,7 +55,7 @@ describe('FeeDetailsComponent', () => {
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(async () => {

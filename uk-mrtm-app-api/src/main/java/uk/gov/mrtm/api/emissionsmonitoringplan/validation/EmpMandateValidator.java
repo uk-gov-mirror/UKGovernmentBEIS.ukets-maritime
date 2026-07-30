@@ -45,11 +45,11 @@ public class EmpMandateValidator implements EmpContextValidator {
 
         if (Boolean.TRUE.equals(mandate.getExist()) && !mandate.getRegisteredOwners().isEmpty()) {
 
-            final boolean imoNumberExists = validateImoNumberUniqueness(mandate, imoNumber);
-            if (imoNumberExists) {
+            if (validateImoNumberUniqueness(mandate, imoNumber)) {
                 empViolations.add(new EmissionsMonitoringPlanViolation(
                     "delegatedResponsibility",
-                    EmissionsMonitoringPlanViolation.ViolationMessage.INVALID_REGISTERED_OWNER_IMO_NUMBER_MATCH_ACCOUNT_IMO_NUMBER));
+                    EmissionsMonitoringPlanViolation.ViolationMessage.INVALID_REGISTERED_OWNER_IMO_NUMBER_MATCH_ACCOUNT_IMO_NUMBER,
+                    imoNumber));
             }
 
             final Set<String> invalidShipImoNumbers = validateShipImoNumbers(mandate, emissions);
@@ -97,12 +97,10 @@ public class EmpMandateValidator implements EmpContextValidator {
             .build();
     }
 
-    private boolean validateImoNumberUniqueness(EmpMandate mandate,
-                                                String imoNumber) {
-        final Set<String> imoNumbers = mandate.getRegisteredOwners().stream()
-                .map(EmpRegisteredOwner::getImoNumber)
-                .collect(Collectors.toSet());
-        return imoNumbers.contains(imoNumber);
+    private boolean validateImoNumberUniqueness(EmpMandate mandate, String imoNumber) {
+        return imoNumber != null && mandate.getRegisteredOwners().stream()
+            .map(EmpRegisteredOwner::getImoNumber)
+            .anyMatch(imoNumber::equals);
     }
 
     private Set<String> validateShipImoNumbers(EmpMandate mandate,

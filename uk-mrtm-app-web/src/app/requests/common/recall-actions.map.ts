@@ -7,7 +7,7 @@ export const recallActionsMap: Record<
     caption: string;
     text?: string;
     buttonText?: string;
-    recallType: 'EMP' | 'EMP_VARIATION' | 'NOTIFICATION' | 'AER';
+    recallType: 'EMP' | 'EMP_VARIATION' | 'NOTIFICATION' | 'AER' | 'SITE_VISIT';
     successMessage: string;
   }
 > = {
@@ -49,5 +49,13 @@ export const recallActionsMap: Record<
     buttonText: 'Yes, recall the report',
     recallType: 'AER',
     successMessage: 'Report recalled from the verifier',
+  },
+  SITE_VISIT_WAIT_FOR_AMENDS: {
+    actionType: 'SITE_VISIT_RECALL_FROM_AMENDS',
+    caption: 'Are you sure you want to recall the application?',
+    text: 'Any changes the operator made will be lost.',
+    buttonText: 'Yes, recall the application',
+    recallType: 'SITE_VISIT',
+    successMessage: 'Application recalled from the operator',
   },
 };

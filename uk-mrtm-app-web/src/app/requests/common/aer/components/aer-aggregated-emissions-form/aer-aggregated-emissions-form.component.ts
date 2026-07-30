@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, input, InputSignal, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, inject, input, InputSignal, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ControlContainer, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
@@ -23,6 +23,7 @@ import { bigNumberUtils, isNil } from '@shared/utils';
 })
 export class AerAggregatedEmissionsFormComponent implements OnInit {
   private readonly destroyRef: DestroyRef = inject(DestroyRef);
+  private readonly cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   readonly controlContainer = inject(ControlContainer);
   readonly header: InputSignal<string> = input<string>();
   readonly hint: InputSignal<string> = input<string>();
@@ -44,6 +45,7 @@ export class AerAggregatedEmissionsFormComponent implements OnInit {
         }
 
         this.controlContainer.control.get('total').setValue(newTotal, { emitEvent: newTotal !== total });
+        this.cdr.markForCheck();
       });
   }
 }

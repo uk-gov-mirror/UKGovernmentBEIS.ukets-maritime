@@ -5,6 +5,8 @@ import { RequestDetailsDTO, RequestTaskDTO, RequestTaskItemDTO } from '@mrtm/api
 
 import { LinkDirective } from '@netz/govuk-components';
 
+import { RelatedAsyncDocumentsComponent } from '../related-async-documents/related-async-documents.component';
+import { PreviewAsyncDocument } from '../related-async-documents/related-async-documents.providers';
 import { RelatedDocumentsComponent } from '../related-documents/related-documents.component';
 import { PreviewDocument } from '../related-documents/related-documents.providers';
 import { RelatedActionsMap, TASK_RELATED_ACTIONS_MAP } from './related-actions.providers';
@@ -16,7 +18,7 @@ interface RelatedAction {
 
 @Component({
   selector: 'netz-related-actions',
-  imports: [RouterLink, LinkDirective, RelatedDocumentsComponent],
+  imports: [RouterLink, LinkDirective, RelatedDocumentsComponent, RelatedAsyncDocumentsComponent],
   standalone: true,
   template: `
     <aside class="app-related-items" role="complementary">
@@ -33,6 +35,7 @@ interface RelatedAction {
         </ul>
       </nav>
       <netz-related-documents [previewDocuments]="previewDocuments()" [taskId]="taskId()" />
+      <netz-related-async-documents [previewDocuments]="previewAsyncDocuments()" [taskId]="taskId()" />
     </aside>
   `,
   styleUrl: './related-actions.component.scss',
@@ -46,6 +49,7 @@ export class RelatedActionsComponent {
   readonly taskId = input.required<RequestTaskDTO['id'] | RequestDetailsDTO['id']>();
   readonly requestTaskType = input<RequestTaskDTO['type'] | RequestDetailsDTO['requestType']>();
   readonly previewDocuments = input.required<PreviewDocument[]>();
+  readonly previewAsyncDocuments = input.required<PreviewAsyncDocument[]>();
   readonly showReassignAction = input<boolean>(false);
   readonly reassignAction = input<RelatedAction>({ text: 'Reassign task', link: ['change-assignee'] });
   readonly relatedActions: Signal<RelatedAction[]> = computed(() => this.filterRelatedActions());

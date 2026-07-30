@@ -16,7 +16,6 @@ import uk.gov.mrtm.api.emissionsmonitoringplan.domain.dto.EmissionsMonitoringPla
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.dto.EmpDetailsDTO;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.managementprocedures.EmpManagementProcedures;
 import uk.gov.mrtm.api.emissionsmonitoringplan.repository.EmissionsMonitoringPlanRepository;
-import uk.gov.mrtm.api.emissionsmonitoringplan.validation.EmpValidatorService;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskType;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestType;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpIssuanceDeterminationType;
@@ -25,7 +24,7 @@ import uk.gov.netz.api.authorization.rules.domain.ResourceType;
 import uk.gov.netz.api.common.exception.BusinessException;
 import uk.gov.netz.api.common.exception.ErrorCode;
 import uk.gov.netz.api.files.common.domain.dto.FileInfoDTO;
-import uk.gov.netz.api.files.documents.service.FileDocumentService;
+import uk.gov.netz.api.files.documents.service.storage.FileDocumentStorageService;
 import uk.gov.netz.api.workflow.request.core.domain.Request;
 import uk.gov.netz.api.workflow.request.core.domain.RequestTask;
 import uk.gov.netz.api.workflow.request.core.domain.RequestTaskType;
@@ -63,13 +62,7 @@ class EmissionsMonitoringPlanQueryServiceTest {
     private EmissionsMonitoringPlanRepository emissionsMonitoringPlanRepository;
 
     @Mock
-    private FileDocumentService fileDocumentService;
-
-    @Mock
-    private EmissionsMonitoringPlanIdentifierGenerator empIdentifierGenerator;
-
-    @Mock
-    private EmpValidatorService empValidatorService;
+    private FileDocumentStorageService fileDocumentStorageService;
 
     @Mock
     private RequestRepository requestRepository;
@@ -98,13 +91,13 @@ class EmissionsMonitoringPlanQueryServiceTest {
                 .empContainer(empContainer)
                 .build();
         when(emissionsMonitoringPlanRepository.findByAccountId(ACCOUNT_ID)).thenReturn(Optional.of(empEntity));
-        when(fileDocumentService.getFileInfoDTO(fileDocumentId)).thenReturn(FileInfoDTO.builder().build());
+        when(fileDocumentStorageService.getFileInfoDTO(fileDocumentId)).thenReturn(FileInfoDTO.builder().build());
         final Optional<EmpDetailsDTO> actual = emissionsMonitoringPlanQueryService.getEmissionsMonitoringPlanDetailsDTOByAccountId(ACCOUNT_ID);
         assertTrue(actual.isPresent());
         assertEquals(empEntity.getId(), actual.get().getId());
         assertEquals(empAttachments, actual.get().getEmpAttachments());
         verify(emissionsMonitoringPlanRepository).findByAccountId(ACCOUNT_ID);
-        verify(fileDocumentService).getFileInfoDTO(fileDocumentId);
+        verify(fileDocumentStorageService).getFileInfoDTO(fileDocumentId);
     }
 
     @Test
@@ -186,7 +179,7 @@ class EmissionsMonitoringPlanQueryServiceTest {
         assertThat(actual).isEqualTo(container);
         verify(emissionsMonitoringPlanRepository).findById(EMP_ID);
         verifyNoMoreInteractions(emissionsMonitoringPlanRepository);
-        verifyNoInteractions(fileDocumentService, requestRepository, empIdentifierGenerator, empValidatorService);
+        verifyNoInteractions(fileDocumentStorageService, requestRepository);
     }
 
     @Test
@@ -198,7 +191,7 @@ class EmissionsMonitoringPlanQueryServiceTest {
 
         assertThat(businessException.getErrorCode()).isEqualTo(ErrorCode.RESOURCE_NOT_FOUND);
         verifyNoMoreInteractions(emissionsMonitoringPlanRepository);
-        verifyNoInteractions(fileDocumentService, requestRepository, empIdentifierGenerator, empValidatorService);
+        verifyNoInteractions(fileDocumentStorageService, requestRepository);
     }
 
     @Test
@@ -211,9 +204,8 @@ class EmissionsMonitoringPlanQueryServiceTest {
         assertThat(actual).isEqualTo(true);
         verify(emissionsMonitoringPlanRepository).existsByIdAndFileDocumentUuid(EMP_ID, fileDocumentUuid);
         verifyNoMoreInteractions(emissionsMonitoringPlanRepository);
-        verifyNoInteractions(fileDocumentService, requestRepository, empIdentifierGenerator, empValidatorService);
+        verifyNoInteractions(fileDocumentStorageService, requestRepository);
     }
-
 
     @Test
     void getEmpAccountById() {
@@ -223,7 +215,7 @@ class EmissionsMonitoringPlanQueryServiceTest {
         assertThat(actual).isEqualTo(ACCOUNT_ID);
         verify(emissionsMonitoringPlanRepository).findEmpAccountById(EMP_ID);
         verifyNoMoreInteractions(emissionsMonitoringPlanRepository);
-        verifyNoInteractions(fileDocumentService, requestRepository, empIdentifierGenerator, empValidatorService);
+        verifyNoInteractions(fileDocumentStorageService, requestRepository);
     }
 
     @Test
@@ -235,9 +227,9 @@ class EmissionsMonitoringPlanQueryServiceTest {
 
         assertThat(businessException.getErrorCode()).isEqualTo(ErrorCode.RESOURCE_NOT_FOUND);
         verifyNoMoreInteractions(emissionsMonitoringPlanRepository);
-        verifyNoInteractions(fileDocumentService, requestRepository, empIdentifierGenerator, empValidatorService);
+        verifyNoInteractions(fileDocumentStorageService, requestRepository);
     }
-
+    
     private EmpManagementProcedures createManagementProcedures() {
         return EmpManagementProcedures.builder()
                 .dataFlowActivities(EmpProcedureFormWithFiles.builder()
@@ -260,23 +252,6 @@ class EmissionsMonitoringPlanQueryServiceTest {
                 .recordsLocation("Some Records location")
                 .itSystemUsed("Some IT System used")
                 .build();
-    }
-
-    @Test
-    void submitEmissionsMonitoringPlan() {
-        Long accountId = 1L;
-        EmissionsMonitoringPlanEntity empEntity = EmissionsMonitoringPlanEntity.builder().id(EMP_ID)
-                        .accountId(accountId)
-                        .build();
-        EmissionsMonitoringPlanContainer empContainer = EmissionsMonitoringPlanContainer.builder().build();
-
-        when(empIdentifierGenerator.generate(accountId)).thenReturn(EMP_ID);
-
-        emissionsMonitoringPlanQueryService.submitEmissionsMonitoringPlan(accountId, empContainer);
-
-        verify(empValidatorService).validateEmissionsMonitoringPlan(empContainer, accountId);
-        verify(empIdentifierGenerator).generate(accountId);
-        verify(emissionsMonitoringPlanRepository).save(empEntity);
     }
 
     @Test
@@ -307,7 +282,7 @@ class EmissionsMonitoringPlanQueryServiceTest {
 
         verify(emissionsMonitoringPlanRepository).findByAccountId(ACCOUNT_ID);
         verifyNoMoreInteractions(emissionsMonitoringPlanRepository);
-        verifyNoInteractions(fileDocumentService, requestRepository, empIdentifierGenerator, empValidatorService);
+        verifyNoInteractions(fileDocumentStorageService, requestRepository);
     }
 
     @Test
@@ -328,7 +303,7 @@ class EmissionsMonitoringPlanQueryServiceTest {
         verify(emissionsMonitoringPlanRepository).findByAccountId(ACCOUNT_ID);
         verify(requestRepository).findByRequestTypeAndResourceTypeAndResourceId(MrtmRequestType.EMP_ISSUANCE, ResourceType.ACCOUNT, String.valueOf(ACCOUNT_ID));
         verifyNoMoreInteractions(requestRepository, emissionsMonitoringPlanRepository);
-        verifyNoInteractions(fileDocumentService, empIdentifierGenerator, empValidatorService);
+        verifyNoInteractions(fileDocumentStorageService);
     }
 
     @Test
@@ -349,6 +324,6 @@ class EmissionsMonitoringPlanQueryServiceTest {
         verify(emissionsMonitoringPlanRepository).findByAccountId(ACCOUNT_ID);
         verify(requestRepository).findByRequestTypeAndResourceTypeAndResourceId(MrtmRequestType.EMP_ISSUANCE, ResourceType.ACCOUNT, String.valueOf(ACCOUNT_ID));
         verifyNoMoreInteractions(requestRepository, emissionsMonitoringPlanRepository);
-        verifyNoInteractions(fileDocumentService, empIdentifierGenerator, empValidatorService);
+        verifyNoInteractions(fileDocumentStorageService);
     }
 }

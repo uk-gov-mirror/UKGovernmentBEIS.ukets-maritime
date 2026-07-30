@@ -46,7 +46,7 @@ describe('ListOfVerificationBodyUsersUseCaseService', () => {
   });
 
   it('should fetch data', () => {
-    const generateReportSpy = jest.spyOn(mockedReportService, 'generateReport').mockImplementation(() => of(null));
+    const generateReportSpy = vi.spyOn(mockedReportService, 'generateReport').mockImplementation(() => of(null));
 
     service.getReportData().subscribe(() => {
       expect(generateReportSpy).toHaveBeenCalled();

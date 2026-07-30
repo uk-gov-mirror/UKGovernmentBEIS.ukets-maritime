@@ -16,7 +16,7 @@ import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm, UntypedFor
 import { BehaviorSubject, Subject } from 'rxjs';
 
 import { DestroySubject } from '@netz/common/services';
-import { ErrorMessageComponent, FormService } from '@netz/govuk-components';
+import { ErrorMessageComponent, FormService, SafeHtmlPipe } from '@netz/govuk-components';
 
 import { MultiSelectItemComponent } from '@shared/components';
 import { DOCUMENT_EVENT } from '@shared/services';
@@ -28,7 +28,7 @@ import { filter, skip, takeUntil, withLatestFrom } from 'rxjs/operators';
 */
 @Component({
   selector: 'div[mrtm-multi-select]',
-  imports: [AsyncPipe, ErrorMessageComponent],
+  imports: [AsyncPipe, ErrorMessageComponent, SafeHtmlPipe],
   standalone: true,
   templateUrl: './multi-select.component.html',
   styleUrl: './multi-select.component.scss',

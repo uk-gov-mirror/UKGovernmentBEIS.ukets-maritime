@@ -14,7 +14,7 @@ describe('RegulatorsGuard', () => {
 
   const response = { caUsers: [{ userId: 'test1' }, { userId: 'test2' }], editable: false };
   const regulatorAuthoritiesService: MockType<RegulatorAuthoritiesService> = {
-    getCaRegulators: jest.fn().mockReturnValue(of(response)),
+    getCaRegulators: vi.fn().mockReturnValue(of(response)),
   };
 
   beforeEach(() => {
@@ -33,7 +33,7 @@ describe('RegulatorsGuard', () => {
   });
 
   it('should resolve and return regulators in dependence offshore CA', async () => {
-    const regulatorAuthoritiesServiceSpy = jest.spyOn(regulatorAuthoritiesService, 'getCaRegulators');
+    const regulatorAuthoritiesServiceSpy = vi.spyOn(regulatorAuthoritiesService, 'getCaRegulators');
     await lastValueFrom(guard.resolve());
     expect(regulatorAuthoritiesServiceSpy).toHaveBeenCalled();
   });

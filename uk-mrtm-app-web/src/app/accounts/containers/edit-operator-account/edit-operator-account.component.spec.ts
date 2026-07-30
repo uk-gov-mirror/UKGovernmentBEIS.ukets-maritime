@@ -8,6 +8,8 @@ import { ActivatedRouteStub, mockClass } from '@netz/common/testing';
 
 import { EditOperatorAccountComponent } from '@accounts/containers/edit-operator-account/edit-operator-account.component';
 import { OperatorAccountsStore } from '@accounts/store';
+import { CountryService } from '@core/services/country.service';
+import { CountryServiceStub } from '@registration/testing/country-service-stub';
 
 describe('EditOperatorAccountComponent', () => {
   let component: EditOperatorAccountComponent;
@@ -22,6 +24,7 @@ describe('EditOperatorAccountComponent', () => {
         { provide: MaritimeAccountsService, useValue: mockClass(MaritimeAccountsService) },
         { provide: MaritimeAccountUpdateService, useValue: mockClass(MaritimeAccountUpdateService) },
         { provide: ActivatedRoute, useValue: activatedRoute },
+        { provide: CountryService, useClass: CountryServiceStub },
       ],
     }).compileComponents();
 

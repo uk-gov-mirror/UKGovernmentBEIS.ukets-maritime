@@ -8,16 +8,17 @@ import { ActivatedRouteSnapshotStub, expectBusinessErrorToBe } from '@netz/commo
 
 import { appointedVerificationBodyError } from '@accounts/errors';
 import { AppointVerifierGuard } from '@accounts/guards';
+import { Mocked } from 'vitest';
 
 describe('AppointVerifierGuard', () => {
   let guard: AppointVerifierGuard;
-  let accountVerificationBodyService: Partial<jest.Mocked<AccountVerificationBodyService>>;
+  let accountVerificationBodyService: Partial<Mocked<AccountVerificationBodyService>>;
 
   const route = new ActivatedRouteSnapshotStub({ accountId: '1' });
 
   beforeEach(() => {
     accountVerificationBodyService = {
-      getVerificationBodyOfAccount: jest.fn(),
+      getVerificationBodyOfAccount: vi.fn() as any,
     };
 
     TestBed.configureTestingModule({
@@ -38,7 +39,7 @@ describe('AppointVerifierGuard', () => {
   });
 
   it('should navigate to error page if a verification body is appointed', async () => {
-    accountVerificationBodyService.getVerificationBodyOfAccount.mockReturnValue(of({ id: 1, name: 'Verifier' }));
+    accountVerificationBodyService.getVerificationBodyOfAccount.mockReturnValue(of({ id: 1, name: 'Verifier' }) as any);
 
     await expect(lastValueFrom(guard.canActivate(route))).rejects.toBeTruthy();
 

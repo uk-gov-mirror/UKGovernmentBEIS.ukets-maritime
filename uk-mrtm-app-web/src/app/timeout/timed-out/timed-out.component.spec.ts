@@ -34,7 +34,7 @@ describe('TimedOutComponent', () => {
   });
 
   it('should sign in again on button click', () => {
-    const loginSpy = jest.spyOn(authService, 'login');
+    const loginSpy = vi.spyOn(authService, 'login');
     const button = fixture.nativeElement.querySelector('button');
 
     button.click();

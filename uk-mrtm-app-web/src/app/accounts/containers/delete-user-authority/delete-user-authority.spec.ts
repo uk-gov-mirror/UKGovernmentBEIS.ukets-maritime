@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 
 import { of, throwError } from 'rxjs';
 
@@ -8,7 +8,14 @@ import { OperatorAuthoritiesService } from '@mrtm/api';
 
 import { AuthStore } from '@netz/common/auth';
 import { ErrorCodes } from '@netz/common/error';
-import { ActivatedRouteStub, BasePage, expectBusinessErrorToBe, mockClass, MockType } from '@netz/common/testing';
+import {
+  ActivatedRouteStub,
+  BasePage,
+  BusinessErrorStubComponent,
+  expectBusinessErrorToBe,
+  mockClass,
+  MockType,
+} from '@netz/common/testing';
 
 import { DeleteUserAuthorityComponent } from '@accounts/containers/delete-user-authority/delete-user-authority';
 import { saveNotFoundOperatorError } from '@accounts/errors';
@@ -36,7 +43,7 @@ describe('DeleteComponent', () => {
   }
 
   const authService: MockType<AuthService> = {
-    loadUserState: jest.fn(),
+    loadUserState: vi.fn(),
   };
   const operatorAuthoritiesService = mockClass(OperatorAuthoritiesService);
   const route = new ActivatedRouteStub({ accountId: '123', userId: 'test1' }, undefined, {
@@ -47,6 +54,7 @@ describe('DeleteComponent', () => {
     await TestBed.configureTestingModule({
       imports: [],
       providers: [
+        provideRouter([{ path: 'error/business', component: BusinessErrorStubComponent }]),
         { provide: AuthService, useValue: authService },
         { provide: OperatorAuthoritiesService, useValue: operatorAuthoritiesService },
         { provide: ActivatedRoute, useValue: route },
@@ -64,7 +72,7 @@ describe('DeleteComponent', () => {
     fixture.detectChanges();
   });
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   it('should create the component', () => {
     expect(component).toBeTruthy();

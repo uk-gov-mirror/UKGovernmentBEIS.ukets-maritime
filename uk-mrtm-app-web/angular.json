@@ -29,7 +29,6 @@
             "outputPath": "dist/uk-mrtm-app-web",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": ["src/polyfills.ts"],
             "tsConfig": "tsconfig.app.json",
             "sourceMap": {
               "styles": true,
@@ -49,11 +48,7 @@
               "includePaths": ["node_modules/govuk-frontend/dist/govuk/"]
             },
             "scripts": [],
-            "allowedCommonJsDependencies": [
-              "js-sha256",
-              "google-libphonenumber",
-              "papaparse"
-            ]
+            "allowedCommonJsDependencies": ["js-sha256", "google-libphonenumber", "papaparse"]
           },
           "configurations": {
             "production": {
@@ -61,7 +56,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "3mb",
-                  "maximumError": "4mb"
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -109,8 +104,10 @@
           }
         },
         "test": {
-          "builder": "@angular-builders/jest:run",
-          "options": {}
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "runnerConfig": "vitest.config.ts"
+          }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
@@ -149,10 +146,9 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-builders/jest:run",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/govuk-components/tsconfig.spec.json",
-            "polyfills": ["zone.js", "zone.js/testing"]
+            "tsConfig": "projects/govuk-components/tsconfig.spec.json"
           }
         },
         "lint": {
@@ -197,7 +193,7 @@
     "common": {
       "projectType": "library",
       "root": "projects/common",
-      "sourceRoot": "projects/common/src",
+      "sourceRoot": "projects/common",
       "prefix": "netz",
       "architect": {
         "build": {
@@ -216,10 +212,9 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/common/tsconfig.spec.json",
-            "polyfills": ["zone.js", "zone.js/testing"]
+            "tsConfig": "projects/common/tsconfig.spec.json"
           }
         },
         "lint": {

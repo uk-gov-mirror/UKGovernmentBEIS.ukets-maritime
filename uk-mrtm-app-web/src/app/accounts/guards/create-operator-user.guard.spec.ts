@@ -29,7 +29,7 @@ describe('createOperatorUserGuard', () => {
   });
 
   it('should reset store and form', () => {
-    const resetStoreSpy = jest.spyOn(store, 'resetCreateUserAuthority');
+    const resetStoreSpy = vi.spyOn(store, 'resetCreateUserAuthority');
     executeGuard(undefined, undefined, undefined, undefined);
     expect(resetStoreSpy).toHaveBeenCalled();
   });

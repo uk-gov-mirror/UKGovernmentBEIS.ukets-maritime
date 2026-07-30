@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
+import { FeedbackBannerComponent, FeedbackBannerStore } from '@netz/common/components';
 import { TaskService } from '@netz/common/forms';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
 import { ButtonDirective, LinkDirective, WarningTextComponent } from '@netz/govuk-components';
@@ -21,8 +22,7 @@ import {
   VARIATION_REVIEW_DECISION_FORM,
 } from '@requests/tasks/emp-variation-review/components/review-decision';
 import { EmpVariationReviewService } from '@requests/tasks/emp-variation-review/services';
-import { NotificationBannerComponent, WizardStepComponent } from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
+import { WizardStepComponent } from '@shared/components';
 import { ListOfShipsSummaryTemplateComponent } from '@shared/components/summaries';
 
 @Component({
@@ -34,7 +34,7 @@ import { ListOfShipsSummaryTemplateComponent } from '@shared/components/summarie
     ReactiveFormsModule,
     WizardStepComponent,
     ReviewDecisionComponent,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
     ButtonDirective,
     WarningTextComponent,
   ],
@@ -45,7 +45,7 @@ import { ListOfShipsSummaryTemplateComponent } from '@shared/components/summarie
 })
 export class ListOfShipsVariationReviewDecisionComponent {
   protected readonly form: ReviewDecisionFormModel = inject(VARIATION_REVIEW_DECISION_FORM);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
   private readonly service: TaskService<EmpVariationReviewTaskPayload> = inject(
     TaskService<EmpVariationReviewTaskPayload>,
@@ -67,10 +67,10 @@ export class ListOfShipsVariationReviewDecisionComponent {
   onContinueAttempt() {
     if (this.notCompletedMessage()) {
       this.formGroup.setErrors({ NOT_COMPLETED: this.notCompletedMessage() });
-      this.notificationBannerStore.setInvalidForm(this.formGroup);
+      this.feedbackBannerStore.setInvalidForm(this.formGroup);
     } else {
       this.formGroup.reset();
-      this.notificationBannerStore.reset();
+      this.feedbackBannerStore.reset();
     }
   }
 

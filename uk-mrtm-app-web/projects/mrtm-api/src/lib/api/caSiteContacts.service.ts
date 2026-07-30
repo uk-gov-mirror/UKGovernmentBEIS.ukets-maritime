@@ -25,6 +25,7 @@ import { Configuration } from '../configuration';
 import { CustomHttpParameterCodec } from '../encoder';
 import { AccountContactDTO } from '../model/accountContactDTO';
 import { AccountContactInfoResponse } from '../model/accountContactInfoResponse';
+import { SiteContactSearchCriteriaDTO } from '../model/siteContactSearchCriteriaDTO';
 import { BASE_PATH } from '../variables';
 
 @Injectable({
@@ -98,12 +99,14 @@ export class CaSiteContactsService {
    * Retrieves the accounts and competent authority site contact of the accounts
    * @param page The page number starting from zero
    * @param size The page size
+   * @param searchCriteria The site contacts search criteria
    * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
    * @param reportProgress flag to report request and response progress.
    */
   public getCaSiteContacts(
     page: number,
     size: number,
+    searchCriteria: SiteContactSearchCriteriaDTO,
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
@@ -111,6 +114,7 @@ export class CaSiteContactsService {
   public getCaSiteContacts(
     page: number,
     size: number,
+    searchCriteria: SiteContactSearchCriteriaDTO,
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
@@ -118,6 +122,7 @@ export class CaSiteContactsService {
   public getCaSiteContacts(
     page: number,
     size: number,
+    searchCriteria: SiteContactSearchCriteriaDTO,
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
@@ -125,6 +130,7 @@ export class CaSiteContactsService {
   public getCaSiteContacts(
     page: number,
     size: number,
+    searchCriteria: SiteContactSearchCriteriaDTO,
     observe: any = 'body',
     reportProgress: boolean = false,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
@@ -135,6 +141,9 @@ export class CaSiteContactsService {
     if (size === null || size === undefined) {
       throw new Error('Required parameter size was null or undefined when calling getCaSiteContacts.');
     }
+    if (searchCriteria === null || searchCriteria === undefined) {
+      throw new Error('Required parameter searchCriteria was null or undefined when calling getCaSiteContacts.');
+    }
 
     let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
     if (page !== undefined && page !== null) {
@@ -142,6 +151,9 @@ export class CaSiteContactsService {
     }
     if (size !== undefined && size !== null) {
       localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>size, 'size');
+    }
+    if (searchCriteria !== undefined && searchCriteria !== null) {
+      localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>searchCriteria, 'searchCriteria');
     }
 
     let localVarHeaders = this.defaultHeaders;

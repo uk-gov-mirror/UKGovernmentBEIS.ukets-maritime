@@ -50,7 +50,7 @@ describe('ReturnToTaskOrActionPageComponent', () => {
   });
 
   it('should have correct link and text', () => {
-    expect(page.link.href).toEqual('http://localhost/tasks/1');
+    expect(page.link.href).toEqual('http://localhost:3000/tasks/1');
     expect(page.link.innerHTML.trim()).toEqual('Return to: TEST RETURN');
   });
 });

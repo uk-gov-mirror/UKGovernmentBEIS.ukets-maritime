@@ -72,7 +72,7 @@ class ExternalAerServiceTest {
             .build();
 
         when(mapper.toStagingAer(external)).thenReturn(staging);
-        when(mrtmAccountRepository.findByImoNumber(companyImoNumber)).thenReturn(Optional.ofNullable(account));
+        when(mrtmAccountRepository.findByImoNumberForUpdate(companyImoNumber)).thenReturn(Optional.ofNullable(account));
         when(thirdPartyDataProviderRepository.findById(thirdPartyDataProviderId)).thenReturn(Optional.ofNullable(thirdPartyDataProvider));
         when(stagingAerRepository.findByAccountIdAndYear(accountId, year)).thenReturn(Optional.empty());
         when(dateService.getLocalDateTime()).thenReturn(now);
@@ -81,7 +81,7 @@ class ExternalAerServiceTest {
         verify(mapper).toStagingAer(external);
         verify(validator).validateAerRequestTaskExists(year, accountId);
         verify(validator).validate(staging, year);
-        verify(mrtmAccountRepository).findByImoNumber(companyImoNumber);
+        verify(mrtmAccountRepository).findByImoNumberForUpdate(companyImoNumber);
         verify(stagingAerRepository).findByAccountIdAndYear(accountId, year);
         verify(dateService).getLocalDateTime();
         verify(thirdPartyDataProviderRepository).findById(thirdPartyDataProviderId);
@@ -122,7 +122,7 @@ class ExternalAerServiceTest {
             .build();
 
         when(mapper.toStagingAer(external)).thenReturn(staging);
-        when(mrtmAccountRepository.findByImoNumber(companyImoNumber)).thenReturn(Optional.ofNullable(account));
+        when(mrtmAccountRepository.findByImoNumberForUpdate(companyImoNumber)).thenReturn(Optional.ofNullable(account));
         when(thirdPartyDataProviderRepository.findById(thirdPartyDataProviderId)).thenReturn(Optional.ofNullable(thirdPartyDataProvider));
         when(stagingAerRepository.findByAccountIdAndYear(accountId, year)).thenReturn(Optional.of(stagingAerEntity));
         when(dateService.getLocalDateTime()).thenReturn(now);
@@ -131,7 +131,7 @@ class ExternalAerServiceTest {
         verify(mapper).toStagingAer(external);
         verify(validator).validateAerRequestTaskExists(year, accountId);
         verify(validator).validate(staging, year);
-        verify(mrtmAccountRepository).findByImoNumber(companyImoNumber);
+        verify(mrtmAccountRepository).findByImoNumberForUpdate(companyImoNumber);
         verify(stagingAerRepository).findByAccountIdAndYear(accountId, year);
         verify(thirdPartyDataProviderRepository).findById(thirdPartyDataProviderId);
         verify(dateService).getLocalDateTime();

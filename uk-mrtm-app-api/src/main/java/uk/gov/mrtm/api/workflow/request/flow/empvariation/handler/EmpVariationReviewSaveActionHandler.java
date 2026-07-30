@@ -23,7 +23,7 @@ public class EmpVariationReviewSaveActionHandler implements RequestTaskActionHan
     @Override
     public RequestTaskPayload process(Long requestTaskId, String requestTaskActionType, AppUser appUser,
                                       EmpVariationSaveApplicationReviewRequestTaskActionPayload payload) {
-        final RequestTask requestTask = requestTaskService.findTaskById(requestTaskId);
+        final RequestTask requestTask = requestTaskService.findTaskByIdForUpdate(requestTaskId);
         empVariationReviewService.saveEmpVariation(payload, requestTask);
 
         return requestTask.getPayload();

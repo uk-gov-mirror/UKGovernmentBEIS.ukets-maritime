@@ -2,31 +2,24 @@ import { inject } from '@angular/core';
 import { Route } from '@angular/router';
 
 import { PendingRequestGuard } from '@core/guards';
-import { DeleteComponent, SuccessComponent } from '@verification-bodies/verification-body-details/delete';
-import { EditComponent } from '@verification-bodies/verification-body-details/edit';
-import { VerificationBodyDetailsComponent } from '@verification-bodies/verification-body-details/verification-body-details.component';
 import { VerifierUserStore } from '@verifiers/+state/verifier-user.store';
-import {
-  AddComponent,
-  addGuard,
-  AddSuccessComponent,
-  addSuccessGuard,
-  AddSummaryComponent,
-  addSummaryGuard,
-} from '@verifiers/add';
+import { addGuard, addSuccessGuard, addSummaryGuard } from '@verifiers/add';
 import { detailsGuard } from '@verifiers/details';
 
 export const VERIFICATION_BODY_DETAILS_ROUTES: Route[] = [
   {
     path: '',
-    component: VerificationBodyDetailsComponent,
+    loadComponent: () =>
+      import('@verification-bodies/verification-body-details/verification-body-details.component').then(
+        (c) => c.VerificationBodyDetailsComponent,
+      ),
   },
   {
     path: 'edit',
-    component: EditComponent,
     canDeactivate: [PendingRequestGuard],
     data: { breadcrumb: false, backlink: '../' },
     title: 'Verification body details - Edit verification body details',
+    loadComponent: () => import('@verification-bodies/verification-body-details/edit').then((c) => c.EditComponent),
   },
   {
     path: 'delete',
@@ -35,13 +28,15 @@ export const VERIFICATION_BODY_DETAILS_ROUTES: Route[] = [
       {
         path: '',
         data: { breadcrumb: false, backlink: '../../' },
-        component: DeleteComponent,
         canDeactivate: [PendingRequestGuard],
+        loadComponent: () =>
+          import('@verification-bodies/verification-body-details/delete').then((c) => c.DeleteComponent),
       },
       {
         path: 'success',
         title: 'Verification body details - Delete success',
-        component: SuccessComponent,
+        loadComponent: () =>
+          import('@verification-bodies/verification-body-details/delete').then((c) => c.SuccessComponent),
       },
     ],
   },
@@ -66,7 +61,8 @@ export const VERIFICATION_BODY_DETAILS_ROUTES: Route[] = [
             path: 'edit',
             data: { breadcrumb: false, backlink: '../' },
             canDeactivate: [PendingRequestGuard],
-            component: EditComponent,
+            loadComponent: () =>
+              import('@verification-bodies/verification-body-details/edit').then((c) => c.EditComponent),
           },
           {
             path: 'delete',
@@ -75,12 +71,14 @@ export const VERIFICATION_BODY_DETAILS_ROUTES: Route[] = [
               {
                 path: '',
                 data: { breadcrumb: false, backlink: '../../' },
-                component: DeleteComponent,
+                loadComponent: () =>
+                  import('@verification-bodies/verification-body-details/delete').then((c) => c.DeleteComponent),
               },
               {
                 path: 'success',
                 data: { breadcrumb: 'Dashboard' },
-                component: SuccessComponent,
+                loadComponent: () =>
+                  import('@verification-bodies/verification-body-details/delete').then((c) => c.SuccessComponent),
               },
             ],
           },
@@ -93,19 +91,19 @@ export const VERIFICATION_BODY_DETAILS_ROUTES: Route[] = [
           {
             path: '',
             data: { breadcrumb: false, backlink: '../../../', backlinkFragment: 'contacts' },
-            component: AddComponent,
+            loadComponent: () => import('@verifiers/add').then((c) => c.AddComponent),
           },
           {
             path: 'summary',
             data: { breadcrumb: false, backlink: '../' },
             canActivate: [addSummaryGuard],
             canDeactivate: [PendingRequestGuard],
-            component: AddSummaryComponent,
+            loadComponent: () => import('@verifiers/add').then((c) => c.AddSummaryComponent),
           },
           {
             path: 'success',
             canActivate: [addSuccessGuard],
-            component: AddSuccessComponent,
+            loadComponent: () => import('@verifiers/add').then((c) => c.AddSuccessComponent),
           },
         ],
       },

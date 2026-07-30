@@ -29,7 +29,7 @@ describe('AerVoyageUploadComponent', () => {
 
   const route = new ActivatedRouteStub();
   const taskService: MockType<TaskService<any>> = {
-    saveSubtask: jest.fn().mockReturnValue(of({})),
+    saveSubtask: vi.fn().mockReturnValue(of({})),
   };
 
   class Page extends BasePage<AerVoyageUploadComponent> {
@@ -113,11 +113,11 @@ describe('AerVoyageUploadComponent', () => {
   });
 
   it('should not display any error when CSV is valid and submit a valid form', async () => {
-    const getFixedUUID = jest.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
+    const getFixedUUID = vi.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
     Object.defineProperty(window, 'crypto', {
       value: { getRandomValues: getFixedUUID, randomUUID: getFixedUUID },
     });
-    const taskServiceSpy = jest.spyOn(taskService, 'saveSubtask');
+    const taskServiceSpy = vi.spyOn(taskService, 'saveSubtask');
     expect(page.errorSummary).toBeFalsy();
 
     component['processCSVData'](mockAerVoyagesCsvSuccessPapaResult);

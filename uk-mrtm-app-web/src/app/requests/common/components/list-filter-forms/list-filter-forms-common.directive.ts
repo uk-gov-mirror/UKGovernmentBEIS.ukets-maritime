@@ -15,8 +15,9 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { FeedbackBannerStore } from '@netz/common/components';
+
 import { AutocompleteSelectOption, AutocompleteSelectValidators } from '@shared/components/autocomplete-select';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { ShipEmissionTableListItem } from '@shared/types';
 import { isEqual, isNil } from '@shared/utils';
 
@@ -26,7 +27,7 @@ export const ALL_SHIPS_VALUE: AutocompleteSelectOption = { text: '', data: null 
 export abstract class ListFilterFormsCommon<T> implements AfterViewInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  protected readonly notificationBannerStore = inject(NotificationBannerStore);
+  protected readonly feedbackBannerStore = inject(FeedbackBannerStore);
   protected abstract readonly EMPTY_FORM_STATE;
   protected abstract readonly EMPTY_FILTER_STATE: T;
 
@@ -82,10 +83,10 @@ export abstract class ListFilterFormsCommon<T> implements AfterViewInit {
   protected runPostSubmitSideEffects(): void {}
 
   onSubmit(clearFilters = false): void {
-    this.notificationBannerStore.reset();
+    this.feedbackBannerStore.reset();
 
     if (this.formGroup.invalid) {
-      this.notificationBannerStore.setInvalidFormLive(this.formGroup);
+      this.feedbackBannerStore.setInvalidFormLive(this.formGroup);
     } else {
       this.resetPagination();
 

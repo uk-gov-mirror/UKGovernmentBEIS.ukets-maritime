@@ -55,7 +55,7 @@ public class EmpVariationApplicationSubmitRegulatorLedRequestTaskInitializer imp
             final MrtmAccount accountInfo = accountQueryService.getAccountById(request.getAccountId());
             final EmissionsMonitoringPlan emp = empVariationMapper.cloneEmissionsMonitoringPlan(
                     originalEmpContainer.getEmissionsMonitoringPlan(), accountInfo.getName(),
-                    addressStateMapper.toAddressState(accountInfo.getAddress()));
+                    addressStateMapper.toAddressStateDTO(accountInfo.getAddress()));
 
             requestTaskPayload = EmpVariationApplicationSubmitRegulatorLedRequestTaskPayload.builder()
                     .payloadType(MrtmRequestTaskPayloadType.EMP_VARIATION_APPLICATION_SUBMIT_REGULATOR_LED_PAYLOAD)

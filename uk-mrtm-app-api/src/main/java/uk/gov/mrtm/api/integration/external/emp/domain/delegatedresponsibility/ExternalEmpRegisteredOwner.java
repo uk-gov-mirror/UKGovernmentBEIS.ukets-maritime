@@ -19,7 +19,6 @@ import uk.gov.netz.api.common.validation.uniqueelements.UniqueElements;
 import uk.gov.netz.api.common.validation.uniqueelements.UniqueField;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -61,5 +60,5 @@ public class ExternalEmpRegisteredOwner {
     @JsonDeserialize(as = LinkedHashSet.class)
     @NotEmpty
     @UniqueElements
-    private Set<@NotNull @Valid ExternalEmpRegisteredOwnerShipDetails> ships = new HashSet<>();
+    private Set<@NotNull @Valid ExternalEmpRegisteredOwnerShipDetails> ships = new LinkedHashSet<>();
 }

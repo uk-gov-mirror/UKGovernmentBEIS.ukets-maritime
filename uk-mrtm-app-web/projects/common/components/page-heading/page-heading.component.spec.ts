@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -13,11 +13,11 @@ describe('PageHeadingComponent', () => {
   @Component({
     imports: [PageHeadingComponent],
     standalone: true,
-    template: '<netz-page-heading [caption]="caption" [size]="size">Test heading</netz-page-heading>',
+    template: '<netz-page-heading [caption]="caption()" [size]="size()">Test heading</netz-page-heading>',
   })
   class TestComponent {
-    caption: string;
-    size: 'l' | 'xl' = 'l';
+    readonly caption = signal<string>(undefined);
+    readonly size = signal<'l' | 'xl'>('l');
   }
 
   beforeEach(async () => {
@@ -45,15 +45,15 @@ describe('PageHeadingComponent', () => {
   it('should display caption, if provided', () => {
     expect(element.querySelector('span.govuk-caption-l')).toBeFalsy();
 
-    hostComponent.caption = 'Test caption';
+    hostComponent.caption.set('Test caption');
     fixture.detectChanges();
 
     expect(element.querySelector('span.govuk-caption-l').textContent).toEqual('Test caption');
   });
 
   it('should display xl size', () => {
-    hostComponent.size = 'xl';
-    hostComponent.caption = 'Test caption';
+    hostComponent.size.set('xl');
+    hostComponent.caption.set('Test caption');
     fixture.detectChanges();
 
     expect(element.querySelector('h1.govuk-heading-xl')).toBeTruthy();

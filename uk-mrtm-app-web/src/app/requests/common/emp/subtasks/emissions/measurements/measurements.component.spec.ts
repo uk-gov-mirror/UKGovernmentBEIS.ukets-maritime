@@ -25,9 +25,9 @@ describe('MeasurementsComponent', () => {
   let store: RequestTaskStore;
 
   const taskService: MockType<TaskService<EmpTaskPayload>> = {
-    saveSubtask: jest.fn().mockReturnValue(of({})),
+    saveSubtask: vi.fn().mockReturnValue(of({})),
   };
-  const taskServiceSpy = jest.spyOn(taskService, 'saveSubtask');
+  const taskServiceSpy = vi.spyOn(taskService, 'saveSubtask');
   const route: any = { snapshot: { params: { shipId: emissionsMock.ships[0].uniqueIdentifier }, pathFromRoot: [] } };
 
   class Page extends BasePage<MeasurementsComponent> {
@@ -51,7 +51,7 @@ describe('MeasurementsComponent', () => {
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(async () => {

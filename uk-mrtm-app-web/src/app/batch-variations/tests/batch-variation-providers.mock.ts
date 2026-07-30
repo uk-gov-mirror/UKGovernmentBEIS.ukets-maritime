@@ -24,7 +24,7 @@ regulatorAuthoritiesServiceMock.getCaRegulators.mockReturnValue(
       },
     ],
     editable: true,
-  }),
+  }) as any,
 );
 
 batchVariationsApiServiceMock.loadBatchVariations.mockReturnValue(

@@ -55,7 +55,7 @@ public class RegulatorUserInvitationController {
             @Parameter(hidden = true) AppUser currentUser,
             @RequestPart @Valid @Parameter(description = "The regulator to invite", required = true) RegulatorInvitedUserDTO regulatorInvitedUser,
             @RequestPart(value = "signature", required = false) @Parameter(description = "The signature file") MultipartFile signature) throws IOException {
-        FileDTO signatureDTO = fileDtoMapper.toFileDTO(signature);
+        FileDTO signatureDTO = fileDtoMapper.toFileDTO(signature, currentUser.getUserId());
         regulatorUserInvitationService.inviteRegulatorUser(regulatorInvitedUser, signatureDTO, currentUser);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

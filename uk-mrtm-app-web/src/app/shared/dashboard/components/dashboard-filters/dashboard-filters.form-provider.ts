@@ -2,7 +2,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import { TASK_FORM } from '@requests/common';
 import { AutocompleteSelectOption } from '@shared/components';
-import { DashboardFiltersAndOrderBy, DashboardStore, selectFilters } from '@shared/dashboard';
+import { DashboardFiltersAndOrderBy, DashboardStore, selectFilters } from '@shared/dashboard/+store';
 import { DashboardFiltersFormGroupModel } from '@shared/dashboard/components/dashboard-filters/dashboard-filters.types';
 
 export const dashboardFiltersFormProvider = {

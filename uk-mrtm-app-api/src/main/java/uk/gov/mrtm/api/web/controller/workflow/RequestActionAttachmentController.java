@@ -8,6 +8,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +23,7 @@ import uk.gov.netz.api.token.FileToken;
 import uk.gov.mrtm.api.web.constants.SwaggerApiInfo;
 import uk.gov.mrtm.api.web.controller.exception.ErrorResponse;
 import uk.gov.netz.api.security.Authorized;
-import uk.gov.netz.api.workflow.request.application.attachment.requestaction.RequestActionAttachmentService;
-
-import java.util.UUID;
+import uk.gov.netz.api.workflow.request.application.attachment.requestaction.RequestActionFileAttachmentService;
 
 @RestController
 @RequestMapping(path = "/v1.0/request-action-attachments")
@@ -30,7 +31,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RequestActionAttachmentController {
 
-    private final RequestActionAttachmentService requestActionAttachmentService;
+	private final RequestActionFileAttachmentService requestActionFileAttachmentService;
 
     @GetMapping(path = "/{id}")
     @Operation(summary = "Generate the token to get the file with the provided uuid that belongs to the provided request action")
@@ -49,7 +50,7 @@ public class RequestActionAttachmentController {
             @PathVariable("id") @Parameter(description = "The request action id") Long requestActionId,
             @RequestParam("attachmentUuid") @Parameter(name = "attachmentUuid", description = "The attachment uuid") @NotNull UUID attachmentUuid) {
         FileToken getFileAttachmentToken =
-                requestActionAttachmentService.generateGetFileAttachmentToken(requestActionId, attachmentUuid);
+        		requestActionFileAttachmentService.generateGetFileAttachmentToken(requestActionId, attachmentUuid);
         return new ResponseEntity<>(getFileAttachmentToken, HttpStatus.OK);
     }
 }

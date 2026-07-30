@@ -111,7 +111,7 @@ describe('AccordionComponent', () => {
   });
 
   it('should render items and navigation buttons dynamically', async () => {
-    await fixture.whenStable();
+    await new Promise((resolve) => setTimeout(resolve, 200));
     fixture.detectChanges();
 
     const expandButtons = getAccordionElement().querySelectorAll<HTMLButtonElement>(
@@ -126,7 +126,7 @@ describe('AccordionComponent', () => {
   });
 
   it('should toggle all sections dynamically', async () => {
-    await fixture.whenStable();
+    await new Promise((resolve) => setTimeout(resolve, 200));
     fixture.detectChanges();
 
     expect(getAccordionItems().length).toEqual(4);
@@ -135,7 +135,7 @@ describe('AccordionComponent', () => {
   });
 
   it('should open all if first already opened', async () => {
-    await fixture.whenStable();
+    await new Promise((resolve) => setTimeout(resolve, 200));
     fixture.detectChanges();
 
     const headingButtons = fixture.nativeElement.querySelectorAll('.govuk-accordion__section-button');

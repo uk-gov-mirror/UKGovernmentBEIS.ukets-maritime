@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -16,7 +16,7 @@ describe('RadioOptionComponent', () => {
     standalone: true,
     template: `
       <form [formGroup]="testFormGroup">
-        <div mrtm-radio-option index="0" value="pinball" formControlName="testControl" [isDisabled]="disable1">
+        <div mrtm-radio-option index="0" value="pinball" formControlName="testControl" [isDisabled]="disable1()">
           <ng-container label>
             <span class="govuk-visually-hidden">hidden</span>
           </ng-container>
@@ -26,16 +26,16 @@ describe('RadioOptionComponent', () => {
           index="15a"
           value="fantasies"
           formControlName="testControl"
-          [isDisabled]="disable2"></div>
-        <div mrtm-radio-option index="2" value="21" formControlName="testControl" [isDisabled]="disable3"></div>
+          [isDisabled]="disable2()"></div>
+        <div mrtm-radio-option index="2" value="21" formControlName="testControl" [isDisabled]="disable3()"></div>
       </form>
     `,
   })
   class TestComponent {
     testFormGroup = new FormGroup({ testControl: new FormControl('pinball') });
-    disable1: boolean;
-    disable2: boolean;
-    disable3: boolean;
+    readonly disable1 = signal<boolean>(undefined);
+    readonly disable2 = signal<boolean>(undefined);
+    readonly disable3 = signal<boolean>(undefined);
   }
 
   const getOptions = () => element.querySelectorAll<HTMLInputElement>(`input`);
@@ -98,23 +98,23 @@ describe('RadioOptionComponent', () => {
     expect(options[1].disabled).toBeFalsy();
     expect(options[2].disabled).toBeFalsy();
 
-    hostComponent.disable1 = true;
+    hostComponent.disable1.set(true);
     fixture.detectChanges();
 
     expect(options[0].disabled).toBeTruthy();
     expect(options[1].disabled).toBeFalsy();
     expect(options[2].disabled).toBeFalsy();
 
-    hostComponent.disable2 = true;
+    hostComponent.disable2.set(true);
     fixture.detectChanges();
 
     expect(options[0].disabled).toBeTruthy();
     expect(options[1].disabled).toBeTruthy();
     expect(options[2].disabled).toBeFalsy();
 
-    hostComponent.disable1 = false;
-    hostComponent.disable2 = false;
-    hostComponent.disable3 = true;
+    hostComponent.disable1.set(false);
+    hostComponent.disable2.set(false);
+    hostComponent.disable3.set(true);
     fixture.detectChanges();
 
     expect(options[0].disabled).toBeFalsy();

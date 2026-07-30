@@ -23,11 +23,12 @@ import uk.gov.mrtm.api.account.transform.MrtmAccountMapper;
 import uk.gov.mrtm.api.account.transform.RegisteredAddressStateMapper;
 import uk.gov.mrtm.api.common.domain.AddressState;
 import uk.gov.mrtm.api.common.domain.RegisteredAddressState;
-import uk.gov.mrtm.api.common.domain.dto.AddressStateDTO;
 import uk.gov.mrtm.api.common.exception.MrtmErrorCode;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlan;
 import uk.gov.mrtm.api.emissionsmonitoringplan.service.EmissionsMonitoringPlanQueryService;
 import uk.gov.mrtm.api.integration.registry.accountupdated.request.MaritimeAccountUpdatedEventListenerResolver;
+import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceAccountDraftData;
+import uk.gov.mrtm.api.workflow.request.flow.empvariation.domain.EmpVariationAccountDraftData;
 import uk.gov.netz.api.account.service.AccountSearchAdditionalKeywordService;
 import uk.gov.netz.api.authorization.core.domain.AppUser;
 import uk.gov.netz.api.common.exception.BusinessException;
@@ -205,15 +206,17 @@ class MrtmAccountUpdateServiceTest {
     void updateAccountUponEmpApproved() {
         String name = "test name";
         MrtmAccount account = mock(MrtmAccount.class);
-        AddressStateDTO contactAddressDTO = mock(AddressStateDTO.class);
-        AddressStateDTO registeredAddressDTO = mock(AddressStateDTO.class);
         AddressState contactAddress = mock(AddressState.class);
         RegisteredAddressState registeredAddress = mock(RegisteredAddressState.class);
-        when(mrtmAccountQueryService.getAccountById(ACCOUNT_ID)).thenReturn(account);
-        when(addressStateMapper.toAddressStateDTO(contactAddressDTO)).thenReturn(contactAddress);
-        when(registeredAddressStateMapper.toRegisteredAddressState(registeredAddressDTO)).thenReturn(registeredAddress);
+        EmpIssuanceAccountDraftData accountDraftData = EmpIssuanceAccountDraftData.builder()
+            .name(name)
+            .registeredAddress(registeredAddress)
+            .address(contactAddress)
+            .build();
 
-        mrtmAccountUpdateService.updateAccountUponEmpApproved(ACCOUNT_ID, name, contactAddressDTO, registeredAddressDTO);
+        when(mrtmAccountQueryService.getAccountById(ACCOUNT_ID)).thenReturn(account);
+
+        mrtmAccountUpdateService.updateAccountUponEmpApproved(ACCOUNT_ID, accountDraftData);
 
         verify(mrtmAccountQueryService).getAccountById(ACCOUNT_ID);
         verify(account).setStatus(MrtmAccountStatus.LIVE);
@@ -221,28 +224,36 @@ class MrtmAccountUpdateServiceTest {
         verify(account).setRegisteredAddress(registeredAddress);
         verify(account).setName(name);
         verifyNoMoreInteractions(account, mrtmAccountQueryService);
-        verifyNoInteractions(mrtmAccountMapper, accountSearchAdditionalKeywordService);
+        verifyNoInteractions(mrtmAccountMapper, accountSearchAdditionalKeywordService, addressStateMapper, registeredAddressStateMapper);
     }
 
     @Test
     void updateAccountUponEmpVariationApproved() {
-        String name = "test name";
-        MrtmAccount account = mock(MrtmAccount.class);
-        AddressStateDTO contactAddressDTO = mock(AddressStateDTO.class);
-        AddressStateDTO registeredAddressDTO = mock(AddressStateDTO.class);
-        AddressState contactAddress = mock(AddressState.class);
-        RegisteredAddressState registeredAddress = mock(RegisteredAddressState.class);
+    	EmpVariationAccountDraftData accountDraftData = EmpVariationAccountDraftData.builder()
+    			.name("name")
+    			.address(AddressState.builder()
+    					.city("city")
+    					.build())
+    			.registeredAddress(RegisteredAddressState.builder()
+    					.city("city2")
+    					.build())
+    			.build();
+
+    	MrtmAccount account = MrtmAccount.builder()
+    			.name("oldname")
+    			.address(AddressState.builder()
+    					.city("oldcity")
+    					.build())
+    			.registeredAddress(RegisteredAddressState.builder()
+    					.city("oldcity2")
+    					.build())
+    			.build();
         when(mrtmAccountQueryService.getAccountById(ACCOUNT_ID)).thenReturn(account);
-        when(addressStateMapper.toAddressStateDTO(contactAddressDTO)).thenReturn(contactAddress);
-        when(registeredAddressStateMapper.toRegisteredAddressState(registeredAddressDTO)).thenReturn(registeredAddress);
 
-        mrtmAccountUpdateService.updateAccountUponEmpVariationApproved(ACCOUNT_ID, name, contactAddressDTO, registeredAddressDTO);
-
+        mrtmAccountUpdateService.updateAccountUponEmpVariationApproved(ACCOUNT_ID, accountDraftData);
+        assertThat(account.getName()).isEqualTo(accountDraftData.getName());
+        assertThat(account.getAddress()).isEqualTo(accountDraftData.getAddress());
+        assertThat(account.getRegisteredAddress()).isEqualTo(accountDraftData.getRegisteredAddress());
         verify(mrtmAccountQueryService).getAccountById(ACCOUNT_ID);
-        verify(account).setAddress(contactAddress);
-        verify(account).setRegisteredAddress(registeredAddress);
-        verify(account).setName(name);
-        verifyNoMoreInteractions(account, mrtmAccountQueryService);
-        verifyNoInteractions(mrtmAccountMapper, accountSearchAdditionalKeywordService);
     }
 }

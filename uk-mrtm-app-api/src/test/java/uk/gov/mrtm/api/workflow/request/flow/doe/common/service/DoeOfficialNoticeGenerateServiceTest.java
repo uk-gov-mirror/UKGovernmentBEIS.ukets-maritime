@@ -5,8 +5,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import uk.gov.mrtm.api.account.domain.dto.MrtmDocumentTemplateAccountData;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateGenerationContextActionType;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateType;
+import uk.gov.mrtm.api.workflow.request.flow.common.service.MrtmDocumentTemplateAccountDataCollectFromAccountService;
 import uk.gov.mrtm.api.workflow.request.flow.doe.common.domain.Doe;
 import uk.gov.mrtm.api.workflow.request.flow.doe.common.domain.DoeDeterminationReason;
 import uk.gov.mrtm.api.workflow.request.flow.doe.common.domain.DoeDeterminationReasonDetails;
@@ -16,11 +19,13 @@ import uk.gov.mrtm.api.workflow.request.flow.doe.common.domain.DoeFeeDetails;
 import uk.gov.mrtm.api.workflow.request.flow.doe.common.domain.DoeMaritimeEmissions;
 import uk.gov.mrtm.api.workflow.request.flow.doe.common.domain.DoeRequestPayload;
 import uk.gov.mrtm.api.workflow.request.flow.doe.common.domain.DoeTotalMaritimeEmissions;
+import uk.gov.netz.api.authorization.rules.domain.ResourceType;
 import uk.gov.netz.api.documenttemplate.domain.templateparams.TemplateParams;
 import uk.gov.netz.api.documenttemplate.service.FileDocumentGenerateServiceDelegator;
 import uk.gov.netz.api.files.common.domain.dto.FileInfoDTO;
 import uk.gov.netz.api.userinfoapi.UserInfoDTO;
 import uk.gov.netz.api.workflow.request.core.domain.Request;
+import uk.gov.netz.api.workflow.request.core.domain.RequestResource;
 import uk.gov.netz.api.workflow.request.core.service.RequestService;
 import uk.gov.netz.api.workflow.request.flow.common.domain.DecisionNotification;
 import uk.gov.netz.api.workflow.request.flow.common.service.DecisionNotificationUsersService;
@@ -63,6 +68,9 @@ class DoeOfficialNoticeGenerateServiceTest {
 
     @Mock
     private DoeSubmittedDocumentTemplateWorkflowParamsProvider doeSubmittedDocumentTemplateWorkflowParamsProvider;
+    
+    @Mock
+    private MrtmDocumentTemplateAccountDataCollectFromAccountService accountTemplateDataFromAccountService;
 
     @Test
     void generateOfficialNotice() {
@@ -102,9 +110,14 @@ class DoeOfficialNoticeGenerateServiceTest {
             .decisionNotification(decisionNotification)
                 .doe(doe)
             .build();
-        Request request = Request.builder().id(requestId).payload(requestPayload).build();
+		Request request = Request.builder().id(requestId)
+				.requestResources(
+						List.of(RequestResource.builder().resourceType(ResourceType.ACCOUNT).resourceId("23").build()))
+				.payload(requestPayload).build();
         UserInfoDTO accountPrimaryContact = UserInfoDTO.builder().firstName("fn").lastName("ln").email("email").build();
         List<String> ccRecipientsEmails = List.of("emailRecipient1", "emailRecipient2");
+        
+        MrtmDocumentTemplateAccountData accountData = MrtmDocumentTemplateAccountData.builder().name("accName").build();
         DocumentTemplateParamsSourceData documentTemplateSourceParams =
             DocumentTemplateParamsSourceData.builder()
                 .contextActionType(MrtmDocumentTemplateGenerationContextActionType.DOE_SUBMIT)
@@ -113,6 +126,7 @@ class DoeOfficialNoticeGenerateServiceTest {
                 .accountPrimaryContact(accountPrimaryContact)
                 .toRecipientEmail(accountPrimaryContact.getEmail())
                 .ccRecipientsEmails(ccRecipientsEmails)
+                .accountData(accountData)
                 .build();
         TemplateParams templateParams = TemplateParams.builder().build();
         String filename = "DoE_and_EFSN_Notice.pdf";
@@ -120,7 +134,7 @@ class DoeOfficialNoticeGenerateServiceTest {
             .name(filename)
             .uuid(UUID.randomUUID().toString())
             .build();
-
+        
         when(requestService.findRequestById(requestId)).thenReturn(request);
         when(requestAccountContactQueryService.getRequestAccountPrimaryContact(request)).thenReturn(Optional.of(accountPrimaryContact));
         when(decisionNotificationUsersService.findUserEmails(decisionNotification)).thenReturn(ccRecipientsEmails);
@@ -128,6 +142,7 @@ class DoeOfficialNoticeGenerateServiceTest {
         when(fileDocumentGenerateServiceDelegator
             .generateAndSaveFileDocument(MrtmDocumentTemplateType.DOE_SUBMITTED, templateParams, "DoE_and_EFSN_Notice.pdf"))
             .thenReturn(officialNoticeFileInfoDTO);
+        when(accountTemplateDataFromAccountService.collect(request.getAccountId())).thenReturn(accountData);
 
         //invoke
         officialNoticeGenerateService.generateOfficialNotice(requestId);
@@ -141,6 +156,7 @@ class DoeOfficialNoticeGenerateServiceTest {
         verify(documentTemplateOfficialNoticeParamsProvider, times(1)).constructTemplateParams(documentTemplateSourceParams);
         verify(fileDocumentGenerateServiceDelegator, times(1)).generateAndSaveFileDocument(
             MrtmDocumentTemplateType.DOE_SUBMITTED, templateParams, filename);
+        verify(accountTemplateDataFromAccountService, times(1)).collect(request.getAccountId());
 
     }
 }

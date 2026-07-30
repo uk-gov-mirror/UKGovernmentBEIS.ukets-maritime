@@ -32,8 +32,6 @@ export class EditUserAuthorityComponent {
   private readonly authStore: AuthStore = inject(AuthStore);
   private readonly router: Router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  readonly emailHint = `All system alerts, notices, and official communications will be sent by email
-  Contact your regulator if you require a specific notice to be sent by post.`;
 
   handleSubmit(): void {
     (this.form.dirty

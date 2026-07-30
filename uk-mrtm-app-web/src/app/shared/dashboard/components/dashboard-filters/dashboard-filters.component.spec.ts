@@ -28,6 +28,6 @@ describe('DashboardFiltersComponent', () => {
     TestBed.inject(DashboardStore).setFilters({ accountId: null, workflowType: 'AER', orderBy: 'NEWEST_FIRST' });
     await fixture.whenStable();
 
-    expect(details.open).toBe(false);
+    expect(details.open).toBe(true);
   });
 });

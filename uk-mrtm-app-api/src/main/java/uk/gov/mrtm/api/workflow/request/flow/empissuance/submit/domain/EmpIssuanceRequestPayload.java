@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlan;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpIssuanceDetermination;
+import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpIssuanceDeterminationType;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpIssuanceReviewDecision;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpReviewGroup;
 import uk.gov.netz.api.files.common.domain.dto.FileInfoDTO;
@@ -64,4 +65,8 @@ public class EmpIssuanceRequestPayload extends RequestPayload implements Request
     private RdeData rdeData;
 
     private RequestPaymentInfo requestPaymentInfo;
+
+    public boolean shouldGenerateEmpDocument() {
+        return determination != null && determination.getType() == EmpIssuanceDeterminationType.APPROVED;
+    }
 }

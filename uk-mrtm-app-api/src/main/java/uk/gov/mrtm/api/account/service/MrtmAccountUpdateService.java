@@ -21,6 +21,8 @@ import uk.gov.mrtm.api.common.exception.MrtmErrorCode;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlan;
 import uk.gov.mrtm.api.emissionsmonitoringplan.service.EmissionsMonitoringPlanQueryService;
 import uk.gov.mrtm.api.integration.registry.accountupdated.request.MaritimeAccountUpdatedEventListenerResolver;
+import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceAccountDraftData;
+import uk.gov.mrtm.api.workflow.request.flow.empvariation.domain.EmpVariationAccountDraftData;
 import uk.gov.netz.api.account.service.AccountSearchAdditionalKeywordService;
 import uk.gov.netz.api.account.service.validator.AccountStatus;
 import uk.gov.netz.api.authorization.core.domain.AppUser;
@@ -97,11 +99,11 @@ public class MrtmAccountUpdateService {
 
     @Transactional
     @AccountStatus(expression = "{#status == 'NEW'}")
-    public void updateAccountUponEmpApproved(Long accountId, String name, AddressStateDTO contactAddress, AddressStateDTO registeredAddress) {
+    public void updateAccountUponEmpApproved(Long accountId, EmpIssuanceAccountDraftData accountDraftData) {
         MrtmAccount account = mrtmAccountQueryService.getAccountById(accountId);
-        account.setName(name);
-        account.setAddress(addressStateMapper.toAddressStateDTO(contactAddress));
-        account.setRegisteredAddress(registeredAddressStateMapper.toRegisteredAddressState(registeredAddress));
+        account.setName(accountDraftData.getName());
+        account.setAddress(accountDraftData.getAddress());
+        account.setRegisteredAddress(accountDraftData.getRegisteredAddress());
         account.setStatus(MrtmAccountStatus.LIVE);
     }
 
@@ -114,11 +116,11 @@ public class MrtmAccountUpdateService {
 
     @Transactional
     @AccountStatus(expression = "{#status == 'LIVE'}")
-    public void updateAccountUponEmpVariationApproved(Long accountId, String name, AddressStateDTO contactAddress, AddressStateDTO registeredAddress) {
+    public void updateAccountUponEmpVariationApproved(Long accountId, EmpVariationAccountDraftData accountDraftData) {
         MrtmAccount account = mrtmAccountQueryService.getAccountById(accountId);
-        account.setName(name);
-        account.setAddress(addressStateMapper.toAddressStateDTO(contactAddress));
-        account.setRegisteredAddress(registeredAddressStateMapper.toRegisteredAddressState(registeredAddress));
+        account.setName(accountDraftData.getName());
+        account.setAddress(accountDraftData.getAddress());
+        account.setRegisteredAddress(accountDraftData.getRegisteredAddress());
     }
 
     private void validateFirstMaritimeActivityDate(int currentFirstMaritimeActivityDate, int newFirstMaritimeActivityDate) {

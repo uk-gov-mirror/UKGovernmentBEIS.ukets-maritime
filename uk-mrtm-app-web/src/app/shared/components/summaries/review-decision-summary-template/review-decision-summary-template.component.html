@@ -67,5 +67,16 @@
         </dd>
       }
     </div>
+    @if (withOverallDecision()) {
+      <div govukSummaryListRow>
+        <dt govukSummaryListRowKey>Overall decision</dt>
+        <dd govukSummaryListRowValue class="pre-wrap" [notProvided]="reviewDecision()?.details?.summary"></dd>
+        @if (isEditable()) {
+          <dd govukSummaryListRowActions>
+            <a govukLink [routerLink]="changeLink()" [queryParams]="queryParams()">Change</a>
+          </dd>
+        }
+      </div>
+    }
   }
 </dl>

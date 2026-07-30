@@ -24,9 +24,9 @@ describe('AdditionalDocumentsSummaryComponent', () => {
 
   const route = new ActivatedRouteStub();
   const taskService: MockType<TaskService<unknown>> = {
-    submitSubtask: jest.fn().mockReturnValue(of({})),
+    submitSubtask: vi.fn().mockReturnValue(of({})),
   };
-  const taskServiceSpy = jest.spyOn(taskService, 'submitSubtask');
+  const taskServiceSpy = vi.spyOn(taskService, 'submitSubtask');
 
   class Page extends BasePage<AdditionalDocumentsSummaryComponent> {
     get submitButton(): HTMLButtonElement {
@@ -39,7 +39,7 @@ describe('AdditionalDocumentsSummaryComponent', () => {
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(async () => {

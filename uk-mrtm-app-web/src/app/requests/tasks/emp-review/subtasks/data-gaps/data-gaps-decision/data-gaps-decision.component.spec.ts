@@ -25,9 +25,9 @@ describe('DataGapsDecisionComponent', () => {
 
   const route = new ActivatedRouteStub();
   const taskService: MockType<EmpReviewService> = {
-    saveReviewDecision: jest.fn().mockReturnValue(of({})),
+    saveReviewDecision: vi.fn().mockReturnValue(of({})),
   };
-  const taskServiceSpy = jest.spyOn(taskService, 'saveReviewDecision');
+  const taskServiceSpy = vi.spyOn(taskService, 'saveReviewDecision');
 
   class Page extends BasePage<DataGapsDecisionComponent> {
     get typeRadios() {
@@ -40,7 +40,7 @@ describe('DataGapsDecisionComponent', () => {
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(async () => {

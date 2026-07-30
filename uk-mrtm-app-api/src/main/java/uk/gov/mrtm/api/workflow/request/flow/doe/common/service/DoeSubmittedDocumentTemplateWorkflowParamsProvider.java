@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateGenerationContextActionType;
 import uk.gov.mrtm.api.workflow.request.flow.doe.common.domain.Doe;
 import uk.gov.mrtm.api.workflow.request.flow.doe.common.domain.DoeRequestPayload;
-import uk.gov.netz.api.workflow.request.flow.common.service.notification.DocumentTemplateWorkflowParamsProvider;
+import uk.gov.netz.api.workflow.request.flow.common.service.notification.DocumentTemplateSyncWorkflowParamsProvider;
 
 import java.time.Year;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Component
 public class DoeSubmittedDocumentTemplateWorkflowParamsProvider
-    implements DocumentTemplateWorkflowParamsProvider<DoeRequestPayload> {
+    implements DocumentTemplateSyncWorkflowParamsProvider<DoeRequestPayload> {
 
     @Override
     public String getContextActionType() {

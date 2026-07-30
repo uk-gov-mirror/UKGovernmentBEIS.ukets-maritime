@@ -1,0 +1,22 @@
+<mrtm-wizard-step
+  [heading]="headerTitle"
+  submitText="Confirm and continue"
+  [formGroup]="form"
+  [hideSubmit]="!isEditable()"
+  (formSubmit)="onSubmit()">
+  <mrtm-review-return-for-amends-subtask-summary-template
+    caption="Application details"
+    [reviewDecision]="decisionForAmends()" />
+
+  @if (isEditable()) {
+    <div label="confirmation" [isLabelHidden]="true" govuk-checkboxes formControlName="accepted">
+      <govuk-checkbox label="I have made changes and want to mark this task as complete" />
+    </div>
+  }
+</mrtm-wizard-step>
+<div>
+  @if (isEditable()) {
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" aria-hidden="true" />
+  }
+  <netz-return-to-task-or-action-page />
+</div>

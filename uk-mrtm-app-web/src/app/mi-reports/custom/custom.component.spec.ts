@@ -44,14 +44,20 @@ describe('CustomComponent', () => {
       providers: [{ provide: MiReportsUserDefinedService, useValue: miReportsUserService }, DestroySubject],
     }).compileComponents();
 
+    // Exporting the report calls `xlsx.writeFileSyncXLSX`, which schedules a stray
+    // `setTimeout(revokeObjectURL, ...)`; fake timers so that pending timer is never a real
+    // (leaking) resource.
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+
     fixture = TestBed.createComponent(CustomReportComponent);
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     if (fs.existsSync('./Custom sql report.xlsx')) {
       console.log('Deleting custom sql report file...');
       fs.unlinkSync('./Custom sql report.xlsx');
@@ -87,7 +93,7 @@ describe('CustomComponent', () => {
   });
 
   it('should display error message when submitting an invalid sql', () => {
-    jest.spyOn(miReportsUserService, 'generateCustomReport').mockReturnValue(
+    vi.spyOn(miReportsUserService, 'generateCustomReport').mockReturnValue(
       throwError(
         () =>
           new HttpErrorResponse({

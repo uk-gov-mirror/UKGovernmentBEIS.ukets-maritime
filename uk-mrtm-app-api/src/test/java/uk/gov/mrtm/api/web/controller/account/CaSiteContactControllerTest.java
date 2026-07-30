@@ -16,18 +16,20 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.gov.mrtm.api.web.config.AppUserArgumentResolver;
+import uk.gov.mrtm.api.web.controller.exception.ExceptionControllerAdvice;
 import uk.gov.netz.api.account.domain.dto.AccountContactDTO;
 import uk.gov.netz.api.account.domain.dto.AccountContactInfoDTO;
 import uk.gov.netz.api.account.domain.dto.AccountContactInfoResponse;
+import uk.gov.netz.api.account.domain.dto.SiteContactSearchCriteriaDTO;
 import uk.gov.netz.api.account.service.AccountCaSiteContactService;
 import uk.gov.netz.api.authorization.core.domain.AppUser;
 import uk.gov.netz.api.authorization.rules.services.AppUserAuthorizationService;
 import uk.gov.netz.api.authorization.rules.services.RoleAuthorizationService;
 import uk.gov.netz.api.common.constants.RoleTypeConstants;
+import uk.gov.netz.api.common.domain.PagingRequest;
 import uk.gov.netz.api.common.exception.BusinessException;
 import uk.gov.netz.api.common.exception.ErrorCode;
-import uk.gov.mrtm.api.web.config.AppUserArgumentResolver;
-import uk.gov.mrtm.api.web.controller.exception.ExceptionControllerAdvice;
 import uk.gov.netz.api.security.AppSecurityComponent;
 import uk.gov.netz.api.security.AuthorizationAspectUserResolver;
 import uk.gov.netz.api.security.AuthorizedAspect;
@@ -36,7 +38,6 @@ import uk.gov.netz.api.security.AuthorizedRoleAspect;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
@@ -98,7 +99,7 @@ class CaSiteContactControllerTest {
     @Test
     void getCaSiteContacts() throws Exception {
         final AppUser user = AppUser.builder().roleType(RoleTypeConstants.REGULATOR).build();
-
+        SiteContactSearchCriteriaDTO searchCriteria = SiteContactSearchCriteriaDTO.builder().businessId("businessId").build();
         AccountContactInfoResponse accountCASiteContactInfoResponse = AccountContactInfoResponse.builder()
                 .contacts(List.of(
                         AccountContactInfoDTO.builder().accountId(1L).accountName("accountName1").userId("userId1").build(),
@@ -106,10 +107,10 @@ class CaSiteContactControllerTest {
                 .editable(false).build();
 
         when(appSecurityComponent.getAuthenticatedUser()).thenReturn(user);
-        when(accountCaSiteContactService.getAccountsAndCaSiteContacts(user, 0, 2))
-            .thenReturn(accountCASiteContactInfoResponse);
+        when(accountCaSiteContactService.getAccountsAndCaSiteContacts(user, PagingRequest.builder().pageNumber(0).pageSize(2).build(),
+            searchCriteria)).thenReturn(accountCASiteContactInfoResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(CA_SITE_CONTACT_CONTROLLER_PATH + "?page=0&size=2")
+        mockMvc.perform(MockMvcRequestBuilders.get(CA_SITE_CONTACT_CONTROLLER_PATH + "?page=0&size=2&businessId=businessId")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(MockMvcResultHandlers.print())
@@ -122,7 +123,7 @@ class CaSiteContactControllerTest {
 
         verify(appSecurityComponent, times(1)).getAuthenticatedUser();
         verify(accountCaSiteContactService, times(1))
-            .getAccountsAndCaSiteContacts(user,0, 2);
+            .getAccountsAndCaSiteContacts(user, PagingRequest.builder().pageNumber(0).pageSize(2).build(), searchCriteria);
     }
 
     @Test
@@ -139,7 +140,7 @@ class CaSiteContactControllerTest {
                 .andExpect(status().isForbidden());
 
         verify(appSecurityComponent, times(1)).getAuthenticatedUser();
-        verify(accountCaSiteContactService, never()).getAccountsAndCaSiteContacts(any(), anyInt(), anyInt());
+        verify(accountCaSiteContactService, never()).getAccountsAndCaSiteContacts(any(), any(), any());
     }
 
     @Test

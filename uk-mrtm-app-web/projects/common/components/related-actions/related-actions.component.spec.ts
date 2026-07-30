@@ -50,6 +50,7 @@ describe('RelatedActionsComponent', () => {
     fixture.componentRef.setInput('taskId', 1);
     fixture.componentRef.setInput('allowedRequestTaskActions', []);
     fixture.componentRef.setInput('previewDocuments', previewDocuments);
+    fixture.componentRef.setInput('previewAsyncDocuments', []);
     fixture.componentRef.setInput('requestTaskType', 'TEST_REQUEST');
     page = new Page(fixture);
     fixture.detectChanges();
@@ -61,8 +62,8 @@ describe('RelatedActionsComponent', () => {
 
   it('should display the links', async () => {
     expect(page.links.map((el) => [el.href.trim(), el.textContent.trim()])).toEqual([
-      ['http://localhost/', 'Reassign task'],
-      ['http://localhost/?filename=letter.txt', 'letter.txt'],
+      ['http://localhost:3000/', 'Reassign task'],
+      ['http://localhost:3000/?filename=letter.txt', 'letter.txt'],
     ]);
   });
 });

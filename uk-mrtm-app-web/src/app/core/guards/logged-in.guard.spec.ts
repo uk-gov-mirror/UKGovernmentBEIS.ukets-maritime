@@ -23,15 +23,21 @@ describe('loggedInGuard', () => {
   it('should return true when logged in', async () => {
     store.setIsLoggedIn(true);
     const result$ = TestBed.runInInjectionContext(() => loggedInGuard({} as any, {} as any)) as Observable<any>;
-    const result = await firstValueFrom(result$);
-    expect(result).toBe(true);
+    const resultPromise = firstValueFrom(result$);
+    // The guard's value comes from `toObservable` (rxSelect), which only emits once its effect
+    // flushes. Drive that flush explicitly so the test doesn't depend on the auto-scheduler, which
+    // can be wedged by cross-file state under the non-isolated runner.
+    TestBed.tick();
+    expect(await resultPromise).toBe(true);
   });
 
   it('should redirect landing page tree when not logged in', async () => {
     store.setIsLoggedIn(false);
-    const result = await firstValueFrom(
-      TestBed.runInInjectionContext(() => loggedInGuard({} as any, router.routerState.snapshot)) as Observable<any>,
-    );
-    expect(result).toEqual(router.parseUrl('landing'));
+    const result$ = TestBed.runInInjectionContext(() =>
+      loggedInGuard({} as any, router.routerState.snapshot),
+    ) as Observable<any>;
+    const resultPromise = firstValueFrom(result$);
+    TestBed.tick();
+    expect(await resultPromise).toEqual(router.parseUrl('landing'));
   });
 });

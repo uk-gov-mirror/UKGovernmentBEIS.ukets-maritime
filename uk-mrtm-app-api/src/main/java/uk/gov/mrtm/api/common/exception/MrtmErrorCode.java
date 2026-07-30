@@ -17,6 +17,8 @@ public enum MrtmErrorCode implements NetzErrorCode {
     INVALID_EMP_REVIEW("EMP1002", HttpStatus.BAD_REQUEST, "Invalid Emissions Monitoring Plan review"),
     INVALID_EMP_VARIATION_REVIEW("EMP1004", HttpStatus.BAD_REQUEST, "Invalid Emissions Monitoring Plan variation review"),
     EMP_NOT_FOUND("EMP1005", HttpStatus.NOT_FOUND, "No emissions monitoring plan found"),
+    
+    EMP_CANNOT_PREVIEW_OFFICIAL_NOTICE("EMP1006", HttpStatus.NOT_FOUND, "Cannot preview official notice"),
 
     /**Emissions Monitoring Plan notification error codes */
     INVALID_EMP_NOTIFICATION("EMPNOTIFICATION1001", HttpStatus.BAD_REQUEST, "Invalid EMP notification"),
@@ -52,6 +54,13 @@ public enum MrtmErrorCode implements NetzErrorCode {
     INVALID_VIR("VIR1001", HttpStatus.BAD_REQUEST, "Invalid VIR"),
     VIR_CREATION_NOT_ALLOWED("VIR1000", HttpStatus.BAD_REQUEST, "VIR creation is not allowed"),
     INVALID_VIR_REVIEW("VIR1002", HttpStatus.BAD_REQUEST, "Invalid VIR review"),
+
+    /**
+     * Site Visit
+     */
+    INVALID_SITE_VISIT("SITEVISIT1001", HttpStatus.BAD_REQUEST, "Invalid Site Visit"),
+    INVALID_SITE_VISIT_REVIEW("SITEVISIT1002", HttpStatus.BAD_REQUEST, "Invalid Site Visit review"),
+    INVALID_SITE_VISIT_PEER_REVIEW("SITEVISIT1003", HttpStatus.BAD_REQUEST, "Site Visit cannot be sent for peer review"),
     ;
 
     /**

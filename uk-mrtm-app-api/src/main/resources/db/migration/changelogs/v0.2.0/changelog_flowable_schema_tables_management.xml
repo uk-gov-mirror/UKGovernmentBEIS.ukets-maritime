@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog logicalFilePath="v0.2.0/changelog_flowable_schema_tables_management.xml"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd">
+
+    <changeSet id="0_1_0_remove_end_of_july_process_aer_initiate" author="pkouris">
+        <sql>
+             DELETE FROM sch_flowable.act_ru_timer_job t
+                    USING sch_flowable.act_re_procdef p
+                WHERE t.proc_def_id_ = p.id_
+                  AND p.key_ = 'PROCESS_AER_INITIATE_JULY_FIRST';
+        </sql>
+        <rollback />
+    </changeSet>
+</databaseChangeLog>

@@ -11,6 +11,7 @@ import { ActivatedRouteStub, changeInputValue, expectBusinessErrorToBe } from '@
 
 import { saveNotFoundExternalContactError } from '@regulators/errors/business-error';
 import { DetailsComponent } from '@regulators/external-contacts/details/details.component';
+import { Mocked } from 'vitest';
 
 describe('DetailsComponent', () => {
   let component: DetailsComponent;
@@ -25,9 +26,9 @@ describe('DetailsComponent', () => {
     name: 'External Contact',
   };
 
-  const caExternalContactsService: Partial<jest.Mocked<CaExternalContactsService>> = {
-    createCaExternalContact: jest.fn(),
-    editCaExternalContact: jest.fn().mockReturnValue(of(null)),
+  const caExternalContactsService: Partial<Mocked<CaExternalContactsService>> = {
+    createCaExternalContact: vi.fn() as any,
+    editCaExternalContact: vi.fn().mockReturnValue(of(null)),
   };
   const submitButton = () => fixture.nativeElement.querySelector('button[type="submit"]');
   const errorSummary = () => fixture.nativeElement.querySelector('govuk-error-summary');
@@ -51,7 +52,7 @@ describe('DetailsComponent', () => {
     router = TestBed.inject(Router);
   });
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -118,7 +119,7 @@ describe('DetailsComponent', () => {
 
   it('should navigate to external contacts on correct form submission', () => {
     caExternalContactsService.createCaExternalContact.mockReturnValue(of(null));
-    const navigateSpy = jest.spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     changeInputValue(fixture, '#name', 'Test name');
     changeInputValue(fixture, '#email', 'test@test.com');
@@ -140,8 +141,8 @@ describe('DetailsComponent', () => {
 
   it('should not post form if invalid', () => {
     caExternalContactsService.createCaExternalContact.mockReturnValue(of(null));
-    const navigateSpy = jest.spyOn(router, 'navigate');
-    const postExternalContactSpy = jest.spyOn(caExternalContactsService, 'createCaExternalContact');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    const postExternalContactSpy = vi.spyOn(caExternalContactsService, 'createCaExternalContact');
 
     changeInputValue(fixture, '#name', 'Test name');
     changeInputValue(fixture, '#email', 'test');
@@ -200,6 +201,7 @@ describe('DetailsComponent', () => {
     });
 
     it('should redirect with error if contact deleted', async () => {
+      vi.spyOn(router, 'navigate').mockResolvedValue(true);
       caExternalContactsService.editCaExternalContact.mockReturnValue(
         throwError(() => new HttpErrorResponse({ error: { code: ErrorCodes.EXTCONTACT1000 }, status: 400 })),
       );

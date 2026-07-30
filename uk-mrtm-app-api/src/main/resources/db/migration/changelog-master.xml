@@ -65,4 +65,5 @@
 
     <!-- application dml changelogs -->
     <include file="changelogs/v0.1.0/main.xml" relativeToChangelogFile="true" />
+    <include file="changelogs/v0.2.0/main.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

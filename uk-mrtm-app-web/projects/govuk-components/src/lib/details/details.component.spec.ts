@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -13,11 +13,11 @@ describe('DetailsComponent', () => {
     imports: [DetailsComponent],
     standalone: true,
     template: `
-      <govuk-details [summary]="summary" />
+      <govuk-details [summary]="summary()" />
     `,
   })
   class TestComponent {
-    summary: string;
+    readonly summary = signal<string>(undefined);
   }
 
   beforeEach(async () => {
@@ -38,11 +38,11 @@ describe('DetailsComponent', () => {
   });
 
   it('should render the summary', () => {
-    testComponent.summary = 'Something is up';
+    testComponent.summary.set('Something is up');
     fixture.detectChanges();
 
     const element: HTMLElement = fixture.nativeElement;
 
-    expect(element.querySelector('.govuk-details__summary-text').textContent).toEqual(testComponent.summary);
+    expect(element.querySelector('.govuk-details__summary-text').textContent).toEqual(testComponent.summary());
   });
 });

@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import {
@@ -25,7 +25,7 @@ import {
 } from '@mrtm/api';
 
 import { AuthStore, selectUserId } from '@netz/common/auth';
-import { PageHeadingComponent } from '@netz/common/components';
+import { FeedbackBannerStore, PageHeadingComponent } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { BusinessErrorService, catchBadRequest, ErrorCodes } from '@netz/common/error';
 import { DestroySubject } from '@netz/common/services';
@@ -49,7 +49,6 @@ import {
   requiredFileValidator,
   TwoFaLinkComponent,
 } from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { FileType } from '@shared/constants';
 import { IncludesPipe, SubmitIfEmptyPipe } from '@shared/pipes';
 import { UuidFilePair } from '@shared/types';
@@ -66,7 +65,6 @@ interface RegulatorTableRow {
   imports: [
     ErrorSummaryComponent,
     PageHeadingComponent,
-    FormsModule,
     ReactiveFormsModule,
     FieldsetDirective,
     LegendDirective,
@@ -97,7 +95,7 @@ export class DetailsComponent implements OnInit {
   private readonly regulatorUsersService = inject(RegulatorUsersService);
   private readonly destroy$ = inject(DestroySubject);
   private readonly businessErrorService = inject(BusinessErrorService);
-  private readonly notificationBannerStore: NotificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
 
   basePermissionSelected: string;
   userFullName: string;
@@ -163,7 +161,7 @@ export class DetailsComponent implements OnInit {
         null,
         {
           validators: [
-            ...(isNil(this.activatedRoute?.snapshot?.paramMap?.get('userId')) ? [requiredFileValidator] : []),
+            ...(isNil(this.activatedRoute?.snapshot?.paramMap?.get('userId')) ? [requiredFileValidator()] : []),
             FileValidators.validContentTypes(FileType.BMP, 'must be BMP'),
             FileValidators.maxFileSize(0.2, 'must be smaller than 200KB'),
             FileValidators.maxImageDimensionsSize(240, 140, 'must be 240 x 140 pixels'),
@@ -195,6 +193,8 @@ export class DetailsComponent implements OnInit {
       ANNUAL_IMPROVEMENT_REPORT: ['NONE'],
       SUBMIT_EMP_BATCH_REISSUE: ['NONE'],
       ACCOUNT_CLOSURE: ['NONE'],
+      REVIEW_SITE_VISIT: ['NONE'],
+      PEER_REVIEW_SITE_VISIT: ['NONE'],
     }),
   });
 
@@ -312,6 +312,16 @@ export class DetailsComponent implements OnInit {
       task: 'Submit',
       type: 'Close account',
     },
+    {
+      permission: 'REVIEW_SITE_VISIT',
+      task: 'Review',
+      type: 'Site visit',
+    },
+    {
+      permission: 'PEER_REVIEW_SITE_VISIT',
+      task: 'Peer review',
+      type: 'Site visit',
+    },
   ];
 
   ngOnInit(): void {
@@ -403,7 +413,7 @@ export class DetailsComponent implements OnInit {
         )
         .subscribe((userId) => {
           if (userId) {
-            this.notificationBannerStore.setSuccessMessages(['Regulator details updated']);
+            this.feedbackBannerStore.setSuccessMessages(['Regulator details updated']);
             this.router.navigate(['../../regulators'], { relativeTo: this.activatedRoute });
           } else {
             this.confirmedAddedRegulator$.next(userEmail);

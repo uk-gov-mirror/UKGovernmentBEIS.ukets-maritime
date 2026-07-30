@@ -466,4 +466,58 @@ export const itemActionsMap: Record<
     transformed: false,
     linkable: true,
   },
+
+  /**
+   * SITE_VISIT
+   */
+  SITE_VISIT_APPLICATION_SUBMITTED: {
+    text: 'Virtual site visit application for annual submitted',
+    transformed: true,
+    linkable: true,
+  },
+  SITE_VISIT_APPLICATION_RETURNED_FOR_AMENDS: {
+    text: 'Virtual site visit application for annual returned to operator for amends',
+    transformed: true,
+    linkable: true,
+  },
+  SITE_VISIT_APPLICATION_AMENDS_SUBMITTED: {
+    text: 'Virtual site visit application amends for annual submitted',
+    transformed: true,
+    linkable: true,
+  },
+  SITE_VISIT_PEER_REVIEW_REQUESTED: {
+    text: 'Peer review requested',
+    transformed: true,
+    linkable: false,
+  },
+  SITE_VISIT_APPLICATION_PEER_REVIEWER_ACCEPTED: {
+    text: 'Peer review agreement submitted',
+    transformed: true,
+    linkable: true,
+  },
+  SITE_VISIT_APPLICATION_PEER_REVIEWER_REJECTED: {
+    text: 'Peer review disagreement submitted',
+    transformed: true,
+    linkable: true,
+  },
+  SITE_VISIT_APPLICATION_APPROVED: {
+    text: 'Virtual site visit application for annual accepted',
+    transformed: true,
+    linkable: true,
+  },
+  SITE_VISIT_APPLICATION_REJECTED: {
+    text: 'Virtual site visit application for annual rejected',
+    transformed: true,
+    linkable: true,
+  },
+  SITE_VISIT_RECALLED_FROM_AMENDS: {
+    text: 'Virtual site visit application for annual recalled',
+    transformed: true,
+    linkable: false,
+  },
+  SITE_VISIT_APPLICATION_CANCELLED: {
+    text: 'Virtual site visit application for annual cancelled',
+    transformed: true,
+    linkable: false,
+  },
 };

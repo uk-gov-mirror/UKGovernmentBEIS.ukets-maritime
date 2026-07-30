@@ -95,11 +95,12 @@ export class FileValidators {
 }
 
 export const commonFileValidators: MessageValidatorFn[] = [FileValidators.maxFileSize(20), FileValidators.notEmpty()];
-export const requiredFileValidator = GovukValidators.required('Select a file');
+export const requiredFileValidator = (requiredMessage: string = 'Select a file') =>
+  GovukValidators.required(requiredMessage);
 
 /**
  * @isRequired this form field is required
  */
-export const createCommonFileValidators = (isRequired: boolean): ValidatorFn[] => {
-  return commonFileValidators.concat(isRequired ? [requiredFileValidator] : []);
+export const createCommonFileValidators = (isRequired: boolean, requiredMessage?: string): ValidatorFn[] => {
+  return commonFileValidators.concat(isRequired ? [requiredFileValidator(requiredMessage)] : []);
 };

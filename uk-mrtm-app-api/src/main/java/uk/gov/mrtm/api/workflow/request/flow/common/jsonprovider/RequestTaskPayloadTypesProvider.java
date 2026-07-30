@@ -27,6 +27,9 @@ import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceC
 import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceFinalDeterminationRequestTaskPayload;
 import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceInitialPenaltyNoticeRequestTaskPayload;
 import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceNoticeOfIntentRequestTaskPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.review.domain.SiteVisitApplicationAmendsSubmitRequestTaskPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.review.domain.SiteVisitApplicationReviewRequestTaskPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.submit.domain.SiteVisitApplicationSubmitRequestTaskPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirApplicationRespondToRegulatorCommentsRequestTaskPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirApplicationReviewRequestTaskPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirApplicationSubmitRequestTaskPayload;
@@ -80,6 +83,13 @@ import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequest
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskPayloadType.NON_COMPLIANCE_NOTICE_OF_INTENT_APPLICATION_PEER_REVIEW_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskPayloadType.NON_COMPLIANCE_NOTICE_OF_INTENT_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskPayloadType.NON_COMPLIANCE_NOTICE_OF_INTENT_WAIT_FOR_PEER_REVIEW_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskPayloadType.SITE_VISIT_APPLICATION_AMENDS_SUBMIT_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskPayloadType.SITE_VISIT_APPLICATION_PEER_REVIEW_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskPayloadType.SITE_VISIT_APPLICATION_REVIEW_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskPayloadType.SITE_VISIT_APPLICATION_SUBMIT_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskPayloadType.SITE_VISIT_WAIT_FOR_AMENDS_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskPayloadType.SITE_VISIT_WAIT_FOR_PEER_REVIEW_PAYLOAD;
+import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskPayloadType.SITE_VISIT_WAIT_FOR_REVIEW_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskPayloadType.VIR_APPLICATION_REVIEW_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskPayloadType.VIR_APPLICATION_SUBMIT_PAYLOAD;
 import static uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskPayloadType.VIR_RESPOND_TO_REGULATOR_COMMENTS_PAYLOAD;
@@ -149,7 +159,16 @@ public class RequestTaskPayloadTypesProvider implements JsonSubTypesProvider {
 				new NamedType(NonComplianceCivilPenaltyRequestTaskPayload.class, NON_COMPLIANCE_CIVIL_PENALTY_PAYLOAD),
 				new NamedType(NonComplianceCivilPenaltyRequestTaskPayload.class, NON_COMPLIANCE_CIVIL_PENALTY_APPLICATION_PEER_REVIEW_PAYLOAD),
 				new NamedType(NonComplianceCivilPenaltyRequestTaskPayload.class, NON_COMPLIANCE_CIVIL_PENALTY_WAIT_FOR_PEER_REVIEW_PAYLOAD),
-				new NamedType(NonComplianceFinalDeterminationRequestTaskPayload.class, NON_COMPLIANCE_FINAL_DETERMINATION_PAYLOAD)
+				new NamedType(NonComplianceFinalDeterminationRequestTaskPayload.class, NON_COMPLIANCE_FINAL_DETERMINATION_PAYLOAD),
+
+				//SITE_VISIT
+				new NamedType(SiteVisitApplicationSubmitRequestTaskPayload.class, SITE_VISIT_APPLICATION_SUBMIT_PAYLOAD),
+				new NamedType(SiteVisitApplicationReviewRequestTaskPayload.class, SITE_VISIT_APPLICATION_REVIEW_PAYLOAD),
+				new NamedType(SiteVisitApplicationSubmitRequestTaskPayload.class, SITE_VISIT_WAIT_FOR_REVIEW_PAYLOAD),
+				new NamedType(SiteVisitApplicationReviewRequestTaskPayload.class, SITE_VISIT_APPLICATION_PEER_REVIEW_PAYLOAD),
+				new NamedType(SiteVisitApplicationReviewRequestTaskPayload.class, SITE_VISIT_WAIT_FOR_PEER_REVIEW_PAYLOAD),
+				new NamedType(SiteVisitApplicationAmendsSubmitRequestTaskPayload.class, SITE_VISIT_APPLICATION_AMENDS_SUBMIT_PAYLOAD),
+				new NamedType(SiteVisitApplicationReviewRequestTaskPayload.class, SITE_VISIT_WAIT_FOR_AMENDS_PAYLOAD)
 		);
 	}
 

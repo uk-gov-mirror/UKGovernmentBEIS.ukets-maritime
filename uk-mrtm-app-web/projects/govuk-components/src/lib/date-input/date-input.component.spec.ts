@@ -1,4 +1,4 @@
-import { Component, DebugElement } from '@angular/core';
+import { Component, DebugElement, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ControlContainer, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -9,12 +9,12 @@ describe('DateInputComponent', () => {
   @Component({
     imports: [DateInputComponent, ReactiveFormsModule],
     standalone: true,
-    template: '<div govuk-date-input [formControl]="control" [min]="min" [max]="max"></div>',
+    template: '<div govuk-date-input [formControl]="control" [min]="min()" [max]="max()"></div>',
   })
   class TestComponent {
     control = new FormControl();
-    min: Date;
-    max: Date;
+    readonly min = signal<Date>(undefined);
+    readonly max = signal<Date>(undefined);
   }
 
   @Component({
@@ -203,7 +203,7 @@ describe('DateInputComponent', () => {
     let errorMessage = fixture.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessage).toBeNull();
 
-    hostComponent.min = new Date('2020-05-31');
+    hostComponent.min.set(new Date('2020-05-31'));
     fixture.detectChanges();
 
     expect(hostComponent.control.valid).not.toBeTruthy();
@@ -224,7 +224,7 @@ describe('DateInputComponent', () => {
     let errorMessage = fixture.nativeElement.querySelector('.govuk-error-message');
     expect(errorMessage).toBeNull();
 
-    hostComponent.max = new Date('2018-05-31');
+    hostComponent.max.set(new Date('2018-05-31'));
     fixture.detectChanges();
 
     expect(hostComponent.control.valid).not.toBeTruthy();

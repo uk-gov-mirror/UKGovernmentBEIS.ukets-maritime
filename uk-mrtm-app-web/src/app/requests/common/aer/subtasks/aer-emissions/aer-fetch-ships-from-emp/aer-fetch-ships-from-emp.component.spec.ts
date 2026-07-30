@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 
 import { of } from 'rxjs';
 
@@ -20,10 +20,11 @@ describe('AerFetchShipsFromEmpComponent', () => {
   let store: RequestTaskStore;
 
   const taskService: MockType<any> = {
-    fetchShipsFromEMP: jest.fn().mockReturnValue(of({})),
+    fetchShipsFromEMP: vi.fn().mockReturnValue(of({})),
+    saveSubtask: vi.fn().mockReturnValue(of({})),
   };
 
-  const taskServiceSpy = jest.spyOn(taskService, 'fetchShipsFromEMP');
+  const taskServiceSpy = vi.spyOn(taskService, 'fetchShipsFromEMP');
 
   class Page extends BasePage<AerFetchShipsFromEmpComponent> {
     get warnText(): HTMLElement {
@@ -38,6 +39,7 @@ describe('AerFetchShipsFromEmpComponent', () => {
     });
 
     store = TestBed.inject(RequestTaskStore);
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     fixture = TestBed.createComponent(AerFetchShipsFromEmpComponent);
     component = fixture.componentInstance;
     page = new Page(fixture);

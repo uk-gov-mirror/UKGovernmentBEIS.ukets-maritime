@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.46.1">
+  <message id="Message_1cvgrnk" />
+  <message id="Message_0ru6fq0" />
+  <process id="PROCESS_SITE_VISIT" name="Site Visit Process" isExecutable="true">
+    <userTask id="SITE_VISIT_APPLICATION_SUBMIT" name="Operator:Submit Site Visit Aplication" flowable:formFieldValidation="true" />
+    <startEvent id="ApplyForPermitStartEvent" name="Start" flowable:formFieldValidation="true" />
+    <sequenceFlow id="Flow_0zyf2mz" sourceRef="SITE_VISIT_APPLICATION_SUBMIT" targetRef="Gateway_0i8cpil" />
+    <sequenceFlow id="Flow_0az5ca4" sourceRef="ApplyForPermitStartEvent" targetRef="SITE_VISIT_APPLICATION_SUBMIT" />
+    <exclusiveGateway id="Gateway_19o6n11" name="what is the review determination?" />
+    <endEvent id="Event_0ol6ie2">
+      <incoming>Flow_1nd1hdr</incoming>
+    </endEvent>
+    <sequenceFlow id="Flow_0r2teah" name="rejected" sourceRef="Gateway_19o6n11" targetRef="Activity_0do5bqu">
+      <conditionExpression xsi:type="tFormalExpression">${reviewDetermination=='REJECTED'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_1j8ek33" name="approved" sourceRef="Gateway_19o6n11" targetRef="Activity_014ftb6">
+      <conditionExpression xsi:type="tFormalExpression">${reviewDetermination=='APPROVED'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_1p48t5z" sourceRef="Activity_014ftb6" targetRef="Activity_11xkdzc" />
+    <callActivity id="SITE_VISIT_REVIEW" name="Review Site Visit Application" calledElement="APPL_REVIEW" flowable:calledElementType="key" flowable:businessKey="#{businessKey}" flowable:fallbackToDefaultTenant="false">
+      <extensionElements>
+        <flowable:in source="requestId" target="requestId" />
+        <flowable:in source="requestType" target="requestType" />
+        <flowable:in source="businessKey" target="businessKey" />
+        <flowable:in source="skipPayment" target="skipPayment" />
+        <flowable:out source="reviewDetermination" target="reviewDetermination" />
+      </extensionElements>
+      <incoming>Flow_0sxgld1</incoming>
+    </callActivity>
+    <sequenceFlow id="Flow_1hmzmrq" sourceRef="SITE_VISIT_REVIEW" targetRef="Gateway_19o6n11" />
+    <serviceTask id="Activity_014ftb6" name="Handle Site Visit Approved" flowable:delegateExpression="#{siteVisitApprovedHandler}" />
+    <serviceTask id="Activity_0qgk5of" name="Update Workflow status to APPROVED" flowable:delegateExpression="#{requestUpdateStatusHandlerFlowable}">
+      <extensionElements>
+        <flowable:field name="requestStatus">
+          <flowable:string>APPROVED</flowable:string>
+        </flowable:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="Flow_1yl4zkz" sourceRef="Activity_0qgk5of" targetRef="Event_0ol6ie2" />
+    <serviceTask id="Activity_01z2zx8" name="Add Approved Request Action" flowable:delegateExpression="#{siteVisitApprovedAddRequestActionHandler}" />
+    <sequenceFlow id="Flow_06aoewy" sourceRef="Activity_01z2zx8" targetRef="Activity_0mhbb4f" />
+    <serviceTask id="Activity_0xyg4pv" name="Add Rejected Request Action" flowable:delegateExpression="#{siteVisitRejectedAddRequestActionHandler}" />
+    <sequenceFlow id="Flow_0sgt8le" sourceRef="Activity_0xyg4pv" targetRef="Activity_1h8mfcp" />
+    <serviceTask id="Activity_0i0nftz" name="Update Workflow status to REJECTED" flowable:delegateExpression="#{requestUpdateStatusHandlerFlowable}">
+      <extensionElements>
+        <flowable:field name="requestStatus">
+          <flowable:string>REJECTED</flowable:string>
+        </flowable:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="Flow_0t9cftc" sourceRef="Activity_0i0nftz" targetRef="Event_0ol6ie2" />
+    <serviceTask id="Activity_11xkdzc" name="Generate approved documents" flowable:delegateExpression="#{siteVisitApprovedGenerateOfficialNoticeHandler}" />
+    <sequenceFlow id="Flow_0glekzj" sourceRef="Activity_11xkdzc" targetRef="Activity_01z2zx8" />
+    <serviceTask id="Activity_0do5bqu" name="Generate rejected official notice" flowable:delegateExpression="#{siteVisitRejectedGenerateOfficialNoticeHandler}" />
+    <sequenceFlow id="Flow_0uznhmg" sourceRef="Activity_0do5bqu" targetRef="Activity_0xyg4pv" />
+    <serviceTask id="Activity_0mhbb4f" name="Send Official Notice Email" flowable:delegateExpression="#{siteVisitSendOfficialNoticeEmailHandler}" />
+    <sequenceFlow id="Flow_0tu7sxd" sourceRef="Activity_0mhbb4f" targetRef="Activity_0qgk5of" />
+    <serviceTask id="Activity_1h8mfcp" name="Send Official Notice Email" flowable:delegateExpression="#{siteVisitSendOfficialNoticeEmailHandler}" />
+    <sequenceFlow id="Flow_0sgt2lx" sourceRef="Activity_1h8mfcp" targetRef="Activity_0i0nftz" />
+    <exclusiveGateway id="Gateway_0i8cpil" name="what is the submit outcome?">
+      <incoming>Flow_0zyf2mz</incoming>
+      <outgoing>Flow_0sxgld1</outgoing>
+      <outgoing>Flow_1bbkd9n</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="Flow_0sxgld1" sourceRef="Gateway_0i8cpil" targetRef="SITE_VISIT_REVIEW">
+      <conditionExpression xsi:type="tFormalExpression">${siteVisitSubmitOutcome=='SUBMITTED'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_1bbkd9n" name="cancelled" sourceRef="Gateway_0i8cpil" targetRef="Activity_1jprnvc">
+      <conditionExpression xsi:type="tFormalExpression">${siteVisitSubmitOutcome=='CANCELLED'}</conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="Activity_1jprnvc" name="Handle Site Visit Cancelled" flowable:delegateExpression="#{siteVisitAddCancelledRequestActionHandler}" />
+    <sequenceFlow id="Flow_10wq9fa" sourceRef="Activity_1jprnvc" targetRef="Activity_1ijkbec" />
+    <serviceTask id="Activity_1ijkbec" name="Update Workflow status to CANCELLED" flowable:delegateExpression="#{requestUpdateStatusHandlerFlowable}">
+        <extensionElements>
+          <flowable:field name="requestStatus">
+            <flowable:string>CANCELLED</flowable:string>
+          </flowable:field>
+        </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="Flow_1nd1hdr" sourceRef="Activity_1ijkbec" targetRef="Event_0ol6ie2" />
+    <textAnnotation id="TextAnnotation_057v3nk">
+      <text>requestId</text>
+    </textAnnotation>
+    <association id="Association_12t8i82" associationDirection="None" sourceRef="ApplyForPermitStartEvent" targetRef="TextAnnotation_057v3nk" />
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_PROCESS_SITE_VISIT">
+    <bpmndi:BPMNPlane id="BPMNPlane_PROCESS_SITE_VISIT" bpmnElement="PROCESS_SITE_VISIT">
+      <bpmndi:BPMNShape id="BPMNShape_SITE_VISIT_APPLICATION_SUBMIT" bpmnElement="SITE_VISIT_APPLICATION_SUBMIT">
+        <omgdc:Bounds x="350" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ApplyForPermitStartEvent" bpmnElement="ApplyForPermitStartEvent">
+        <omgdc:Bounds x="255" y="235" width="30" height="30" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="258" y="265" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Gateway_19o6n11" bpmnElement="Gateway_19o6n11" isMarkerVisible="true">
+        <omgdc:Bounds x="1060" y="230" width="40" height="40" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="991" y="213" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Event_0ol6ie2" bpmnElement="Event_0ol6ie2">
+        <omgdc:Bounds x="2026" y="241" width="28" height="28" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_SITE_VISIT_REVIEW" bpmnElement="SITE_VISIT_REVIEW">
+        <omgdc:Bounds x="820" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Activity_014ftb6" bpmnElement="Activity_014ftb6">
+        <omgdc:Bounds x="1180" y="78" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Activity_0qgk5of" bpmnElement="Activity_0qgk5of">
+        <omgdc:Bounds x="1870" y="78" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Activity_01z2zx8" bpmnElement="Activity_01z2zx8">
+        <omgdc:Bounds x="1540" y="78" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Activity_0xyg4pv" bpmnElement="Activity_0xyg4pv">
+        <omgdc:Bounds x="1540" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Activity_0i0nftz" bpmnElement="Activity_0i0nftz">
+        <omgdc:Bounds x="1870" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Activity_11xkdzc" bpmnElement="Activity_11xkdzc">
+        <omgdc:Bounds x="1370" y="78" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Activity_0do5bqu" bpmnElement="Activity_0do5bqu">
+        <omgdc:Bounds x="1370" y="370" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Activity_0mhbb4f" bpmnElement="Activity_0mhbb4f">
+        <omgdc:Bounds x="1700" y="78" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Activity_1h8mfcp" bpmnElement="Activity_1h8mfcp">
+        <omgdc:Bounds x="1700" y="370" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0i8cpil_di" bpmnElement="Gateway_0i8cpil" isMarkerVisible="true">
+        <omgdc:Bounds x="585" y="225" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="568" y="196" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04ga59j_di" bpmnElement="Activity_1jprnvc">
+        <omgdc:Bounds x="1180" y="570" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0z4dkym_di" bpmnElement="Activity_1ijkbec">
+        <omgdc:Bounds x="1870" y="570" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_TextAnnotation_057v3nk" bpmnElement="TextAnnotation_057v3nk">
+        <omgdc:Bounds x="160" y="300" width="70" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_0zyf2mz" bpmnElement="Flow_0zyf2mz" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="450" y="250" />
+        <omgdi:waypoint x="585" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_0az5ca4" bpmnElement="Flow_0az5ca4" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="285" y="250" />
+        <omgdi:waypoint x="350" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_0r2teah" bpmnElement="Flow_0r2teah" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="1080" y="270" />
+        <omgdi:waypoint x="1080" y="410" />
+        <omgdi:waypoint x="1370" y="410" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1090" y="346" width="40" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_1j8ek33" bpmnElement="Flow_1j8ek33" flowable:sourceDockerX="20.0" flowable:sourceDockerY="20.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="1080" y="230" />
+        <omgdi:waypoint x="1080" y="118" />
+        <omgdi:waypoint x="1180" y="118" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1087" y="150" width="46" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_1p48t5z" bpmnElement="Flow_1p48t5z" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="1279.9499999999998" y="118" />
+        <omgdi:waypoint x="1369.9999999999754" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_1hmzmrq" bpmnElement="Flow_1hmzmrq" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="20.0" flowable:targetDockerY="20.0">
+        <omgdi:waypoint x="920" y="250" />
+        <omgdi:waypoint x="1060" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_1yl4zkz" bpmnElement="Flow_1yl4zkz" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="1970" y="118" />
+        <omgdi:waypoint x="2040" y="118" />
+        <omgdi:waypoint x="2040" y="241" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_06aoewy" bpmnElement="Flow_06aoewy" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="1639.95" y="118" />
+        <omgdi:waypoint x="1699.9999999999832" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_0sgt8le" bpmnElement="Flow_0sgt8le" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="1639.95" y="410" />
+        <omgdi:waypoint x="1700" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_0t9cftc" bpmnElement="Flow_0t9cftc" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="14.0" flowable:targetDockerY="14.0">
+        <omgdi:waypoint x="1970" y="410" />
+        <omgdi:waypoint x="2040" y="410" />
+        <omgdi:waypoint x="2040" y="269" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_0glekzj" bpmnElement="Flow_0glekzj" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="1469.95" y="118" />
+        <omgdi:waypoint x="1540" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_0uznhmg" bpmnElement="Flow_0uznhmg" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="1469.95" y="410" />
+        <omgdi:waypoint x="1540" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_0tu7sxd" bpmnElement="Flow_0tu7sxd" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="1799.95" y="118" />
+        <omgdi:waypoint x="1870" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_0sgt2lx" bpmnElement="Flow_0sgt2lx" flowable:sourceDockerX="50.0" flowable:sourceDockerY="40.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">
+        <omgdi:waypoint x="1799.95" y="410" />
+        <omgdi:waypoint x="1870" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0sxgld1_di" bpmnElement="Flow_0sxgld1">
+        <omgdi:waypoint x="635" y="250" />
+        <omgdi:waypoint x="820" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bbkd9n_di" bpmnElement="Flow_1bbkd9n">
+        <omgdi:waypoint x="610" y="275" />
+        <omgdi:waypoint x="610" y="610" />
+        <omgdi:waypoint x="1180" y="610" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="626" y="623" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10wq9fa_di" bpmnElement="Flow_10wq9fa">
+        <omgdi:waypoint x="1280" y="610" />
+        <omgdi:waypoint x="1870" y="610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nd1hdr_di" bpmnElement="Flow_1nd1hdr">
+        <omgdi:waypoint x="1970" y="610" />
+        <omgdi:waypoint x="2040" y="610" />
+        <omgdi:waypoint x="2040" y="269" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Association_12t8i82" bpmnElement="Association_12t8i82" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="35.0" flowable:targetDockerY="0.0">
+        <omgdi:waypoint x="258" y="258" />
+        <omgdi:waypoint x="195" y="300" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

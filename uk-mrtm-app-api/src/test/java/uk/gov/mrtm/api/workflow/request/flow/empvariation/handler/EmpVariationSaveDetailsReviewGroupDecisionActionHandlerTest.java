@@ -49,13 +49,13 @@ class EmpVariationSaveDetailsReviewGroupDecisionActionHandlerTest {
                         .build();
 
         RequestTask requestTask = RequestTask.builder().payload(expectedRequestTaskPayload).id(1L).build();
-        when(requestTaskService.findTaskById(1L)).thenReturn(requestTask);
+        when(requestTaskService.findTaskByIdForUpdate(1L)).thenReturn(requestTask);
 
         RequestTaskPayload requestTaskPayload = handler.process(requestTaskId, requestTaskActionType, appUser, payload);
 
         assertThat(requestTaskPayload).isEqualTo(expectedRequestTaskPayload);
         verifyNoMoreInteractions(expectedRequestTaskPayload);
-        verify(requestTaskService, times(1)).findTaskById(requestTask.getId());
+        verify(requestTaskService, times(1)).findTaskByIdForUpdate(requestTask.getId());
         verify(empVariationReviewService, times(1)).saveDetailsReviewGroupDecision(payload, requestTask);
     }
 }

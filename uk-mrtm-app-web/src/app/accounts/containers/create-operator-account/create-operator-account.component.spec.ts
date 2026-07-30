@@ -29,7 +29,7 @@ describe('CreateOperatorAccountComponent', () => {
   let configStore: ConfigStore;
 
   const account = {
-    imoNumber: 1234567,
+    imoNumber: '1234567',
     name: 'TESTNAME',
     line1: 'TEST_LINE1',
     line2: 'TEST_LINE2',
@@ -76,8 +76,8 @@ describe('CreateOperatorAccountComponent', () => {
   });
 
   it('should set newAccount and isInitiallySubmitted in store when submitting the form', async () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
-    accountsService.isExistingAccountImoNumber.mockReturnValue(of(false));
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    accountsService.isExistingAccountImoNumber.mockReturnValue(of(false) as any);
     component.form.setValue(account);
     page.submitButton.click();
     fixture.detectChanges();
@@ -90,8 +90,8 @@ describe('CreateOperatorAccountComponent', () => {
   });
 
   it('should show error for existed imo number', () => {
-    const handleConfirmSpy = jest.spyOn(component, 'handleConfirm');
-    accountsService.isExistingAccountImoNumber.mockReturnValue(of(true));
+    const handleConfirmSpy = vi.spyOn(component, 'handleConfirm');
+    accountsService.isExistingAccountImoNumber.mockReturnValue(of(true) as any);
     component.form.setValue(account);
     page.submitButton.click();
     fixture.detectChanges();

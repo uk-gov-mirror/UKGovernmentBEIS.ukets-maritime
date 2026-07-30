@@ -34,7 +34,7 @@ describe('RelatedPrintableItemsComponent', () => {
 
   it('should display the links', async () => {
     expect(page.links.map((el) => [el.href, el.textContent])).toEqual([
-      ['http://localhost/', 'Download PDF of workflow'],
+      ['http://localhost:3000/', 'Download PDF of workflow'],
     ]);
   });
 });

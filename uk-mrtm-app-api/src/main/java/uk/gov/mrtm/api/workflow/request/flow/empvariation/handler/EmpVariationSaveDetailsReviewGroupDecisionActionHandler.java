@@ -27,7 +27,7 @@ public class EmpVariationSaveDetailsReviewGroupDecisionActionHandler
                                       final AppUser appUser,
                                       final EmpVariationSaveDetailsReviewGroupDecisionRequestTaskActionPayload payload) {
 
-        final RequestTask requestTask = requestTaskService.findTaskById(requestTaskId);
+        final RequestTask requestTask = requestTaskService.findTaskByIdForUpdate(requestTaskId);
 
         empVariationReviewService.saveDetailsReviewGroupDecision(payload, requestTask);
 

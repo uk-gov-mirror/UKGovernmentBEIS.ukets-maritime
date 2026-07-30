@@ -20,7 +20,7 @@ describe('EmpShipsXmlService', () => {
   });
 
   it('should correctly transform ShipXML to XmlShipsResultDto', () => {
-    const getFixedUUID = jest.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
+    const getFixedUUID = vi.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
     Object.defineProperty(window, 'crypto', {
       value: { getRandomValues: getFixedUUID, randomUUID: getFixedUUID },
     });
@@ -142,7 +142,7 @@ describe('EmpShipsXmlService', () => {
   });
 
   it('should return core errors on false core XML', () => {
-    const getFixedUUID = jest.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
+    const getFixedUUID = vi.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
     Object.defineProperty(window, 'crypto', {
       value: { getRandomValues: getFixedUUID, randomUUID: getFixedUUID },
     });
@@ -175,7 +175,7 @@ describe('EmpShipsXmlService', () => {
   });
 
   it('should return errors on false XML', () => {
-    const getFixedUUID = jest.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
+    const getFixedUUID = vi.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
     Object.defineProperty(window, 'crypto', {
       value: { getRandomValues: getFixedUUID, randomUUID: getFixedUUID },
     });

@@ -19,6 +19,7 @@ import { distinctUntilChanged, takeUntil, tap } from 'rxjs';
 import { LabelDirective } from '../directives';
 import { ErrorMessageComponent, GovukValidators } from '../error-message';
 import { FormInput } from '../form';
+import { SafeHtmlPipe } from '../pipes';
 import { GovukWidthClass } from '../types';
 import { LabelSizeType } from './label-size.type';
 import { HTMLInputType } from './text-input.type';
@@ -30,7 +31,7 @@ import { HTMLInputType } from './text-input.type';
  */
 @Component({
   selector: 'div[govuk-text-input]',
-  imports: [ErrorMessageComponent, NgTemplateOutlet],
+  imports: [ErrorMessageComponent, NgTemplateOutlet, SafeHtmlPipe],
   standalone: true,
   templateUrl: './text-input.component.html',
   providers: [DecimalPipe],

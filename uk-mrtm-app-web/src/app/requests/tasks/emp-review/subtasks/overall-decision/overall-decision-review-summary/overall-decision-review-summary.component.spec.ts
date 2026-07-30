@@ -22,9 +22,9 @@ describe('OverallDecisionSummaryComponent', () => {
 
   const route = new ActivatedRouteStub();
   const taskService: MockType<EmpReviewService> = {
-    saveReviewDetermination: jest.fn().mockReturnValue(of({})),
+    saveReviewDetermination: vi.fn().mockReturnValue(of({})),
   };
-  const taskServiceSpy = jest.spyOn(taskService, 'saveReviewDetermination');
+  const taskServiceSpy = vi.spyOn(taskService, 'saveReviewDetermination');
 
   class Page extends BasePage<OverallDecisionReviewSummaryComponent> {
     get submitButton(): HTMLButtonElement {
@@ -37,7 +37,7 @@ describe('OverallDecisionSummaryComponent', () => {
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(async () => {

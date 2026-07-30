@@ -6,7 +6,7 @@ import {
   importProvidersFrom,
   inject,
   provideAppInitializer,
-  provideZoneChangeDetection,
+  provideZonelessChangeDetection,
 } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import {
@@ -39,7 +39,7 @@ export const appConfig: ApplicationConfig = {
       deps: [PlatformLocation],
     },
     provideHttpClient(withInterceptors([keycloakBearerInterceptor, httpErrorInterceptor, pendingRequestInterceptor])),
-    provideZoneChangeDetection(),
+    provideZonelessChangeDetection(),
     provideAppInitializer(() => {
       const initializerFn = init(
         inject(AuthService),

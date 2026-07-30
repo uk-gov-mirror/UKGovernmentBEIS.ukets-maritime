@@ -40,6 +40,7 @@ export class RequestTaskFileService {
     requestTaskActionType: RequestTaskAttachmentActionProcessDTO['requestTaskActionType'],
     required = false,
     disabled = false,
+    requiredMessage = 'Select a file',
   ): UntypedFormControl {
     return this.formBuilder.control(
       {
@@ -51,7 +52,7 @@ export class RequestTaskFileService {
         disabled,
       },
       {
-        validators: createCommonFileValidators(required),
+        validators: createCommonFileValidators(required, requiredMessage),
         asyncValidators: [
           Array.isArray(uuid)
             ? this.uploadMany(requestTaskId, requestTaskActionType)

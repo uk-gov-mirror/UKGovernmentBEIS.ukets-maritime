@@ -1,24 +1,28 @@
 import { Routes } from '@angular/router';
 
-import { CreateVerificationBodyComponent } from '@verification-bodies/create-verification-body/create-verification-body.component';
-import { canActivateSuccessGuard, SuccessComponent } from '@verification-bodies/create-verification-body/success';
-import { canActivateSummaryGuard, SummaryComponent } from '@verification-bodies/create-verification-body/summary';
+import { canActivateSuccessGuard } from '@verification-bodies/create-verification-body/success';
+import { canActivateSummaryGuard } from '@verification-bodies/create-verification-body/summary';
 
 export const CREATE_VERIFICATION_ROUTES: Routes = [
   {
     path: '',
     data: { breadcrumb: false, backlink: '../' },
-    component: CreateVerificationBodyComponent,
+    loadComponent: () =>
+      import('@verification-bodies/create-verification-body/create-verification-body.component').then(
+        (c) => c.CreateVerificationBodyComponent,
+      ),
   },
   {
     path: 'summary',
     data: { breadcrumb: false, backlink: '../' },
-    component: SummaryComponent,
     canActivate: [canActivateSummaryGuard],
+    loadComponent: () =>
+      import('@verification-bodies/create-verification-body/summary').then((c) => c.SummaryComponent),
   },
   {
     path: 'success',
-    component: SuccessComponent,
     canActivate: [canActivateSuccessGuard],
+    loadComponent: () =>
+      import('@verification-bodies/create-verification-body/success').then((c) => c.SuccessComponent),
   },
 ];

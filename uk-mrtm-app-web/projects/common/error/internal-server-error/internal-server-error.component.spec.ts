@@ -36,7 +36,7 @@ describe('InternalServerErrorComponent', () => {
 
       expect(element.querySelector('h1').textContent).toEqual('Sorry, there is a problem with the service');
       expect(paragraphContents).toEqual(['Try again later.', 'Contact the DESNZ helpdesk if you have any questions.']);
-      expect(element.querySelector('a').href).toEqual('http://localhost/contact-us');
+      expect(element.querySelector('a').href).toEqual('http://localhost:3000/contact-us');
     });
   });
 

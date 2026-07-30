@@ -62,7 +62,7 @@ describe('CreateOperatorAccountGuard -> canActivate', () => {
 describe('CreateAviationAccountGuard -> canDeactivate', () => {
   const pendingRequestService = mockClass(PendingRequestService);
   const store: Partial<OperatorAccountsStore> = {
-    resetCreateAccount: jest.fn(),
+    resetCreateAccount: vi.fn(),
   };
 
   mockAuthService.checkUser.mockReturnValue(of(void 0));
@@ -83,7 +83,7 @@ describe('CreateAviationAccountGuard -> canDeactivate', () => {
   });
 
   it('should reset store and destroy form on deactivate', () => {
-    const resetSpy = jest.spyOn(store, 'resetCreateAccount');
+    const resetSpy = vi.spyOn(store, 'resetCreateAccount');
     guard.canDeactivate();
     expect(resetSpy).toHaveBeenCalled();
   });

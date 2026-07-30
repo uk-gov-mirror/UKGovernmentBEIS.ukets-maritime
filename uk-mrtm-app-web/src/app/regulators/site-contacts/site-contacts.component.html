@@ -1,6 +1,8 @@
-@if (isEditable$ | async) {
+<h2 class="govuk-heading-m">Site contacts</h2>
+<mrtm-site-contacts-filter />
+@if (isEditable()) {
   <form (ngSubmit)="onSave()" [formGroup]="form">
-    <govuk-table [columns]="columns" [data]="tableData$ | async" formArrayName="siteContacts">
+    <govuk-table [columns]="columns" [data]="tableData()" formArrayName="siteContacts">
       <ng-template let-column="column" let-index="index" let-row="row">
         <ng-container [formGroupName]="index">
           @switch (column.field) {
@@ -8,7 +10,7 @@
               <div
                 label="Select assignee"
                 [isLabelHidden]="true"
-                [options]="assigneeOptions$ | async"
+                [options]="assigneeOptions()"
                 formControlName="userId"
                 govuk-select
                 widthClass="govuk-!-width-full"></div>
@@ -23,11 +25,11 @@
     <ng-container *ngTemplateOutlet="pagination" />
     <div class="govuk-button-group">
       <button netzPendingButton govukButton type="submit" class="govuk-!-margin-top-3">Save</button>
-      <button govukSecondaryButton type="button" (click)="refresh$.next()">Discard changes</button>
+      <button govukSecondaryButton type="button" (click)="onRefresh()">Discard changes</button>
     </div>
   </form>
 } @else {
-  <govuk-table id="regulators" [columns]="columns" [data]="tableData$ | async">
+  <govuk-table id="site-contacts" [columns]="columns" [data]="tableData()">
     <ng-template let-column="column" let-row="row">
       @switch (column.field) {
         @case ('user') {
@@ -44,8 +46,8 @@
 
 <ng-template #pagination>
   <govuk-pagination
-    fragment="regulators"
-    (currentPageChange)="page$.next($event)"
-    [count]="count$ | async"
+    fragment="site-contacts"
+    (currentPageChange)="page.set($event)"
+    [count]="count()"
     [pageSize]="pageSize" />
 </ng-template>

@@ -53,7 +53,7 @@ describe('FileUploadService', () => {
       const fileB = new File(['some other content'], 'file2.txt');
       const fileC = new File(['some uploaded content'], 'file3.txt');
       const control = new FormControl([{ file: fileA }, { file: fileB }, { file: fileC, uuid: 'abcd' }]);
-      const upload$ = jest.fn(() =>
+      const upload$ = vi.fn(() =>
         cold<HttpEvent<FileUuidDTO>>('--a---b------c|', {
           a: { type: HttpEventType.UploadProgress, loaded: 5, total: 15 },
           b: { type: HttpEventType.UploadProgress, loaded: 10, total: 15 },
@@ -76,7 +76,7 @@ describe('FileUploadService', () => {
   it('should be valid when no file is attached', () => {
     testScheduler.run(({ expectObservable, flush }) => {
       const control = new FormControl(null);
-      const request = jest.fn();
+      const request = vi.fn();
 
       expectObservable(service.upload(request)(control) as Observable<MessageValidationErrors>).toBe('(c|)', {
         c: null,
@@ -90,7 +90,7 @@ describe('FileUploadService', () => {
   it('should be valid when no files are attached', () => {
     testScheduler.run(({ expectObservable, flush }) => {
       const control = new FormControl([]);
-      const request = jest.fn();
+      const request = vi.fn();
 
       expectObservable(service.uploadMany(request)(control) as Observable<MessageValidationErrors>).toBe('(c|)', {
         c: null,
@@ -113,7 +113,7 @@ describe('FileUploadService', () => {
         statusText: 'Bad request',
         error: { message: 'File upload failed' },
       });
-      const upload$ = jest.fn((file: File) =>
+      const upload$ = vi.fn((file: File) =>
         file.name === 'second-file.txt'
           ? cold<HttpEvent<FileUuidDTO>>(
               '--a----#',

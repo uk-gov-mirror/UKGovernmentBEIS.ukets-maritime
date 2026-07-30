@@ -27,7 +27,7 @@ export const DocumentTemplateFormProvider = {
           : null,
         {
           validators: commonFileValidators.concat(
-            requiredFileValidator,
+            requiredFileValidator(),
             FileValidators.validContentTypes(FileType.DOCX),
           ),
           updateOn: 'change',

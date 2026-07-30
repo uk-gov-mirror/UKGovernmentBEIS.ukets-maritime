@@ -48,4 +48,13 @@ export const peerReviewActionPayloadMap: Record<
     requestTaskActionType: 'NON_COMPLIANCE_CIVIL_PENALTY_REQUEST_PEER_REVIEW',
     payloadType: 'NON_COMPLIANCE_CIVIL_PENALTY_REQUEST_PEER_REVIEW_PAYLOAD',
   },
+
+  /**
+   * SITE VISIT
+   */
+  SITE_VISIT_APPLICATION_REVIEW: {
+    assigneesRequestTaskType: 'SITE_VISIT_APPLICATION_PEER_REVIEW',
+    requestTaskActionType: 'SITE_VISIT_REQUEST_PEER_REVIEW',
+    payloadType: 'SITE_VISIT_REQUEST_PEER_REVIEW_PAYLOAD',
+  },
 };

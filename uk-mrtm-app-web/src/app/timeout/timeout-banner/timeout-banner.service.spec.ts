@@ -3,13 +3,15 @@ import { TestBed } from '@angular/core/testing';
 
 import { mockClass } from '@netz/common/testing';
 
-import { AuthService, KeycloakEventType, KeycloakService } from '@core/services';
+import { KeycloakEventType } from '@core/interfaces';
+import { AuthService, KeycloakService } from '@core/services';
 import { TimeoutBannerService } from '@timeout/timeout-banner/timeout-banner.service';
+import { Mocked } from 'vitest';
 
 describe('TimeoutBannerService', () => {
   let service: TimeoutBannerService;
-  let keycloakService: jest.Mocked<KeycloakService>;
-  let authService: jest.Mocked<AuthService>;
+  let keycloakService: Mocked<KeycloakService>;
+  let authService: Mocked<AuthService>;
 
   const futureExp = Math.floor(Date.now() / 1000) + 210;
   const mockRefreshTokenParsed = { iat: Math.floor(Date.now() / 1000) - 100, exp: futureExp };
@@ -26,12 +28,12 @@ describe('TimeoutBannerService', () => {
       ],
     });
 
-    keycloakService = TestBed.inject(KeycloakService) as jest.Mocked<KeycloakService>;
-    authService = TestBed.inject(AuthService) as jest.Mocked<AuthService>;
+    keycloakService = TestBed.inject(KeycloakService) as Mocked<KeycloakService>;
+    authService = TestBed.inject(AuthService) as Mocked<AuthService>;
     service = TestBed.inject(TimeoutBannerService);
 
     (keycloakService.keycloakEvents as any) = signal(null);
-    (keycloakService.updateToken as any) = jest.fn().mockResolvedValue(true);
+    (keycloakService.updateToken as any) = vi.fn().mockResolvedValue(true);
     Object.defineProperty(keycloakService, 'refreshTokenParsed', {
       get: () => mockRefreshTokenParsed,
       configurable: true,
@@ -43,9 +45,9 @@ describe('TimeoutBannerService', () => {
   });
 
   afterEach(() => {
-    jest.clearAllTimers();
-    jest.useRealTimers();
-    jest.clearAllMocks();
+    vi.clearAllTimers();
+    vi.useRealTimers();
+    vi.clearAllMocks();
   });
 
   it('should be created', () => {
@@ -83,12 +85,12 @@ describe('TimeoutBannerService', () => {
   });
 
   it('should cleanup on destroy', () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     (keycloakService.keycloakEvents as any).set({
       type: KeycloakEventType.OnAuthRefreshSuccess,
     });
     service.ngOnDestroy();
-    expect(jest.getTimerCount()).toBe(0);
-    jest.useRealTimers();
+    expect(vi.getTimerCount()).toBe(0);
+    vi.useRealTimers();
   });
 });

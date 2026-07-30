@@ -4,6 +4,8 @@ package uk.gov.mrtm.api.workflow.request.flow.empvariation.service;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import uk.gov.mrtm.api.account.domain.MrtmAccount;
 import uk.gov.mrtm.api.account.service.MrtmAccountQueryService;
 import uk.gov.mrtm.api.account.transform.AddressStateMapper;
@@ -30,8 +32,8 @@ public class EmpVariationApprovedAddRequestActionService {
     private final MrtmAccountQueryService accountQueryService;
     private final RequestActionUserInfoResolver requestActionUserInfoResolver;
 
+    @Transactional
     public void addRequestAction(final String requestId) {
-
         Request request = requestService.findRequestById(requestId);
         EmpVariationRequestPayload requestPayload = (EmpVariationRequestPayload) request.getPayload();
 
@@ -44,7 +46,7 @@ public class EmpVariationApprovedAddRequestActionService {
 
         EmpVariationApplicationApprovedRequestActionPayload requestActionPayload =
                 EMP_VARIATION_MAPPER.toEmpVariationApplicationApprovedRequestActionPayload(requestPayload, usersInfo, mrtmAccount.getName(),
-                        addressStateMapper.toAddressState(mrtmAccount.getAddress()), MrtmRequestActionPayloadType.EMP_VARIATION_APPLICATION_APPROVED_PAYLOAD);
+                        addressStateMapper.toAddressStateDTO(mrtmAccount.getAddress()), MrtmRequestActionPayloadType.EMP_VARIATION_APPLICATION_APPROVED_PAYLOAD);
 
         requestService.addActionToRequest(request,
                 requestActionPayload,

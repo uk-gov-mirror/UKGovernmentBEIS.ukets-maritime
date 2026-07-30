@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
@@ -11,7 +11,7 @@ import { empVariationRegulatorQuery } from '@requests/common/emp/+state';
   imports: [ButtonDirective, RouterLink],
   standalone: true,
   template: `
-    @if (canBeDisplayed) {
+    @if (canBeDisplayed()) {
       <div class="govuk-button-group">
         <a govukButton [routerLink]="['emp-variation-regulator', 'notify-operator']">Notify operator of decision</a>
         <a govukSecondaryButton [routerLink]="['emp-variation-regulator', 'peer-review']">Send for peer review</a>
@@ -23,7 +23,9 @@ import { empVariationRegulatorQuery } from '@requests/common/emp/+state';
 export class EmpVariationRegulatorActionButtonsComponent {
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
 
-  canBeDisplayed =
-    this.store.select(requestTaskQuery.selectIsEditable)() &&
-    this.store.select(empVariationRegulatorQuery.selectAreAllSectionsAccepted)();
+  readonly canBeDisplayed = computed(
+    () =>
+      this.store.select(requestTaskQuery.selectIsEditable)() &&
+      this.store.select(empVariationRegulatorQuery.selectAreAllSectionsAccepted)(),
+  );
 }

@@ -4,7 +4,6 @@ import {
   ControlContainer,
   ControlValueAccessor,
   FormGroupDirective,
-  FormsModule,
   NgControl,
   NgForm,
   ReactiveFormsModule,
@@ -32,7 +31,7 @@ import { UKCountryCodes } from '@shared/types';
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: 'div[mrtm-phone-input]',
-  imports: [FieldsetDirective, ErrorMessageComponent, FormsModule, ReactiveFormsModule, AsyncPipe, LegendDirective],
+  imports: [FieldsetDirective, ErrorMessageComponent, ReactiveFormsModule, AsyncPipe, LegendDirective],
   standalone: true,
   templateUrl: './phone-input.component.html',
   providers: [DestroySubject],

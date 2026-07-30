@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { of } from 'rxjs';
@@ -16,7 +16,7 @@ import { WizardStepComponent } from '@shared/components';
 
 @Component({
   selector: 'mrtm-change-2fa',
-  imports: [WizardStepComponent, FormsModule, ReactiveFormsModule, TextInputComponent, PanelComponent],
+  imports: [WizardStepComponent, ReactiveFormsModule, TextInputComponent, PanelComponent],
   standalone: true,
   templateUrl: './change-2fa.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, NgZone } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
+import { expect, vi } from 'vitest';
+
 @Component({
   selector: 'netz-router-stub',
   standalone: true,
@@ -17,7 +19,7 @@ export const expectToHaveNavigatedTo = (route: string) => {
 export const runNavigateInZone: () => void = () => {
   const router = TestBed.inject(Router);
   const originalNavigateByUrl = router.navigateByUrl;
-  jest
-    .spyOn(router, 'navigateByUrl')
-    .mockImplementation((...options) => TestBed.inject(NgZone).run(() => originalNavigateByUrl.apply(router, options)));
+  vi.spyOn(router, 'navigateByUrl').mockImplementation((...options) =>
+    TestBed.inject(NgZone).run(() => originalNavigateByUrl.apply(router, options)),
+  );
 };

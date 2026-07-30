@@ -82,7 +82,7 @@ public class EmpVariationSubmitService {
 
 		EmpVariationApplicationSubmittedRequestActionPayload actionPayload = EMP_VARIATION_SUBMIT_MAPPER
 				.toEmpVariationApplicationSubmittedRequestActionPayload(taskPayload, mrtmAccount.getName(),
-						addressStateMapper.toAddressState(mrtmAccount.getAddress()));
+						addressStateMapper.toAddressStateDTO(mrtmAccount.getAddress()));
 
 		requestService.addActionToRequest(request, actionPayload, MrtmRequestActionType.EMP_VARIATION_APPLICATION_SUBMITTED, appUser.getUserId());
 	}

@@ -8,6 +8,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +24,6 @@ import uk.gov.mrtm.api.web.constants.SwaggerApiInfo;
 import uk.gov.mrtm.api.web.controller.exception.ErrorResponse;
 import uk.gov.netz.api.security.Authorized;
 import uk.gov.netz.api.workflow.request.application.filedocument.requestaction.RequestActionFileDocumentService;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/v1.0/request-action-file-documents")
@@ -49,7 +50,7 @@ public class RequestActionFileDocumentController {
             @PathVariable("id") @Parameter(description = "The request action id") Long requestActionId,
             @RequestParam("fileDocumentUuid") @Parameter(name = "fileDocumentUuid", description = "The file document uuid") @NotNull UUID fileDocumentUuid) {
         FileToken getFileDocumentToken =
-                requestActionFileDocumentService.generateGetFileDocumentToken(requestActionId, fileDocumentUuid);
+        		requestActionFileDocumentService.generateGetFileDocumentToken(requestActionId, fileDocumentUuid);
         return new ResponseEntity<>(getFileDocumentToken, HttpStatus.OK);
     }
 }

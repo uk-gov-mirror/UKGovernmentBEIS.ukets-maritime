@@ -7,7 +7,12 @@ import { catchError, EMPTY, map, of } from 'rxjs';
 
 import { MaritimeAccountsService, MrtmAccountViewDTO } from '@mrtm/api';
 
-import { PageHeadingComponent, ReturnToTaskOrActionPageComponent } from '@netz/common/components';
+import {
+  FeedbackBannerComponent,
+  FeedbackBannerStore,
+  PageHeadingComponent,
+  ReturnToTaskOrActionPageComponent,
+} from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
 import { ButtonDirective } from '@netz/govuk-components';
@@ -17,9 +22,8 @@ import { aerCommonQuery } from '@requests/common/aer/+state';
 import { AerEmissionsWizardStep } from '@requests/common/aer/subtasks/aer-emissions/aer-emissions.helpers';
 import { aerEmissionsMap } from '@requests/common/aer/subtasks/aer-subtasks-list.map';
 import { ListOfShipsTableComponent } from '@requests/common/components/emissions';
-import { MultiSelectedItem, NotificationBannerComponent } from '@shared/components';
+import { MultiSelectedItem } from '@shared/components';
 import { DropdownButtonGroupComponent, DropdownButtonItemComponent } from '@shared/components/dropdown-button-group';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { ShipEmissionTableListItem } from '@shared/types';
 
 @Component({
@@ -30,7 +34,7 @@ import { ShipEmissionTableListItem } from '@shared/types';
     ButtonDirective,
     PageHeadingComponent,
     ReturnToTaskOrActionPageComponent,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
     DropdownButtonGroupComponent,
     DropdownButtonItemComponent,
   ],
@@ -40,7 +44,7 @@ import { ShipEmissionTableListItem } from '@shared/types';
 })
 export class AerListOfShipsComponent {
   private readonly formGroup: UntypedFormGroup = new UntypedFormGroup({});
-  private readonly notificationBannerStore: NotificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
   private readonly store = inject(RequestTaskStore);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -74,12 +78,12 @@ export class AerListOfShipsComponent {
   onContinue() {
     if (this.notCompletedMessage()) {
       this.formGroup.setErrors({ NOT_COMPLETED: this.notCompletedMessage() });
-      this.notificationBannerStore.setInvalidForm(this.formGroup);
+      this.feedbackBannerStore.setInvalidForm(this.formGroup);
       return;
     }
 
     this.formGroup.reset();
-    this.notificationBannerStore.reset();
+    this.feedbackBannerStore.reset();
 
     this.router.navigate(['../'], { relativeTo: this.activatedRoute, queryParams: { submit: true } });
   }
@@ -99,7 +103,7 @@ export class AerListOfShipsComponent {
   onDeleteShips(ships: MultiSelectedItem<ShipEmissionTableListItem>[]) {
     if (ships.length) {
       this.formGroup.reset();
-      this.notificationBannerStore.reset();
+      this.feedbackBannerStore.reset();
 
       this.router.navigate(['../', AerEmissionsWizardStep.DELETE_SHIPS], {
         relativeTo: this.activatedRoute,
@@ -109,7 +113,7 @@ export class AerListOfShipsComponent {
       });
     } else {
       this.formGroup.setErrors({ NONE_SELECTED: 'Select the ships to delete' });
-      this.notificationBannerStore.setInvalidForm(this.formGroup);
+      this.feedbackBannerStore.setInvalidForm(this.formGroup);
     }
   }
 }

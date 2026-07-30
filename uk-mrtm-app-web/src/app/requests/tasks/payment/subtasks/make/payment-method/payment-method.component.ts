@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { take } from 'rxjs';
@@ -21,7 +21,7 @@ import { PAYMENT_METHOD_SELECT_OPTIONS } from '@shared/constants';
 
 @Component({
   selector: 'mrtm-payment-method',
-  imports: [WizardStepComponent, FormsModule, ReactiveFormsModule, RadioComponent, RadioOptionComponent],
+  imports: [WizardStepComponent, ReactiveFormsModule, RadioComponent, RadioOptionComponent],
   standalone: true,
   templateUrl: './payment-method.component.html',
   providers: [paymentMethodFormProvider],

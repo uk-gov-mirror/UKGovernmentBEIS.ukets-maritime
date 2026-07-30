@@ -26,4 +26,9 @@ public class MrtmDocumentTemplateGenerationContextActionType {
      * VIR
      */
     public static final String VIR_REVIEWED = "VIR_REVIEWED";
+
+    /**
+     * SITE_VISIT
+     */
+    public static final String SITE_VISIT = "SITE_VISIT";
 }

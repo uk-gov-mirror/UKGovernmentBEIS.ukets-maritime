@@ -17,7 +17,7 @@ describe('SubmitSendVariationSuccessComponent', () => {
 
   const activatedRouteStub = new ActivatedRouteStub();
   const taskServiceMock: MockType<TaskService<EmpVariationTaskPayload>> = {
-    submit: jest.fn().mockReturnValue(of({})),
+    submit: vi.fn().mockReturnValue(of({})),
   };
 
   class Page extends BasePage<SubmitSendVariationSuccessComponent> {}

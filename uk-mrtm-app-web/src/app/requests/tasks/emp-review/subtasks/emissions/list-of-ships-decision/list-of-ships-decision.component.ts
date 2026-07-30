@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
+import { FeedbackBannerComponent, FeedbackBannerStore } from '@netz/common/components';
 import { TaskService } from '@netz/common/forms';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
 import { ButtonDirective, LinkDirective, WarningTextComponent } from '@netz/govuk-components';
@@ -19,8 +20,7 @@ import {
   reviewDecisionFormProvider,
 } from '@requests/tasks/emp-review/components/review-decision';
 import { EmpReviewService } from '@requests/tasks/emp-review/services';
-import { NotificationBannerComponent, WizardStepComponent } from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
+import { WizardStepComponent } from '@shared/components';
 import { ListOfShipsSummaryTemplateComponent } from '@shared/components/summaries';
 
 @Component({
@@ -32,7 +32,7 @@ import { ListOfShipsSummaryTemplateComponent } from '@shared/components/summarie
     ReactiveFormsModule,
     WizardStepComponent,
     ReviewDecisionComponent,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
     ButtonDirective,
     WarningTextComponent,
   ],
@@ -45,7 +45,7 @@ export class ListOfShipsDecisionComponent {
   protected readonly form: ReviewDecisionFormModel = inject(REVIEW_DECISION_FORM);
 
   private readonly formGroup = new UntypedFormGroup({});
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
 
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
   private readonly service: TaskService<EmpReviewTaskPayload> = inject(TaskService<EmpReviewTaskPayload>);
@@ -64,15 +64,15 @@ export class ListOfShipsDecisionComponent {
   onContinueAttempt() {
     if (this.notCompletedMessage()) {
       this.formGroup.setErrors({ NOT_COMPLETED: this.notCompletedMessage() });
-      this.notificationBannerStore.setInvalidForm(this.formGroup);
+      this.feedbackBannerStore.setInvalidForm(this.formGroup);
     } else {
       this.formGroup.reset();
-      this.notificationBannerStore.reset();
+      this.feedbackBannerStore.reset();
     }
   }
 
   onSubmit() {
-    this.notificationBannerStore.reset();
+    this.feedbackBannerStore.reset();
 
     (this.service as EmpReviewService)
       .saveReviewDecision(

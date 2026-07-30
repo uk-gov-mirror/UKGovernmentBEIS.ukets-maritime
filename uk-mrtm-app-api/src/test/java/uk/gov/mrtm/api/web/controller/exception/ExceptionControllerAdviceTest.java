@@ -1,5 +1,7 @@
 package uk.gov.mrtm.api.web.controller.exception;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validation;
@@ -61,6 +63,25 @@ class ExceptionControllerAdviceTest {
         assertNotNull(errorResponse);
         assertEquals(errorCode.getCode(), errorResponse.getCode());
         assertEquals(errorCode.getMessage(), errorResponse.getMessage());
+        assertThat(errorResponse.getData()).isEmpty();
+    }
+
+    @Test
+    void handleBusinessException_serializesEmptyDataArray() throws Exception {
+        BusinessException businessException = new BusinessException(ErrorCode.RESOURCE_NOT_FOUND);
+
+        ResponseEntity<ErrorResponse> errorResponseEntity =
+            exceptionControllerAdvice.handleBusinessException(businessException);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode json = objectMapper.readTree(
+            objectMapper.writeValueAsString(errorResponseEntity.getBody()));
+
+        assertThat(json.get("code").asText()).isEqualTo(ErrorCode.RESOURCE_NOT_FOUND.getCode());
+        assertThat(json.has("data")).isTrue();
+        JsonNode data = json.get("data");
+        assertThat(data.isArray()).isTrue();
+        assertThat(data).isEmpty();
     }
 
 

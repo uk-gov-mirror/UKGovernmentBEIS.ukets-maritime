@@ -32,7 +32,7 @@ public class EmpVariationReviewRequestPeerReviewActionHandler
 
     @Override
     public RequestTaskPayload process(Long requestTaskId, String requestTaskActionType, AppUser appUser, PeerReviewRequestTaskActionPayload payload) {
-        RequestTask requestTask = requestTaskService.findTaskById(requestTaskId);
+        RequestTask requestTask = requestTaskService.findTaskByIdForUpdate(requestTaskId);
         String selectedPeerReviewer = payload.getPeerReviewer();
 
         requestPeerReviewValidatorService.validate(requestTask, selectedPeerReviewer, appUser);

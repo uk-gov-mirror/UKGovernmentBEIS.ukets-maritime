@@ -8,13 +8,14 @@ import { PendingRequestService } from '@netz/common/services';
 
 import { PendingRequestGuard } from '@core/guards/pending-request.guard';
 import { PendingRequest } from '@core/interfaces';
+import { MockInstance } from 'vitest';
 
 describe('PendingRequestGuard', () => {
   let testComponent: TestComponent;
   let fixture: ComponentFixture<TestComponent>;
   let guard: PendingRequestGuard;
   let router: Router;
-  let windowAlert: jest.SpyInstance;
+  let windowAlert: MockInstance;
 
   @Component({
     selector: 'mrtm-test-1',
@@ -35,7 +36,7 @@ describe('PendingRequestGuard', () => {
     testComponent = fixture.componentInstance;
     guard = TestBed.inject(PendingRequestGuard);
     router = TestBed.inject(Router);
-    windowAlert = jest.spyOn(window, 'alert').mockImplementation();
+    windowAlert = vi.spyOn(window, 'alert').mockImplementation(() => undefined);
     fixture.detectChanges();
   });
 
@@ -44,18 +45,19 @@ describe('PendingRequestGuard', () => {
   });
 
   it('should alert if deactivating while request is pending', async () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
 
     testComponent.someRequest.subscribe();
 
     await expect(lastValueFrom(guard.canDeactivate(testComponent) as Observable<boolean>)).resolves.toBeFalsy();
     expect(windowAlert).toHaveBeenCalled();
 
-    jest.advanceTimersByTime(3000);
+    vi.advanceTimersByTime(3000);
+    vi.useRealTimers();
   });
 
   it('should allow deactivation if forced navigation', () => {
-    jest.spyOn(router, 'currentNavigation').mockReturnValue({ extras: { state: { forceNavigation: true } } } as any);
+    vi.spyOn(router, 'currentNavigation').mockReturnValue({ extras: { state: { forceNavigation: true } } } as any);
 
     expect(guard.canDeactivate(testComponent)).toEqual(true);
   });
@@ -65,7 +67,7 @@ describe('PendingRequestGuard', () => {
   });
 
   it('should allow deactivation if there is no globally pending request', async () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     const pendingRequestService = TestBed.inject(PendingRequestService);
     const canDeactivate = guard.canDeactivate(
       TestBed.createComponent(EmptyTestComponent).componentInstance,
@@ -75,13 +77,15 @@ describe('PendingRequestGuard', () => {
 
     await expect(firstValueFrom(canDeactivate)).resolves.toBeFalsy();
 
-    jest.advanceTimersByTime(3000);
+    vi.advanceTimersByTime(3000);
 
     await expect(firstValueFrom(canDeactivate)).resolves.toBeTruthy();
+
+    vi.useRealTimers();
   });
 
   it('should allow deactivation if there is no globally or locally pending request', async () => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     const pendingRequestService = TestBed.inject(PendingRequestService);
     const canDeactivate = guard.canDeactivate(testComponent) as Observable<boolean>;
 
@@ -90,12 +94,14 @@ describe('PendingRequestGuard', () => {
 
     await expect(lastValueFrom(canDeactivate)).resolves.toBeFalsy();
 
-    jest.advanceTimersByTime(2000);
+    vi.advanceTimersByTime(2000);
 
     await expect(lastValueFrom(canDeactivate)).resolves.toBeFalsy();
 
-    jest.advanceTimersByTime(3000);
+    vi.advanceTimersByTime(3000);
 
     await expect(lastValueFrom(canDeactivate)).resolves.toBeTruthy();
+
+    vi.useRealTimers();
   });
 });

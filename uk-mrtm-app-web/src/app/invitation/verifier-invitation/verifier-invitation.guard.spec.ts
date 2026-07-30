@@ -9,11 +9,12 @@ import { InvitedUserInfoDTO, VerifierUsersRegistrationService } from '@mrtm/api'
 import { ActivatedRouteSnapshotStub, mockClass } from '@netz/common/testing';
 
 import { VerifierInvitationGuard } from '@invitation/verifier-invitation/verifier-invitation.guard';
+import { Mocked } from 'vitest';
 
 describe('VerifierInvitationGuard', () => {
   let guard: VerifierInvitationGuard;
   let router: Router;
-  let verifierUsersRegistrationService: jest.Mocked<VerifierUsersRegistrationService>;
+  let verifierUsersRegistrationService: Mocked<VerifierUsersRegistrationService>;
 
   beforeEach(() => {
     verifierUsersRegistrationService = mockClass(VerifierUsersRegistrationService);
@@ -39,7 +40,7 @@ describe('VerifierInvitationGuard', () => {
   });
 
   it('should navigate to invalid link for all 400 errors', async () => {
-    const navigateSpy = jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     verifierUsersRegistrationService.acceptVerifierInvitation.mockReturnValue(
       throwError(() => new HttpErrorResponse({ error: { code: 'testCode' }, status: 400 })),
     );
@@ -57,7 +58,7 @@ describe('VerifierInvitationGuard', () => {
       email: 'user@pmrv.uk',
       invitationStatus: 'ALREADY_REGISTERED_SET_PASSWORD_ONLY',
     };
-    verifierUsersRegistrationService.acceptVerifierInvitation = jest.fn().mockReturnValue(of(invitedUser));
+    verifierUsersRegistrationService.acceptVerifierInvitation = vi.fn().mockReturnValue(of(invitedUser));
 
     await lastValueFrom(guard.canActivate(new ActivatedRouteSnapshotStub(undefined, { token: 'token' })));
 
@@ -68,9 +69,9 @@ describe('VerifierInvitationGuard', () => {
   });
 
   it('should resolved the invited user and navigate to confirmed when invitation status is already registered', async () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     const invitedUser: InvitedUserInfoDTO = { email: 'user@pmrv.uk', invitationStatus: 'ALREADY_REGISTERED' };
-    verifierUsersRegistrationService.acceptVerifierInvitation = jest.fn().mockReturnValue(of(invitedUser));
+    verifierUsersRegistrationService.acceptVerifierInvitation = vi.fn().mockReturnValue(of(invitedUser));
 
     await lastValueFrom(guard.canActivate(new ActivatedRouteSnapshotStub(undefined, { token: 'token' })));
     expect(guard.resolve()).toEqual(invitedUser);

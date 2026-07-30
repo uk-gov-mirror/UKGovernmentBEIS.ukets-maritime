@@ -7,8 +7,8 @@ import uk.gov.mrtm.api.account.enumeration.AccountSearchKey;
 import uk.gov.mrtm.api.account.service.MrtmAccountUpdateService;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlanContainer;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.emissions.EmpShipEmissions;
-import uk.gov.mrtm.api.emissionsmonitoringplan.domain.operatordetails.EmpOperatorDetails;
-import uk.gov.mrtm.api.emissionsmonitoringplan.service.EmissionsMonitoringPlanQueryService;
+import uk.gov.mrtm.api.emissionsmonitoringplan.service.EmissionsMonitoringPlanService;
+import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceAccountDraftData;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.mapper.EmpReviewMapper;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.submit.domain.EmpIssuanceRequestPayload;
 import uk.gov.netz.api.account.service.AccountSearchAdditionalKeywordService;
@@ -25,9 +25,10 @@ import java.util.stream.Collectors;
 public class EmpIssuanceApprovedService {
 
     private final RequestService requestService;
-    private final EmissionsMonitoringPlanQueryService emissionsMonitoringPlanService;
+    private final EmissionsMonitoringPlanService emissionsMonitoringPlanService;
     private final MrtmAccountUpdateService accountUpdateService;
     private final AccountSearchAdditionalKeywordService accountSearchAdditionalKeywordService;
+    private final EmpIssuanceAccountDraftDataQueryService accountDraftDataQueryService;
 
     private static final EmpReviewMapper empReviewMapper = Mappers.getMapper(EmpReviewMapper.class);
 
@@ -41,22 +42,21 @@ public class EmpIssuanceApprovedService {
                 empReviewMapper.toEmissionsMonitoringPlanContainer(requestPayload);
 
         Set<EmpShipEmissions> empShipEmissionsSet = empContainer.getEmissionsMonitoringPlan().getEmissions().getShips();
-        Set<EmpShipEmissions> sorted = (Set<EmpShipEmissions>) empShipEmissionsSet.stream().sorted()
+        Set<EmpShipEmissions> sorted = empShipEmissionsSet.stream().sorted()
                 .collect(Collectors.toCollection(LinkedHashSet::new));
         empContainer.getEmissionsMonitoringPlan().getEmissions().setShips(sorted);
 
-        emissionsMonitoringPlanService.submitEmissionsMonitoringPlan(accountId, empContainer);
+        emissionsMonitoringPlanService.submitEmissionsMonitoringPlan(accountId, empContainer, requestPayload.getEmpDocument().getUuid());
 
-        EmpOperatorDetails empOperatorDetails = empContainer.getEmissionsMonitoringPlan().getOperatorDetails();
+        //collect data
+        final EmpIssuanceAccountDraftData accountDraftData = accountDraftDataQueryService
+            .getAccountDraftData(requestPayload);
 
-        accountUpdateService.updateAccountUponEmpApproved(
-                accountId,
-                empOperatorDetails.getOperatorName(),
-                empOperatorDetails.getContactAddress(),
-                empOperatorDetails.getOrganisationStructure().getRegisteredAddress()
-        );
+        accountUpdateService.updateAccountUponEmpApproved(accountId, accountDraftData);
 
-        updateSearchKeywords(accountId, empOperatorDetails.getOperatorName());
+        requestService.saveRequest(request);
+
+        updateSearchKeywords(accountId, accountDraftData.getName());
     }
 
     private void updateSearchKeywords(Long accountId, String name) {

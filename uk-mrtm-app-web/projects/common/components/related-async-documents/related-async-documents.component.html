@@ -1,0 +1,57 @@
+@if (previewDocuments()?.length > 0) {
+  <h2 class="govuk-heading-m" id="document-preview-title">Document preview</h2>
+  <nav role="navigation" aria-labelledby="document-preview-title">
+    <ul class="govuk-list govuk-!-font-size-16">
+      @for (pocPreviewFile of taskPreviewFiles(); track pocPreviewFile.requestGeneratedFileType) {
+        <li>
+          @switch (pocPreviewFile?.status) {
+            @case ('IN_PROGRESS') {
+              <netz-loading-spinner
+                class="govuk-!-display-inline-block govuk-!-margin-right-1"
+                [size]="16"
+                [hasPaddingTop]="false" />
+              <span>{{ pocPreviewFile.loadingText }}...</span>
+            }
+            @case ('COMPLETED') {
+              <div class="govuk-grid-row govuk-!-margin-bottom-2">
+                <div class="govuk-grid-column-full">
+                  <a
+                    govukLink
+                    [routerLink]="[fileDownloadPrePath(), 'file-download', pocPreviewFile?.file?.uuid].flat()"
+                    target="_blank">
+                    {{ pocPreviewFile.displayedFileName }}
+                  </a>
+                </div>
+              </div>
+              <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                  <span class="govuk-hint govuk-!-font-size-16">
+                    Created on {{ pocPreviewFile?.createdDate | govukDate: 'datetime' }}
+                  </span>
+                </div>
+                <div class="govuk-grid-column-one-third govuk-!-text-align-right">
+                  <a
+                    govukLink
+                    class="govuk-link--no-visited-state"
+                    href="javascript:void(0)"
+                    (click)="generatePreviewFile(pocPreviewFile)">
+                    Update
+                  </a>
+                </div>
+              </div>
+            }
+            @default {
+              <a
+                govukLink
+                class="govuk-link--no-visited-state"
+                href="javascript:void(0)"
+                (click)="generatePreviewFile(pocPreviewFile)">
+                {{ pocPreviewFile.labelText }}
+              </a>
+            }
+          }
+        </li>
+      }
+    </ul>
+  </nav>
+}

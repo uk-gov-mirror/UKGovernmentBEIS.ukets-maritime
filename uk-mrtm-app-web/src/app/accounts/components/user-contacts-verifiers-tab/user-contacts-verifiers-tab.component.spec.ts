@@ -1,4 +1,5 @@
 import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -135,14 +136,14 @@ describe('UserContactsVerifiersTabComponent', () => {
   }
 
   const operatorAuthoritiesService: MockType<OperatorAuthoritiesService> = {
-    updateAccountOperatorAuthorities: jest.fn().mockReturnValue(of(null)),
-    deleteAccountOperatorAuthority: jest.fn().mockReturnValue(of(null)),
-    deleteCurrentUserAccountOperatorAuthority: jest.fn().mockReturnValue(of(null)),
-    getAccountOperatorAuthorities: jest.fn().mockReturnValue(of(mockOperatorListData)),
+    updateAccountOperatorAuthorities: vi.fn().mockReturnValue(of(null)),
+    deleteAccountOperatorAuthority: vi.fn().mockReturnValue(of(null)),
+    deleteCurrentUserAccountOperatorAuthority: vi.fn().mockReturnValue(of(null)),
+    getAccountOperatorAuthorities: vi.fn().mockReturnValue(of(mockOperatorListData)),
   };
 
   const authoritiesService: MockType<AuthoritiesService> = {
-    getOperatorRoleCodes: jest.fn().mockReturnValue(asyncData(mockOperatorRoleCodes)),
+    getOperatorRoleCodes: vi.fn().mockReturnValue(asyncData(mockOperatorRoleCodes)),
   };
 
   const setUser = (roleType: UserStateDTO['roleType']) => {
@@ -172,20 +173,21 @@ describe('UserContactsVerifiersTabComponent', () => {
 
   const createModule = async () => {
     accountVerificationBodyService = {
-      getVerificationBodyOfAccount: jest.fn().mockReturnValue(throwError(() => ({ status: 404 }))),
+      getVerificationBodyOfAccount: vi.fn().mockReturnValue(throwError(() => ({ status: 404 }))),
     };
     accountThirdPartyDataProvidersService = {
-      getAllThirdPartyDataProviders1: jest.fn().mockReturnValue(of(null)),
-      getThirdPartyDataProviderOfAccount: jest.fn().mockReturnValue(of(null)),
+      getAllThirdPartyDataProviders1: vi.fn().mockReturnValue(of(null)),
+      getThirdPartyDataProviderOfAccount: vi.fn().mockReturnValue(of(null)),
     };
     activatedRouteStub = new ActivatedRouteStub({ accountId: mockedAccount.account.id });
     authService = {
-      loadUserState: jest.fn(),
+      loadUserState: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
+        provideHttpClientTesting(),
         OperatorAccountsStore,
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: AuthService, useValue: authService },
@@ -203,12 +205,12 @@ describe('UserContactsVerifiersTabComponent', () => {
   };
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('for approved accounts and users with edit rights', () => {
     beforeEach(async () => {
-      operatorAuthoritiesService.getAccountOperatorAuthorities = jest.fn().mockReturnValue(of(mockOperatorListData));
+      operatorAuthoritiesService.getAccountOperatorAuthorities = vi.fn().mockReturnValue(of(mockOperatorListData));
       await createModule();
       createComponent();
     });
@@ -397,7 +399,7 @@ describe('UserContactsVerifiersTabComponent', () => {
     it('should show appoint to data supplier if one is not already appointed', async () => {
       expect(page.appointDataSupplierLink).toBeTruthy();
 
-      accountThirdPartyDataProvidersService.getThirdPartyDataProviderOfAccount = jest.fn().mockReturnValue(
+      accountThirdPartyDataProvidersService.getThirdPartyDataProviderOfAccount = vi.fn().mockReturnValue(
         of({
           id: 1,
           name: 'Data supplier',
@@ -413,7 +415,7 @@ describe('UserContactsVerifiersTabComponent', () => {
     it('should show appoint verifier button if one is not already appointed', async () => {
       expect(page.appointVerifierLink).toBeTruthy();
 
-      accountVerificationBodyService.getVerificationBodyOfAccount = jest.fn().mockReturnValue(
+      accountVerificationBodyService.getVerificationBodyOfAccount = vi.fn().mockReturnValue(
         of({
           id: 1,
           name: 'Verifying company',
@@ -434,7 +436,7 @@ describe('UserContactsVerifiersTabComponent', () => {
     });
 
     it('should navigate to add operator form', () => {
-      const navigateSpy = jest.spyOn(router, 'navigate').mockImplementation();
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
       page.addUserFormButton.click();
       fixture.detectChanges();
@@ -516,6 +518,7 @@ describe('UserContactsVerifiersTabComponent', () => {
     });
 
     it('should show error summary when updating a deleted user', async () => {
+      vi.spyOn(router, 'navigate').mockResolvedValue(true);
       operatorAuthoritiesService.updateAccountOperatorAuthorities.mockReturnValue(
         throwError(() => new HttpErrorResponse({ status: 400, error: { code: ErrorCodes.AUTHORITY1004 } })),
       );
@@ -540,9 +543,9 @@ describe('UserContactsVerifiersTabComponent', () => {
   describe('for approved accounts and users without edit rights', () => {
     beforeEach(async () => {
       const mockOperatorListDataNonEditable = { ...mockOperatorListData, editable: false };
-      operatorAuthoritiesService.getAccountOperatorAuthorities = jest
+      operatorAuthoritiesService.getAccountOperatorAuthorities = vi
         .fn()
-        .mockReturnValueOnce(of(mockOperatorListDataNonEditable));
+        .mockReturnValueOnce(of(mockOperatorListDataNonEditable)) as any;
     });
     beforeEach(createModule);
     beforeEach(createComponent);

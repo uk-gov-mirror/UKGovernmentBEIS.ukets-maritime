@@ -1,0 +1,45 @@
+@if (showConfirmation()) {
+  <netz-page-heading>Are you sure you want to replace the data?</netz-page-heading>
+
+  <govuk-warning-text assistiveText="All previously entered data will be overwritten by the new file." />
+
+  <div class="govuk-button-group">
+    <button govukWarnButton netzPendingButton type="button" (click)="confirmImport()">Yes, replace file</button>
+    <a govukLink routerLink="." type="button" (click)="cancelConfirmation()">Cancel</a>
+  </div>
+} @else {
+  <mrtm-data-parser-wizard-step
+    (formSubmit)="onSubmit(hasInProgressSubtasks() && !showConfirmation())"
+    [formGroup]="formGroup"
+    heading="Import EU XML if you have a single ship"
+    [showReturnLink]="false"
+    [isTwoThirds]="true"
+    submitText="Import data"
+    [xmlErrors]="xmlErrors()">
+    @if (hasInProgressSubtasks()) {
+      <govuk-warning-text
+        assistiveText="If you import data from an XML, all of the data that has been entered will be replaced." />
+    }
+
+    <p class="govuk-hint">
+      Upload an XML file from the THETIS system. EU XML files that conform to EU THETIS schema v11.3.2 are supported.
+      The file data will be validated against the EU XML schema. If the data cannot be uploaded fully, you will be asked
+      to review and update the relevant fields in the METS service.
+    </p>
+    <input type="file" accept=".xml" (change)="onFileSelect($event)" style="display: none" #fileInput />
+
+    <div class="govuk-button-group">
+      <button type="button" govukSecondaryButton (click)="fileInput.click()">Choose file</button>
+      @if (uploadedFile) {
+        <p class="govuk-body">{{ uploadedFile.name }}</p>
+      } @else {
+        <p class="govuk-body">No file chosen</p>
+      }
+    </div>
+  </mrtm-data-parser-wizard-step>
+}
+
+<div>
+  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" aria-hidden="true" />
+  <netz-return-to-task-or-action-page />
+</div>

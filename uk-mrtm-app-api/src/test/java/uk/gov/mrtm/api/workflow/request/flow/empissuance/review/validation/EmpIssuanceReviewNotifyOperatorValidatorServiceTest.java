@@ -9,12 +9,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpIssuanceDetermination;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpIssuanceDeterminationType;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceApplicationReviewRequestTaskPayload;
-import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload;
 import uk.gov.netz.api.authorization.core.domain.AppUser;
 import uk.gov.netz.api.common.exception.BusinessException;
 import uk.gov.netz.api.common.exception.ErrorCode;
 import uk.gov.netz.api.workflow.request.core.domain.RequestTask;
 import uk.gov.netz.api.workflow.request.flow.common.domain.DecisionNotification;
+import uk.gov.netz.api.workflow.request.flow.common.domain.NotifyOperatorForDecisionRequestTaskActionPayload;
 import uk.gov.netz.api.workflow.request.flow.common.validation.DecisionNotificationUsersValidator;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -51,8 +51,8 @@ class EmpIssuanceReviewNotifyOperatorValidatorServiceTest {
             .build();
 
         DecisionNotification decisionNotification = DecisionNotification.builder().build();
-        EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload notifyOperatorRequestTaskActionPayload =
-            EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload.builder()
+        NotifyOperatorForDecisionRequestTaskActionPayload notifyOperatorRequestTaskActionPayload =
+            NotifyOperatorForDecisionRequestTaskActionPayload.builder()
                 .decisionNotification(decisionNotification)
                 .build();
 
@@ -82,8 +82,8 @@ class EmpIssuanceReviewNotifyOperatorValidatorServiceTest {
             .build();
 
         DecisionNotification decisionNotification = DecisionNotification.builder().build();
-        EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload notifyOperatorRequestTaskActionPayload =
-            EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload.builder()
+        NotifyOperatorForDecisionRequestTaskActionPayload notifyOperatorRequestTaskActionPayload =
+            NotifyOperatorForDecisionRequestTaskActionPayload.builder()
                 .decisionNotification(decisionNotification)
                 .build();
 

@@ -38,7 +38,7 @@ describe('EditComponent', () => {
     fixture.detectChanges();
   });
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -58,7 +58,7 @@ describe('EditComponent', () => {
   });
 
   it('should navigate to parent route when form is pristine', () => {
-    const navigateSpy = jest.spyOn((component as any).router, 'navigate').mockResolvedValue(true);
+    const navigateSpy = vi.spyOn((component as any).router, 'navigate').mockResolvedValue(true);
 
     component.handleFormSubmit();
 
@@ -69,7 +69,7 @@ describe('EditComponent', () => {
     verificationBodiesService.updateVerificationBody.mockReturnValue(of(null as any));
     component.form.markAsDirty();
 
-    const navigateSpy = jest.spyOn((component as any).router, 'navigate').mockResolvedValue(true);
+    const navigateSpy = vi.spyOn((component as any).router, 'navigate').mockResolvedValue(true);
 
     component.handleFormSubmit();
 

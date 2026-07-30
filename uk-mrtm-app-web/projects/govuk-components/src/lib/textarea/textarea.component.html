@@ -16,7 +16,6 @@
   <govuk-error-message [errors]="control.errors" [identifier]="identifier" />
 }
 <textarea
-  #textArea
   (blur)="handleBlur(getInputValue($event))"
   [attr.aria-describedby]="hint() ? `${identifier}-hint` : null"
   [formControl]="control"
@@ -25,28 +24,28 @@
   [rows]="rows()"
   class="govuk-textarea govuk-!-margin-bottom-1"
   [class.govuk-textarea--error]="
-    shouldDisplayErrors || (maxLength() !== undefined && exceedsMaxLength(textArea.value?.length))
+    shouldDisplayErrors || (maxLength() !== undefined && exceedsMaxLength(valueLength()))
   "></textarea>
 
-@if (maxLength() && (exceedsMaxLength(textArea.value?.length) || approachesMaxLength(textArea.value?.length))) {
+@if (maxLength() && (exceedsMaxLength(valueLength()) || approachesMaxLength(valueLength()))) {
   <span
-    [class.govuk-error-message]="exceedsMaxLength(textArea.value?.length)"
-    [class.govuk-hint]="!exceedsMaxLength(textArea.value?.length)"
+    [class.govuk-error-message]="exceedsMaxLength(valueLength())"
+    [class.govuk-hint]="!exceedsMaxLength(valueLength())"
     [id]="`${identifier}-info`"
     aria-live="polite"
     class="govuk-character-count__message">
-    @if (exceedsMaxLength(textArea.value?.length)) {
-      @if (textArea.value?.length - maxLength() > 1) {
-        You have {{ textArea.value?.length - maxLength() }} characters too many
+    @if (exceedsMaxLength(valueLength())) {
+      @if (valueLength() - maxLength() > 1) {
+        You have {{ valueLength() - maxLength() }} characters too many
       } @else {
-        You have {{ textArea.value?.length - maxLength() }} character too many
+        You have {{ valueLength() - maxLength() }} character too many
       }
     }
-    @if (approachesMaxLength(textArea.value?.length)) {
-      @if (maxLength() - textArea.value?.length === 1) {
-        You have {{ maxLength() - textArea.value?.length }} character remaining
+    @if (approachesMaxLength(valueLength())) {
+      @if (maxLength() - valueLength() === 1) {
+        You have {{ maxLength() - valueLength() }} character remaining
       } @else {
-        You have {{ maxLength() - textArea.value?.length }} characters remaining
+        You have {{ maxLength() - valueLength() }} characters remaining
       }
     }
   </span>

@@ -10,6 +10,7 @@
 import { EmissionsMonitoringPlan } from './emissionsMonitoringPlan';
 import { EmpIssuanceDetermination } from './empIssuanceDetermination';
 import { EmpIssuanceReviewDecision } from './empIssuanceReviewDecision';
+import { RequestTaskPreviewFileInfoDTO } from './requestTaskPreviewFileInfoDTO';
 
 export interface EmpIssuanceApplicationReviewRequestTaskPayload {
   payloadType?: string;
@@ -20,6 +21,9 @@ export interface EmpIssuanceApplicationReviewRequestTaskPayload {
   determination?: EmpIssuanceDetermination;
   accountOpeningEventSentToRegistry?: boolean;
   reviewGroupDecisions?: { [key: string]: EmpIssuanceReviewDecision };
+  finalDocumentsGenerationInProgress?: boolean;
+  finalDocumentsGenerationSuccessful?: boolean;
+  previewFiles?: { [key: string]: RequestTaskPreviewFileInfoDTO };
   reviewAttachments?: { [key: string]: string };
   rfiAttachments?: { [key: string]: string };
 }

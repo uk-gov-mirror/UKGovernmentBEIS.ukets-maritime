@@ -1,39 +1,18 @@
 @if (vm$ | async; as vm) {
-  @if (vm.isSummaryDisplayed) {
-    <govuk-error-summary [form]="searchForm" />
-  }
+  <netz-feedback-banner [preventResetOnNavigation]="true" />
   <netz-page-heading size="xl">Accounts</netz-page-heading>
-  <span class="govuk-hint">Enter Emitter ID, name, IMO number or Registry ID</span>
+  <mrtm-accounts-list-filters />
+
   <div class="govuk-grid-row">
-    <form (ngSubmit)="onSearch()" [formGroup]="searchForm" id="search-form">
-      <div class="govuk-grid-column-full">
-        <div class="govuk-grid-row">
-          <div class="govuk-grid-column-three-quarters">
-            <div label="Search user" [isLabelHidden]="true" formControlName="term" govuk-text-input></div>
-          </div>
-          <div class="govuk-grid-column-one-quarter">
-            <button netzPendingButton govukButton type="submit">Search</button>
-          </div>
-        </div>
-      </div>
-      <div class="govuk-grid-column-full">
-        @if (vm.accounts?.length) {
-          <mrtm-accounts-list id="accounts-list" [accounts]="vm.accounts" />
-          @if (vm.total > vm.pageSize) {
-            <govuk-pagination
-              fragment="accounts-list"
-              [count]="vm.total"
-              (currentPageChange)="onPageChange($event)"
-              [pageSize]="vm.pageSize" />
-          }
-        } @else {
-          <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-              <p class="govuk-body" tabindex="-1">There are no results to show</p>
-            </div>
-          </div>
-        }
-      </div>
-    </form>
+    <div class="govuk-grid-column-full">
+      <mrtm-accounts-list id="accounts-list" [accounts]="vm.accounts" (sort)="onSort($event)" />
+      @if (vm.total > vm.pageSize) {
+        <govuk-pagination
+          fragment="accounts-list"
+          [count]="vm.total"
+          (currentPageChange)="onPageChange($event)"
+          [pageSize]="vm.pageSize" />
+      }
+    </div>
   </div>
 }

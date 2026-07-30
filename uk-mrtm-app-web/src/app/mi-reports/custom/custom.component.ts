@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { BehaviorSubject, EMPTY, map } from 'rxjs';
 
@@ -16,7 +16,7 @@ import { manipulateResultsAndExportToExcel } from '@mi-reports/core/mi-report';
 
 @Component({
   selector: 'mrtm-custom',
-  imports: [PageHeadingComponent, FormsModule, ReactiveFormsModule, TextareaComponent, ButtonDirective, AsyncPipe],
+  imports: [PageHeadingComponent, ReactiveFormsModule, TextareaComponent, ButtonDirective, AsyncPipe],
   standalone: true,
   templateUrl: './custom.component.html',
   providers: [DestroySubject],

@@ -6,12 +6,13 @@ import { CaExternalContactsDTO, CaExternalContactsService } from '@mrtm/api';
 import { asyncData, BasePage, expectToHaveNavigatedTo, RouterStubComponent } from '@netz/common/testing';
 
 import { ExternalContactsComponent } from '@regulators/external-contacts/external-contacts.component';
+import { Mocked } from 'vitest';
 
 describe('ExternalContactsComponent', () => {
   let component: ExternalContactsComponent;
   let fixture: ComponentFixture<ExternalContactsComponent>;
   let page: Page;
-  let externalContactsService: jest.Mocked<Partial<CaExternalContactsService>>;
+  let externalContactsService: Mocked<Partial<CaExternalContactsService>>;
 
   const caExternalContacts: CaExternalContactsDTO = {
     caExternalContacts: [
@@ -81,7 +82,7 @@ describe('ExternalContactsComponent', () => {
   };
 
   const createComponent = async () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     fixture = TestBed.createComponent(ExternalContactsComponent);
     component = fixture.componentInstance;
     page = new Page(fixture);
@@ -92,7 +93,7 @@ describe('ExternalContactsComponent', () => {
 
   beforeEach(async () => {
     externalContactsService = {
-      getCaExternalContacts: jest.fn().mockReturnValue(asyncData(caExternalContacts)),
+      getCaExternalContacts: vi.fn().mockReturnValue(asyncData(caExternalContacts)),
     };
 
     await TestBed.configureTestingModule({
@@ -138,8 +139,9 @@ describe('ExternalContactsComponent', () => {
     expectUserOrderToBe([1, 2, 0]);
   });
 
-  it('should delete a user', () => {
+  it('should delete a user', async () => {
     page.deleteButtons[0].click();
+    await fixture.whenStable();
 
     expectToHaveNavigatedTo('external-contacts/3/delete');
   });
@@ -149,7 +151,7 @@ describe('ExternalContactsComponent', () => {
     page.rowHeaderLinks.forEach((link) => expect(link).not.toBeNull());
 
     externalContactsService.getCaExternalContacts.mockReturnValue(
-      asyncData({ ...caExternalContacts, isEditable: false }),
+      asyncData({ ...caExternalContacts, isEditable: false }) as any,
     );
 
     await createComponent();

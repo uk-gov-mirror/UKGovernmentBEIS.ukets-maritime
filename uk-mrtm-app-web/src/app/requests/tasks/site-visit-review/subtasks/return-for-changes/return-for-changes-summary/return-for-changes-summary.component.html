@@ -1,0 +1,14 @@
+<netz-page-heading>Return for changes</netz-page-heading>
+
+<p class="govuk-body">Check your information before sending</p>
+
+<mrtm-review-return-for-amends-subtask-summary-template
+  caption="Application details"
+  [reviewDecision]="decisionForAmends()" />
+
+<button type="button" govukButton (click)="onSubmit()" netzPendingButton>Confirm and send</button>
+
+<div>
+  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" aria-hidden="true" />
+  <netz-return-to-task-or-action-page />
+</div>

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 
+import { of } from 'rxjs';
+
 import { NotificationTemplatesService } from '@mrtm/api';
 
 import { ActivatedRouteStub, BasePage, mockClass } from '@netz/common/testing';
@@ -88,6 +90,7 @@ describe('EmailTemplateComponent', () => {
     page.templateSubjectValue = updatedSubject;
     page.templateMessageValue = updatedMessage;
 
+    notificationTemplatesService.updateNotificationTemplate.mockReturnValue(of(undefined));
     page.submitButton.click();
     fixture.detectChanges();
     expect(page.errorSummary).toBeFalsy();

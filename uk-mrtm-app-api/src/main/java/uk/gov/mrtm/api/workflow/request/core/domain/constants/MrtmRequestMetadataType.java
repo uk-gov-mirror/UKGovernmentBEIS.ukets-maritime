@@ -11,4 +11,5 @@ public class MrtmRequestMetadataType {
     public static final String AER = "AER";
     public static final String DOE = "DOE";
     public static final String VIR = "VIR";
+    public static final String SITE_VISIT = "SITE_VISIT";
 }

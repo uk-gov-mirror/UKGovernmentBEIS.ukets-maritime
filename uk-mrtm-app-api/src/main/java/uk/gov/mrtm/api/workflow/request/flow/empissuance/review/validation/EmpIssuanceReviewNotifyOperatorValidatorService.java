@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.common.domain.EmpIssuanceDetermination;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceApplicationReviewRequestTaskPayload;
-import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload;
 import uk.gov.netz.api.authorization.core.domain.AppUser;
 import uk.gov.netz.api.common.exception.BusinessException;
 import uk.gov.netz.api.common.exception.ErrorCode;
 import uk.gov.netz.api.workflow.request.core.domain.RequestTask;
 import uk.gov.netz.api.workflow.request.flow.common.domain.DecisionNotification;
+import uk.gov.netz.api.workflow.request.flow.common.domain.NotifyOperatorForDecisionRequestTaskActionPayload;
 import uk.gov.netz.api.workflow.request.flow.common.validation.DecisionNotificationUsersValidator;
 
 @Service
@@ -20,7 +20,7 @@ public class EmpIssuanceReviewNotifyOperatorValidatorService {
     private final DecisionNotificationUsersValidator decisionNotificationUsersValidator;
 
     public void validate(RequestTask requestTask,
-                         EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload taskActionPayload,
+                         NotifyOperatorForDecisionRequestTaskActionPayload taskActionPayload,
                          AppUser appUser) {
         EmpIssuanceApplicationReviewRequestTaskPayload reviewRequestTaskPayload =
                 (EmpIssuanceApplicationReviewRequestTaskPayload) requestTask.getPayload();

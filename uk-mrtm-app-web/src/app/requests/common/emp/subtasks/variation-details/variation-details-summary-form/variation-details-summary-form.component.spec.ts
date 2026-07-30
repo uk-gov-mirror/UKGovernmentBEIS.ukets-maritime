@@ -16,7 +16,7 @@ describe('VariationDetailsSummaryFormComponent', () => {
   let page: Page;
 
   const taskServiceMock: MockType<TaskService<any>> = {
-    saveSubtask: jest.fn().mockReturnValue(of({})),
+    saveSubtask: vi.fn().mockReturnValue(of({})),
   };
 
   beforeEach(async () => {

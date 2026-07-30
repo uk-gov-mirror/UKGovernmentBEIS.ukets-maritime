@@ -1,0 +1,18 @@
+<netz-page-heading caption="Details of the application ">Check your answers</netz-page-heading>
+<h2 class="govuk-heading-m">Response details</h2>
+<mrtm-site-visit-summary-template [model]="siteVisit()" />
+<mrtm-review-decision-summary-template
+  [reviewDecision]="reviewDecision()"
+  [isEditable]="isEditable()"
+  [withOverallDecision]="reviewDecision()?.type !== 'OPERATOR_AMENDS_NEEDED'"
+  [changeLink]="wizardStep.DECISION"
+  [queryParams]="{ change: true }" />
+
+@if (isEditable() && !isSubTaskCompleted()) {
+  <button (click)="onSubmit()" netzPendingButton govukButton type="button">Confirm and complete</button>
+}
+
+<div>
+  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" aria-hidden="true" />
+  <netz-return-to-task-or-action-page />
+</div>

@@ -45,4 +45,7 @@ export const relatedActionsMap: RelatedActionsMap = {
     text: 'Change the details of non-compliance',
     path: [NON_COMPLIANCE_AMEND_DETAILS_ROUTE_PREFIX],
   },
+  SITE_VISIT_CANCEL_APPLICATION: { text: 'Cancel this task', path: ['cancel'] },
+  SITE_VISIT_RECALL_FROM_AMENDS: { text: 'Recall Site Visit', path: ['recall'] },
+  EMP_ISSUANCE_IMPORT_THETIS_XML: { text: 'Import EU XML if you have a single ship', path: ['eu-xml-import'] },
 };

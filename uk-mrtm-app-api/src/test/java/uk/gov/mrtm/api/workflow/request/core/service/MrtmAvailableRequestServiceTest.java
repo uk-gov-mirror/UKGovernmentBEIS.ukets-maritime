@@ -8,6 +8,8 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestType;
 import uk.gov.mrtm.api.workflow.request.flow.doe.common.service.DoeInitiateValidator;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.common.domain.SiteVisitRequestCreateActionPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.common.validation.SiteVisitRequestCreateAccountRelatedValidator;
 import uk.gov.netz.api.authorization.core.domain.AppUser;
 import uk.gov.netz.api.authorization.rules.domain.ResourceType;
 import uk.gov.netz.api.authorization.rules.services.resource.AccountRequestAuthorizationResourceService;
@@ -24,6 +26,7 @@ import uk.gov.netz.api.workflow.request.flow.common.domain.ReportRelatedRequestC
 import uk.gov.netz.api.workflow.request.flow.common.domain.dto.RequestCreateValidationResult;
 import uk.gov.netz.api.workflow.request.flow.common.service.RequestCreateByRequestValidator;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,9 +38,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -54,6 +59,8 @@ class MrtmAvailableRequestServiceTest {
     private EnabledWorkflowValidator enabledWorkflowValidator;
     @Mock
     private AccountRequestAuthorizationResourceService accountRequestAuthorizationResourceService;
+    @Mock
+    private SiteVisitRequestCreateAccountRelatedValidator siteVisitRequestCreateAccountRelatedValidator;
 
     @Mock
     private DoeInitiateValidator doeInitiateValidator;
@@ -65,7 +72,8 @@ class MrtmAvailableRequestServiceTest {
     void setUp() {
         requestCreateByRequestValidators.add(doeInitiateValidator);
         availableRequestService = new MrtmAvailableRequestService(requestRepository, requestTypeRepository,
-                enabledWorkflowValidator, accountRequestAuthorizationResourceService, requestCreateByRequestValidators);
+            enabledWorkflowValidator, accountRequestAuthorizationResourceService, requestCreateByRequestValidators,
+            siteVisitRequestCreateAccountRelatedValidator);
     }
 
     @Test
@@ -114,6 +122,7 @@ class MrtmAvailableRequestServiceTest {
         verify(doeInitiateValidator, times(1)).getRequestType();
         verify(doeInitiateValidator, times(1)).validateAction(accountId, payload);
         verifyNoMoreInteractions(requestRepository, accountRequestAuthorizationResourceService, enabledWorkflowValidator, doeInitiateValidator);
+        verifyNoInteractions(siteVisitRequestCreateAccountRelatedValidator);
     }
 
     @Test
@@ -161,6 +170,7 @@ class MrtmAvailableRequestServiceTest {
         verify(doeInitiateValidator, times(1)).getRequestType();
         verify(doeInitiateValidator, never()).validateAction(accountId, payload);
         verifyNoMoreInteractions(requestRepository, accountRequestAuthorizationResourceService, enabledWorkflowValidator, doeInitiateValidator);
+        verifyNoInteractions(siteVisitRequestCreateAccountRelatedValidator);
     }
 
     @Test
@@ -182,6 +192,37 @@ class MrtmAvailableRequestServiceTest {
         verify(doeInitiateValidator, never()).getRequestType();
         verify(doeInitiateValidator, never()).validateAction(anyLong(), any());
         verifyNoMoreInteractions(requestRepository, accountRequestAuthorizationResourceService, enabledWorkflowValidator, doeInitiateValidator);
+        verifyNoInteractions(siteVisitRequestCreateAccountRelatedValidator);
+    }
+
+    @Test
+    void getAvailableSiteVisitWorkflows() {
+        final long accountId = 1L;
+        final Year currentYear = Year.now();
+        final Year lastYear = currentYear.minusYears(1);
+
+        RequestCreateValidationResult currentYearValidationResult = mock(RequestCreateValidationResult.class);
+        RequestCreateValidationResult lastYearValidationResult = mock(RequestCreateValidationResult.class);
+        Map<Year, RequestCreateValidationResult> expected = Map.of(
+            currentYear, currentYearValidationResult,
+            lastYear, lastYearValidationResult
+        );
+
+        when(siteVisitRequestCreateAccountRelatedValidator.validateCreation(accountId, SiteVisitRequestCreateActionPayload.builder().year(currentYear).build()))
+            .thenReturn(currentYearValidationResult);
+        when(siteVisitRequestCreateAccountRelatedValidator.validateCreation(accountId, SiteVisitRequestCreateActionPayload.builder().year(lastYear).build()))
+            .thenReturn(lastYearValidationResult);
+
+        // Invoke
+        Map<Year, RequestCreateValidationResult> actual = availableRequestService.getAvailableSiteVisitWorkflows(accountId);
+
+        // Verify
+        assertEquals(expected, actual);
+        verify(siteVisitRequestCreateAccountRelatedValidator).validateCreation(accountId, SiteVisitRequestCreateActionPayload.builder().year(currentYear).build());
+        verify(siteVisitRequestCreateAccountRelatedValidator).validateCreation(accountId, SiteVisitRequestCreateActionPayload.builder().year(lastYear).build());
+
+        verifyNoInteractions(requestRepository, accountRequestAuthorizationResourceService, enabledWorkflowValidator, doeInitiateValidator);
+        verifyNoMoreInteractions(siteVisitRequestCreateAccountRelatedValidator);
     }
 
     private RequestType buildRequestType(String requestTypeCode, String historyCategory, String resourceType) {

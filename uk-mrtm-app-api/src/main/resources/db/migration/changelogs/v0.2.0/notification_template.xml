@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="v0.2.0/notification_template.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.11.xsd">
+
+    <changeSet id="0_1_0_insert_Site_Visit_template_accepted_ENGLAND" author="P44065">
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.InsertDocumentTemplateFileTaskChange">
+            <param name="competentAuthority" value="ENGLAND" />
+            <param name="fileDocumentName" value="Site_Visit_template_accepted.docx" />
+        </customChange>
+        <sql>
+            insert into document_template (
+                id,
+                type,
+                name,
+                competent_authority,
+                workflow,
+                last_updated_date,
+                file_document_template_id,
+                notification_template_id)
+            values (
+                       nextval('document_template_seq'),
+                       'SITE_VISIT_APPROVED',
+                       'Site Visit Acknowledgement Letter',
+                       'ENGLAND',
+                       'SITE_VISIT',
+                       '2026-06-09 12:00:00',
+                       (select id from file_document_template where file_name = 'Site_Visit_template_accepted.docx' order by id desc limit 1),
+                   (select id from notification_template where name = 'Generic email template' and competent_authority = 'ENGLAND'));
+
+        </sql>
+        <rollback>
+            delete from file_document_template
+            where id IN (select file_document_template_id from document_template
+            where name = 'Site Visit Acknowledgement Letter'
+            and competent_authority = 'ENGLAND');
+
+            delete from document_template
+            where name = 'Site Visit Acknowledgement Letter'
+            and competent_authority = 'ENGLAND';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_Site_Visit_template_rejected_ENGLAND" author="P44065">
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.InsertDocumentTemplateFileTaskChange">
+            <param name="competentAuthority" value="ENGLAND" />
+            <param name="fileDocumentName" value="Site_Visit_template_rejected.docx" />
+        </customChange>
+        <sql>
+            insert into document_template (
+                id,
+                type,
+                name,
+                competent_authority,
+                workflow,
+                last_updated_date,
+                file_document_template_id,
+                notification_template_id)
+            values (
+                       nextval('document_template_seq'),
+                       'SITE_VISIT_REJECTED',
+                       'Site Visit Refusal Letter',
+                       'ENGLAND',
+                       'SITE_VISIT',
+                       '2026-06-09 12:00:00',
+                       (select id from file_document_template where file_name = 'Site_Visit_template_rejected.docx' order by id desc limit 1),
+                   (select id from notification_template where name = 'Generic email template' and competent_authority = 'ENGLAND'));
+
+        </sql>
+        <rollback>
+            delete from file_document_template
+            where id IN (select file_document_template_id from document_template
+            where name = 'Site Visit Refusal Letter'
+            and competent_authority = 'ENGLAND');
+
+            delete from document_template
+            where name = 'Site Visit Refusal Letter'
+            and competent_authority = 'ENGLAND';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_Site_Visit_template_accepted_SCOTLAND" author="P44065">
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.InsertDocumentTemplateFileTaskChange">
+            <param name="competentAuthority" value="SCOTLAND" />
+            <param name="fileDocumentName" value="Site_Visit_template_accepted.docx" />
+        </customChange>
+        <sql>
+            insert into document_template (
+                id,
+                type,
+                name,
+                competent_authority,
+                workflow,
+                last_updated_date,
+                file_document_template_id,
+                notification_template_id)
+            values (
+                       nextval('document_template_seq'),
+                       'SITE_VISIT_APPROVED',
+                       'Site Visit Acknowledgement Letter',
+                       'SCOTLAND',
+                       'SITE_VISIT',
+                       '2026-06-09 12:00:00',
+                       (select id from file_document_template where file_name = 'Site_Visit_template_accepted.docx' order by id desc limit 1),
+                   (select id from notification_template where name = 'Generic email template' and competent_authority = 'SCOTLAND'));
+
+        </sql>
+        <rollback>
+            delete from file_document_template
+            where id IN (select file_document_template_id from document_template
+            where name = 'Site Visit Acknowledgement Letter'
+            and competent_authority = 'SCOTLAND');
+
+            delete from document_template
+            where name = 'Site Visit Acknowledgement Letter'
+            and competent_authority = 'SCOTLAND';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_Site_Visit_template_rejected_SCOTLAND" author="P44065">
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.InsertDocumentTemplateFileTaskChange">
+            <param name="competentAuthority" value="SCOTLAND" />
+            <param name="fileDocumentName" value="Site_Visit_template_rejected.docx" />
+        </customChange>
+        <sql>
+            insert into document_template (
+                id,
+                type,
+                name,
+                competent_authority,
+                workflow,
+                last_updated_date,
+                file_document_template_id,
+                notification_template_id)
+            values (
+                       nextval('document_template_seq'),
+                       'SITE_VISIT_REJECTED',
+                       'Site Visit Refusal Letter',
+                       'SCOTLAND',
+                       'SITE_VISIT',
+                       '2026-06-09 12:00:00',
+                       (select id from file_document_template where file_name = 'Site_Visit_template_rejected.docx' order by id desc limit 1),
+                   (select id from notification_template where name = 'Generic email template' and competent_authority = 'SCOTLAND'));
+
+        </sql>
+        <rollback>
+            delete from file_document_template
+            where id IN (select file_document_template_id from document_template
+            where name = 'Site Visit Refusal Letter'
+            and competent_authority = 'SCOTLAND');
+
+            delete from document_template
+            where name = 'Site Visit Refusal Letter'
+            and competent_authority = 'SCOTLAND';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_Site_Visit_template_accepted_OPRED" author="P44065">
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.InsertDocumentTemplateFileTaskChange">
+            <param name="competentAuthority" value="OPRED" />
+            <param name="fileDocumentName" value="Site_Visit_template_accepted.docx" />
+        </customChange>
+        <sql>
+            insert into document_template (
+                id,
+                type,
+                name,
+                competent_authority,
+                workflow,
+                last_updated_date,
+                file_document_template_id,
+                notification_template_id)
+            values (
+                       nextval('document_template_seq'),
+                       'SITE_VISIT_APPROVED',
+                       'Site Visit Acknowledgement Letter',
+                       'OPRED',
+                       'SITE_VISIT',
+                       '2026-06-09 12:00:00',
+                       (select id from file_document_template where file_name = 'Site_Visit_template_accepted.docx' order by id desc limit 1),
+                   (select id from notification_template where name = 'Generic email template' and competent_authority = 'OPRED'));
+
+        </sql>
+        <rollback>
+            delete from file_document_template
+            where id IN (select file_document_template_id from document_template
+            where name = 'Site Visit Acknowledgement Letter'
+            and competent_authority = 'OPRED');
+
+            delete from document_template
+            where name = 'Site Visit Acknowledgement Letter'
+            and competent_authority = 'OPRED';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_Site_Visit_template_rejected_OPRED" author="P44065">
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.InsertDocumentTemplateFileTaskChange">
+            <param name="competentAuthority" value="OPRED" />
+            <param name="fileDocumentName" value="Site_Visit_template_rejected.docx" />
+        </customChange>
+        <sql>
+            insert into document_template (
+                id,
+                type,
+                name,
+                competent_authority,
+                workflow,
+                last_updated_date,
+                file_document_template_id,
+                notification_template_id)
+            values (
+                       nextval('document_template_seq'),
+                       'SITE_VISIT_REJECTED',
+                       'Site Visit Refusal Letter',
+                       'OPRED',
+                       'SITE_VISIT',
+                       '2026-06-09 12:00:00',
+                       (select id from file_document_template where file_name = 'Site_Visit_template_rejected.docx' order by id desc limit 1),
+                   (select id from notification_template where name = 'Generic email template' and competent_authority = 'OPRED'));
+
+        </sql>
+        <rollback>
+            delete from file_document_template
+            where id IN (select file_document_template_id from document_template
+            where name = 'Site Visit Refusal Letter'
+            and competent_authority = 'OPRED');
+
+            delete from document_template
+            where name = 'Site Visit Refusal Letter'
+            and competent_authority = 'OPRED';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_Site_Visit_template_accepted_WALES" author="P44065">
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.InsertDocumentTemplateFileTaskChange">
+            <param name="competentAuthority" value="WALES" />
+            <param name="fileDocumentName" value="Site_Visit_template_accepted.docx" />
+        </customChange>
+        <sql>
+            insert into document_template (
+                id,
+                type,
+                name,
+                competent_authority,
+                workflow,
+                last_updated_date,
+                file_document_template_id,
+                notification_template_id)
+            values (
+                       nextval('document_template_seq'),
+                       'SITE_VISIT_APPROVED',
+                       'Site Visit Acknowledgement Letter',
+                       'WALES',
+                       'SITE_VISIT',
+                       '2026-06-09 12:00:00',
+                       (select id from file_document_template where file_name = 'Site_Visit_template_accepted.docx' order by id desc limit 1),
+                   (select id from notification_template where name = 'Generic email template' and competent_authority = 'WALES'));
+
+        </sql>
+        <rollback>
+            delete from file_document_template
+            where id IN (select file_document_template_id from document_template
+            where name = 'Site Visit Acknowledgement Letter'
+            and competent_authority = 'WALES');
+
+            delete from document_template
+            where name = 'Site Visit Acknowledgement Letter'
+            and competent_authority = 'WALES';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_Site_Visit_template_rejected_WALES" author="P44065">
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.InsertDocumentTemplateFileTaskChange">
+            <param name="competentAuthority" value="WALES" />
+            <param name="fileDocumentName" value="Site_Visit_template_rejected.docx" />
+        </customChange>
+        <sql>
+            insert into document_template (
+                id,
+                type,
+                name,
+                competent_authority,
+                workflow,
+                last_updated_date,
+                file_document_template_id,
+                notification_template_id)
+            values (
+                       nextval('document_template_seq'),
+                       'SITE_VISIT_REJECTED',
+                       'Site Visit Refusal Letter',
+                       'WALES',
+                       'SITE_VISIT',
+                       '2026-06-09 12:00:00',
+                       (select id from file_document_template where file_name = 'Site_Visit_template_rejected.docx' order by id desc limit 1),
+                   (select id from notification_template where name = 'Generic email template' and competent_authority = 'WALES'));
+
+        </sql>
+        <rollback>
+            delete from file_document_template
+            where id IN (select file_document_template_id from document_template
+            where name = 'Site Visit Refusal Letter'
+            and competent_authority = 'WALES');
+
+            delete from document_template
+            where name = 'Site Visit Refusal Letter'
+            and competent_authority = 'WALES';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_Site_Visit_template_accepted_NORTHERN_IRELAND" author="P44065">
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.InsertDocumentTemplateFileTaskChange">
+            <param name="competentAuthority" value="NORTHERN_IRELAND" />
+            <param name="fileDocumentName" value="Site_Visit_template_accepted.docx" />
+        </customChange>
+        <sql>
+            insert into document_template (
+                id,
+                type,
+                name,
+                competent_authority,
+                workflow,
+                last_updated_date,
+                file_document_template_id,
+                notification_template_id)
+            values (
+                       nextval('document_template_seq'),
+                       'SITE_VISIT_APPROVED',
+                       'Site Visit Acknowledgement Letter',
+                       'NORTHERN_IRELAND',
+                       'SITE_VISIT',
+                       '2026-06-09 12:00:00',
+                       (select id from file_document_template where file_name = 'Site_Visit_template_accepted.docx' order by id desc limit 1),
+                   (select id from notification_template where name = 'Generic email template' and competent_authority = 'NORTHERN_IRELAND'));
+
+        </sql>
+        <rollback>
+            delete from file_document_template
+            where id IN (select file_document_template_id from document_template
+            where name = 'Site Visit Acknowledgement Letter'
+            and competent_authority = 'NORTHERN_IRELAND');
+
+            delete from document_template
+            where name = 'Site Visit Acknowledgement Letter'
+            and competent_authority = 'NORTHERN_IRELAND';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_insert_Site_Visit_template_rejected_NORTHERN_IRELAND" author="P44065">
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.InsertDocumentTemplateFileTaskChange">
+            <param name="competentAuthority" value="NORTHERN_IRELAND" />
+            <param name="fileDocumentName" value="Site_Visit_template_rejected.docx" />
+        </customChange>
+        <sql>
+            insert into document_template (
+                id,
+                type,
+                name,
+                competent_authority,
+                workflow,
+                last_updated_date,
+                file_document_template_id,
+                notification_template_id)
+            values (
+                       nextval('document_template_seq'),
+                       'SITE_VISIT_REJECTED',
+                       'Site Visit Refusal Letter',
+                       'NORTHERN_IRELAND',
+                       'SITE_VISIT',
+                       '2026-06-09 12:00:00',
+                       (select id from file_document_template where file_name = 'Site_Visit_template_rejected.docx' order by id desc limit 1),
+                   (select id from notification_template where name = 'Generic email template' and competent_authority = 'NORTHERN_IRELAND'));
+
+        </sql>
+        <rollback>
+            delete from file_document_template
+            where id IN (select file_document_template_id from document_template
+            where name = 'Site Visit Refusal Letter'
+            and competent_authority = 'NORTHERN_IRELAND');
+
+            delete from document_template
+            where name = 'Site Visit Refusal Letter'
+            and competent_authority = 'NORTHERN_IRELAND';
+        </rollback>
+    </changeSet>
+
+    <changeSet id="0_1_0_update_site_visit_accepted_template_ENGLAND" author="P44065">
+        <comment>Update EMP document</comment>
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.UpdateDocumentTemplateFileTaskChange">
+            <param name="type" value="SITE_VISIT_APPROVED"/>
+            <param name="competentAuthority" value="ENGLAND" />
+            <param name="fileDocumentName" value="Site_Visit_template_accepted.docx" />
+        </customChange>
+    </changeSet>
+
+    <changeSet id="0_1_0_update_site_visit_accepted_template_SCOTLAND" author="P44065">
+        <comment>Update EMP document</comment>
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.UpdateDocumentTemplateFileTaskChange">
+            <param name="type" value="SITE_VISIT_APPROVED"/>
+            <param name="competentAuthority" value="SCOTLAND" />
+            <param name="fileDocumentName" value="Site_Visit_template_accepted.docx" />
+        </customChange>
+    </changeSet>
+
+    <changeSet id="0_1_0_update_site_visit_accepted_template_WALES" author="P44065">
+        <comment>Update EMP document</comment>
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.UpdateDocumentTemplateFileTaskChange">
+            <param name="type" value="SITE_VISIT_APPROVED"/>
+            <param name="competentAuthority" value="WALES" />
+            <param name="fileDocumentName" value="Site_Visit_template_accepted.docx" />
+        </customChange>
+    </changeSet>
+
+    <changeSet id="0_1_0_update_site_visit_accepted_template_NORTHERN_IRELAND" author="P44065">
+        <comment>Update EMP document</comment>
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.UpdateDocumentTemplateFileTaskChange">
+            <param name="type" value="SITE_VISIT_APPROVED"/>
+            <param name="competentAuthority" value="NORTHERN_IRELAND" />
+            <param name="fileDocumentName" value="Site_Visit_template_accepted.docx" />
+        </customChange>
+    </changeSet>
+
+    <changeSet id="0_1_0_update_site_visit_accepted_template_OPRED" author="P44065">
+        <comment>Update EMP document</comment>
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.UpdateDocumentTemplateFileTaskChange">
+            <param name="type" value="SITE_VISIT_APPROVED"/>
+            <param name="competentAuthority" value="OPRED" />
+            <param name="fileDocumentName" value="Site_Visit_template_accepted.docx" />
+        </customChange>
+    </changeSet>
+
+    <changeSet id="0_1_0_update_site_visit_rejected_template_ENGLAND" author="P44065">
+        <comment>Update EMP document</comment>
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.UpdateDocumentTemplateFileTaskChange">
+            <param name="type" value="SITE_VISIT_REJECTED"/>
+            <param name="competentAuthority" value="ENGLAND" />
+            <param name="fileDocumentName" value="Site_Visit_template_rejected.docx" />
+        </customChange>
+    </changeSet>
+
+    <changeSet id="0_1_0_update_site_visit_rejected_template_SCOTLAND" author="P44065">
+        <comment>Update EMP document</comment>
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.UpdateDocumentTemplateFileTaskChange">
+            <param name="type" value="SITE_VISIT_REJECTED"/>
+            <param name="competentAuthority" value="SCOTLAND" />
+            <param name="fileDocumentName" value="Site_Visit_template_rejected.docx" />
+        </customChange>
+    </changeSet>
+
+    <changeSet id="0_1_0_update_site_visit_rejected_template_WALES" author="P44065">
+        <comment>Update EMP document</comment>
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.UpdateDocumentTemplateFileTaskChange">
+            <param name="type" value="SITE_VISIT_REJECTED"/>
+            <param name="competentAuthority" value="WALES" />
+            <param name="fileDocumentName" value="Site_Visit_template_rejected.docx" />
+        </customChange>
+    </changeSet>
+
+    <changeSet id="0_1_0_update_site_visit_rejected_template_NORTHERN_IRELAND" author="P44065">
+        <comment>Update EMP document</comment>
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.UpdateDocumentTemplateFileTaskChange">
+            <param name="type" value="SITE_VISIT_REJECTED"/>
+            <param name="competentAuthority" value="NORTHERN_IRELAND" />
+            <param name="fileDocumentName" value="Site_Visit_template_rejected.docx" />
+        </customChange>
+    </changeSet>
+
+    <changeSet id="0_1_0_update_site_visit_rejected_template_OPRED" author="P44065">
+        <comment>Update EMP document</comment>
+        <customChange class="uk.gov.netz.api.documenttemplate.initialdata.UpdateDocumentTemplateFileTaskChange">
+            <param name="type" value="SITE_VISIT_REJECTED"/>
+            <param name="competentAuthority" value="OPRED" />
+            <param name="fileDocumentName" value="Site_Visit_template_rejected.docx" />
+        </customChange>
+    </changeSet>
+
+    <changeSet id="0_1_0_delete_EMP_Notification_Operator_Response" author="P44065">
+        <sql>
+            delete from notification_template
+            where name = 'EMP Notification Operator Response'
+        </sql>
+    </changeSet>
+
+    <changeSet id="0_1_0_delete_EMP_NOTIFICATION_ACCEPTED_template_ENGLAND" author="P44065">
+        <sql>
+            delete from file_document_template
+            where id IN (select file_document_template_id from document_template
+                        where name = 'EMP Notification Acknowledgement Letter');
+
+            delete from document_template
+            where name = 'EMP Notification Acknowledgement Letter';
+
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="0_1_0_delete_EMP_NOTIFICATION_REJECTED_template_ENGLAND" author="P44065">
+        <sql>
+            delete from file_document_template
+            where id IN (select file_document_template_id from document_template
+                         where name = 'EMP Notification Refusal Letter');
+
+            delete from document_template
+            where name = 'EMP Notification Refusal Letter';
+
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -27,13 +27,13 @@ describe('CarbonCaptureComponent', () => {
   let store: RequestTaskStore;
 
   const taskService: MockType<TaskService<EmpTaskPayload>> = {
-    saveSubtask: jest.fn().mockReturnValue(of({})),
+    saveSubtask: vi.fn().mockReturnValue(of({})),
   };
-  const taskServiceSpy = jest.spyOn(taskService, 'saveSubtask');
+  const taskServiceSpy = vi.spyOn(taskService, 'saveSubtask');
   const route: any = { snapshot: { params: { shipId: emissionsMock.ships[1].uniqueIdentifier }, pathFromRoot: [] } };
   const uuid4 = '44444444-4444-4444-a444-444444444444';
   const attachmentService: MockType<RequestTaskAttachmentsHandlingService> = {
-    uploadRequestTaskAttachment: jest.fn().mockReturnValue(asyncData<any>(new HttpResponse({ body: { uuid: uuid4 } }))),
+    uploadRequestTaskAttachment: vi.fn().mockReturnValue(asyncData<any>(new HttpResponse({ body: { uuid: uuid4 } }))),
   };
 
   class Page extends BasePage<CarbonCaptureComponent> {
@@ -55,7 +55,7 @@ describe('CarbonCaptureComponent', () => {
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(async () => {
@@ -144,6 +144,7 @@ describe('CarbonCaptureComponent', () => {
       page.description = 'test description';
       page.technologyEmissionSourcesCheckboxes[0].click();
       page.filesValue = [new File(['test content 4'], 'testfile4.jpg')];
+      await fixture.whenStable();
       fixture.detectChanges();
 
       expect(page.filesText).toEqual(['testfile4.jpg has been uploaded']);

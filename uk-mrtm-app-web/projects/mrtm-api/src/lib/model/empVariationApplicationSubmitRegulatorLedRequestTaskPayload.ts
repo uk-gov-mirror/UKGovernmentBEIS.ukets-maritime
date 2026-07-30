@@ -12,6 +12,7 @@ import { EmissionsMonitoringPlanContainer } from './emissionsMonitoringPlanConta
 import { EmpAcceptedVariationDecisionDetails } from './empAcceptedVariationDecisionDetails';
 import { EmpVariationDetails } from './empVariationDetails';
 import { EmpVariationRegulatorLedReason } from './empVariationRegulatorLedReason';
+import { RequestTaskPreviewFileInfoDTO } from './requestTaskPreviewFileInfoDTO';
 
 export interface EmpVariationApplicationSubmitRegulatorLedRequestTaskPayload {
   payloadType?: string;
@@ -36,4 +37,7 @@ export interface EmpVariationApplicationSubmitRegulatorLedRequestTaskPayload {
   originalEmpContainer?: EmissionsMonitoringPlanContainer;
   reasonRegulatorLed: EmpVariationRegulatorLedReason;
   reviewGroupDecisions?: { [key: string]: EmpAcceptedVariationDecisionDetails };
+  finalDocumentsGenerationInProgress?: boolean;
+  finalDocumentsGenerationSuccessful?: boolean;
+  previewFiles?: { [key: string]: RequestTaskPreviewFileInfoDTO };
 }

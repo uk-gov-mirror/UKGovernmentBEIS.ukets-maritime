@@ -36,7 +36,7 @@ describe('RegulatorOutstandingRequestComponent', () => {
   let fixture: ComponentFixture<TestComponent>;
   let page: Page;
   const regulatorAuthoritiesService: MockType<RegulatorAuthoritiesService> = {
-    getCaRegulators: jest.fn().mockReturnValue(
+    getCaRegulators: vi.fn().mockReturnValue(
       of({
         regulators: {
           caUsers: [
@@ -55,7 +55,7 @@ describe('RegulatorOutstandingRequestComponent', () => {
   };
 
   const miReportsService: MockType<MiReportsService> = {
-    getRegulatorRequestTaskTypes: jest
+    getRegulatorRequestTaskTypes: vi
       .fn()
       .mockReturnValue(
         of([

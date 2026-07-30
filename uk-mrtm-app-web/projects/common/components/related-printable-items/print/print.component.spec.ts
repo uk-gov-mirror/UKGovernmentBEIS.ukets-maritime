@@ -23,7 +23,7 @@ describe('PrintComponent', () => {
   });
 
   it('should enable print styles', () => {
-    const appendChildSpy = jest.spyOn(document.head, 'appendChild');
+    const appendChildSpy = vi.spyOn(document.head, 'appendChild');
 
     component.enablePrintStyles();
 
@@ -35,13 +35,13 @@ describe('PrintComponent', () => {
   });
 
   it('should print content', () => {
-    const appendChildSpy = jest.spyOn(document.body, 'appendChild');
-    const setStyleSpy = jest.spyOn(component['renderer'], 'setStyle');
-    const printSpy = jest.spyOn(window, 'print').mockImplementation();
+    const appendChildSpy = vi.spyOn(document.body, 'appendChild');
+    const setStyleSpy = vi.spyOn(component['renderer'], 'setStyle');
+    const printSpy = vi.spyOn(window, 'print');
 
     const mockPrintableContentWrapper = document.createElement('div');
     mockPrintableContentWrapper.className = 'printable-content-wrapper';
-    jest.spyOn(component['el'].nativeElement, 'querySelector').mockReturnValue(mockPrintableContentWrapper);
+    vi.spyOn(component['el'].nativeElement, 'querySelector').mockReturnValue(mockPrintableContentWrapper);
 
     component.printContent();
 

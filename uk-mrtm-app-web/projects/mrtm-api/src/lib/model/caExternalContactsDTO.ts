@@ -11,5 +11,6 @@ import { CaExternalContactDTO } from './caExternalContactDTO';
 
 export interface CaExternalContactsDTO {
   caExternalContacts?: Array<CaExternalContactDTO>;
+  editable?: boolean;
   isEditable?: boolean;
 }

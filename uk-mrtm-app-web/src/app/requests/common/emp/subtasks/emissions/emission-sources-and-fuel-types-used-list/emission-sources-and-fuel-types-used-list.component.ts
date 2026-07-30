@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal, WritableSignal } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { take } from 'rxjs';
@@ -12,6 +13,7 @@ import { ButtonDirective, WarningTextComponent } from '@netz/govuk-components';
 
 import { TaskItemStatus } from '@requests/common';
 import { EMISSION_SOURCES_AND_FUEL_TYPES_USED_FORM_STEP } from '@requests/common/components/emissions/emission-sources-and-fuel-types-used-form/emission-sources-and-fuel-types-used-form.helper';
+import { buildEmpEmissionSourceValidationFormGroup } from '@requests/common/components/emissions/emission-sources-and-fuel-types-used-form/emission-sources-and-fuel-types-used-form.provider';
 import { EMISSIONS_SUB_TASK } from '@requests/common/components/emissions/emissions.helpers';
 import { ShipStepTitleCustomPipe } from '@requests/common/components/emissions/pipes';
 import { ReturnToShipsListTableComponent } from '@requests/common/components/emissions/return-to-ships-list-table';
@@ -47,6 +49,7 @@ export class EmissionSourcesAndFuelTypesUsedListComponent {
   private readonly store = inject(RequestTaskStore);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly fb = inject(FormBuilder);
 
   readonly shipId = input<string>();
   readonly emissionSources = computed(() => {
@@ -103,7 +106,12 @@ export class EmissionSourcesAndFuelTypesUsedListComponent {
       isValid = false;
     }
 
-    if (this.hasNeedsReviewItems()) {
+    const needsReviewItems = this.emissionSources().filter((emissionSource) => emissionSource.needsReview);
+    const resolvedIds = needsReviewItems
+      .filter((emissionSource) => this.isEmissionSourceValid(emissionSource))
+      .map((emissionSource) => emissionSource.uniqueIdentifier);
+
+    if (resolvedIds.length < needsReviewItems.length) {
       errors.push({
         column: null,
         row: -1,
@@ -112,11 +120,32 @@ export class EmissionSourcesAndFuelTypesUsedListComponent {
       isValid = false;
     }
 
-    if (isValid) {
-      this.router.navigate([`../../${EmissionsWizardStep.UNCERTAINTY_LEVEL}`], { relativeTo: this.route });
-    } else {
+    if (!isValid) {
       this.validationErrors.set(errors);
+      return;
     }
+
+    if (resolvedIds.length) {
+      this.taskService
+        .saveSubtask(EMISSIONS_SUB_TASK, EmissionsWizardStep.EMISSION_SOURCES_LIST, this.route, resolvedIds)
+        .pipe(take(1))
+        .subscribe(() =>
+          this.router.navigate([`../../${EmissionsWizardStep.UNCERTAINTY_LEVEL}`], { relativeTo: this.route }),
+        );
+      return;
+    }
+
+    this.router.navigate([`../../${EmissionsWizardStep.UNCERTAINTY_LEVEL}`], { relativeTo: this.route });
+  }
+
+  private isEmissionSourceValid(emissionSource: EmpEmissionsSources): boolean {
+    return buildEmpEmissionSourceValidationFormGroup(
+      this.fb,
+      emissionSource,
+      this.emissionSources(),
+      emissionSource.uniqueIdentifier,
+      this.fuelsAndEmissionsFactors(),
+    ).valid;
   }
 
   formatValidationErrorDetails(error: NestedMessageValidationError): string {

@@ -28,7 +28,7 @@ class NonComplianceCreateValidatorTest {
     private RequestCreateValidatorService requestCreateValidatorService;
 
     @Test
-    void validateAction() {
+    void checkAvailability() {
         final Long accountId = 1L;
 
         RequestCreateValidationResult result = RequestCreateValidationResult.builder().valid(true).build();
@@ -39,7 +39,7 @@ class NonComplianceCreateValidatorTest {
             .thenReturn(result);
 
         // Invoke
-        final RequestCreateValidationResult actual = validator.validateAction(accountId);
+        final RequestCreateValidationResult actual = validator.checkAvailability(accountId);
 
         // Verify
         assertThat(actual.isValid()).isTrue();

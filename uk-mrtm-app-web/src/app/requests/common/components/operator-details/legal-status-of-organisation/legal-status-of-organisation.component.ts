@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { TaskService } from '@netz/common/forms';
@@ -17,7 +17,7 @@ import { WizardStepComponent } from '@shared/components';
 
 @Component({
   selector: 'mrtm-legal-status-of-organisation',
-  imports: [FormsModule, ReactiveFormsModule, WizardStepComponent, RadioComponent, RadioOptionComponent],
+  imports: [ReactiveFormsModule, WizardStepComponent, RadioComponent, RadioOptionComponent],
   standalone: true,
   templateUrl: './legal-status-of-organisation.component.html',
   providers: [legalStatusOfOrganisationFormProvider],

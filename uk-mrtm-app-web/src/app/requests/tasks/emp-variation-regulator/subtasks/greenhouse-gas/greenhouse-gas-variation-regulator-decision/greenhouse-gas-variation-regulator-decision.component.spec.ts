@@ -27,9 +27,9 @@ describe('GreenhouseGasVariationRegulatorDecisionComponent', () => {
 
   const route = new ActivatedRouteStub();
   const taskService: MockType<EmpVariationRegulatorService> = {
-    saveVariationRegulatorDecision: jest.fn().mockReturnValue(of({})),
+    saveVariationRegulatorDecision: vi.fn().mockReturnValue(of({})),
   };
-  const taskServiceSpy = jest.spyOn(taskService, 'saveVariationRegulatorDecision');
+  const taskServiceSpy = vi.spyOn(taskService, 'saveVariationRegulatorDecision');
 
   class Page extends BasePage<GreenhouseGasVariationRegulatorDecisionComponent> {
     get greenhouseGasSummaryTemplate() {
@@ -56,7 +56,7 @@ describe('GreenhouseGasVariationRegulatorDecisionComponent', () => {
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(async () => {

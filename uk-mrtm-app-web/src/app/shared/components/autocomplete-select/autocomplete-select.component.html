@@ -16,13 +16,9 @@
     <ng-content select="[govukLabel]" />
   }
 </label>
-
 @if (hint()) {
-  <div [id]="`${identifier}__hint`" class="govuk-hint">
-    {{ hint() }}
-  </div>
+  <div [id]="`${identifier}-hint`" class="govuk-hint" [innerHTML]="hint() | safeHtml"></div>
 }
-
 @if (shouldDisplayErrors) {
   <govuk-error-message [errors]="control.errors" [identifier]="identifier" />
 }
@@ -43,7 +39,7 @@
     [attr.type]="inputFieldType()"
     role="combobox"
     aria-autocomplete="list"
-    [attr.aria-describedby]="hint() ? `${identifier}__hint` : null"
+    [attr.aria-describedby]="hint() ? `${identifier}-hint` : null"
     [attr.aria-expanded]="isMenuOpen() && !!(filteredOptions().length || showNoOptionsFound())"
     [attr.aria-controls]="`${identifier}__listbox`"
     [attr.aria-activedescendant]="

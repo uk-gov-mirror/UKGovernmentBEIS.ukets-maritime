@@ -6,7 +6,7 @@ import { take } from 'rxjs';
 
 import { AerFuelConsumption, AerShipEmissions } from '@mrtm/api';
 
-import { PageHeadingComponent } from '@netz/common/components';
+import { FeedbackBannerComponent, FeedbackBannerStore, PageHeadingComponent } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { TaskService } from '@netz/common/forms';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
@@ -22,7 +22,6 @@ import {
 import { aerAggregatedDataSubtasksListMap } from '@requests/common/aer/subtasks/aer-aggregated-data/aer-aggregated-data-subtasks-list.map';
 import { validateIfUsedFuelsExistInEmissionsValidator } from '@requests/common/aer/subtasks/utils';
 import { TaskItemStatus } from '@requests/common/task-item-status';
-import { NotificationBannerComponent, NotificationBannerStore } from '@shared/components/notification-banner';
 import { AerAggregatedDataShipSummaryTemplateComponent } from '@shared/components/summaries';
 import { AerAggregatedDataShipSummary, AerPortSummaryItemDto, AerVoyageSummaryItemDto } from '@shared/types';
 import { isNil } from '@shared/utils';
@@ -38,7 +37,7 @@ import BigNumber from 'bignumber.js';
     PendingButtonDirective,
     AerAggregatedDataShipSummaryTemplateComponent,
     WarningTextComponent,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
   ],
   standalone: true,
   templateUrl: './aer-aggregated-data-ship-summary.component.html',
@@ -66,7 +65,7 @@ export class AerAggregatedDataShipSummaryComponent {
 
     return warnings;
   });
-  private readonly notificationBannerStore: NotificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
   private readonly store = inject(RequestTaskStore);
 
   readonly isAddNewAggregatedData = inject(AER_SUBTASK_NEW_ENTRY_FLOW, { optional: true });
@@ -115,7 +114,7 @@ export class AerAggregatedDataShipSummaryComponent {
       validateIfUsedFuelsExistInEmissionsValidator(fuelConsumptions as Array<AerFuelConsumption>, relatedShip) ?? {};
     let isValid = Object.keys(errors).length === 0;
 
-    if (isNil(totalShipEmissions) || new BigNumber(totalShipEmissions).lte(0)) {
+    if (isNil(totalShipEmissions) || new BigNumber(totalShipEmissions).lt(0)) {
       errors['totalEmissions'] = 'The total ship emissions should be greater than or equal to 0';
       isValid = false;
     }
@@ -127,7 +126,7 @@ export class AerAggregatedDataShipSummaryComponent {
 
     if (!isValid) {
       this.form.setErrors(errors);
-      this.notificationBannerStore.setInvalidForm(this.form);
+      this.feedbackBannerStore.setInvalidForm(this.form);
       return;
     }
 

@@ -14,9 +14,20 @@ export class EmissionSourcesAndFuelTypesUsedListPayloadMutator extends PayloadMu
   subtask = EMISSIONS_SUB_TASK;
   step = EmissionsWizardStep.EMISSION_SOURCES_LIST;
 
-  apply(currentPayload: EmpTaskPayload, userInput: string): Observable<any> {
+  apply(currentPayload: EmpTaskPayload, userInput: string | string[]): Observable<any> {
     return of(
       produce(currentPayload, (payload: EmpTaskPayload) => {
+        // An array of ids means "these needsReview entries are now valid" (see
+        // EmissionSourcesAndFuelTypesUsedListComponent.onContinue) rather than "delete this entry".
+        if (Array.isArray(userInput)) {
+          for (const uniqueIdentifier of userInput) {
+            delete payload.empSectionsCompleted[
+              `${EMISSION_SOURCES_AND_FUEL_TYPES_USED_FORM_STEP}-${uniqueIdentifier}`
+            ];
+          }
+          return;
+        }
+
         payload.emissionsMonitoringPlan[this.subtask].ships = [
           ...payload.emissionsMonitoringPlan[this.subtask].ships.map((ship: EmpShipEmissions) => ({
             ...ship,

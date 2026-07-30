@@ -1,0 +1,34 @@
+@if (model(); as data) {
+  <dl govuk-summary-list>
+    <div govukSummaryListRow>
+      <dt govukSummaryListRowKey>Reporting year</dt>
+      <dd govukSummaryListRowValue>{{ data?.reportingYear }}</dd>
+    </div>
+    <div govukSummaryListRow>
+      <dt govukSummaryListRowKey>Supporting files</dt>
+      <dd govukSummaryListRowValue>
+        <mrtm-summary-download-files [files]="data?.files" />
+      </dd>
+      @if (isEditable()) {
+        <dd govukSummaryListRowActions>
+          <a govukLink [routerLink]="[wizardStep()?.EVIDENCE]" [queryParams]="queryParams()">
+            Change
+            <span class="govuk-visually-hidden">supporting files</span>
+          </a>
+        </dd>
+      }
+    </div>
+    <div govukSummaryListRow>
+      <dt govukSummaryListRowKey>Notes</dt>
+      <dd govukSummaryListRowValue class="pre-wrap" [notProvided]="data?.clarification"></dd>
+      @if (isEditable()) {
+        <dd govukSummaryListRowActions>
+          <a govukLink [routerLink]="[wizardStep()?.EVIDENCE]" [queryParams]="queryParams()">
+            Change
+            <span class="govuk-visually-hidden">notes</span>
+          </a>
+        </dd>
+      }
+    </div>
+  </dl>
+}

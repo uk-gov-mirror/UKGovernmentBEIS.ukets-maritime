@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 
@@ -8,12 +8,12 @@ describe('BackLinkComponent', () => {
   @Component({
     imports: [BackLinkComponent],
     standalone: true,
-    template: '<govuk-back-link [link]="link" [route]="route"  [inverse]="inverse" />',
+    template: '<govuk-back-link [link]="link" [route]="route"  [inverse]="inverse()" />',
   })
   class MockParentComponent {
     link = '../back';
     route = inject(ActivatedRoute).snapshot;
-    inverse = false;
+    readonly inverse = signal(false);
   }
 
   let fixture: ComponentFixture<MockParentComponent>;
@@ -42,7 +42,7 @@ describe('BackLinkComponent', () => {
     const backlinkDiv = hostElement.querySelector<HTMLElement>('.govuk-back-link');
     expect(backlinkDiv.classList).not.toContain('govuk-back-link--inverse');
 
-    fixture.componentInstance.inverse = true;
+    fixture.componentInstance.inverse.set(true);
     fixture.detectChanges();
 
     expect(backlinkDiv.classList).toContain('govuk-back-link--inverse');

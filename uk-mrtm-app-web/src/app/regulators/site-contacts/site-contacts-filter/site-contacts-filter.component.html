@@ -1,0 +1,26 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="row-flex align-items-end">
+        <div class="col-flex-three-quarters">
+          <div
+            mrtm-autocomplete-select
+            inputFieldType="search"
+            label="Search by operator name"
+            noOptionsFoundText="No matching results"
+            formControlName="filterByAccount"
+            [options]="accountsSuggestions()"></div>
+        </div>
+        <div class="col-flex-one-quarter">
+          <button class="nowrap" type="submit" govukSecondaryButton>Apply filter</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (hasAppliedFilters()) {
+    <div class="govuk-!-margin-bottom-6">
+      <button type="button" class="link-button" (click)="onClearFiltersClick()">Clear filter</button>
+    </div>
+  }
+</form>

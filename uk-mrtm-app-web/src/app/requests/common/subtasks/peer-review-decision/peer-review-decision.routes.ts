@@ -25,6 +25,7 @@ export const PEER_REVIEW_DECISION_ROUTES: Routes = [
   },
   {
     path: PeerReviewWizardStep.SUCCESS,
+    data: { backlink: false },
     loadComponent: () =>
       import('@requests/common/subtasks/peer-review-decision/peer-review-decision-success').then(
         (c) => c.PeerReviewDecisionSuccessComponent,

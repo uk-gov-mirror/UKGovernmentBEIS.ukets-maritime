@@ -10,7 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.netz.api.common.validation.uniqueelements.UniqueElements;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -25,6 +24,6 @@ public class ExternalAerAggregatedDataEmissions {
     @JsonDeserialize(as = LinkedHashSet.class)
     @UniqueElements
     @NotEmpty
-    private Set<@NotNull @Valid ExternalAerAggregatedDataShipEmissions> shipEmissions = new HashSet<>();
+    private Set<@NotNull @Valid ExternalAerAggregatedDataShipEmissions> shipEmissions = new LinkedHashSet<>();
 
 }

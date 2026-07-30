@@ -19,7 +19,12 @@ describe('DatePickerService', () => {
               focus: () => {},
             };
           case '.moj-datepicker__dialog':
-            return { contains: () => false }; // Mock contains for dialog
+            return { contains: () => false, offsetWidth: 0, style: {} }; // Mock contains for dialog
+          case '.govuk-input__wrapper':
+            return {
+              getBoundingClientRect: () => ({ top: 0, left: 0, width: 0, height: 0, right: 0, bottom: 0 }) as DOMRect,
+              offsetHeight: 0,
+            };
           case 'input':
             return { contains: () => false }; // Mock contains for input
           case '.moj-datepicker__toggle':
@@ -214,16 +219,16 @@ describe('DatePickerService', () => {
         stopPropagation: () => {},
       }) as KeyboardEvent;
 
-    const focusPreviousDaySpy = jest.spyOn(service, 'focusPreviousDay');
-    const focusNextDaySpy = jest.spyOn(service, 'focusNextDay');
-    const focusPreviousWeekSpy = jest.spyOn(service, 'focusPreviousWeek');
-    const focusNextWeekSpy = jest.spyOn(service, 'focusNextWeek');
-    const focusFirstDayOfWeekSpy = jest.spyOn(service, 'focusFirstDayOfWeek');
-    const focusLastDayOfWeekSpy = jest.spyOn(service, 'focusLastDayOfWeek');
-    const focusPreviousMonthSpy = jest.spyOn(service, 'focusPreviousMonth');
-    const focusNextMonthSpy = jest.spyOn(service, 'focusNextMonth');
-    const focusPreviousYearSpy = jest.spyOn(service, 'focusPreviousYear');
-    const focusNextYearSpy = jest.spyOn(service, 'focusNextYear');
+    const focusPreviousDaySpy = vi.spyOn(service, 'focusPreviousDay');
+    const focusNextDaySpy = vi.spyOn(service, 'focusNextDay');
+    const focusPreviousWeekSpy = vi.spyOn(service, 'focusPreviousWeek');
+    const focusNextWeekSpy = vi.spyOn(service, 'focusNextWeek');
+    const focusFirstDayOfWeekSpy = vi.spyOn(service, 'focusFirstDayOfWeek');
+    const focusLastDayOfWeekSpy = vi.spyOn(service, 'focusLastDayOfWeek');
+    const focusPreviousMonthSpy = vi.spyOn(service, 'focusPreviousMonth');
+    const focusNextMonthSpy = vi.spyOn(service, 'focusNextMonth');
+    const focusPreviousYearSpy = vi.spyOn(service, 'focusPreviousYear');
+    const focusNextYearSpy = vi.spyOn(service, 'focusNextYear');
 
     service.onDateKeyPress(event('ArrowLeft'));
     expect(focusPreviousDaySpy).toHaveBeenCalledTimes(1);
@@ -257,7 +262,7 @@ describe('DatePickerService', () => {
   });
 
   it('should close the dialog if clicked outside dialog, input, and toggle', () => {
-    jest.spyOn(service, 'closeDialog');
+    vi.spyOn(service, 'closeDialog');
     service.isDialogOpen.set(true);
     const event = { ...mockEvent, target: {} } as Event; // Mock target to be outside
     service.onBackgroundClick(event);

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,6 +20,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.mrtm.api.account.domain.MrtmAccountStatus;
 import uk.gov.mrtm.api.account.domain.dto.MrtmAccountDTO;
 import uk.gov.mrtm.api.account.domain.dto.MrtmAccountInfoDTO;
+import uk.gov.mrtm.api.account.search.criteria.MrtmAccountSearchSortField;
+import uk.gov.mrtm.api.account.search.mapper.MrtmAccountSearchCriteriaMapper;
 import uk.gov.mrtm.api.account.service.MrtmAccountCreateService;
 import uk.gov.mrtm.api.account.service.MrtmAccountQueryService;
 import uk.gov.mrtm.api.common.domain.dto.AddressStateDTO;
@@ -28,10 +31,12 @@ import uk.gov.netz.api.security.AppSecurityComponent;
 import uk.gov.netz.api.security.AuthorizationAspectUserResolver;
 import uk.gov.netz.api.security.AuthorizedAspect;
 import uk.gov.netz.api.security.AuthorizedRoleAspect;
-import uk.gov.netz.api.account.domain.dto.AccountSearchCriteria;
-import uk.gov.netz.api.account.domain.dto.AccountSearchResultInfoDTO;
+import uk.gov.mrtm.api.account.search.domain.dto.MrtmAccountSearchCriteria;
+import uk.gov.mrtm.api.account.search.domain.dto.MrtmAccountSearchResultInfoDTO;
 import uk.gov.netz.api.account.domain.dto.AccountSearchResults;
-import uk.gov.netz.api.account.service.AccountSearchServiceDelegator;
+import uk.gov.netz.api.account.search.criteria.AccountSearchFilterCriteria;
+import uk.gov.mrtm.api.web.orchestrator.account.service.MrtmAccountSearchQueryOrchestrator;
+import uk.gov.netz.api.account.service.AccountQueryService;
 import uk.gov.netz.api.authorization.core.domain.AppAuthority;
 import uk.gov.netz.api.authorization.core.domain.AppUser;
 import uk.gov.netz.api.authorization.rules.services.AppUserAuthorizationService;
@@ -46,6 +51,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -76,7 +83,10 @@ class MrtmAccountControllerTest {
     private MrtmAccountQueryService mrtmAccountQueryService;
 
     @Mock
-    private AccountSearchServiceDelegator accountSearchServiceDelegator;
+    private MrtmAccountSearchQueryOrchestrator mrtmAccountSearchQueryOrchestrator;
+
+    @Mock
+    private MrtmAccountSearchCriteriaMapper mrtmAccountSearchCriteriaMapper;
 
     @Mock
     private AppSecurityComponent appSecurityComponent;
@@ -220,46 +230,208 @@ class MrtmAccountControllerTest {
     @Test
     void searchCurrentUserMrtmAccounts() throws Exception {
         final AppUser user = AppUser.builder().userId("userId").build();
-        final AccountSearchCriteria criteria = AccountSearchCriteria.builder()
+        final PagingRequest paging = PagingRequest.builder().pageNumber(0).pageSize(10).build();
+        final AccountSearchFilterCriteria filterCriteria = AccountSearchFilterCriteria.builder()
                 .term("key")
-                .paging(PagingRequest.builder().pageNumber(0).pageSize(10).build())
-                .direction(Sort.Direction.ASC)
-                .sortBy(AccountSearchCriteria.SortBy.ACCOUNT_BUSINESS_ID)
+                .paging(paging)
                 .build();
 
-        final List<AccountSearchResultInfoDTO> accounts =
+        final List<MrtmAccountSearchResultInfoDTO> accounts =
                 List.of(
-                        new AccountSearchResultInfoDTO(1L, "account1", "EM00009", MrtmAccountStatus.LIVE),
-                        new AccountSearchResultInfoDTO(2L, "account2", "EM00010", MrtmAccountStatus.LIVE)
+                        new MrtmAccountSearchResultInfoDTO(
+                                1L, "account1", IMO_NUMBER, "EM00009", MrtmAccountStatus.LIVE.getName()),
+                        new MrtmAccountSearchResultInfoDTO(
+                                2L, "account2", "7654321", "EM00010", MrtmAccountStatus.LIVE.getName())
                 );
-        final AccountSearchResults results = AccountSearchResults.builder().accounts(accounts).total(2L).build();
+        final AccountSearchResults<MrtmAccountSearchResultInfoDTO> results =
+                AccountSearchResults.<MrtmAccountSearchResultInfoDTO>builder().accounts(accounts).total(2L).build();
 
         when(appSecurityComponent.getAuthenticatedUser()).thenReturn(user);
-        when(accountSearchServiceDelegator.getAccountsByUserAndSearchCriteria(user, criteria)).thenReturn(results);
+        when(mrtmAccountSearchCriteriaMapper.toFilterCriteria(any(MrtmAccountSearchCriteria.class)))
+                .thenReturn(filterCriteria);
+        when(mrtmAccountSearchQueryOrchestrator.search(user, filterCriteria)).thenReturn(results);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get(CONTROLLER_PATH)
-                        .param("term", criteria.getTerm())
-                        .param("page", String.valueOf(criteria.getPaging().getPageNumber()))
-                        .param("size", String.valueOf(criteria.getPaging().getPageSize()))
+                        .param("term", "key")
+                        .param("page", String.valueOf(paging.getPageNumber()))
+                        .param("size", String.valueOf(paging.getPageSize()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accounts[0].id").value(1L))
                 .andExpect(jsonPath("$.accounts[0].name").value("account1"))
                 .andExpect(jsonPath("$.accounts[0].businessId").value("EM00009"))
+                .andExpect(jsonPath("$.accounts[0].imoNumber").value(IMO_NUMBER))
                 .andExpect(jsonPath("$.accounts[1].id").value(2L))
                 .andExpect(jsonPath("$.accounts[1].name").value("account2"))
-                .andExpect(jsonPath("$.accounts[1].businessId").value("EM00010"));
+                .andExpect(jsonPath("$.accounts[1].businessId").value("EM00010"))
+                .andExpect(jsonPath("$.accounts[1].imoNumber").value("7654321"));
 
-        verify(accountSearchServiceDelegator).getAccountsByUserAndSearchCriteria(user, criteria);
+        ArgumentCaptor<MrtmAccountSearchCriteria> searchCriteriaCaptor =
+                ArgumentCaptor.forClass(MrtmAccountSearchCriteria.class);
+        verify(mrtmAccountSearchCriteriaMapper).toFilterCriteria(searchCriteriaCaptor.capture());
+        assertThat(searchCriteriaCaptor.getValue().getTerm()).isEqualTo("key");
+        assertThat(searchCriteriaCaptor.getValue().getPage()).isEqualTo(0);
+        assertThat(searchCriteriaCaptor.getValue().getSize()).isEqualTo(10);
+        verify(mrtmAccountSearchQueryOrchestrator).search(user, filterCriteria);
+    }
+
+    @Test
+    void searchCurrentUserMrtmAccounts_withEnhancedFilters() throws Exception {
+        final AppUser user = AppUser.builder().userId("userId").build();
+        final PagingRequest paging = PagingRequest.builder().pageNumber(1).pageSize(20).build();
+        final Set<MrtmAccountStatus> statuses = Set.of(MrtmAccountStatus.LIVE);
+        final AccountSearchFilterCriteria filterCriteria = AccountSearchFilterCriteria.builder()
+                .term("vessel")
+                .paging(paging)
+                .statuses(statuses)
+                .contactEmail("contact@example.com")
+                .sortField(MrtmAccountSearchSortField.IMO_NUMBER)
+                .sortDirection(Sort.Direction.DESC)
+                .build();
+        final AccountSearchResults<MrtmAccountSearchResultInfoDTO> results =
+                AccountSearchResults.<MrtmAccountSearchResultInfoDTO>builder()
+                .accounts(List.of())
+                .total(0L)
+                .build();
+
+        when(appSecurityComponent.getAuthenticatedUser()).thenReturn(user);
+        when(mrtmAccountSearchCriteriaMapper.toFilterCriteria(any(MrtmAccountSearchCriteria.class)))
+                .thenReturn(filterCriteria);
+        when(mrtmAccountSearchQueryOrchestrator.search(user, filterCriteria)).thenReturn(results);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(CONTROLLER_PATH)
+                        .param("term", "vessel")
+                        .param("statuses", "LIVE")
+                        .param("contactEmail", "contact@example.com")
+                        .param("sortBy", "IMO_NUMBER")
+                        .param("direction", "DESC")
+                        .param("page", "1")
+                        .param("size", "20")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<MrtmAccountSearchCriteria> searchCriteriaCaptor =
+                ArgumentCaptor.forClass(MrtmAccountSearchCriteria.class);
+        verify(mrtmAccountSearchCriteriaMapper).toFilterCriteria(searchCriteriaCaptor.capture());
+        MrtmAccountSearchCriteria capturedCriteria = searchCriteriaCaptor.getValue();
+        assertThat(capturedCriteria.getTerm()).isEqualTo("vessel");
+        assertThat(capturedCriteria.getStatuses()).isEqualTo(statuses);
+        assertThat(capturedCriteria.getContactEmail()).isEqualTo("contact@example.com");
+        assertThat(capturedCriteria.getSortBy()).isEqualTo("IMO_NUMBER");
+        assertThat(capturedCriteria.getDirection()).isEqualTo(Sort.Direction.DESC);
+        assertThat(capturedCriteria.getPage()).isEqualTo(1);
+        assertThat(capturedCriteria.getSize()).isEqualTo(20);
+        verify(mrtmAccountSearchQueryOrchestrator).search(user, filterCriteria);
+    }
+
+    @Test
+    void searchCurrentUserMrtmAccounts_withoutPageAndSize() throws Exception {
+        final AppUser user = AppUser.builder().userId("userId").build();
+        final AccountSearchFilterCriteria filterCriteria = AccountSearchFilterCriteria.builder()
+                .term("key")
+                .paging(PagingRequest.builder().pageNumber(0).pageSize(20).build())
+                .build();
+        final AccountSearchResults<MrtmAccountSearchResultInfoDTO> results =
+                AccountSearchResults.<MrtmAccountSearchResultInfoDTO>builder().accounts(List.of()).total(0L).build();
+
+        when(appSecurityComponent.getAuthenticatedUser()).thenReturn(user);
+        when(mrtmAccountSearchCriteriaMapper.toFilterCriteria(any(MrtmAccountSearchCriteria.class)))
+                .thenReturn(filterCriteria);
+        when(mrtmAccountSearchQueryOrchestrator.search(user, filterCriteria)).thenReturn(results);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(CONTROLLER_PATH)
+                        .param("term", "key")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<MrtmAccountSearchCriteria> searchCriteriaCaptor =
+                ArgumentCaptor.forClass(MrtmAccountSearchCriteria.class);
+        verify(mrtmAccountSearchCriteriaMapper).toFilterCriteria(searchCriteriaCaptor.capture());
+        assertThat(searchCriteriaCaptor.getValue().getTerm()).isEqualTo("key");
+        assertThat(searchCriteriaCaptor.getValue().getPage()).isNull();
+        assertThat(searchCriteriaCaptor.getValue().getSize()).isNull();
+        verify(mrtmAccountSearchQueryOrchestrator).search(user, filterCriteria);
+    }
+
+    @Test
+    void searchCurrentUserMrtmAccounts_invalidSortBy_returnsBadRequest() throws Exception {
+        final AppUser user = AppUser.builder().userId("userId").build();
+
+        when(appSecurityComponent.getAuthenticatedUser()).thenReturn(user);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(CONTROLLER_PATH)
+                        .param("term", "key")
+                        .param("sortBy", "UNKNOWN")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+        verifyNoInteractions(mrtmAccountSearchQueryOrchestrator, mrtmAccountSearchCriteriaMapper);
+    }
+
+    @Test
+    void searchCurrentUserMrtmAccounts_blankSortBy_usesDefaultSort() throws Exception {
+        final AppUser user = AppUser.builder().userId("userId").build();
+        final AccountSearchFilterCriteria filterCriteria = AccountSearchFilterCriteria.builder()
+                .term("key")
+                .paging(PagingRequest.builder().pageNumber(0).pageSize(20).build())
+                .build();
+        final AccountSearchResults<MrtmAccountSearchResultInfoDTO> results =
+                AccountSearchResults.<MrtmAccountSearchResultInfoDTO>builder().accounts(List.of()).total(0L).build();
+
+        when(appSecurityComponent.getAuthenticatedUser()).thenReturn(user);
+        when(mrtmAccountSearchCriteriaMapper.toFilterCriteria(any(MrtmAccountSearchCriteria.class)))
+                .thenReturn(filterCriteria);
+        when(mrtmAccountSearchQueryOrchestrator.search(user, filterCriteria)).thenReturn(results);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(CONTROLLER_PATH)
+                        .param("term", "key")
+                        .param("sortBy", "")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<MrtmAccountSearchCriteria> searchCriteriaCaptor =
+                ArgumentCaptor.forClass(MrtmAccountSearchCriteria.class);
+        verify(mrtmAccountSearchCriteriaMapper).toFilterCriteria(searchCriteriaCaptor.capture());
+        assertThat(searchCriteriaCaptor.getValue().getSortBy()).isEqualTo("");
+        verify(mrtmAccountSearchQueryOrchestrator).search(user, filterCriteria);
+    }
+
+    @Test
+    void searchCurrentUserMrtmAccounts_trimmedSortBy_isAccepted() throws Exception {
+        final AppUser user = AppUser.builder().userId("userId").build();
+        final AccountSearchFilterCriteria filterCriteria = AccountSearchFilterCriteria.builder()
+                .term("key")
+                .paging(PagingRequest.builder().pageNumber(0).pageSize(20).build())
+                .build();
+        final AccountSearchResults<MrtmAccountSearchResultInfoDTO> results =
+                AccountSearchResults.<MrtmAccountSearchResultInfoDTO>builder().accounts(List.of()).total(0L).build();
+
+        when(appSecurityComponent.getAuthenticatedUser()).thenReturn(user);
+        when(mrtmAccountSearchCriteriaMapper.toFilterCriteria(any(MrtmAccountSearchCriteria.class)))
+                .thenReturn(filterCriteria);
+        when(mrtmAccountSearchQueryOrchestrator.search(user, filterCriteria)).thenReturn(results);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(CONTROLLER_PATH)
+                        .param("term", "key")
+                        .param("sortBy", "OPERATOR_NAME")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<MrtmAccountSearchCriteria> searchCriteriaCaptor =
+                ArgumentCaptor.forClass(MrtmAccountSearchCriteria.class);
+        verify(mrtmAccountSearchCriteriaMapper).toFilterCriteria(searchCriteriaCaptor.capture());
+        assertThat(searchCriteriaCaptor.getValue().getSortBy()).isEqualTo("OPERATOR_NAME");
     }
 
     @Test
     void searchCurrentUserMrtmAccounts_forbidden() throws Exception {
         final AppUser user = AppUser.builder().userId("userId").build();
-        final AccountSearchCriteria criteria = AccountSearchCriteria.builder()
-                .term("key")
-                .paging(PagingRequest.builder().pageNumber(0).pageSize(10).build()).build();
 
         when(appSecurityComponent.getAuthenticatedUser()).thenReturn(user);
         doThrow(new BusinessException(ErrorCode.FORBIDDEN))
@@ -268,13 +440,13 @@ class MrtmAccountControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get(CONTROLLER_PATH)
-                        .param("term", criteria.getTerm())
-                        .param("page", String.valueOf(criteria.getPaging().getPageNumber()))
-                        .param("size", String.valueOf(criteria.getPaging().getPageSize()))
+                        .param("term", "key")
+                        .param("page", "0")
+                        .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
 
-        verifyNoInteractions(mrtmAccountQueryService);
+        verifyNoInteractions(mrtmAccountSearchQueryOrchestrator, mrtmAccountSearchCriteriaMapper);
     }
 
     @Test

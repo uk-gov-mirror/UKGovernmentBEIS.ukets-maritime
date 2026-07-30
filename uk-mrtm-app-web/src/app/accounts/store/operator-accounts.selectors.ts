@@ -94,6 +94,10 @@ export const selectPaging: OperatorFunction<OperatorAccountsState, Paging> = pip
   map((state) => state.accountsSearch.paging),
 );
 
+export const selectSearchState: OperatorFunction<OperatorAccountsState, OperatorAccountsState['accountsSearch']> = pipe(
+  map((state) => state.accountsSearch),
+);
+
 export const selectPage: OperatorFunction<OperatorAccountsState, number> = pipe(
   selectPaging,
   map((paging) => paging.page),

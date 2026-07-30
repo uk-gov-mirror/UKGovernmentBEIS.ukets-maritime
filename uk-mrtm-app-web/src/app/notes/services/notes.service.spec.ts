@@ -20,22 +20,22 @@ describe('NotesService', () => {
   const mockFile1 = new File([new Blob()], 'uploaded-file1.txt');
   const mockFile2 = new File([new Blob()], 'uploaded-file2.txt');
   const accountNotesService: MockType<AccountNotesService> = {
-    getNotesByAccountId: jest.fn().mockReturnValue(of(mockAccountNotesResults)),
-    updateAccountNote: jest.fn().mockReturnValue(of({})),
-    createAccountNote: jest.fn().mockReturnValue(of({})),
-    getAccountNote: jest.fn().mockReturnValue(of(mockAccountNotesResults.accountNotes[0])),
-    deleteAccountNote: jest.fn().mockReturnValue(of({})),
-    uploadAccountNoteFile: jest
+    getNotesByAccountId: vi.fn().mockReturnValue(of(mockAccountNotesResults)),
+    updateAccountNote: vi.fn().mockReturnValue(of({})),
+    createAccountNote: vi.fn().mockReturnValue(of({})),
+    getAccountNote: vi.fn().mockReturnValue(of(mockAccountNotesResults.accountNotes[0])),
+    deleteAccountNote: vi.fn().mockReturnValue(of({})),
+    uploadAccountNoteFile: vi
       .fn()
       .mockReturnValue(of(new HttpResponse({ status: HttpStatuses.Ok, body: { uuid: mockUUID1 } }))),
   };
   const requestNotesService: MockType<RequestNotesService> = {
-    getNotesByRequestId: jest.fn().mockReturnValue(of(mockRequestNotesResults)),
-    updateRequestNote: jest.fn().mockReturnValue(of({})),
-    createRequestNote: jest.fn().mockReturnValue(of({})),
-    getRequestNote: jest.fn().mockReturnValue(of(mockRequestNotesResults.requestNotes[0])),
-    deleteRequestNote: jest.fn().mockReturnValue(of({})),
-    uploadRequestNoteFile: jest
+    getNotesByRequestId: vi.fn().mockReturnValue(of(mockRequestNotesResults)),
+    updateRequestNote: vi.fn().mockReturnValue(of({})),
+    createRequestNote: vi.fn().mockReturnValue(of({})),
+    getRequestNote: vi.fn().mockReturnValue(of(mockRequestNotesResults.requestNotes[0])),
+    deleteRequestNote: vi.fn().mockReturnValue(of({})),
+    uploadRequestNoteFile: vi
       .fn()
       .mockReturnValue(of(new HttpResponse({ status: HttpStatuses.Ok, body: { uuid: mockUUID2 } }))),
   };

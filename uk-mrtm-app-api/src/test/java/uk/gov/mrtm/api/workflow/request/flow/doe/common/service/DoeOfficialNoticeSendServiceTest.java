@@ -15,7 +15,7 @@ import uk.gov.netz.api.competentauthority.CompetentAuthorityEnum;
 import uk.gov.netz.api.competentauthority.CompetentAuthorityService;
 import uk.gov.netz.api.files.common.domain.dto.FileDTO;
 import uk.gov.netz.api.files.common.domain.dto.FileInfoDTO;
-import uk.gov.netz.api.files.documents.service.FileDocumentService;
+import uk.gov.netz.api.files.documents.service.storage.FileDocumentStorageService;
 import uk.gov.netz.api.notificationapi.mail.domain.EmailData;
 import uk.gov.netz.api.notificationapi.mail.domain.EmailNotificationTemplateData;
 import uk.gov.netz.api.notificationapi.mail.service.NotificationEmailService;
@@ -63,7 +63,7 @@ class DoeOfficialNoticeSendServiceTest {
     private NotificationEmailService notificationEmailService;
 
     @Mock
-    private FileDocumentService fileDocumentService;
+    private FileDocumentStorageService fileDocumentStorageService;
 
     @Mock
     private CompetentAuthorityService competentAuthorityService;
@@ -109,7 +109,7 @@ class DoeOfficialNoticeSendServiceTest {
         when(requestAccountContactQueryService.getRequestAccountPrimaryContact(request)).thenReturn(Optional.of(accountPrimaryContact));
         when(requestAccountContactQueryService.getRequestAccountServiceContact(request)).thenReturn(Optional.of(accountServiceContact));
         when(decisionNotificationUsersService.findUserEmails(decisionNotification)).thenReturn(ccRecipientsEmails);
-        when(fileDocumentService.getFileDTO(officialNoticeFileInfoDTO.getUuid())).thenReturn(officialNoticeFileDTO);
+        when(fileDocumentStorageService.getFileDTO(officialNoticeFileInfoDTO.getUuid())).thenReturn(officialNoticeFileDTO);
         when(competentAuthorityService.getCompetentAuthorityDTO(CompetentAuthorityEnum.ENGLAND)).thenReturn(competentAuthority);
 
         //invoke
@@ -119,7 +119,7 @@ class DoeOfficialNoticeSendServiceTest {
         verify(requestAccountContactQueryService, times(1)).getRequestAccountPrimaryContact(request);
         verify(requestAccountContactQueryService, times(1)).getRequestAccountServiceContact(request);
         verify(decisionNotificationUsersService, times(1)).findUserEmails(decisionNotification);
-        verify(fileDocumentService, times(1)).getFileDTO(officialNoticeFileInfoDTO.getUuid());
+        verify(fileDocumentStorageService, times(1)).getFileDTO(officialNoticeFileInfoDTO.getUuid());
         verify(competentAuthorityService, times(1)).getCompetentAuthorityDTO(CompetentAuthorityEnum.ENGLAND);
 
         ArgumentCaptor<EmailData> emailDataCaptor = ArgumentCaptor.forClass(EmailData.class);
@@ -175,7 +175,7 @@ class DoeOfficialNoticeSendServiceTest {
         verify(decisionNotificationUsersService, times(1)).findUserEmails(decisionNotification);
 
         verifyNoMoreInteractions(requestAccountContactQueryService);
-        verifyNoInteractions(fileDocumentService);
+        verifyNoInteractions(fileDocumentStorageService);
         verifyNoInteractions(notificationEmailService);
         verifyNoInteractions(competentAuthorityService);
     }
@@ -219,7 +219,7 @@ class DoeOfficialNoticeSendServiceTest {
         when(requestService.findRequestById(requestId)).thenReturn(request);
         when(requestAccountContactQueryService.getRequestAccountPrimaryContact(request)).thenReturn(Optional.empty());
         when(decisionNotificationUsersService.findUserEmails(decisionNotification)).thenReturn(ccRecipientsEmails);
-        when(fileDocumentService.getFileDTO(officialNoticeFileInfoDTO.getUuid())).thenReturn(officialNoticeFileDTO);
+        when(fileDocumentStorageService.getFileDTO(officialNoticeFileInfoDTO.getUuid())).thenReturn(officialNoticeFileDTO);
         when(competentAuthorityService.getCompetentAuthorityDTO(CompetentAuthorityEnum.WALES)).thenReturn(competentAuthority);
 
         //invoke
@@ -228,7 +228,7 @@ class DoeOfficialNoticeSendServiceTest {
         verify(requestService, times(1)).findRequestById(requestId);
         verify(requestAccountContactQueryService, times(1)).getRequestAccountPrimaryContact(request);
         verify(decisionNotificationUsersService, times(1)).findUserEmails(decisionNotification);
-        verify(fileDocumentService, times(1)).getFileDTO(officialNoticeFileInfoDTO.getUuid());
+        verify(fileDocumentStorageService, times(1)).getFileDTO(officialNoticeFileInfoDTO.getUuid());
         verify(competentAuthorityService, times(1)).getCompetentAuthorityDTO(CompetentAuthorityEnum.WALES);
 
         ArgumentCaptor<EmailData> emailDataCaptor = ArgumentCaptor.forClass(EmailData.class);

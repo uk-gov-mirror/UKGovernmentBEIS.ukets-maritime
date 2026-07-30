@@ -1,3 +1,5 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
@@ -16,7 +18,12 @@ describe('OperatorAccountDetailsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [OperatorAccountDetailsComponent],
-      providers: [OperatorAccountsStore, { provide: ActivatedRoute, useValue: activatedRoute }],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        OperatorAccountsStore,
+        { provide: ActivatedRoute, useValue: activatedRoute },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(OperatorAccountDetailsComponent);

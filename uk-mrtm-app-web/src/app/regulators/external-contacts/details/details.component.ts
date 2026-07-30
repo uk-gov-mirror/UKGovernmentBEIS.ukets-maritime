@@ -1,19 +1,18 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { filter, first, map, Observable, of, switchMap, tap } from 'rxjs';
 
 import { CaExternalContactDTO, CaExternalContactsService } from '@mrtm/api';
 
-import { PageHeadingComponent } from '@netz/common/components';
+import { FeedbackBannerStore, PageHeadingComponent } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { BusinessErrorService, catchBadRequest, ErrorCodes, isBadRequest } from '@netz/common/error';
 import { ButtonDirective, ErrorSummaryComponent, GovukValidators, TextInputComponent } from '@netz/govuk-components';
 
 import { saveNotFoundExternalContactError } from '@regulators/errors/business-error';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { SubmitIfEmptyPipe } from '@shared/pipes';
 import { requiredFieldsValidator } from '@shared/validators';
 
@@ -22,7 +21,6 @@ import { requiredFieldsValidator } from '@shared/validators';
   imports: [
     ErrorSummaryComponent,
     PageHeadingComponent,
-    FormsModule,
     ReactiveFormsModule,
     TextInputComponent,
     PendingButtonDirective,
@@ -40,7 +38,7 @@ export class DetailsComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly businessErrorService = inject(BusinessErrorService);
-  private readonly notificationBannerStore: NotificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
 
   isSummaryDisplayed: boolean;
   form = this.fb.group(
@@ -102,7 +100,7 @@ export class DetailsComponent {
       ).subscribe({
         next: () => {
           if (this.form.dirty) {
-            this.notificationBannerStore.setSuccessMessages([
+            this.feedbackBannerStore.setSuccessMessages([
               this.route.snapshot.paramMap.get('userId')
                 ? 'External contact details updated'
                 : 'External contact details created',

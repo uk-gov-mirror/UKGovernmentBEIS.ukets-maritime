@@ -1,5 +1,5 @@
-import { Component, viewChild } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { Component, signal, viewChild } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
@@ -13,16 +13,16 @@ describe('ErrorSummaryComponent', () => {
     imports: [ErrorSummaryComponent, ReactiveFormsModule, TextInputComponent, FormsModule],
     standalone: true,
     template: `
-      @if (isTemplate) {
+      @if (isTemplate()) {
         <form #templateForm="ngForm">
-          @if (showErrorSummary) {
+          @if (showErrorSummary()) {
             <govuk-error-summary [form]="templateForm" />
           }
           <select [(ngModel)]="selectValue" name="someField" required></select>
         </form>
       } @else {
         <form [formGroup]="form">
-          @if (showErrorSummary) {
+          @if (showErrorSummary()) {
             <govuk-error-summary [form]="form" />
           }
           <div govuk-text-input inputType="text" formControlName="topLevelFirst"></div>
@@ -52,9 +52,9 @@ describe('ErrorSummaryComponent', () => {
     public readonly testForm = viewChild<NgForm>('templateForm');
 
     form: FormGroup;
-    isTemplate = false;
+    readonly isTemplate = signal(false);
     selectValue: any;
-    showErrorSummary = false;
+    readonly showErrorSummary = signal(false);
   }
 
   let hostComponent: TestComponent;
@@ -103,7 +103,7 @@ describe('ErrorSummaryComponent', () => {
     beforeEach(() => {
       hostComponent.form = reactiveForm;
       fixture.detectChanges();
-      hostComponent.showErrorSummary = true;
+      hostComponent.showErrorSummary.set(true);
       fixture.detectChanges();
     });
 
@@ -117,23 +117,22 @@ describe('ErrorSummaryComponent', () => {
       const errors = hostElement.querySelectorAll('a');
 
       expect(Array.from(errors).map((error) => error.href)).toEqual([
-        'http://localhost/#l.topLevelFirst',
-        'http://localhost/#l.topLevelFirst',
-        'http://localhost/#l.topLevelLast',
-        'http://localhost/#l.secondLevelTopGroup.secondLevelFirst',
-        'http://localhost/#l.secondLevelTopGroup.secondLevelSecond',
-        'http://localhost/#l.secondLevelSimpleArrayTop.0',
-        'http://localhost/#l.secondLevelSimpleArrayTop.1',
-        'http://localhost/#l.secondLevelMixedArrayTop.0.nestedArrayControl1',
-        'http://localhost/#l.secondLevelMixedArrayTop.1',
-        'http://localhost/#l.secondLevelMixedArrayTop.2.nestedArrayControl2',
+        'http://localhost:3000/#l.topLevelFirst',
+        'http://localhost:3000/#l.topLevelFirst',
+        'http://localhost:3000/#l.secondLevelTopGroup.secondLevelFirst',
+        'http://localhost:3000/#l.secondLevelTopGroup.secondLevelSecond',
+        'http://localhost:3000/#l.secondLevelSimpleArrayTop.0',
+        'http://localhost:3000/#l.secondLevelSimpleArrayTop.1',
+        'http://localhost:3000/#l.secondLevelMixedArrayTop.0.nestedArrayControl1',
+        'http://localhost:3000/#l.secondLevelMixedArrayTop.1',
+        'http://localhost:3000/#l.secondLevelMixedArrayTop.2.nestedArrayControl2',
+        'http://localhost:3000/#l.topLevelLast',
       ]);
 
       expect(errors.length).toEqual(10);
       expect(Array.from(errors).map((error) => error.textContent.trim())).toEqual([
         'Must be a positive number',
         'Enter topLevelFirst',
-        'Enter topLevelLast',
         'Enter secondLevelFirst',
         'Enter secondLevelSecond',
         'Enter 2ndLevelSimpleArray control 0',
@@ -141,6 +140,7 @@ describe('ErrorSummaryComponent', () => {
         'Enter 2ndLevelMixedArray 0 nestedControl1',
         'Enter 2ndLevelMixedArray 1 arrayControl',
         'Enter 2ndLevelMixedArray 2 nestedControl2',
+        'Enter topLevelLast',
       ]);
     });
 
@@ -156,16 +156,16 @@ describe('ErrorSummaryComponent', () => {
   });
 
   describe('with templateForm', () => {
-    it('should display template form errors', fakeAsync(async () => {
-      hostComponent.isTemplate = true;
+    it('should display template form errors', async () => {
+      hostComponent.isTemplate.set(true);
       fixture.detectChanges();
-      hostComponent.showErrorSummary = true;
+      hostComponent.showErrorSummary.set(true);
       await fixture.whenStable();
       fixture.detectChanges();
 
       const hostElement: HTMLElement = fixture.nativeElement;
 
       expect(hostElement.querySelectorAll<HTMLAnchorElement>('a').length).toEqual(1);
-    }));
+    });
   });
 });

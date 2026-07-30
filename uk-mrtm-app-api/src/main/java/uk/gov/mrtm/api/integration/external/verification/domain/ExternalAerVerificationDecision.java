@@ -16,7 +16,6 @@ import uk.gov.netz.api.common.validation.SpELExpression;
 import uk.gov.netz.api.common.validation.uniqueelements.UniqueElements;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,5 +59,5 @@ public class ExternalAerVerificationDecision {
     @JsonDeserialize(as = LinkedHashSet.class)
     @UniqueElements
     @Schema(description = "List the reasons for your decision. Provide only when type is 'NOT_VERIFIED'")
-    private Set<@NotNull @Valid ExternalAerNotVerifiedDecisionReason> notVerifiedReasons = new HashSet<>();
+    private Set<@NotNull @Valid ExternalAerNotVerifiedDecisionReason> notVerifiedReasons = new LinkedHashSet<>();
 }

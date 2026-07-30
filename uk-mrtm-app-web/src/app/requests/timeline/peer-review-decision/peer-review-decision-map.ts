@@ -34,6 +34,17 @@ export const getPeerReviewDecisionTimelineTextMap = (actionType: string): PeerRe
     };
   }
 
+  if (
+    actionType === 'SITE_VISIT_APPLICATION_PEER_REVIEWER_ACCEPTED' ||
+    actionType === 'SITE_VISIT_APPLICATION_PEER_REVIEWER_REJECTED'
+  ) {
+    return {
+      caption: '',
+      decision: 'Decision',
+      notes: 'Notes',
+    };
+  }
+
   return {
     caption: 'Peer review response',
     decision: 'Peer review decision',

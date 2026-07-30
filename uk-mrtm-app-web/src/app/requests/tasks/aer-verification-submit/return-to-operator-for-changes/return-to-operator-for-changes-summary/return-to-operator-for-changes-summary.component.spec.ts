@@ -1,6 +1,6 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 
 import { of } from 'rxjs';
@@ -49,7 +49,7 @@ describe('ReturnToOperatorForChangesSummaryComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display changes required summary text', fakeAsync(() => {
+  it('should display changes required summary text', () => {
     store.setState({
       isSubmitted: false,
       changesRequired: 'dolor sit amet',
@@ -61,17 +61,16 @@ describe('ReturnToOperatorForChangesSummaryComponent', () => {
       'dolor sit amet',
       'Change',
     ]);
-  }));
+  });
 
-  it('should redirect to success page when user completes the process', fakeAsync(() => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
+  it('should redirect to success page when user completes the process', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     store.setState({
       isSubmitted: false,
       changesRequired: 'test test',
     });
     component.onSubmit();
-    flush();
     expect(store.select(returnToOperatorForChangesQuery.selectIsSubmitted)()).toEqual(true);
     expect(navigateSpy).toHaveBeenCalledWith(['../success'], { relativeTo: route });
-  }));
+  });
 });

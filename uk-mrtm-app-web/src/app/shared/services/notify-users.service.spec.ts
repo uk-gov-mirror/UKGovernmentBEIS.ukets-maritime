@@ -13,7 +13,7 @@ import { NotifyUsersService } from '@shared/services';
 describe('NotifyUsersService', () => {
   let service: NotifyUsersService;
   const tasksAssignmentService: MockType<TasksAssignmentService> = {
-    getCandidateAssigneesByTaskId: jest.fn().mockReturnValue(
+    getCandidateAssigneesByTaskId: vi.fn().mockReturnValue(
       of([
         {
           id: '22222222-2222-4222-a222-222222222222',
@@ -27,7 +27,7 @@ describe('NotifyUsersService', () => {
         },
       ]),
     ),
-    getCandidateAssigneesByTaskType: jest.fn().mockReturnValue(
+    getCandidateAssigneesByTaskType: vi.fn().mockReturnValue(
       of([
         {
           id: '22222222-2222-4222-a222-222222222222',
@@ -38,10 +38,10 @@ describe('NotifyUsersService', () => {
     ),
   };
   const tasksService: MockType<TasksService> = {
-    processRequestTaskAction: jest.fn().mockReturnValue(of({})),
+    processRequestTaskAction: vi.fn().mockReturnValue(of({})),
   };
   const operatorAuthoritiesService: MockType<OperatorAuthoritiesService> = {
-    getAccountOperatorAuthorities: jest.fn().mockReturnValue(
+    getAccountOperatorAuthorities: vi.fn().mockReturnValue(
       of({
         authorities: [
           {
@@ -73,7 +73,7 @@ describe('NotifyUsersService', () => {
     ),
   };
   const externalContactsService: MockType<CaExternalContactsService> = {
-    getCaExternalContacts: jest.fn().mockReturnValue(
+    getCaExternalContacts: vi.fn().mockReturnValue(
       of({
         caExternalContacts: [
           {
@@ -88,13 +88,12 @@ describe('NotifyUsersService', () => {
       }),
     ),
   };
-  const tasksServiceSpy = jest.spyOn(tasksService, 'processRequestTaskAction');
+  const tasksServiceSpy = vi.spyOn(tasksService, 'processRequestTaskAction');
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
-        provideHttpClientTesting(),
         provideHttpClientTesting(),
         { provide: OperatorAuthoritiesService, useValue: operatorAuthoritiesService },
         { provide: CaExternalContactsService, useValue: externalContactsService },

@@ -27,7 +27,7 @@ describe('AerAggregatedDataXmlService', () => {
   });
 
   it('should correctly transform AerAggregatedDataXML to AerAggregatedDataXmlResultDto', () => {
-    const getFixedUUID = jest.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
+    const getFixedUUID = vi.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
     Object.defineProperty(window, 'crypto', {
       value: { getRandomValues: getFixedUUID, randomUUID: getFixedUUID },
     });
@@ -111,7 +111,7 @@ describe('AerAggregatedDataXmlService', () => {
   });
 
   it('should return errors on false XML', () => {
-    const getFixedUUID = jest.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
+    const getFixedUUID = vi.fn().mockReturnValue('11111111-1111-4111-a111-111111111111');
     Object.defineProperty(window, 'crypto', {
       value: { getRandomValues: getFixedUUID, randomUUID: getFixedUUID },
     });

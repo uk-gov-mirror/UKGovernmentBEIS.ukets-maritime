@@ -2,7 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, inject, Signal } from '@a
 import { UntypedFormGroup, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { PageHeadingComponent, ReturnToTaskOrActionPageComponent } from '@netz/common/components';
+import {
+  FeedbackBannerComponent,
+  FeedbackBannerStore,
+  PageHeadingComponent,
+  ReturnToTaskOrActionPageComponent,
+} from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { TaskService } from '@netz/common/forms';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
@@ -13,7 +18,6 @@ import { aerCommonQuery } from '@requests/common/aer/+state';
 import { AerSubmitTaskPayload } from '@requests/common/aer/aer.types';
 import { AER_TOTAL_EMISSIONS_SUB_TASK } from '@requests/common/aer/subtasks/aer-total-emissions/aer-total-emissions.helpers';
 import { TaskItemStatus } from '@requests/common/task-item-status';
-import { NotificationBannerComponent, NotificationBannerStore } from '@shared/components/notification-banner';
 import { AerTotalEmissionsSummaryTemplateComponent } from '@shared/components/summaries';
 import BigNumber from 'bignumber.js';
 
@@ -26,7 +30,7 @@ import BigNumber from 'bignumber.js';
     ReturnToTaskOrActionPageComponent,
     AerTotalEmissionsSummaryTemplateComponent,
     WarningTextComponent,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
   ],
   standalone: true,
   templateUrl: './aer-total-emissions-summary.component.html',
@@ -37,7 +41,7 @@ export class AerTotalEmissionsSummaryComponent {
   private readonly router = inject(Router);
   private readonly service = inject(TaskService<AerSubmitTaskPayload>);
   private readonly store = inject(RequestTaskStore);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private readonly form = new UntypedFormGroup({});
 
   private readonly hasNeedsReviewStatus: Signal<boolean> = computed(
@@ -90,7 +94,7 @@ export class AerTotalEmissionsSummaryComponent {
       }
 
       this.form.setErrors(errors);
-      this.notificationBannerStore.setInvalidForm(this.form);
+      this.feedbackBannerStore.setInvalidForm(this.form);
       return;
     }
 

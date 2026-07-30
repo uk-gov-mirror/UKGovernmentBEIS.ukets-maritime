@@ -1,0 +1,53 @@
+package uk.gov.mrtm.api.workflow.request.flow.sitevisit.review.domain;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.common.domain.SiteVisitReviewDecision;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.submit.domain.SiteVisitApplicationSubmittedRequestActionPayload;
+import uk.gov.netz.api.files.common.domain.dto.FileInfoDTO;
+import uk.gov.netz.api.workflow.request.flow.common.domain.DecisionNotification;
+import uk.gov.netz.api.workflow.request.flow.common.domain.dto.RequestActionUserInfo;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
+public class SiteVisitApplicationReviewSubmittedRequestActionPayload extends SiteVisitApplicationSubmittedRequestActionPayload {
+
+    @NotNull
+    private SiteVisitReviewDecision reviewDecision;
+
+    @NotNull
+    private DecisionNotification decisionNotification;
+
+    @Builder.Default
+    private Map<UUID, String> reviewAttachments = new HashMap<>();
+
+    @Builder.Default
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private Map<String, RequestActionUserInfo> usersInfo = new HashMap<>();
+    
+    @NotNull
+    private FileInfoDTO officialNotice;
+    
+    @Override
+    public Map<UUID, String> getFileDocuments() {
+        return Stream.of(super.getFileDocuments(),
+                         Map.of(UUID.fromString(officialNotice.getUuid()), officialNotice.getName()))
+            .flatMap(m -> m.entrySet().stream())
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+}

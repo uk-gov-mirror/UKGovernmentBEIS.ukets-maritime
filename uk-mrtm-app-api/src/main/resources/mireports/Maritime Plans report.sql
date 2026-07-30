@@ -15,7 +15,11 @@ JOIN account_mrtm am
 ON am.id = a.id
 LEFT
 JOIN emp p
-ON p.account_id = a.id), shipEmissions
+ON p.account_id = a.id
+WHERE am.status = 'LIVE'
+-- Uncomment the line below for filtering by company IMO number
+-- AND (am.imo_Number = '3082184')
+), shipEmissions
 AS (
 SELECT account_id, "details", "fuelsAndEmissionsFactors", "emissionsSources", "uncertaintyLevel", "carbonCapture", "measurements", "exemptionConditions"
 FROM emp, jsonb_to_recordset(data -> 'emissionsMonitoringPlan' -> 'emissions' -> 'ships')

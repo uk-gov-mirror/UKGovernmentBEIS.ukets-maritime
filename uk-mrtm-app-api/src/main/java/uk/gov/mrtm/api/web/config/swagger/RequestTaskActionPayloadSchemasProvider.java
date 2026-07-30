@@ -11,7 +11,6 @@ import uk.gov.mrtm.api.workflow.request.flow.aer.verify.domain.AerSaveApplicatio
 import uk.gov.mrtm.api.workflow.request.flow.aer.verify.domain.AerVerificationImportThirdPartyDataRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.aer.verify.domain.AerVerificationReturnToOperatorRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.doe.submit.domain.DoeSaveApplicationRequestTaskActionPayload;
-import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceSaveApplicationAmendRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceSaveApplicationReviewRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceSaveReviewDeterminationRequestTaskActionPayload;
@@ -38,6 +37,9 @@ import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceI
 import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceNoticeOfIntentSaveApplicationRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceNotifyOperatorRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceSaveApplicationRequestTaskActionPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.review.domain.SiteVisitSaveApplicationAmendRequestTaskActionPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.review.domain.SiteVisitSaveReviewGroupDecisionRequestTaskActionPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.submit.domain.SiteVisitApplicationSaveRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirSaveApplicationRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirSaveRespondToRegulatorCommentsRequestTaskActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirSaveReviewRequestTaskActionPayload;
@@ -85,8 +87,6 @@ public class RequestTaskActionPayloadSchemasProvider extends SwaggerSchemasAbstr
 				EmpIssuanceSaveReviewGroupDecisionRequestTaskActionPayload.class);
 		addResolvedShemas(EmpIssuanceSaveReviewDeterminationRequestTaskActionPayload.class.getSimpleName(),
 				EmpIssuanceSaveReviewDeterminationRequestTaskActionPayload.class);
-		addResolvedShemas(EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload.class.getSimpleName(),
-				EmpIssuanceNotifyOperatorForDecisionRequestTaskActionPayload.class);
 		addResolvedShemas(EmpIssuanceSaveApplicationAmendRequestTaskActionPayload.class.getSimpleName(),
 			EmpIssuanceSaveApplicationAmendRequestTaskActionPayload.class);
 
@@ -175,6 +175,14 @@ public class RequestTaskActionPayloadSchemasProvider extends SwaggerSchemasAbstr
 			NonComplianceCloseApplicationRequestTaskActionPayload.class);
 		addResolvedShemas(NonComplianceAmendDetailsRequestTaskActionPayload.class.getSimpleName(),
 			NonComplianceAmendDetailsRequestTaskActionPayload.class);
+
+		//SITE_VISIT
+		addResolvedShemas(SiteVisitApplicationSaveRequestTaskActionPayload.class.getSimpleName(),
+			SiteVisitApplicationSaveRequestTaskActionPayload.class);
+		addResolvedShemas(SiteVisitSaveReviewGroupDecisionRequestTaskActionPayload.class.getSimpleName(),
+			SiteVisitSaveReviewGroupDecisionRequestTaskActionPayload.class);
+		addResolvedShemas(SiteVisitSaveApplicationAmendRequestTaskActionPayload.class.getSimpleName(),
+			SiteVisitSaveApplicationAmendRequestTaskActionPayload.class);
     }
     
 }

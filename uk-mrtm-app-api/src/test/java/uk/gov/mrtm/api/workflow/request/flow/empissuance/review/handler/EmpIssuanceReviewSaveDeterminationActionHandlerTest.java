@@ -57,7 +57,7 @@ class EmpIssuanceReviewSaveDeterminationActionHandlerTest {
 
         RequestTask requestTask = RequestTask.builder().id(requestTaskId).payload(expectedRequestTaskPayload).build();
 
-        when(requestTaskService.findTaskById(requestTaskId)).thenReturn(requestTask);
+        when(requestTaskService.findTaskByIdForUpdate(requestTaskId)).thenReturn(requestTask);
         when(determinationValidatorService.isValid(expectedRequestTaskPayload, EmpIssuanceDeterminationType.APPROVED)).thenReturn(true);
 
         RequestTaskPayload requestTaskPayload =
@@ -65,7 +65,7 @@ class EmpIssuanceReviewSaveDeterminationActionHandlerTest {
 
         assertThat(requestTaskPayload).isEqualTo(expectedRequestTaskPayload);
         verifyNoMoreInteractions(expectedRequestTaskPayload);
-        verify(requestTaskService, times(1)).findTaskById(requestTaskId);
+        verify(requestTaskService, times(1)).findTaskByIdForUpdate(requestTaskId);
         verify(determinationValidatorService, times(1)).isValid(expectedRequestTaskPayload, EmpIssuanceDeterminationType.APPROVED);
         verify(requestEmpReviewService, times(1)).saveDetermination(taskActionPayload, requestTask);
 
@@ -85,7 +85,7 @@ class EmpIssuanceReviewSaveDeterminationActionHandlerTest {
 
         RequestTask requestTask = RequestTask.builder().id(requestTaskId).payload(requestTaskPayload).build();
 
-        when(requestTaskService.findTaskById(requestTaskId)).thenReturn(requestTask);
+        when(requestTaskService.findTaskByIdForUpdate(requestTaskId)).thenReturn(requestTask);
         when(determinationValidatorService.isValid(requestTaskPayload, EmpIssuanceDeterminationType.APPROVED)).thenReturn(false);
 
         BusinessException be = assertThrows(BusinessException.class,
@@ -93,7 +93,7 @@ class EmpIssuanceReviewSaveDeterminationActionHandlerTest {
 
         assertThat(be.getErrorCode()).isEqualTo(ErrorCode.FORM_VALIDATION);
 
-        verify(requestTaskService, times(1)).findTaskById(requestTaskId);
+        verify(requestTaskService, times(1)).findTaskByIdForUpdate(requestTaskId);
         verify(determinationValidatorService, times(1)).isValid(requestTaskPayload, EmpIssuanceDeterminationType.APPROVED);
         verifyNoInteractions(requestEmpReviewService);
         verifyNoMoreInteractions(requestTaskService, requestEmpReviewService, determinationValidatorService);

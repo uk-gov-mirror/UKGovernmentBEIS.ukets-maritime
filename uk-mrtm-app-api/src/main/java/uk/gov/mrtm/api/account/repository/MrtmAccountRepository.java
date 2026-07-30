@@ -1,5 +1,7 @@
 package uk.gov.mrtm.api.account.repository;
 
+import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,10 @@ public interface MrtmAccountRepository extends AccountBaseRepository<MrtmAccount
     @Transactional(readOnly = true)
     @Query(name = MrtmAccount.NAMED_QUERY_FIND_BY_IMO_NUMBER)
     Optional<MrtmAccount> findByImoNumber(String imoNumber);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select acc from account_mrtm acc where acc.imoNumber = :imoNumber")
+    Optional<MrtmAccount> findByImoNumberForUpdate(String imoNumber);
 
     @Transactional(readOnly = true)
     @Query(name = MrtmAccount.NAMED_QUERY_FIND_ACCOUNT_ID_BY_IMO_NUMBER)

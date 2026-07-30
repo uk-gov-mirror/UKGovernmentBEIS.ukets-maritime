@@ -56,6 +56,7 @@ import uk.gov.mrtm.api.reporting.domain.verification.NonConformities;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -81,7 +82,7 @@ class ExternalAerVerificationMapperTest {
     }
 
     private static Stream<Arguments> toStagingAerVerification() {
-        ExternalAerSiteVisit externalAerInPersonSiteVisit = ExternalAerSiteVisit.builder()
+    	ExternalAerSiteVisit externalAerInPersonSiteVisit = ExternalAerSiteVisit.builder()
             .type(AerSiteVisitType.IN_PERSON)
             .teamMembers("teamMembers")
             .siteVisitDetails(List.of(ExternalAerInPersonSiteVisitDatesDetails.builder().startDate(LocalDate.now()).numberOfDays(1).build()))
@@ -165,37 +166,37 @@ class ExternalAerVerificationMapperTest {
 
         ExternalAerUncorrectedNonCompliances uncorrectedNonCompliances = ExternalAerUncorrectedNonCompliances.builder()
             .exist(true)
-            .uncorrectedNonCompliances(Set.of(
+            .uncorrectedNonCompliances(new LinkedHashSet<>(List.of(
                 ExternalUncorrectedItem.builder().materialEffect(true).explanation("uncorrectedNonCompliancesExplanation").build(),
-                ExternalUncorrectedItem.builder().materialEffect(true).explanation("uncorrectedNonCompliancesExplanation2").build()
+                ExternalUncorrectedItem.builder().materialEffect(true).explanation("uncorrectedNonCompliancesExplanation2").build())
             ))
             .build();
 
         ExternalAerUncorrectedMisstatements uncorrectedMisstatements = ExternalAerUncorrectedMisstatements.builder()
             .exist(true)
-            .uncorrectedMisstatements(Set.of(
+            .uncorrectedMisstatements(new LinkedHashSet<>(List.of(
                 ExternalUncorrectedItem.builder().materialEffect(true).explanation("uncorrectedMisstatementsExplanation").build(),
-                ExternalUncorrectedItem.builder().materialEffect(true).explanation("uncorrectedMisstatementsExplanation2").build()))
+                ExternalUncorrectedItem.builder().materialEffect(true).explanation("uncorrectedMisstatementsExplanation2").build())))
             .build();
 
         ExternalAerUncorrectedNonConformities uncorrectedNonConformities = ExternalAerUncorrectedNonConformities.builder()
             .exist(true)
-            .uncorrectedNonConformities(Set.of(
+            .uncorrectedNonConformities(new LinkedHashSet<>(List.of(
                 ExternalUncorrectedItem.builder().materialEffect(true).explanation("uncorrectedNonConformitiesExplanation").build(),
-                ExternalUncorrectedItem.builder().materialEffect(true).explanation("uncorrectedNonConformitiesExplanation2").build()
+                ExternalUncorrectedItem.builder().materialEffect(true).explanation("uncorrectedNonConformitiesExplanation2").build())
             ))
             .existPriorYearIssues(true)
-            .priorYearIssues(Set.of(
+            .priorYearIssues(new LinkedHashSet<>(List.of(
                 ExternalVerifierComment.builder().explanation("priorYearIssuesExplanation").build(),
-                ExternalVerifierComment.builder().explanation("priorYearIssuesExplanation2").build()
+                ExternalVerifierComment.builder().explanation("priorYearIssuesExplanation2").build())
             ))
             .build();
 
         ExternalAerRecommendedImprovements recommendedImprovements = ExternalAerRecommendedImprovements.builder()
             .exist(true)
-            .recommendedImprovements(Set.of(
+            .recommendedImprovements(new LinkedHashSet<>(List.of(
                 ExternalVerifierComment.builder().explanation("recommendedImprovementsExplanation").build(),
-                ExternalVerifierComment.builder().explanation("recommendedImprovementsExplanation2").build()
+                ExternalVerifierComment.builder().explanation("recommendedImprovementsExplanation2").build())
             ))
             .build();
 
@@ -213,7 +214,7 @@ class ExternalAerVerificationMapperTest {
 
         ExternalAerInformationOfOpinionRelevance materialityLevel = ExternalAerInformationOfOpinionRelevance.builder()
             .materialityDetails("materialityDetails")
-            .accreditationReferenceDocumentTypes(Set.of(AerAccreditationReferenceDocumentType.AUTHORITY_GUIDANCE))
+            .accreditationReferenceDocumentTypes(new LinkedHashSet<>(List.of(AerAccreditationReferenceDocumentType.AUTHORITY_GUIDANCE)))
             .otherReference("otherReference")
             .build();
 
@@ -310,38 +311,42 @@ class ExternalAerVerificationMapperTest {
 
         AerUncorrectedNonCompliances uncorrectedNonCompliances = AerUncorrectedNonCompliances.builder()
             .exist(true)
-            .uncorrectedNonCompliances(Set.of(
-                UncorrectedItem.builder().materialEffect(true).reference("C2").explanation("uncorrectedNonCompliancesExplanation").build(),
-                UncorrectedItem.builder().materialEffect(true).reference("C1").explanation("uncorrectedNonCompliancesExplanation2").build()
+            .uncorrectedNonCompliances(
+            		new LinkedHashSet<>(
+            				List.of(UncorrectedItem.builder().materialEffect(true).reference("C1").explanation("uncorrectedNonCompliancesExplanation").build(),
+                            UncorrectedItem.builder().materialEffect(true).reference("C2").explanation("uncorrectedNonCompliancesExplanation2").build())
+                
             ))
             .build();
 
         AerUncorrectedMisstatements uncorrectedMisstatements = AerUncorrectedMisstatements.builder()
             .exist(true)
-            .uncorrectedMisstatements(Set.of(
-                UncorrectedItem.builder().materialEffect(true).reference("A2").explanation("uncorrectedMisstatementsExplanation").build(),
-                UncorrectedItem.builder().materialEffect(true).reference("A1").explanation("uncorrectedMisstatementsExplanation2").build()
+            .uncorrectedMisstatements(
+            		new LinkedHashSet<>(List.of(
+                UncorrectedItem.builder().materialEffect(true).reference("A1").explanation("uncorrectedMisstatementsExplanation").build(),
+                UncorrectedItem.builder().materialEffect(true).reference("A2").explanation("uncorrectedMisstatementsExplanation2").build()
+                )
             ))
             .build();
 
         AerUncorrectedNonConformities uncorrectedNonConformities = AerUncorrectedNonConformities.builder()
             .exist(true)
-            .uncorrectedNonConformities(Set.of(
-                UncorrectedItem.builder().materialEffect(true).reference("B2").explanation("uncorrectedNonConformitiesExplanation").build(),
-                UncorrectedItem.builder().materialEffect(true).reference("B1").explanation("uncorrectedNonConformitiesExplanation2").build()
+            .uncorrectedNonConformities(new LinkedHashSet<>(List.of(
+                UncorrectedItem.builder().materialEffect(true).reference("B1").explanation("uncorrectedNonConformitiesExplanation").build(),
+                UncorrectedItem.builder().materialEffect(true).reference("B2").explanation("uncorrectedNonConformitiesExplanation2").build())
             ))
             .existPriorYearIssues(true)
-            .priorYearIssues(Set.of(
+            .priorYearIssues(new LinkedHashSet<>(List.of(
                 VerifierComment.builder().reference("E1").explanation("priorYearIssuesExplanation").build(),
-                VerifierComment.builder().reference("E2").explanation("priorYearIssuesExplanation2").build()
+                VerifierComment.builder().reference("E2").explanation("priorYearIssuesExplanation2").build())
             ))
             .build();
 
         AerRecommendedImprovements recommendedImprovements = AerRecommendedImprovements.builder()
             .exist(true)
-            .recommendedImprovements(Set.of(
-                VerifierComment.builder().reference("D2").explanation("recommendedImprovementsExplanation").build(),
-                VerifierComment.builder().reference("D1").explanation("recommendedImprovementsExplanation2").build()
+            .recommendedImprovements(new LinkedHashSet<>(List.of(
+                VerifierComment.builder().reference("D1").explanation("recommendedImprovementsExplanation").build(),
+                VerifierComment.builder().reference("D2").explanation("recommendedImprovementsExplanation2").build())
             ))
             .build();
 
@@ -359,7 +364,7 @@ class ExternalAerVerificationMapperTest {
 
         AerMaterialityLevel materialityLevel = AerMaterialityLevel.builder()
             .materialityDetails("materialityDetails")
-            .accreditationReferenceDocumentTypes(Set.of(AerAccreditationReferenceDocumentType.AUTHORITY_GUIDANCE))
+            .accreditationReferenceDocumentTypes(new LinkedHashSet<>(List.of(AerAccreditationReferenceDocumentType.AUTHORITY_GUIDANCE)))
             .otherReference("otherReference")
             .build();
 

@@ -23,7 +23,7 @@ public interface EmpVariationMapper {
 
 	EmissionsMonitoringPlanContainer toEmissionsMonitoringPlanContainer(
 			EmpVariationApplicationSubmitRequestTaskPayload taskPayload);
-
+	
 	@Mapping(target = "payloadType", source = "payloadType")
 	EmpVariationApplicationSubmitRequestTaskPayload toEmpVariationApplicationSubmitRequestTaskPayload(
 		EmpVariationRequestPayload requestPayload, String payloadType);
@@ -49,7 +49,8 @@ public interface EmpVariationMapper {
 	@Mapping(target = "emissionsMonitoringPlan.empSectionAttachmentIds", ignore = true)
 	EmissionsMonitoringPlanContainer toEmissionsMonitoringPlanContainer(
 			EmpVariationRequestPayload requestPayload);
-
+	
+	@Deprecated
 	@Mapping(target = "endDate", source = "endDate")
 	EmpVariationRequestInfo toEmpVariationRequestInfo(Request request, LocalDateTime endDate);
 
@@ -65,4 +66,5 @@ public interface EmpVariationMapper {
 			empVariationRequestInfo.setSubmissionDate(request.getCreationDate());
 		}
 	}
+	
 }

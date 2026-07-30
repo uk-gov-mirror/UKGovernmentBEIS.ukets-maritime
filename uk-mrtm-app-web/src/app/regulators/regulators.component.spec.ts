@@ -14,6 +14,7 @@ import { ActivatedRouteStub, BasePage, expectBusinessErrorToBe, RouterStubCompon
 import { savePartiallyNotFoundRegulatorError } from '@regulators/errors/business-error';
 import { RegulatorsComponent } from '@regulators/regulators.component';
 import { mockRegulatorsRouteData } from '@regulators/testing/regulators-data.mock';
+import { Mocked } from 'vitest';
 
 describe('RegulatorsComponent', () => {
   let component: RegulatorsComponent;
@@ -44,7 +45,7 @@ describe('RegulatorsComponent', () => {
     }
 
     get headers() {
-      return Array.from(this.regulatorsForm.querySelectorAll<HTMLTableHeaderCellElement>('th'));
+      return Array.from(this.regulatorsForm.querySelectorAll<HTMLTableCellElement>('th'));
     }
 
     get nameColumns() {
@@ -68,9 +69,9 @@ describe('RegulatorsComponent', () => {
     }
   }
 
-  const regulatorAuthoritiesService: Partial<jest.Mocked<RegulatorAuthoritiesService>> = {
-    getCaRegulators: jest.fn().mockReturnValue(of(mockRegulatorsRouteData.regulators)),
-    updateCompetentAuthorityRegulatorUsersStatus: jest.fn().mockReturnValue(of(null)),
+  const regulatorAuthoritiesService: Partial<Mocked<RegulatorAuthoritiesService>> = {
+    getCaRegulators: vi.fn().mockReturnValue(of(mockRegulatorsRouteData.regulators)),
+    updateCompetentAuthorityRegulatorUsersStatus: vi.fn().mockReturnValue(of(null)),
   };
   const expectUserOrderToBe = (indexes: number[]) =>
     expect(page.nameColumns.map((name) => name.textContent.trim())).toEqual(
@@ -83,7 +84,7 @@ describe('RegulatorsComponent', () => {
   const activatedRouteStub = new ActivatedRouteStub(null, null, structuredClone(mockRegulatorsRouteData));
 
   const createComponent = () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     fixture = TestBed.createComponent(RegulatorsComponent);
     component = fixture.componentInstance;
     page = new Page(fixture);
@@ -137,7 +138,7 @@ describe('RegulatorsComponent', () => {
   });
 
   it('should navigate to add regulator form when clicking the add button', () => {
-    const navigateSpy = jest.spyOn(router, 'navigateByUrl').mockImplementation();
+    const navigateSpy = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
     const testData = structuredClone(mockRegulatorsRouteData);
 
     activatedRouteStub.setResolveMap(testData);
@@ -266,6 +267,7 @@ describe('RegulatorsComponent', () => {
   });
 
   it('should show the business error page if a regulator is already deleted', async () => {
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
     regulatorAuthoritiesService.updateCompetentAuthorityRegulatorUsersStatus.mockReturnValue(
       throwError(() => new HttpErrorResponse({ error: { code: ErrorCodes.AUTHORITY1003 }, status: 400 })),
     );

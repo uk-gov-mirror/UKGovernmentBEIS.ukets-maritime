@@ -5,7 +5,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { AerShipEmissions, EmpShipEmissions } from '@mrtm/api';
 
-import { PageHeadingComponent } from '@netz/common/components';
+import { FeedbackBannerStore, PageHeadingComponent } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { TaskService } from '@netz/common/forms';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
@@ -30,7 +30,6 @@ import { uploadShipsFormProvider } from '@requests/common/components/emissions/u
 import { UPLOAD_SHIPS_XML_SERVICE } from '@requests/common/components/emissions/upload-ships/upload-ships-xml-service.token';
 import { TASK_FORM } from '@requests/common/task-form.token';
 import { DataParserWizardStepComponent } from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { PersistablePaginationService } from '@shared/services';
 import { ShipEmissionTableListItem, XmlValidationError } from '@shared/types';
 import { isAer } from '@shared/utils';
@@ -61,7 +60,7 @@ export class UploadShipsComponent {
   private readonly service = inject(TaskService);
   private readonly xmlService = inject(UPLOAD_SHIPS_XML_SERVICE);
   private readonly commonSubtaskStepsQuery = inject(REQUEST_TASK_COMMON_SUBTASK_STEPS_QUERY);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private readonly title = inject(Title);
 
   private readonly taskType = this.store.select(requestTaskQuery.selectRequestTaskType);
@@ -145,7 +144,7 @@ export class UploadShipsComponent {
         .saveSubtask(EMISSIONS_SUB_TASK, UPLOAD_SHIPS_STEP, this.activatedRoute, this.listOfShips())
         .subscribe(() => {
           const actionMsg = this.showConfirmation ? 'replaced' : 'uploaded';
-          this.notificationBannerStore.setSuccessMessages([
+          this.feedbackBannerStore.setSuccessMessages([
             `The ships and emission details file has been ${actionMsg} successfully`,
           ]);
         });

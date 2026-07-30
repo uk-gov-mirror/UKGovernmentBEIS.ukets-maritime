@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ControlContainer, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 
@@ -34,9 +34,9 @@ describe('AsyncValidationFieldDirective', () => {
     expect(directive).toBeTruthy();
   });
 
-  it('should trigger change detector on status change', fakeAsync(() => {
+  it('should trigger change detector on status change', () => {
     const cdRef = fixture.debugElement.injector.get(ChangeDetectorRef);
-    const cdRefSpy = jest.spyOn(cdRef.constructor.prototype, 'markForCheck');
+    const cdRefSpy = vi.spyOn(cdRef.constructor.prototype, 'markForCheck');
 
     fixture.componentInstance.name.markAsPending();
     expect(fixture.componentInstance.name.pending).toBeTruthy();
@@ -47,5 +47,5 @@ describe('AsyncValidationFieldDirective', () => {
     expect(fixture.componentInstance.name.invalid).toBeTruthy();
 
     expect(cdRefSpy).toHaveBeenCalled();
-  }));
+  });
 });

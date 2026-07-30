@@ -28,9 +28,9 @@ describe('AdditionalDocumentsVariationReviewDecisionComponent', () => {
 
   const route = new ActivatedRouteStub();
   const taskService: MockType<EmpVariationReviewService> = {
-    saveReviewDecision: jest.fn().mockReturnValue(of({})),
+    saveReviewDecision: vi.fn().mockReturnValue(of({})),
   };
-  const taskServiceSpy = jest.spyOn(taskService, 'saveReviewDecision');
+  const taskServiceSpy = vi.spyOn(taskService, 'saveReviewDecision');
 
   class Page extends BasePage<AdditionalDocumentsVariationReviewDecisionComponent> {
     get typeRadios() {
@@ -43,7 +43,7 @@ describe('AdditionalDocumentsVariationReviewDecisionComponent', () => {
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(async () => {

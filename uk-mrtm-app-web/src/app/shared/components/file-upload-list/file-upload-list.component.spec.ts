@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
@@ -19,17 +19,22 @@ describe('FileUploadListComponent', () => {
     standalone: true,
     template: `
       <mrtm-file-upload-list
-        [listTitle]="listTitle"
-        [files]="files"
+        [listTitle]="listTitle()"
+        [files]="files()"
         (fileDelete)="onDelete($any($event))"
-        [isDisabled]="isDisabled" />
+        [isDisabled]="isDisabled()" />
     `,
   })
   class TestComponent {
-    listTitle: string;
-    files: FileUploadEvent[] = [];
-    onDelete = jest.fn<any, [number]>();
-    isDisabled = false;
+    readonly listTitle = signal<string>(undefined);
+    readonly files = signal<FileUploadEvent[]>([]);
+    readonly isDisabled = signal<boolean>(false);
+
+    onDeleteSpy = vi.fn<(index: number) => void>();
+
+    onDelete(index: number) {
+      this.onDeleteSpy(index);
+    }
   }
 
   class Page extends BasePage<TestComponent> {
@@ -70,19 +75,19 @@ describe('FileUploadListComponent', () => {
 
   it('should display the list title', () => {
     const listTitle = 'This is a list title';
-    hostComponent.listTitle = listTitle;
+    hostComponent.listTitle.set(listTitle);
     fixture.detectChanges();
 
     expect(page.listTitle.textContent.trim()).toBe(listTitle);
   });
 
   it('should list the files and their status', () => {
-    hostComponent.files = [
+    hostComponent.files.set([
       { file: { name: 'Uploaded file' } as File, uuid: '1234', progress: null },
       { file: new File([], 'Test file'), uuid: '1254', errors: null, progress: 1 },
       { file: new File([], 'Test file 2'), uuid: null, errors: null, progress: 0.3 },
       { file: new File([], 'Test file 3'), uuid: null, errors: { upload: 'Could not upload' }, progress: null },
-    ];
+    ]);
     fixture.detectChanges();
 
     expect(page.rows).toHaveLength(4);
@@ -96,23 +101,23 @@ describe('FileUploadListComponent', () => {
   });
 
   it('should emit whenever a file is deleted', () => {
-    hostComponent.onDelete.mockClear();
-    hostComponent.files = [
+    hostComponent.onDeleteSpy.mockClear();
+    hostComponent.files.set([
       { file: { name: 'Uploaded file' } as File, uuid: '1234', progress: null },
       { file: new File([], 'Test file 3'), uuid: null, errors: { upload: 'Could not upload' }, progress: null },
-    ];
+    ]);
     fixture.detectChanges();
 
     page.deleteButtons[0].click();
     fixture.detectChanges();
 
-    expect(hostComponent.onDelete).toHaveBeenCalledWith(0);
+    expect(hostComponent.onDeleteSpy).toHaveBeenCalledWith(0);
   });
 
   it('should disable the delete button', () => {
     expect(page.deleteButtons.some((button) => button.disabled)).toBeFalsy();
 
-    hostComponent.isDisabled = true;
+    hostComponent.isDisabled.set(true);
     fixture.detectChanges();
 
     expect(page.deleteButtons.every((button) => button.disabled)).toBeTruthy();

@@ -124,8 +124,8 @@ public class DocumentTemplateController {
             @PathVariable("id") @Parameter(description = "The document template id") Long id,
             @RequestPart("file") @Parameter(description = "The document template source file",
                     required = true) MultipartFile documentFile) throws IOException {
-        FileDTO documentFileDTO = fileDtoMapper.toFileDTO(documentFile);
-        documentTemplateUpdateService.updateDocumentTemplateFile(id, documentFileDTO, authUser.getUserId());
+        FileDTO documentFileDTO = fileDtoMapper.toFileDTO(documentFile, authUser.getUserId());
+        documentTemplateUpdateService.updateDocumentTemplateFile(id, documentFileDTO);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

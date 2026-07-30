@@ -1,6 +1,9 @@
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+
+import { NEVER } from 'rxjs';
 
 import { ActivatedRouteStub, BasePage } from '@netz/common/testing';
 
@@ -22,6 +25,7 @@ describe('DataSuppliersFormSummaryComponent', () => {
       imports: [DataSuppliersFormSummaryComponent],
       providers: [
         provideHttpClient(),
+        provideHttpClientTesting(),
         {
           provide: ActivatedRoute,
           useValue: new ActivatedRouteStub(),
@@ -56,7 +60,9 @@ describe('DataSuppliersFormSummaryComponent', () => {
   });
 
   it('should submit new data supplier', () => {
-    const serviceSpy = jest.spyOn(service, 'addNewItem');
+    // Return NEVER so no real HTTP request is issued (which would leak through the xsrf
+    // interceptor's `document.cookie` read); the test only asserts the service was called.
+    const serviceSpy = vi.spyOn(service, 'addNewItem').mockReturnValue(NEVER);
     page.submitButton.click();
     fixture.detectChanges();
     expect(serviceSpy).toHaveBeenCalledWith(singleDataSupplierItemCreateDTO);

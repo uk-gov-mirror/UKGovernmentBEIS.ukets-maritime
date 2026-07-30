@@ -3,7 +3,11 @@ import { Provider } from '@angular/core';
 import { RequestTaskDTO } from '@mrtm/api';
 
 import { CANCEL_ACTION_SUCCESS_COMPONENT, CANCEL_ACTIONS_MAP } from '@netz/common/cancel-task';
-import { TASK_RELATED_ACTIONS_MAP, TASK_RELATED_PREVIEW_DOCUMENTS_MAP } from '@netz/common/components';
+import {
+  TASK_RELATED_ACTIONS_MAP,
+  TASK_RELATED_PREVIEW_ASYNC_DOCUMENTS_MAP,
+  TASK_RELATED_PREVIEW_DOCUMENTS_MAP,
+} from '@netz/common/components';
 import {
   DAYS_REMAINING_INPUT_TRANSFORMER,
   ITEM_ACTION_TRANSFORMER,
@@ -21,6 +25,7 @@ import { RfiRdeCancelSuccessComponent } from '@requests/common/components/rfi-rd
 import { isEditableTaskResolver } from '@requests/common/is-editable-task-resolver.map';
 import { itemActionsMap } from '@requests/common/item-actions.map';
 import { relatedActionsMap } from '@requests/common/related-actions.map';
+import { taskRelatedPreviewAsyncDocumentsMapFactory } from '@requests/common/related-preview-async-documents-map.factory';
 import { taskRelatedPreviewDocumentsMapFactory } from '@requests/common/related-preview-documents-map.factory';
 import { statusTagMap } from '@requests/common/status-tag.map';
 import { requestTypesWhitelistForItemLinkPipe } from '@shared/constants';
@@ -43,6 +48,11 @@ export const taskProviders: Provider[] = [
     provide: TASK_RELATED_PREVIEW_DOCUMENTS_MAP,
     deps: [RequestTaskStore],
     useFactory: taskRelatedPreviewDocumentsMapFactory,
+  },
+  {
+    provide: TASK_RELATED_PREVIEW_ASYNC_DOCUMENTS_MAP,
+    deps: [RequestTaskStore],
+    useFactory: taskRelatedPreviewAsyncDocumentsMapFactory,
   },
   { provide: TASK_STATUS_TAG_MAP, useValue: statusTagMap },
   { provide: CANCEL_ACTIONS_MAP, useValue: cancelActionsMap },

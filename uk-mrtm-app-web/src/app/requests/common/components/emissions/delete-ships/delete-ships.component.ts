@@ -3,14 +3,13 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { AerShipEmissions, EmpShipEmissions } from '@mrtm/api';
 
-import { PageHeadingComponent } from '@netz/common/components';
+import { FeedbackBannerStore, PageHeadingComponent } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { TaskService } from '@netz/common/forms';
 import { ButtonDirective, LinkDirective } from '@netz/govuk-components';
 
 import { LIST_OF_SHIPS_DELETE_STEP } from '@requests/common/components/emissions/delete-ships/delete-ships.helper';
 import { EMISSIONS_SUB_TASK, LIST_OF_SHIPS_STEP } from '@requests/common/components/emissions/emissions.helpers';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 
 @Component({
   selector: 'mrtm-delete-ships-confirmation',
@@ -21,7 +20,7 @@ import { NotificationBannerStore } from '@shared/components/notification-banner'
 })
 export class DeleteShipsComponent {
   private readonly taskService = inject(TaskService);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   public readonly backlink = `../${LIST_OF_SHIPS_STEP}`;
@@ -36,7 +35,7 @@ export class DeleteShipsComponent {
     this.taskService
       .saveSubtask(EMISSIONS_SUB_TASK, LIST_OF_SHIPS_DELETE_STEP, this.route, this.ships)
       .subscribe(() => {
-        this.notificationBannerStore.setSuccessMessages(['The ships have been deleted']);
+        this.feedbackBannerStore.setSuccessMessages(['The ships have been deleted']);
       });
   }
 }

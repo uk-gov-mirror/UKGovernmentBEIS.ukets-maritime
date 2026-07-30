@@ -1,4 +1,5 @@
 import { isChunkLoadError, reloadForStaleChunk } from '@core/util/chunk-load-error.util';
+import { Mock } from 'vitest';
 
 describe('chunk-load-error util', () => {
   const RELOAD_KEY = 'stale-chunk-reload-at';
@@ -48,13 +49,13 @@ describe('chunk-load-error util', () => {
   });
 
   describe('reloadForStaleChunk', () => {
-    let consoleError: jest.SpyInstance;
+    let consoleError: Mock;
 
     beforeEach(() => {
       // window.location.reload() is non-mockable in jsdom and, since jsdom does not implement
       // navigation, it emits a "Not implemented" error via console.error. Silence it to keep the
       // (passing) test output clean.
-      consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+      consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     });
 
     afterEach(() => {

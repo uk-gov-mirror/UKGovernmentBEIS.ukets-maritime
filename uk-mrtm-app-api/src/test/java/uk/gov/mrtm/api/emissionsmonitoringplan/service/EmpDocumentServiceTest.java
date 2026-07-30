@@ -6,7 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.netz.api.common.exception.BusinessException;
-import uk.gov.netz.api.files.documents.service.FileDocumentTokenService;
+import uk.gov.netz.api.files.documents.service.storage.FileDocumentStorageService;
 import uk.gov.netz.api.token.FileToken;
 
 import java.util.UUID;
@@ -32,7 +32,7 @@ class EmpDocumentServiceTest {
     private EmissionsMonitoringPlanQueryService emissionsMonitoringPlanQueryService;
 
     @Mock
-    private FileDocumentTokenService fileDocumentTokenService;
+    private FileDocumentStorageService fileDocumentStorageService;
 
     @Test
     void generateGetFileDocumentToken() {
@@ -40,12 +40,12 @@ class EmpDocumentServiceTest {
 
         when(emissionsMonitoringPlanQueryService
             .existsContainerByIdAndFileDocumentUuid(EMP_ID, DOCUMENT_UUID.toString())).thenReturn(true);
-        when(fileDocumentTokenService.generateGetFileDocumentToken(DOCUMENT_UUID.toString())).thenReturn(fileToken);
+        when(fileDocumentStorageService.generateGetFileDocumentToken(DOCUMENT_UUID.toString())).thenReturn(fileToken);
 
         FileToken actual = empDocumentService.generateGetFileDocumentToken(EMP_ID, DOCUMENT_UUID);
 
         assertThat(actual).isEqualTo(fileToken);
-        verifyNoMoreInteractions(emissionsMonitoringPlanQueryService, fileDocumentTokenService);
+        verifyNoMoreInteractions(emissionsMonitoringPlanQueryService, fileDocumentStorageService);
     }
 
     @Test
@@ -59,6 +59,6 @@ class EmpDocumentServiceTest {
         assertEquals(RESOURCE_NOT_FOUND, exception.getErrorCode());
 
         verifyNoMoreInteractions(emissionsMonitoringPlanQueryService);
-        verifyNoInteractions(fileDocumentTokenService);
+        verifyNoInteractions(fileDocumentStorageService);
     }
 }

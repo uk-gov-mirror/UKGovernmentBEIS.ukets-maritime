@@ -5,6 +5,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import uk.gov.mrtm.api.account.domain.MrtmAccount;
+import uk.gov.mrtm.api.account.domain.dto.MrtmDocumentTemplateAccountData;
+import uk.gov.mrtm.api.common.domain.AddressState;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlan;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlanContainer;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.abbreviations.EmpAbbreviations;
@@ -12,6 +16,7 @@ import uk.gov.mrtm.api.emissionsmonitoringplan.domain.dto.EmissionsMonitoringPla
 import uk.gov.mrtm.api.emissionsmonitoringplan.service.EmissionsMonitoringPlanQueryService;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateType;
 import uk.gov.mrtm.api.workflow.request.flow.common.service.EmpCreateDocumentService;
+import uk.gov.mrtm.api.workflow.request.flow.common.service.MrtmDocumentTemplateAccountDataCollectFromAccountService;
 import uk.gov.mrtm.api.workflow.request.flow.empreissue.domain.EmpReissueRequestMetadata;
 import uk.gov.mrtm.api.workflow.request.flow.empvariation.domain.EmpVariationRequestInfo;
 import uk.gov.mrtm.api.workflow.request.flow.empvariation.domain.EmpVariationRequestMetadata;
@@ -44,12 +49,15 @@ class EmpReissueCreateEmpDocumentServiceTest {
 	
 	@Mock
 	private EmpCreateDocumentService empCreateDocumentService;
-
+	
 	@Mock
 	private EmpVariationRequestQueryService empVariationRequestQueryService;
 
 	@Mock
 	private DateService dateService;
+	
+	@Mock
+	private MrtmDocumentTemplateAccountDataCollectFromAccountService mrtmAccountTemplateDataCollectFromAccountService;
 
 	@Test
 	void create() throws InterruptedException, ExecutionException {
@@ -60,12 +68,19 @@ class EmpReissueCreateEmpDocumentServiceTest {
 			.signatory("signatory")
 			.empConsolidationNumber(1)
 			.build();
+		
+		MrtmAccount account = MrtmAccount.builder()
+				.name("accname")
+				.imoNumber("123")
+				.address(AddressState.builder().city("city").build())
+				.build();
+		
 
 		Request request = Request.builder()
-				.requestResources(List.of(RequestResource.builder()
-											.resourceId(accountId.toString())
-											.resourceType(ResourceType.ACCOUNT)
-											.build()))
+				.requestResources(List.of(
+						RequestResource.builder().resourceId(accountId.toString()).resourceType(ResourceType.ACCOUNT)
+								.build(),
+						RequestResource.builder().resourceId("ENGLAND").resourceType(ResourceType.CA).build()))
 				.metadata(metadata)
 				.submissionDate(now)
 				.build();
@@ -94,21 +109,32 @@ class EmpReissueCreateEmpDocumentServiceTest {
 				.endDate(now).metadata(EmpVariationRequestMetadata.builder().empConsolidationNumber(1).build()).build());
 
 		LocalDateTime empEndDate = now.plusDays(1);
+		
+		String address = "address";
+		
+		MrtmDocumentTemplateAccountData accountData = MrtmDocumentTemplateAccountData.builder()
+				.name(account.getName())
+				.competentAuthority(request.getCompetentAuthority())
+				.imoNumber(account.getImoNumber())
+				.address(address)
+				.build();
 
+		when(mrtmAccountTemplateDataCollectFromAccountService.collect(accountId)).thenReturn(accountData);
 		when(dateService.getLocalDateTime()).thenReturn(now);
 		when(empVariationRequestQueryService.findEmpVariationRequests(accountId)).thenReturn(variationHistory);
 		when(emissionsMonitoringPlanQueryService.findApprovedByAccountId(accountId))
 			.thenReturn(Request.builder().submissionDate(now).endDate(empEndDate).build());
 		when(emissionsMonitoringPlanQueryService.getEmissionsMonitoringPlanDTOByAccountId(accountId)).thenReturn(Optional.of(emp));
 		when(empCreateDocumentService.generateDocumentAsync(request, "signatory", emp, MrtmDocumentTemplateType.EMP,
-			variationHistoryWithCurrent, now, empEndDate)).thenReturn(CompletableFuture.completedFuture(document));
+			variationHistoryWithCurrent, now, empEndDate, accountData)).thenReturn(CompletableFuture.completedFuture(document));
 
 		CompletableFuture<FileInfoDTO> result = cut.create(request);
 		assertThat(result.get()).isEqualTo(document);
 
+		verify(mrtmAccountTemplateDataCollectFromAccountService, times(1)).collect(accountId);
 		verify(emissionsMonitoringPlanQueryService, times(1)).getEmissionsMonitoringPlanDTOByAccountId(accountId);
 		verify(empCreateDocumentService, times(1)).generateDocumentAsync(request, "signatory", emp,
-			MrtmDocumentTemplateType.EMP, variationHistoryWithCurrent, now, empEndDate);
+			MrtmDocumentTemplateType.EMP, variationHistoryWithCurrent, now, empEndDate, accountData);
 		verify(emissionsMonitoringPlanQueryService).findApprovedByAccountId(accountId);
 	}
 }

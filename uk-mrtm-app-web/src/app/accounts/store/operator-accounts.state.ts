@@ -4,6 +4,7 @@ import {
   AccountSearchResultInfoDTO,
   MrtmAccountDTO,
   MrtmAccountEmpDTO,
+  MrtmAccountSearchCriteria,
   MrtmAccountViewDTO,
 } from '@mrtm/api';
 
@@ -16,7 +17,7 @@ export interface CreateAccountState {
   isSubmitted: boolean;
 }
 
-export interface AccountsSearchState {
+export interface AccountsSearchState extends Omit<MrtmAccountSearchCriteria, 'page' | 'size'> {
   searchTerm: string;
   searchErrorSummaryVisible: boolean;
   accounts: AccountSearchResultInfoDTO[];
@@ -72,7 +73,7 @@ export const initialAccountsSearchState: AccountsSearchState = {
   total: 0,
   paging: {
     page: 1,
-    pageSize: 30,
+    pageSize: 20,
   },
 };
 

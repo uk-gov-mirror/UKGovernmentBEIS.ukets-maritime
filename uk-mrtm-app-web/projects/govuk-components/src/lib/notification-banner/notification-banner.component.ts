@@ -16,9 +16,8 @@ import {
 })
 export class NotificationBannerComponent implements AfterViewInit {
   readonly type = input<'success' | 'neutral'>('neutral');
-  readonly heading = input('', {
-    transform: (value: string | undefined) => value ?? (this.type() === 'success' ? 'Success' : 'Important'),
-  });
+  readonly heading = input<string>();
+  readonly displayHeading = computed(() => this.heading() ?? (this.type() === 'success' ? 'Success' : 'Important'));
 
   readonly tabIndex = computed(() => (this.type() === 'success' ? -1 : null));
 

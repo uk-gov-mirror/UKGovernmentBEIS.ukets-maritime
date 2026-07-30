@@ -14,7 +14,6 @@ import uk.gov.mrtm.api.integration.external.aer.domain.reductionclaim.ExternalAe
 import uk.gov.mrtm.api.integration.external.aer.domain.shipemissions.ExternalAerShipEmissions;
 import uk.gov.netz.api.common.validation.uniqueelements.UniqueElements;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -30,7 +29,7 @@ public class ExternalAer {
     @NotEmpty
     @JsonDeserialize(as = LinkedHashSet.class)
     @UniqueElements
-    private Set<@NotNull @Valid ExternalAerShipEmissions> shipParticulars = new HashSet<>();
+    private Set<@NotNull @Valid ExternalAerShipEmissions> shipParticulars = new LinkedHashSet<>();
 
     @NotNull
     @Valid

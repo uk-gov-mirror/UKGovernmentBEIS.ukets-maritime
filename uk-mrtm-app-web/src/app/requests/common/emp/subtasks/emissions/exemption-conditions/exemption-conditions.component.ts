@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, effect, inject, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { TaskService } from '@netz/common/forms';
@@ -23,7 +23,6 @@ import { WizardStepComponent } from '@shared/components';
   imports: [
     WizardStepComponent,
     ShipStepTitleCustomPipe,
-    FormsModule,
     ReactiveFormsModule,
     RadioComponent,
     RadioOptionComponent,

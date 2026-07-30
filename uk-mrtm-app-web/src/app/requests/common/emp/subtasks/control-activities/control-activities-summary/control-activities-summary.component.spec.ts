@@ -25,10 +25,10 @@ describe('ControlActivitiesSummaryComponent', () => {
 
   const activatedRouteStub = new ActivatedRouteStub();
   const taskServiceMock: MockType<TaskService<unknown>> = {
-    submitSubtask: jest.fn().mockReturnValue(of({})),
+    submitSubtask: vi.fn().mockReturnValue(of({})),
   };
 
-  const taskServiceSpy = jest.spyOn(taskServiceMock, 'submitSubtask');
+  const taskServiceSpy = vi.spyOn(taskServiceMock, 'submitSubtask');
 
   class Page extends BasePage<ControlActivitiesSummaryComponent> {
     get summaryListTerms(): string[] {
@@ -61,7 +61,7 @@ describe('ControlActivitiesSummaryComponent', () => {
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should create', () => {

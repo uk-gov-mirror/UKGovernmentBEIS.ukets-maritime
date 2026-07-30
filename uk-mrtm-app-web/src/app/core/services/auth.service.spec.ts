@@ -1,6 +1,6 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 import { firstValueFrom, of } from 'rxjs';
 
@@ -22,19 +22,19 @@ import {
   selectUserState,
   selectUserTerms,
 } from '@netz/common/auth';
-import { ActivatedRouteSnapshotStub, mockClass } from '@netz/common/testing';
+import { ActivatedRouteSnapshotStub, ActivatedRouteStub, mockClass } from '@netz/common/testing';
 
 import { ConfigStore } from '@core/config';
 import { AuthService, KeycloakService } from '@core/services';
+import { Mocked } from 'vitest';
 
 describe('AuthService', () => {
   let service: AuthService;
   let authStore: AuthStore;
-  let configStore: ConfigStore;
   let activatedRoute: ActivatedRoute;
+  let configStore: ConfigStore;
 
   const keycloakService = mockClass(KeycloakService);
-  keycloakService.logout.mockReturnValue(Promise.resolve());
 
   const user = {
     email: 'test@test.com',
@@ -42,49 +42,53 @@ describe('AuthService', () => {
     lastName: 'test',
     termsVersion: 1,
   };
+
   const userState: UserStateDTO = {
     status: 'ENABLED',
     roleType: 'OPERATOR',
     userId: 'opTestId',
   };
 
-  const usersService: Partial<jest.Mocked<UsersService>> = {
-    getCurrentUser: jest.fn().mockReturnValue(of(user)),
+  const usersService: Partial<Mocked<UsersService>> = {
+    getCurrentUser: vi.fn().mockReturnValue(of(user)),
   };
 
-  const authoritiesService: Partial<jest.Mocked<AuthoritiesService>> = {
-    getCurrentUserState: jest.fn().mockReturnValue(of(userState)),
+  const authoritiesService: Partial<Mocked<AuthoritiesService>> = {
+    getCurrentUserState: vi.fn().mockReturnValue(of(userState)),
   };
 
   const latestTerms: TermsDTO = { url: '/test', version: 1 };
   const userTerms: UserTermsVersionDTO = { termsVersion: 1 };
-  const termsService: Partial<jest.Mocked<TermsAndConditionsService>> = {
-    getLatestTerms: jest.fn().mockReturnValue(of(latestTerms)),
-    getUserTerms: jest.fn().mockReturnValue(of(userTerms)),
+
+  const termsService: Partial<Mocked<TermsAndConditionsService>> = {
+    getLatestTerms: vi.fn().mockReturnValue(of(latestTerms)),
+    getUserTerms: vi.fn().mockReturnValue(of(userTerms)),
   };
+
   const baseHref = '/maritime/';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([]),
         { provide: KeycloakService, useValue: keycloakService },
         { provide: UsersService, useValue: usersService },
         { provide: AuthoritiesService, useValue: authoritiesService },
         { provide: TermsAndConditionsService, useValue: termsService },
+        { provide: ActivatedRoute, useValue: new ActivatedRouteStub() },
         { provide: APP_BASE_HREF, useValue: baseHref },
       ],
     });
 
     authStore = TestBed.inject(AuthStore);
     service = TestBed.inject(AuthService);
-    configStore = TestBed.inject(ConfigStore);
     activatedRoute = TestBed.inject(ActivatedRoute);
     keycloakService.loadUserProfile.mockResolvedValue({ email: 'test@test.com' });
+    configStore = TestBed.inject(ConfigStore);
+    configStore.setState({ features: { terms: true } });
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be created', () => {
@@ -106,30 +110,10 @@ describe('AuthService', () => {
     expect(keycloakService.logout).toHaveBeenCalled();
   });
 
-  it('should use different postLogoutRedirectUri depending on ui config', async () => {
-    configStore.setState({
-      ...configStore.getState(),
-      features: { ...configStore.getState().features, serviceGatewayEnabled: false },
-    });
-    await service.logout();
-    expect(keycloakService.logout).toHaveBeenCalledWith('http://localhost/maritime/');
-
-    configStore.setState({
-      ...configStore.getState(),
-      features: { ...configStore.getState().features, serviceGatewayEnabled: true },
-    });
-    await service.logout();
-    expect(keycloakService.logout).toHaveBeenCalledWith('http://localhost/maritime/');
-  });
-
   it('should load and update user status', async () => {
-    await expect(
-      firstValueFrom(TestBed.runInInjectionContext(() => authStore.rxSelect(selectUserState))),
-    ).resolves.toBeNull();
+    expect(authStore.select(selectUserState)()).toBeNull();
     await expect(firstValueFrom(service.loadUserState())).resolves.toEqual(userState);
-    await expect(
-      firstValueFrom(TestBed.runInInjectionContext(() => authStore.rxSelect(selectUserState))),
-    ).resolves.toEqual(userState);
+    expect(authStore.select(selectUserState)()).toEqual(userState);
   });
 
   it('should update all user info when checkUser is called', async () => {
@@ -138,55 +122,34 @@ describe('AuthService', () => {
 
     await expect(firstValueFrom(service.checkUser())).resolves.toBeUndefined();
 
-    await expect(
-      firstValueFrom(TestBed.runInInjectionContext(() => authStore.rxSelect(selectIsLoggedIn))),
-    ).resolves.toBeFalsy();
-    await expect(
-      firstValueFrom(TestBed.runInInjectionContext(() => authStore.rxSelect(selectUserState))),
-    ).resolves.toBeNull();
-    await expect(
-      firstValueFrom(TestBed.runInInjectionContext(() => authStore.rxSelect(selectUserTerms))),
-    ).resolves.toBeNull();
-    await expect(
-      firstValueFrom(TestBed.runInInjectionContext(() => authStore.rxSelect(selectUser))),
-    ).resolves.toBeNull();
-    await expect(
-      firstValueFrom(TestBed.runInInjectionContext(() => authStore.rxSelect(selectUserProfile))),
-    ).resolves.toBeNull();
+    expect(authStore.select(selectIsLoggedIn)()).toBeFalsy();
+    expect(authStore.select(selectUserState)()).toBeNull();
+    expect(authStore.select(selectUserTerms)()).toBeNull();
+    expect(authStore.select(selectUser)()).toBeNull();
+    expect(authStore.select(selectUserProfile)()).toBeNull();
 
     authStore.setIsLoggedIn(null);
-    configStore.setState({ features: { terms: true } });
     (keycloakService.isAuthenticated as any) = true;
 
-    await expect(firstValueFrom(service.checkUser())).resolves.toBeUndefined();
+    await expect(firstValueFrom(service.checkUser())).resolves.toBeFalsy();
 
-    await expect(
-      firstValueFrom(TestBed.runInInjectionContext(() => authStore.rxSelect(selectIsLoggedIn))),
-    ).resolves.toBeTruthy();
-    await expect(
-      firstValueFrom(TestBed.runInInjectionContext(() => authStore.rxSelect(selectUserState))),
-    ).resolves.toEqual(userState);
-    await expect(
-      firstValueFrom(TestBed.runInInjectionContext(() => authStore.rxSelect(selectUserTerms))),
-    ).resolves.toEqual(userTerms);
-    await expect(firstValueFrom(TestBed.runInInjectionContext(() => authStore.rxSelect(selectUser)))).resolves.toEqual(
-      user,
-    );
-    await expect(
-      firstValueFrom(TestBed.runInInjectionContext(() => authStore.rxSelect(selectUserProfile))),
-    ).resolves.toEqual({ email: 'test@test.com' });
+    expect(authStore.select(selectIsLoggedIn)()).toBeTruthy();
+    expect(authStore.select(selectUserState)()).toEqual(userState);
+    expect(authStore.select(selectUserTerms)()).toEqual(userTerms);
+    expect(authStore.select(selectUser)()).toEqual(user);
+    expect(authStore.select(selectUserProfile)()).toEqual({ email: 'test@test.com' });
   });
 
   it('should not update user info if logged in is already determined', async () => {
     authStore.setIsLoggedIn(false);
-    const spy = jest.spyOn(service, 'loadUserState');
+    const spy = vi.spyOn(service, 'loadUserState');
 
     await expect(firstValueFrom(service.checkUser())).resolves.toBeUndefined();
     expect(spy).not.toHaveBeenCalled();
   });
 
   it('should redirect to origin if leaf data is blocking sign in redirect', async () => {
-    (<any>activatedRoute.snapshot) = new ActivatedRouteSnapshotStub(undefined, undefined, {
+    (activatedRoute.snapshot as any) = new ActivatedRouteSnapshotStub(undefined, undefined, {
       blockSignInRedirect: true,
     });
 

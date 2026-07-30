@@ -13,7 +13,6 @@ import uk.gov.mrtm.api.integration.external.verification.domain.common.ExternalU
 import uk.gov.mrtm.api.integration.external.verification.domain.common.ExternalVerifierComment;
 import uk.gov.netz.api.common.validation.SpELExpression;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -34,7 +33,7 @@ public class ExternalAerUncorrectedNonConformities {
     @Valid
     @JsonDeserialize(as = LinkedHashSet.class)
     @Schema(description = "Non-conformities with the approved emissions monitoring plan. Required only when 'exist' is true, otherwise must be omitted")
-    private Set<@NotNull ExternalUncorrectedItem> uncorrectedNonConformities = new HashSet<>();
+    private Set<@NotNull ExternalUncorrectedItem> uncorrectedNonConformities = new LinkedHashSet<>();
 
     @NotNull
     @Schema(description = "Indicates if there are any non-conformities from the previous year that have not been resolved")
@@ -45,5 +44,5 @@ public class ExternalAerUncorrectedNonConformities {
     @Valid
     @JsonDeserialize(as = LinkedHashSet.class)
     @Schema(description = "Non-conformities from the previous year that have not been resolved. Required only when 'existPriorYearIssues' is true, otherwise must be omitted")
-    private Set<@NotNull ExternalVerifierComment> priorYearIssues = new HashSet<>();
+    private Set<@NotNull ExternalVerifierComment> priorYearIssues = new LinkedHashSet<>();
 }

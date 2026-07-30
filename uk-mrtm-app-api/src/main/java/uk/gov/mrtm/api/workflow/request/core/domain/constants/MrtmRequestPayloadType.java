@@ -14,4 +14,5 @@ public class MrtmRequestPayloadType {
     public static final String DOE_REQUEST_PAYLOAD = "DOE_REQUEST_PAYLOAD";
     public static final String VIR_REQUEST_PAYLOAD = "VIR_REQUEST_PAYLOAD";
     public static final String NON_COMPLIANCE_REQUEST_PAYLOAD = "NON_COMPLIANCE_REQUEST_PAYLOAD";
+    public static final String SITE_VISIT_REQUEST_PAYLOAD = "SITE_VISIT_REQUEST_PAYLOAD";
 }

@@ -37,4 +37,10 @@ public class MrtmDocumentTemplateType {
      */
     public static final String VIR_REVIEWED = "VIR_REVIEWED";
 
+    /**
+     * SITE_VISIT
+     */
+    public static final String SITE_VISIT_APPROVED = "SITE_VISIT_APPROVED";
+    public static final String SITE_VISIT_REJECTED = "SITE_VISIT_REJECTED";
+
 }

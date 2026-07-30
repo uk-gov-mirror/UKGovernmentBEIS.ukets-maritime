@@ -54,5 +54,26 @@
   "angularCompilerOptions": {
     "strictInjectionParameters": false,
     "strictTemplates": true
-  }
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/govuk-components/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/govuk-components/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/common/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/common/tsconfig.spec.json"
+    }
+  ],
 }

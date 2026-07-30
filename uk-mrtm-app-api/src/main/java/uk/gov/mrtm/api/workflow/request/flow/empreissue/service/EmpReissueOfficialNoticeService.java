@@ -3,9 +3,12 @@ package uk.gov.mrtm.api.workflow.request.flow.empreissue.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import uk.gov.mrtm.api.account.domain.dto.MrtmDocumentTemplateAccountData;
 import uk.gov.mrtm.api.common.config.RegistryConfig;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateGenerationContextActionType;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmDocumentTemplateType;
+import uk.gov.mrtm.api.workflow.request.flow.common.service.MrtmDocumentTemplateAccountDataCollectFromAccountService;
 import uk.gov.mrtm.api.workflow.request.flow.empreissue.domain.EmpReissueRequestMetadata;
 import uk.gov.mrtm.api.workflow.request.flow.empreissue.domain.EmpReissueRequestPayload;
 import uk.gov.netz.api.documenttemplate.domain.templateparams.TemplateParams;
@@ -27,16 +30,21 @@ public class EmpReissueOfficialNoticeService {
 	private final FileDocumentGenerateServiceDelegator fileDocumentGenerateServiceDelegator;
 	private final OfficialNoticeSendService officialNoticeSendService;
 	private final RegistryConfig registryConfig;
+	private final MrtmDocumentTemplateAccountDataCollectFromAccountService accountTemplateDataFromAccountService;
 
 	@Transactional
     public CompletableFuture<FileInfoDTO> generateOfficialNotice(final Request request) {
         final EmpReissueRequestMetadata requestMetadata = (EmpReissueRequestMetadata) request.getMetadata();
 
+        final MrtmDocumentTemplateAccountData accountData = accountTemplateDataFromAccountService
+				.collect(request.getAccountId());
+        
         TemplateParams templateParams = documentTemplateOfficialNoticeParamsProvider
 				.constructTemplateParams(DocumentTemplateParamsSourceData.builder()
 						.contextActionType(MrtmDocumentTemplateGenerationContextActionType.EMP_REISSUE)
 						.request(request)
 						.signatory(requestMetadata.getSignatory())
+						.accountData(accountData)
 						.build());
         
 		return fileDocumentGenerateServiceDelegator.generateAndSaveFileDocumentAsync(MrtmDocumentTemplateType.EMP_REISSUE,

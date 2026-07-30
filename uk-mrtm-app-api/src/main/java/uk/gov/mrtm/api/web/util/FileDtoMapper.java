@@ -14,13 +14,17 @@ import java.io.IOException;
 @Mapper(componentModel = "spring", config = MapperConfig.class)
 public interface FileDtoMapper {
 
-    @Mapping(target = "fileName", source = "originalFilename")
-    @Mapping(target = "fileSize", source = "size")
-    @Mapping(target = "fileContent", source = "bytes")
-    FileDTO toFileDTO(MultipartFile file) throws IOException;
+    @Mapping(target = "fileName", source = "file.originalFilename")
+    @Mapping(target = "fileSize", source = "file.size")
+    @Mapping(target = "fileContent", source = "file.bytes")
+    @Mapping(target = "fileType", ignore = true)
+    @Mapping(target = "createdBy", source = "createdBy")
+    FileDTO toFileDTO(MultipartFile file, String createdBy) throws IOException;
 
     @AfterMapping
     default void setFileType(@MappingTarget FileDTO fileDTO, MultipartFile file) throws IOException {
-        fileDTO.setFileType(MimeTypeUtils.detect(file.getBytes(), file.getOriginalFilename()));
+        if (fileDTO != null && file != null) {
+            fileDTO.setFileType(MimeTypeUtils.detect(file.getBytes(), file.getOriginalFilename()));
+        }
     }
 }

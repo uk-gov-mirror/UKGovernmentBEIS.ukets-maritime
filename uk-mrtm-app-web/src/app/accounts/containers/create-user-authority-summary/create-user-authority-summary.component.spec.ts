@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { OperatorUsersInvitationService, OperatorUsersService } from '@mrtm/api';
 
@@ -48,30 +48,29 @@ describe('CreateUserAuthoritySummaryComponent', () => {
     fixture.detectChanges();
   });
 
-  const commonMailAssertions = fakeAsync((errorCode: ErrorCodes) => {
-    const inviteOperatorUserToAccountSpy = jest.spyOn(service, 'inviteOperatorUserToAccount');
-    const navigateSpy = jest.spyOn(router, 'navigate');
+  const commonMailAssertions = async (errorCode: ErrorCodes) => {
+    const inviteOperatorUserToAccountSpy = vi.spyOn(service, 'inviteOperatorUserToAccount');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     inviteOperatorUserToAccountSpy.mockReturnValue(
       throwError(() => new HttpErrorResponse({ status: 400, error: { code: errorCode } })),
     );
     component.handleSubmit();
+    await fixture.whenStable();
     fixture.detectChanges();
-    flush();
     expect(navigateSpy).toHaveBeenCalledWith(['../'], { relativeTo: route });
     store
       .pipe(selectSubmissionErrors)
       .subscribe((submissionErrors) => expect(submissionErrors.length).toBeGreaterThan(0));
     store.pipe(selectIsInitiallySubmitted).subscribe((initiallySubmitted) => expect(initiallySubmitted).toBeFalsy());
     store.pipe(selectIsSubmitted).subscribe((submitted) => expect(submitted).toBeFalsy());
-    flush();
-  });
+  };
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should call inviteOperatorUserToAccount', async () => {
-    const inviteOperatorUserToAccountSpy = jest.spyOn(service, 'inviteOperatorUserToAccount');
+    const inviteOperatorUserToAccountSpy = vi.spyOn(service, 'inviteOperatorUserToAccount').mockReturnValue(of(null));
     component.handleSubmit();
     await fixture.whenStable();
 

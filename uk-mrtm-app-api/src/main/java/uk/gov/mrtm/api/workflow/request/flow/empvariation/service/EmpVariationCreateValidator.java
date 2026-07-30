@@ -4,15 +4,15 @@ import org.springframework.stereotype.Service;
 import uk.gov.mrtm.api.account.domain.MrtmAccountStatus;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestType;
 import uk.gov.netz.api.account.domain.enumeration.AccountStatus;
-import uk.gov.netz.api.workflow.request.flow.common.service.RequestCreateAccountRelatedValidator;
+import uk.gov.netz.api.workflow.request.flow.common.service.RequestCreateAccountRelatedNoPayloadValidator;
 import uk.gov.netz.api.workflow.request.flow.common.service.RequestCreateValidatorService;
 
 import java.util.Set;
 
 @Service
-public class EmpVariationCreateValidator extends RequestCreateAccountRelatedValidator {
+public class EmpVariationCreateValidator extends RequestCreateAccountRelatedNoPayloadValidator {
 
-	public EmpVariationCreateValidator(final RequestCreateValidatorService requestCreateValidatorService) {
+    public EmpVariationCreateValidator(RequestCreateValidatorService requestCreateValidatorService) {
         super(requestCreateValidatorService);
     }
 

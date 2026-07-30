@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { CanActivateFn } from '@angular/router';
 
-import { lastValueFrom, Observable, throwError } from 'rxjs';
+import { firstValueFrom, Observable, throwError } from 'rxjs';
 
 import { OperatorUserDTO, OperatorUsersService, UsersService } from '@mrtm/api';
 
@@ -12,10 +12,11 @@ import { ActivatedRouteSnapshotStub, asyncData, expectBusinessErrorToBe } from '
 
 import { saveNotFoundOperatorError } from '@accounts/errors';
 import { deleteUserAuthorityGuard } from '@accounts/guards/delete-user-authority.guard';
+import { Mocked } from 'vitest';
 
 describe('deleteUserAuthorityGuard', () => {
-  let usersService: Partial<jest.Mocked<UsersService>>;
-  let operatorUsersService: Partial<jest.Mocked<OperatorUsersService>>;
+  let usersService: Partial<Mocked<UsersService>>;
+  let operatorUsersService: Partial<Mocked<OperatorUsersService>>;
   let authStore: AuthStore;
 
   const operator: OperatorUserDTO = {
@@ -31,11 +32,11 @@ describe('deleteUserAuthorityGuard', () => {
 
   beforeEach(() => {
     operatorUsersService = {
-      getOperatorUserById: jest.fn().mockReturnValue(asyncData<OperatorUserDTO>(operator)),
+      getOperatorUserById: vi.fn().mockReturnValue(asyncData<OperatorUserDTO>(operator)),
     };
 
     usersService = {
-      getCurrentUser: jest.fn().mockReturnValue(asyncData<OperatorUserDTO>(operator)),
+      getCurrentUser: vi.fn().mockReturnValue(asyncData<OperatorUserDTO>(operator)),
     };
 
     TestBed.configureTestingModule({
@@ -56,19 +57,26 @@ describe('deleteUserAuthorityGuard', () => {
     expect(executeGuard).toBeTruthy();
   });
 
+  // The guard's first value comes from `toObservable` (authStore.rxSelect), which only emits once
+  // its effect flushes. `TestBed.tick()` drives that flush so these tests don't depend on the
+  // auto-scheduler, which can be wedged by cross-file state under the non-isolated runner.
   it('should provide other user information', async () => {
     const route = new ActivatedRouteSnapshotStub({ accountId: '1', userId: 'asdf4' });
     const result$ = executeGuard(route, null) as Observable<boolean>;
+    const result = firstValueFrom(result$);
+    TestBed.tick();
 
-    await expect(lastValueFrom(result$)).resolves.toBeTruthy();
+    await expect(result).resolves.toBeTruthy();
     expect(operatorUsersService.getOperatorUserById).toHaveBeenCalledWith(1, 'asdf4');
   });
 
   it('should provide current user information', async () => {
     const route = new ActivatedRouteSnapshotStub({ accountId: '1', userId: 'ABC1' });
     const result$ = executeGuard(route, null) as Observable<boolean>;
+    const result = firstValueFrom(result$);
+    TestBed.tick();
 
-    await expect(lastValueFrom(result$)).resolves.toBeTruthy();
+    await expect(result).resolves.toBeTruthy();
     expect(usersService.getCurrentUser).toHaveBeenCalled();
   });
 
@@ -78,8 +86,10 @@ describe('deleteUserAuthorityGuard', () => {
     );
     const route = new ActivatedRouteSnapshotStub({ accountId: '1', userId: 'asdf4' });
     const result$ = executeGuard(route, null) as Observable<boolean>;
+    const result = firstValueFrom(result$);
+    TestBed.tick();
 
-    await expect(lastValueFrom(result$)).rejects.toBeTruthy();
+    await expect(result).rejects.toBeTruthy();
     await expectBusinessErrorToBe(saveNotFoundOperatorError(1));
   });
 });

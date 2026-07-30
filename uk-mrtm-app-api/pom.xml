@@ -11,37 +11,39 @@
     <parent>
         <groupId>uk.gov.netz</groupId>
         <artifactId>uk-netz-app-api-parent</artifactId>
-        <version>1.8.0</version>
+        <version>1.12.0</version>
     </parent>
 
     <properties>
-        <uk-netz-app-api-common.version>1.19.0</uk-netz-app-api-common.version>
+        <uk-netz-app-api-common.version>1.21.0</uk-netz-app-api-common.version>
         <uk-netz-app-api-verificationbody.version>1.5.0</uk-netz-app-api-verificationbody.version>
-        <uk-netz-app-api-authorization.version>1.14.0</uk-netz-app-api-authorization.version>
-        <uk-netz-app-api-account.version>1.10.0</uk-netz-app-api-account.version>
-        <uk-netz-app-api-referencedata.version>1.5.0</uk-netz-app-api-referencedata.version>
-        <uk-netz-app-api-token.version>1.2.0</uk-netz-app-api-token.version>
-        <uk-netz-app-api-terms.version>1.1.0</uk-netz-app-api-terms.version>
-        <uk-netz-app-api-competentauthority.version>1.3.0</uk-netz-app-api-competentauthority.version>
-        <uk-netz-app-api-files.version>1.10.0</uk-netz-app-api-files.version>
+        <uk-netz-app-api-authorization.version>1.16.0</uk-netz-app-api-authorization.version>
+        <uk-netz-app-api-account.version>1.12.0</uk-netz-app-api-account.version>
+        <uk-netz-app-api-referencedata.version>1.6.0</uk-netz-app-api-referencedata.version>
+        <uk-netz-app-api-token.version>1.3.0</uk-netz-app-api-token.version>
+        <uk-netz-app-api-terms.version>1.2.0</uk-netz-app-api-terms.version>
+        <uk-netz-app-api-competentauthority.version>1.4.0</uk-netz-app-api-competentauthority.version>
+        <uk-netz-app-api-files.version>1.13.0</uk-netz-app-api-files.version>
         <uk-netz-app-api-notification.version>1.7.0</uk-netz-app-api-notification.version>
-        <uk-netz-app-api-notificationapi.version>1.2.0</uk-netz-app-api-notificationapi.version>
-        <uk-netz-app-api-documenttemplate.version>1.6.0</uk-netz-app-api-documenttemplate.version>
-        <uk-netz-app-api-userinfoapi.version>1.1.0</uk-netz-app-api-userinfoapi.version>
-        <uk-netz-app-api-mireport.version>1.9.0</uk-netz-app-api-mireport.version>
-        <uk-netz-app-api-alert.version>1.1.0</uk-netz-app-api-alert.version>
-        <uk-netz-app-api-rest-logging.version>1.5.0</uk-netz-app-api-rest-logging.version>
-        <uk-netz-app-api-user.version>1.9.0</uk-netz-app-api-user.version>
-        <uk-netz-app-api-request.version>1.30.1</uk-netz-app-api-request.version>
+        <uk-netz-app-api-notificationapi.version>1.3.0</uk-netz-app-api-notificationapi.version>
+        <uk-netz-app-api-documenttemplate.version>1.8.0</uk-netz-app-api-documenttemplate.version>
+        <uk-netz-app-api-userinfoapi.version>1.2.0</uk-netz-app-api-userinfoapi.version>
+        <uk-netz-app-api-mireport.version>1.11.0</uk-netz-app-api-mireport.version>
+        <uk-netz-app-api-alert.version>1.2.0</uk-netz-app-api-alert.version>
+        <uk-netz-app-api-rest-logging.version>1.6.0</uk-netz-app-api-rest-logging.version>
+        <uk-netz-app-api-restclient.version>1.2.0</uk-netz-app-api-restclient.version>
+        <uk-netz-app-api-user.version>1.10.0</uk-netz-app-api-user.version>
+        <uk-netz-app-api-request.version>1.32.0</uk-netz-app-api-request.version>
         <uk-netz-app-api-swagger.version>1.2.0</uk-netz-app-api-swagger.version>
-        <uk-netz-app-api-feedback.version>1.2.0</uk-netz-app-api-feedback.version>
-        <uk-netz-app-api-security.version>1.5.0</uk-netz-app-api-security.version>
+        <uk-netz-app-api-feedback.version>1.3.0</uk-netz-app-api-feedback.version>
+        <uk-netz-app-api-security.version>1.6.0</uk-netz-app-api-security.version>
         <uk-netz-app-api-security-camunda-admin.version>1.1.0</uk-netz-app-api-security-camunda-admin.version>
-        <uk-netz-app-api-configuration.version>1.3.0</uk-netz-app-api-configuration.version>
-        <uk-netz-app-api-kafka.version>1.4.0</uk-netz-app-api-kafka.version>
-        <uk-netz-common-integration-model.version>1.11.0</uk-netz-common-integration-model.version>
+        <uk-netz-app-api-configuration.version>1.4.0</uk-netz-app-api-configuration.version>
+        <uk-netz-app-api-kafka.version>1.5.0</uk-netz-app-api-kafka.version>
+        <uk-netz-app-api-doc-generator-client.version>1.0.0</uk-netz-app-api-doc-generator-client.version>
         <uk-netz-app-api-guidance.version>1.1.0</uk-netz-app-api-guidance.version>
-        <uk-netz-app-api-third-party-data-provider.version>1.2.0</uk-netz-app-api-third-party-data-provider.version>
+        <uk-netz-app-api-third-party-data-provider.version>1.3.0</uk-netz-app-api-third-party-data-provider.version>
+        <uk-netz-common-integration-model.version>1.10.0</uk-netz-common-integration-model.version>
     </properties>
 
     <dependencies>
@@ -79,12 +81,6 @@
         <dependency>
             <groupId>org.camunda.bpm.springboot</groupId>
             <artifactId>camunda-bpm-spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.flowable</groupId>
@@ -172,6 +168,11 @@
         </dependency>
         <dependency>
             <groupId>uk.gov.netz</groupId>
+            <artifactId>uk-netz-app-api-rest-client</artifactId>
+            <version>${uk-netz-app-api-restclient.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.gov.netz</groupId>
             <artifactId>uk-netz-app-api-rest-logging</artifactId>
             <version>${uk-netz-app-api-rest-logging.version}</version>
         </dependency>
@@ -215,6 +216,11 @@
             <artifactId>uk-netz-app-api-kafka</artifactId>
             <version>${uk-netz-app-api-kafka.version}</version>
         </dependency>
+        <dependency>
+            <groupId>uk.gov.netz</groupId>
+            <artifactId>uk-netz-app-api-doc-generator-client-aws</artifactId>
+            <version>${uk-netz-app-api-doc-generator-client.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>uk.gov.netz</groupId>
@@ -226,6 +232,15 @@
             <groupId>uk.gov.netz</groupId>
             <artifactId>uk-netz-app-api-guidance</artifactId>
             <version>${uk-netz-app-api-guidance.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
         </dependency>
 
         <dependency>
@@ -294,7 +309,6 @@
         <dependency>
             <groupId>com.giffing.bucket4j.spring.boot.starter</groupId>
             <artifactId>bucket4j-spring-boot-starter</artifactId>
-            <version>0.12.7</version>
         </dependency>
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
@@ -313,6 +327,11 @@
             <artifactId>aws-msk-iam-auth</artifactId>
             <version>2.2.0</version>
         </dependency>
+        <dependency>
+		    <groupId>com.scalar.maven</groupId>
+		    <artifactId>scalar-core</artifactId>
+		    <scope>provided</scope>
+		</dependency>
 
         <!-- Test dependencies -->
         <dependency>

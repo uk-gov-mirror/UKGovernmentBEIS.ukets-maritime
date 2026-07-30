@@ -48,7 +48,6 @@ import static uk.gov.mrtm.api.workflow.request.flow.aer.common.domain.AerViolati
 import static uk.gov.mrtm.api.workflow.request.flow.aer.common.domain.AerViolation.ViolationMessage.INVALID_FUEL_CONSUMPTION;
 import static uk.gov.mrtm.api.workflow.request.flow.aer.common.domain.AerViolation.ViolationMessage.NEGATIVE_EMISSIONS_INPUT;
 import static uk.gov.mrtm.api.workflow.request.flow.aer.common.domain.AerViolation.ViolationMessage.SHIP_NOT_FOUND_IN_LIST_OF_SHIPS;
-import static uk.gov.mrtm.api.workflow.request.flow.aer.common.domain.AerViolation.ViolationMessage.TOTAL_EMISSIONS_IS_ZERO;
 
 @ExtendWith(MockitoExtension.class)
 class AerShipAggregatedDataValidatorTest {
@@ -166,23 +165,6 @@ class AerShipAggregatedDataValidatorTest {
                 .total(new BigDecimal("-6"))
                 .build()
         );
-    }
-
-    @Test
-    void validate_total_emissions_negative_or_zero() {
-        Set<AerFuelsAndEmissionsFactors> fuelsAndEmissionsFactors = getAerFuelsAndEmissionsFactors();
-        AerPortEmissionsMeasurement emissionsMeasurement = getZeroAerPortEmissionsMeasurement();
-        AerVoyage aerVoyageEu = getAerVoyage(PortCountries.GR, PortCodes2.GRKAK.name(), PortCountries.IT, PortCodes2.ITAMA.name());
-        AerContainer aerContainer = getAerContainer(IMO_NUMBER,
-            fuelsAndEmissionsFactors, new HashSet<>(), true, true, aerVoyageEu, false, emissionsMeasurement);
-
-        AerValidationResult result = validator.validate(aerContainer, ACCOUNT_ID);
-
-        assertFalse(result.isValid());
-        assertThat(result.getAerViolations()).allMatch(aerViolation ->
-            aerViolation.getMessage().equals(TOTAL_EMISSIONS_IS_ZERO.getMessage()));
-        assertThat(result.getAerViolations()).extracting(AerViolation::getData)
-            .containsExactlyInAnyOrder(Set.of(IMO_NUMBER).toArray());
     }
 
     @ParameterizedTest

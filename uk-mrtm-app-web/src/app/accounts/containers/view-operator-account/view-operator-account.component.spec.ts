@@ -1,4 +1,5 @@
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 
@@ -22,6 +23,7 @@ describe('ViewOperatorAccountComponent', () => {
       imports: [RouterModule, ViewOperatorAccountComponent],
       providers: [
         provideHttpClient(),
+        provideHttpClientTesting(),
         OperatorAccountsStore,
         { provide: MaritimeAccountsService, useValue: mockClass(MaritimeAccountsService) },
         { provide: MaritimeAccountUpdateService, useValue: mockClass(MaritimeAccountUpdateService) },

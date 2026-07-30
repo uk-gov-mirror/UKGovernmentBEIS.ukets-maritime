@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
@@ -14,7 +14,7 @@ describe('MoreOrLessComponent', () => {
   @Component({
     imports: [MoreLessComponent],
     standalone: true,
-    template: '<mrtm-more-less-text [text]="text" [index]="index" widthClass="org-details-width" />',
+    template: '<mrtm-more-less-text [text]="text()" [index]="index()" widthClass="org-details-width" />',
     styles: `
       .org-details-width {
         width: 210px !important;
@@ -22,8 +22,8 @@ describe('MoreOrLessComponent', () => {
     `,
   })
   class TestComponent {
-    text: string;
-    index: number;
+    readonly text = signal<string>(undefined);
+    readonly index = signal<number>(undefined);
   }
 
   beforeEach(() => {
@@ -37,7 +37,7 @@ describe('MoreOrLessComponent', () => {
     component = fixture.debugElement.query(By.directive(MoreLessComponent)).componentInstance;
     element = fixture.nativeElement;
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should create', () => {
@@ -45,7 +45,7 @@ describe('MoreOrLessComponent', () => {
   });
 
   it('should show the right text', () => {
-    hostComponent.text = 'Organisation name';
+    hostComponent.text.set('Organisation name');
     fixture.detectChanges();
 
     expect(element.querySelector('div').textContent.trim()).toEqual('Organisation name');
@@ -54,7 +54,7 @@ describe('MoreOrLessComponent', () => {
   it('should implement the right id to div', () => {
     expect(element.querySelector('#more-less-text-1')).toBeNull();
 
-    hostComponent.index = 1;
+    hostComponent.index.set(1);
     fixture.detectChanges();
 
     expect(element.querySelector('#more-less-text-1')).toBeTruthy();

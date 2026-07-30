@@ -24,7 +24,7 @@ public class EmpIssuanceReviewSaveActionHandler
     @Override
     public RequestTaskPayload process(Long requestTaskId, String requestTaskActionType, AppUser appUser,
                                       EmpIssuanceSaveApplicationReviewRequestTaskActionPayload payload) {
-        RequestTask requestTask = requestTaskService.findTaskById(requestTaskId);
+        RequestTask requestTask = requestTaskService.findTaskByIdForUpdate(requestTaskId);
         requestEmpReviewService.applySaveAction(payload, requestTask);
 
         return requestTask.getPayload();

@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import uk.gov.mrtm.api.integration.external.verification.domain.common.ExternalUncorrectedItem;
 import uk.gov.netz.api.common.validation.SpELExpression;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -32,5 +31,5 @@ public class ExternalAerUncorrectedNonCompliances {
     @Valid
     @JsonDeserialize(as = LinkedHashSet.class)
     @Schema(description = "Non-compliances with the maritime monitoring and reporting requirements. Required only when 'exist' is true, otherwise must be omitted")
-    private Set<@NotNull ExternalUncorrectedItem> uncorrectedNonCompliances = new HashSet<>();
+    private Set<@NotNull ExternalUncorrectedItem> uncorrectedNonCompliances = new LinkedHashSet<>();
 }

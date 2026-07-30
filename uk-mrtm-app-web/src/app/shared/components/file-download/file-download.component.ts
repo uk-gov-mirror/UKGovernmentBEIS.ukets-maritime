@@ -28,10 +28,10 @@ import {
   RequestTaskAttachmentsHandlingService,
 } from '@mrtm/api';
 
+import { LoadingSpinnerComponent } from '@netz/common/components';
 import { BreadcrumbService } from '@netz/common/navigation';
 import { LinkDirective } from '@netz/govuk-components';
 
-import { LoadingSpinnerComponent } from '@shared/components';
 import { isNil } from '@shared/utils';
 
 export interface FileDownloadInfo {
@@ -45,7 +45,7 @@ export interface FileDownloadInfo {
   standalone: true,
   template: `
     @if (downloadProcessing()) {
-      <div mrtm-loading-spinner>Preparing file to download</div>
+      <netz-loading-spinner title="Preparing file to download" />
     } @else {
       <h1 class="govuk-heading-l">Your download is completed</h1>
       <p class="govuk-body">You should see your downloads in the downloads folder.</p>

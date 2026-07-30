@@ -23,6 +23,7 @@ import {
   GovukWidthClass,
   LabelDirective,
   LabelSizeType,
+  SafeHtmlPipe,
 } from '@netz/govuk-components';
 
 import {
@@ -36,7 +37,14 @@ import { DatePickerChunkPipe } from '@shared/components/date-picker/pipes/date-p
 
 @Component({
   selector: 'div[mrtm-date-picker]',
-  imports: [ErrorMessageComponent, SlicePipe, DatePickerChunkPipe, DatePickerButtonComponent, ReactiveFormsModule],
+  imports: [
+    ErrorMessageComponent,
+    SlicePipe,
+    DatePickerChunkPipe,
+    DatePickerButtonComponent,
+    ReactiveFormsModule,
+    SafeHtmlPipe,
+  ],
   standalone: true,
   templateUrl: './date-picker.component.html',
   styleUrl: './date-picker.component.scss',

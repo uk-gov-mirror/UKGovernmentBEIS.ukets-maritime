@@ -1,34 +1,32 @@
-import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-
+import { NgTemplateOutlet } from '@angular/common';
 import {
-  combineLatest,
-  distinctUntilChanged,
-  filter,
-  map,
-  merge,
-  Observable,
-  ReplaySubject,
-  shareReplay,
-  Subject,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs';
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  linkedSignal,
+  Signal,
+  signal,
+} from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { filter, map, switchMap, tap } from 'rxjs';
 
 import {
   AccountContactInfoDTO,
+  AccountContactInfoResponse,
   CaSiteContactsService,
   RegulatorAuthoritiesService,
   RegulatorUserAuthorityInfoDTO,
 } from '@mrtm/api';
 
+import { FeedbackBannerStore } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { BusinessErrorService, catchBadRequest, ErrorCodes } from '@netz/common/error';
 import { UserFullNamePipe } from '@netz/common/pipes';
-import { DestroySubject } from '@netz/common/services';
 import {
   ButtonDirective,
   GovukSelectOption,
@@ -39,15 +37,17 @@ import {
 } from '@netz/govuk-components';
 
 import { savePartiallyNotFoundSiteContactError } from '@regulators/errors/business-error';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
+import { initialState, selectFilters, SiteContactsStore } from '@regulators/site-contacts/+store';
+import { SiteContactsFilterComponent } from '@regulators/site-contacts/site-contacts-filter';
 import { FormUtils } from '@shared/utils';
 
 type TableData = AccountContactInfoDTO & { user: RegulatorUserAuthorityInfoDTO; type: string };
 
+const EMPTY_CONTACTS_RESPONSE: AccountContactInfoResponse = { contacts: [], editable: false, totalItems: 0 };
+
 @Component({
   selector: 'mrtm-site-contacts',
   imports: [
-    FormsModule,
     ReactiveFormsModule,
     TableComponent,
     SelectComponent,
@@ -55,91 +55,139 @@ type TableData = AccountContactInfoDTO & { user: RegulatorUserAuthorityInfoDTO; 
     PendingButtonDirective,
     ButtonDirective,
     PaginationComponent,
-    AsyncPipe,
     UserFullNamePipe,
+    SiteContactsFilterComponent,
   ],
   standalone: true,
   templateUrl: './site-contacts.component.html',
-  providers: [UserFullNamePipe, DestroySubject],
+  providers: [UserFullNamePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SiteContactsComponent implements OnInit {
+export class SiteContactsComponent {
   private readonly fb = inject(UntypedFormBuilder);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly siteContactsService = inject(CaSiteContactsService);
   private readonly fullNamePipe = inject(UserFullNamePipe);
   private readonly regulatorAuthoritiesService = inject(RegulatorAuthoritiesService);
   private readonly businessErrorService = inject(BusinessErrorService);
-  private readonly destroy$ = inject(DestroySubject);
-  private readonly notificationBannerStore: NotificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
+  private readonly store = inject(SiteContactsStore);
 
-  page$ = new ReplaySubject<number>(1);
-  count$: Observable<number>;
   columns: GovukTableColumn<TableData>[] = [
     { field: 'accountName', header: 'Permit holding account', isHeader: true },
     { field: 'type', header: 'Type' },
     { field: 'user', header: 'Assigned to' },
   ];
-  tableData$: Observable<TableData[]>;
-  isEditable$: Observable<boolean>;
-  readonly pageSize = 50;
+  readonly pageSize = initialState.paging.pageSize;
   form = this.fb.group({ siteContacts: this.fb.array([]) });
-  assigneeOptions$: Observable<GovukSelectOption<string>[]>;
-  refresh$ = new Subject<void>();
 
-  ngOnInit(): void {
-    const activatedTab$ = this.route.fragment.pipe(filter((fragment) => fragment === 'site-contacts'));
+  private readonly refresh = signal(0);
+  private readonly filters = this.store.select(selectFilters);
+  private readonly businessId = computed(() => this.filters().businessId?.data ?? null);
 
-    const regulators$ = merge(activatedTab$, this.refresh$).pipe(
+  protected readonly page = linkedSignal<string | null, number>({
+    source: this.businessId,
+    computation: (_, previous) => {
+      if (previous) {
+        return initialState.paging.page;
+      }
+
+      const initialPage = this.route.snapshot.queryParams?.['page'];
+      return initialPage ? +initialPage : initialState.paging.page;
+    },
+  });
+
+  private readonly fragment = toSignal(this.route.fragment);
+  private readonly isActivated = computed(() => this.fragment() === 'site-contacts');
+
+  private readonly regulators = toSignal(
+    toObservable(computed(() => ({ activated: this.isActivated(), refresh: this.refresh() }))).pipe(
+      filter(({ activated }) => activated),
       switchMap(() => this.regulatorAuthoritiesService.getCaRegulators()),
       map((state) => state.caUsers),
-      shareReplay({ bufferSize: 1, refCount: false }),
-    );
+    ),
+    { initialValue: [] as RegulatorUserAuthorityInfoDTO[] },
+  );
 
-    const contacts$ = combineLatest([
-      merge(this.refresh$.pipe(switchMap(() => this.page$)), this.page$.pipe(distinctUntilChanged())),
-      activatedTab$,
-    ]).pipe(
-      takeUntil(this.destroy$),
-      switchMap(([page]) => this.siteContactsService.getCaSiteContacts(page - 1, this.pageSize)),
-      shareReplay({ bufferSize: 1, refCount: true }),
-    );
+  private readonly contactsResponse = toSignal(
+    toObservable(
+      computed(() => ({
+        activated: this.isActivated(),
+        page: this.page(),
+        refresh: this.refresh(),
+        businessId: this.businessId(),
+      })),
+    ).pipe(
+      filter(({ activated }) => activated),
+      switchMap(({ page, businessId }) =>
+        this.siteContactsService.getCaSiteContacts(page - 1, this.pageSize, businessId ? { businessId } : {}),
+      ),
+    ),
+    { initialValue: EMPTY_CONTACTS_RESPONSE },
+  ) as Signal<AccountContactInfoResponse>;
 
-    this.count$ = contacts$.pipe(map((state) => state.totalItems));
+  protected readonly count = computed(() => this.contactsResponse().totalItems);
+  protected readonly isEditable = computed(() => this.contactsResponse().editable);
 
-    this.assigneeOptions$ = regulators$.pipe(
-      map((regulators: RegulatorUserAuthorityInfoDTO[]) =>
-        regulators.filter((reg) => reg.authorityStatus === 'ACTIVE'),
-      ),
-      map((users) =>
-        [{ text: 'Unassigned', value: null }].concat(
-          users.map((user) => ({ text: this.fullNamePipe.transform(user), value: user.userId })),
-        ),
-      ),
-    );
-    this.isEditable$ = contacts$.pipe(map((state) => state.editable));
-    this.tableData$ = combineLatest([
-      contacts$.pipe(
-        map((response) => response.contacts.slice().sort((a, b) => a.accountName.localeCompare(b.accountName))),
-      ),
-      regulators$,
-    ]).pipe(
-      map(([contacts, users]) =>
-        contacts.map(
-          (contact): TableData => ({
-            ...contact,
-            user: users.find((user) => user.userId === contact.userId),
-            type: 'Maritime',
-          }),
-        ),
-      ),
+  protected readonly assigneeOptions = computed<GovukSelectOption<string>[]>(() =>
+    [{ text: 'Unassigned', value: null }].concat(
+      this.regulators()
+        .filter((regulator) => regulator.authorityStatus === 'ACTIVE')
+        .map((user) => ({ text: this.fullNamePipe.transform(user), value: user.userId })),
+    ),
+  );
+
+  private readonly allTableData = computed<TableData[]>(() => {
+    const users = this.regulators();
+
+    return (this.contactsResponse().contacts ?? [])
+      .slice()
+      .sort((a, b) => a.accountName.localeCompare(b.accountName))
+      .map(
+        (contact): TableData => ({
+          ...contact,
+          user: users.find((user) => user.userId === contact.userId),
+          type: 'Maritime',
+        }),
+      );
+  });
+
+  protected readonly tableData = toSignal(
+    toObservable(this.allTableData).pipe(
       tap((contacts) =>
         this.form.setControl(
           'siteContacts',
           this.fb.array(contacts.map(({ accountId, userId }) => this.fb.group({ accountId, userId }))),
         ),
       ),
-    );
+    ),
+    { initialValue: [] as TableData[] },
+  );
+
+  /**
+   * The pagination component reads the current page from the 'page' query param,
+   * so the URL must follow the 'page' signal when a filter change resets it.
+   */
+  constructor() {
+    effect(() => {
+      const page = this.page();
+      const urlPage = this.route.snapshot.queryParams?.['page'];
+      const resolvedPage = urlPage ? +urlPage : initialState.paging.page;
+
+      if (page !== resolvedPage) {
+        this.router.navigate([], {
+          queryParams: { page },
+          queryParamsHandling: 'merge',
+          preserveFragment: true,
+          relativeTo: this.route,
+        });
+      }
+    });
+  }
+
+  onRefresh(): void {
+    this.refresh.update((version) => version + 1);
   }
 
   onSave(): void {
@@ -156,12 +204,12 @@ export class SiteContactsComponent implements OnInit {
         const updatedControlsKeys = FormUtils.findDirtyControlsKeys(this.form);
 
         if (updatedControlsKeys.length !== 0) {
-          this.notificationBannerStore.setSuccessMessages(
+          this.feedbackBannerStore.setSuccessMessages(
             this.createSuccessMessages(updatedControlsKeys.map((x) => (x === 'userId' ? 'user' : x))),
           );
           this.form.markAsPristine();
         } else {
-          this.notificationBannerStore.reset();
+          this.feedbackBannerStore.reset();
         }
       });
   }

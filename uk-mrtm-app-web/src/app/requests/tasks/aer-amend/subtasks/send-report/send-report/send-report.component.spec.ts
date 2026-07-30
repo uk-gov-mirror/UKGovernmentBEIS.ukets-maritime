@@ -28,8 +28,8 @@ describe('SendReportComponent', () => {
 
   const activatedRouteStub = new ActivatedRouteStub();
   const taskServiceMock: MockType<AerCommonService> = {
-    submit: jest.fn().mockReturnValue(of({})),
-    submitForVerification: jest.fn().mockReturnValue(of({})),
+    submit: vi.fn().mockReturnValue(of({})),
+    submitForVerification: vi.fn().mockReturnValue(of({})),
   };
 
   const createComponent = async (payload: AerSubmitTaskPayload) => {
@@ -82,7 +82,7 @@ describe('SendReportComponent', () => {
 
   beforeEach(() => {
     accountVerificationBodyServiceMock = {
-      getVerificationBodyOfAccount: jest.fn().mockReturnValue(of({ id: 123, name: 'test verification body 123' })),
+      getVerificationBodyOfAccount: vi.fn().mockReturnValue(of({ id: 123, name: 'test verification body 123' })),
     };
   });
 
@@ -114,8 +114,8 @@ describe('SendReportComponent', () => {
 
     it('should submit task', async () => {
       await createComponent(payload);
-      const taskServiceSpy = jest.spyOn(taskServiceMock, 'submit');
-      const navigateSpy = jest.spyOn(router, 'navigate');
+      const taskServiceSpy = vi.spyOn(taskServiceMock, 'submit');
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
       taskServiceSpy.mockReturnValue(of(null));
       page.standardButton.click();
       fixture.detectChanges();
@@ -139,7 +139,7 @@ describe('SendReportComponent', () => {
 
     it('should display an error message when no verifier body set', async () => {
       accountVerificationBodyServiceMock = {
-        getVerificationBodyOfAccount: jest.fn().mockReturnValue(of(null)),
+        getVerificationBodyOfAccount: vi.fn().mockReturnValue(of(null)),
       };
       await createComponent(payload);
       expect(page.heading1.textContent).toEqual('Appoint an accredited verification body to continue');
@@ -158,8 +158,8 @@ describe('SendReportComponent', () => {
 
     it('should submit task', async () => {
       await createComponent(payload);
-      const taskServiceSpy = jest.spyOn(taskServiceMock, 'submitForVerification');
-      const navigateSpy = jest.spyOn(router, 'navigate');
+      const taskServiceSpy = vi.spyOn(taskServiceMock, 'submitForVerification');
+      const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
       page.standardButton.click();
       fixture.detectChanges();
       expect(taskServiceSpy).toHaveBeenCalledTimes(1);

@@ -51,6 +51,11 @@ import { waitForFollowUpReviewTaskContent } from '@requests/tasks/notification-w
 import { waitForPeerReviewTaskContent } from '@requests/tasks/notification-wait-for-peer-review/wait-for-peer-review-task-content';
 import { waitForReviewTaskContent } from '@requests/tasks/notification-wait-for-review/wait-for-review-task-content';
 import { paymentTaskContent } from '@requests/tasks/payment';
+import { siteVisitAmendsTaskContent } from '@requests/tasks/site-visit-amends';
+import { siteVisitPeerReviewTaskContent } from '@requests/tasks/site-visit-peer-review';
+import { siteVisitReviewTaskContent } from '@requests/tasks/site-visit-review';
+import { siteVisitSubmitTaskContent } from '@requests/tasks/site-visit-submit';
+import { siteVisitWaitForReviewTaskContent } from '@requests/tasks/site-visit-wait-for-review';
 import { systemMessageNotificationTaskContent } from '@requests/tasks/system-message-notification/system-message-notification-task-content';
 import { virRespondToRegulatorCommentsTaskContent } from '@requests/tasks/vir-respond-to-regulator-comments/vir-respond-to-regulator-comments-task-content';
 import { virReviewTaskContent } from '@requests/tasks/vir-review';
@@ -140,4 +145,13 @@ export const tasksContent: RequestTaskPageContentFactoryMap = {
   NON_COMPLIANCE_FINAL_DETERMINATION: nonComplianceFinalDeterminationTaskContent,
   NEW_VERIFICATION_BODY_SYSTEM_NOTIFICATION: systemMessageNotificationTaskContent,
   VERIFICATION_BODY_NO_LONGER_AVAILABLE_SYSTEM_NOTIFICATION: systemMessageNotificationTaskContent,
+
+  //SITE VISIT
+  SITE_VISIT_APPLICATION_SUBMIT: siteVisitSubmitTaskContent,
+  SITE_VISIT_WAIT_FOR_REVIEW: siteVisitWaitForReviewTaskContent,
+  SITE_VISIT_APPLICATION_REVIEW: siteVisitReviewTaskContent,
+  SITE_VISIT_WAIT_FOR_PEER_REVIEW: siteVisitReviewTaskContent,
+  SITE_VISIT_WAIT_FOR_AMENDS: siteVisitReviewTaskContent,
+  SITE_VISIT_APPLICATION_PEER_REVIEW: siteVisitPeerReviewTaskContent,
+  SITE_VISIT_APPLICATION_AMENDS_SUBMIT: siteVisitAmendsTaskContent,
 };

@@ -43,7 +43,7 @@ public class EmpVariationApplicationSubmitInitializer implements InitializeReque
 		
 		final EmissionsMonitoringPlan emp = empVariationMapper.cloneEmissionsMonitoringPlan(
 			empContainer.getEmissionsMonitoringPlan(), mrtmAccount.getName(),
-			addressStateMapper.toAddressState(mrtmAccount.getAddress()));
+			addressStateMapper.toAddressStateDTO(mrtmAccount.getAddress()));
 		
 		return EmpVariationApplicationSubmitRequestTaskPayload.builder()
                 .payloadType(MrtmRequestTaskPayloadType.EMP_VARIATION_APPLICATION_SUBMIT_PAYLOAD)

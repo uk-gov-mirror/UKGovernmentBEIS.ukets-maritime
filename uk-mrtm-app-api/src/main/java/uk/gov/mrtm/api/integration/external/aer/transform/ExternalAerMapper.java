@@ -43,6 +43,7 @@ import uk.gov.mrtm.api.reporting.domain.smf.AerSmfPurchase;
 import uk.gov.mrtm.api.workflow.request.flow.aer.common.service.AerAggregatedDataEmissionsCalculator;
 import uk.gov.mrtm.api.workflow.request.flow.aer.common.service.AerSmfEmissionsCalculator;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -118,7 +119,7 @@ public class ExternalAerMapper extends ExternalCommonMapper {
                 .emissionsBetweenUKPorts(toAerPortEmissionsMeasurement(emission.getAnnualEmission().getEtsEmissionsBetweenUkPort()))
                 .emissionsBetweenUKAndNIVoyages(toAerPortEmissionsMeasurement(emission.getAnnualEmission().getEtsEmissionsBetweenUkAndNiPort()))
                 .build()
-        ).collect(Collectors.toSet());
+        ).collect(Collectors.toCollection(LinkedHashSet::new));
 
         return AerAggregatedData.builder().emissions(aerShipAggregatedData).build();
     }
@@ -130,7 +131,7 @@ public class ExternalAerMapper extends ExternalCommonMapper {
                 .fuelOriginTypeName(toAerAggregatedDataFuelOriginTypeName(consumption.getFuelOriginCode(),
                     consumption.getFuelTypeCode(), consumption.getOtherFuelType()))
                 .build()
-        ).collect(Collectors.toSet());
+        ).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private AerPortEmissionsMeasurement toAerPortEmissionsMeasurement(ExternalAerAggregatedDataEmissionsMeasurements externalEmissions) {
@@ -151,11 +152,11 @@ public class ExternalAerMapper extends ExternalCommonMapper {
                     Set<AerFuelsAndEmissionsFactors> fuelsAndEmissionsFactors =
                         ship.getFuelTypes().stream()
                             .map(this::toFuelsAndEmissionsFactors)
-                            .collect(Collectors.toSet());
+                            .collect(Collectors.toCollection(LinkedHashSet::new));
 
                     Set<EmissionsSources> emissionsSources = ship.getEmissionsSources().stream()
                             .map(this::toEmpEmissionsSources)
-                        .collect(Collectors.toSet());
+                        .collect(Collectors.toCollection(LinkedHashSet::new));
 
                     AerDerogations aerDerogations = AerDerogations.builder()
                         .exceptionFromPerVoyageMonitoring(ship.getDerogations().getExceptionFromPerVoyageMonitoring())
@@ -168,11 +169,11 @@ public class ExternalAerMapper extends ExternalCommonMapper {
                         .emissionsSources(emissionsSources)
                         .dataInputType(DataInputType.EXTERNAL_PROVIDER)
                         .uncertaintyLevel(ship.getUncertaintyLevel().stream().map(
-                            this::toUncertaintyLevel).collect(Collectors.toSet()))
+                            this::toUncertaintyLevel).collect(Collectors.toCollection(LinkedHashSet::new)))
                         .derogations(aerDerogations)
                         .build();
                 }
-            ).collect(Collectors.toSet()))
+            ).collect(Collectors.toCollection(LinkedHashSet::new)))
             .build();
     }
 
@@ -182,7 +183,7 @@ public class ExternalAerMapper extends ExternalCommonMapper {
             .type(emissionsSources.getEmissionSourceTypeCode())
             .sourceClass(emissionsSources.getEmissionSourceClassCode())
             .fuelDetails(emissionsSources.getFuelTypeCodes().stream()
-                .map(this::toFuelOriginTypeName).collect(Collectors.toSet()))
+                .map(this::toFuelOriginTypeName).collect(Collectors.toCollection(LinkedHashSet::new)))
             .monitoringMethod(emissionsSources.getMonitoringMethods())
             .uniqueIdentifier(UUID.randomUUID())
             .build();

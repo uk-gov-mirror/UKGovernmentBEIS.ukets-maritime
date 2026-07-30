@@ -41,7 +41,7 @@ export class EmissionDetailsDtoValidator {
     const allGreenHouseValues = emissions.flatMap((emission) => [emission.co2, emission.ch4, emission.n2o]);
     const total = bigNumberUtils.getSum(allGreenHouseValues, 7);
 
-    return allValuesValid && BigNumber(total).gt(0);
+    return allValuesValid && BigNumber(total).gte(0);
   }
 
   private static allAnnualConsumptionsValid(

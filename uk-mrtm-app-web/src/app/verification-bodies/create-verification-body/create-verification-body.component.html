@@ -3,20 +3,24 @@
   [formGroup]="form"
   caption="Add a verification body"
   heading="Verification body details">
-  <h2 class="govuk-heading-m">Add a verification body</h2>
-  <mrtm-verification-body-form />
-  <mrtm-location-state-form
-    legendLabel="Address"
-    legendSize="small"
-    [withState]="false"
-    [optionalFields]="{ line2: true }"
-    formGroupName="address" />
-  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" aria-hidden="true" />
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-m">Add a verification body</h2>
+      <mrtm-verification-body-form />
+      <mrtm-location-state-form
+        legendLabel="Address"
+        legendSize="small"
+        [withState]="false"
+        [optionalFields]="{ line2: true }"
+        formGroupName="address" />
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" aria-hidden="true" />
 
-  <h2 class="govuk-heading-m">Add an admin user</h2>
-  <mrtm-user-account-form
-    emailHint="All system alerts, notices and official communications will be sent by email Contact your regulator if you require a specific notice to be sent by post."
-    formGroupName="adminVerifierUserInvitation"
-    formMode="EDIT"
-    phoneType="national" />
+      <h2 class="govuk-heading-m">Add an admin user</h2>
+      <mrtm-user-account-form
+        emailHint="All system alerts, notices and official communications will be sent by email.<br />Contact your regulator if you require a specific notice to be sent by post."
+        formGroupName="adminVerifierUserInvitation"
+        formMode="EDIT"
+        phoneType="national" />
+    </div>
+  </div>
 </mrtm-wizard-step>

@@ -21,4 +21,6 @@ public class MrtmRegulatorPermissionGroup {
     public static final String ACCOUNT_CLOSURE = "ACCOUNT_CLOSURE";
     public static final String MANAGE_GUIDANCE = "MANAGE_GUIDANCE";
     public static final String MANAGE_THIRD_PARTY_DATA_PROVIDERS = "MANAGE_THIRD_PARTY_DATA_PROVIDERS";
+    public static final String REVIEW_SITE_VISIT = "REVIEW_SITE_VISIT";
+    public static final String PEER_REVIEW_SITE_VISIT = "PEER_REVIEW_SITE_VISIT";
 }

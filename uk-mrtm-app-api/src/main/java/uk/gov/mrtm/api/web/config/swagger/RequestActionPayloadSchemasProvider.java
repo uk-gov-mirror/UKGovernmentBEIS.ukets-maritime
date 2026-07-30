@@ -37,6 +37,10 @@ import uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain.NonComplianceN
 import uk.gov.mrtm.api.workflow.request.flow.registry.domain.RegistryAccountUpdatedEventSubmittedRequestActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.registry.domain.RegistryRegulatorNoticeEventSubmittedRequestActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.registry.domain.RegistryUpdatedEmissionsEventSubmittedRequestActionPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.review.domain.SiteVisitApplicationAmendsSubmittedRequestActionPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.review.domain.SiteVisitApplicationReturnedForAmendsRequestActionPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.review.domain.SiteVisitApplicationReviewSubmittedRequestActionPayload;
+import uk.gov.mrtm.api.workflow.request.flow.sitevisit.submit.domain.SiteVisitApplicationSubmittedRequestActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirApplicationReviewedRequestActionPayload;
 import uk.gov.mrtm.api.workflow.request.flow.vir.domain.VirApplicationSubmittedRequestActionPayload;
 import uk.gov.netz.api.swagger.SwaggerSchemasAbstractProvider;
@@ -157,6 +161,16 @@ public class RequestActionPayloadSchemasProvider extends SwaggerSchemasAbstractP
 			NonComplianceApplicationClosedRequestActionPayload.class);
 		addResolvedShemas(NonComplianceDetailsAmendedRequestActionPayload.class.getSimpleName(),
 			NonComplianceDetailsAmendedRequestActionPayload.class);
+
+		//SITE_VISIT
+		addResolvedShemas(SiteVisitApplicationSubmittedRequestActionPayload.class.getSimpleName(),
+			SiteVisitApplicationSubmittedRequestActionPayload.class);
+		addResolvedShemas(SiteVisitApplicationReturnedForAmendsRequestActionPayload.class.getSimpleName(),
+			SiteVisitApplicationReturnedForAmendsRequestActionPayload.class);
+		addResolvedShemas(SiteVisitApplicationAmendsSubmittedRequestActionPayload.class.getSimpleName(),
+			SiteVisitApplicationAmendsSubmittedRequestActionPayload.class);
+		addResolvedShemas(SiteVisitApplicationReviewSubmittedRequestActionPayload.class.getSimpleName(),
+			SiteVisitApplicationReviewSubmittedRequestActionPayload.class);
     }
     
 }

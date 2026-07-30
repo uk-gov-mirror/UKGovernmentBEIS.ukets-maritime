@@ -17,9 +17,9 @@ describe('AerAggregatedDataAnnualEmissionsComponent', () => {
 
   const routeMock: ActivatedRouteStub = new ActivatedRouteStub();
   const taskServiceMock: MockType<TaskService<unknown>> = {
-    saveSubtask: jest.fn().mockReturnValue(of({})),
+    saveSubtask: vi.fn().mockReturnValue(of({})),
   };
-  const taskServiceSpy = jest.spyOn(taskServiceMock, 'saveSubtask');
+  const taskServiceSpy = vi.spyOn(taskServiceMock, 'saveSubtask');
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -74,8 +74,8 @@ describe('AerAggregatedDataAnnualEmissionsComponent', () => {
 
   it('should display error for invalid data', () => {
     page.setInputValue('input[name="emissionsWithinUKPorts.co2"]', 'testIncorrectValue');
-    page.setInputValue('input[name="emissionsWithinUKPorts.ch4"]', 0.12332125);
-    page.setInputValue('input[name="emissionsWithinUKPorts.n2o"]', -10);
+    page.setInputValue('input[name="emissionsWithinUKPorts.ch4"]', '0.12332125');
+    page.setInputValue('input[name="emissionsWithinUKPorts.n2o"]', '-10');
 
     fixture.componentInstance.onCalculationValueChanged('emissionsWithinUKPorts');
 

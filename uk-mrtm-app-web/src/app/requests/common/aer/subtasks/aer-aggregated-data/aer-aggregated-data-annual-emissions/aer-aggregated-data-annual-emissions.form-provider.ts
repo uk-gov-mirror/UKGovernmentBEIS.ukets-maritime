@@ -59,7 +59,9 @@ export const aerAggregatedDataAnnualEmissionsFormProvider: Provider = {
         ]),
         totalEmissionsFromVoyagesAndPorts: provideAerAggregatedEmissionsFormGroup(
           aggregatedData?.totalEmissionsFromVoyagesAndPorts,
-          aerAggregatedDataValidators.totalEmissionsValidator('The total emissions should be greater than 0'),
+          aerAggregatedDataValidators.totalEmissionsValidator(
+            'The total emissions should be greater than or equal to 0',
+          ),
           false,
         ),
       },

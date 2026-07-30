@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, Signal, signal, WritableSignal } from '@angular/core';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { take } from 'rxjs';
@@ -28,7 +28,6 @@ import { WizardStepComponent } from '@shared/components';
   selector: 'mrtm-mandate-responsibility',
   imports: [
     WizardStepComponent,
-    FormsModule,
     ReactiveFormsModule,
     RadioComponent,
     RadioOptionComponent,

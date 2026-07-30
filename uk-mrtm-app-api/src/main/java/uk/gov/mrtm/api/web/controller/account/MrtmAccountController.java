@@ -8,12 +8,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,21 +18,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.mrtm.api.account.domain.dto.MrtmAccountDTO;
 import uk.gov.mrtm.api.account.domain.dto.MrtmAccountInfoDTO;
+import uk.gov.mrtm.api.account.search.mapper.MrtmAccountSearchCriteriaMapper;
 import uk.gov.mrtm.api.account.service.MrtmAccountCreateService;
 import uk.gov.mrtm.api.account.service.MrtmAccountQueryService;
 import uk.gov.mrtm.api.web.constants.SwaggerApiInfo;
 import uk.gov.mrtm.api.web.controller.exception.ErrorResponse;
-import uk.gov.netz.api.account.domain.dto.AccountSearchCriteria;
+import uk.gov.mrtm.api.account.search.domain.dto.MrtmAccountSearchCriteria;
+import uk.gov.mrtm.api.account.search.domain.dto.MrtmAccountSearchResultInfoDTO;
 import uk.gov.netz.api.account.domain.dto.AccountSearchResults;
+import uk.gov.mrtm.api.web.orchestrator.account.service.MrtmAccountSearchQueryOrchestrator;
 import uk.gov.netz.api.account.service.AccountQueryService;
-import uk.gov.netz.api.account.service.AccountSearchServiceDelegator;
 import uk.gov.netz.api.authorization.core.domain.AppUser;
-import uk.gov.netz.api.common.domain.PagingRequest;
 import uk.gov.netz.api.security.AuthorizedRole;
 
 import java.util.List;
@@ -60,7 +57,8 @@ public class MrtmAccountController {
 
     private final MrtmAccountCreateService mrtmAccountCreateService;
     private final MrtmAccountQueryService mrtmAccountQueryService;
-    private final AccountSearchServiceDelegator accountSearchServiceDelegator;
+    private final MrtmAccountSearchQueryOrchestrator mrtmAccountSearchQueryOrchestrator;
+    private final MrtmAccountSearchCriteriaMapper mrtmAccountSearchCriteriaMapper;
     private final AccountQueryService accountQueryService;
 
     @PostMapping
@@ -101,21 +99,17 @@ public class MrtmAccountController {
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
     @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR, content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
     @AuthorizedRole(roleType = {OPERATOR, REGULATOR, VERIFIER})
-    public ResponseEntity<AccountSearchResults> searchCurrentUserMrtmAccounts (
+    public ResponseEntity<AccountSearchResults<MrtmAccountSearchResultInfoDTO>> searchCurrentUserMrtmAccounts (
             @Parameter(hidden = true) AppUser appUser,
-            @RequestParam(value = "term", required = false) @Size(min = 3, max = 256) @Parameter(description = "The term to search") String term,
-            @RequestParam(value = "page") @NotNull @Parameter(description = "The page number starting from zero") @Min(value = 0, message = "{parameter.page.typeMismatch}") Integer page,
-            @RequestParam(value = "size") @NotNull @Parameter(description = "The page size") @Min(value = 1, message = "{parameter.pageSize.typeMismatch}")  Integer pageSize
-    ) {
+            @Valid
+            @ModelAttribute
+            @Parameter(description = "The account search criteria")
+            MrtmAccountSearchCriteria searchCriteria) {
         return new ResponseEntity<>(
-                accountSearchServiceDelegator.getAccountsByUserAndSearchCriteria(
+                mrtmAccountSearchQueryOrchestrator.search(
                         appUser,
-                        AccountSearchCriteria.builder()
-                                .term(term)
-                                .paging(PagingRequest.builder().pageNumber(page).pageSize(pageSize).build())
-                                .sortBy(AccountSearchCriteria.SortBy.ACCOUNT_BUSINESS_ID)
-                                .direction(Sort.Direction.ASC)
-                                .build()), HttpStatus.OK);
+                        mrtmAccountSearchCriteriaMapper.toFilterCriteria(searchCriteria)),
+                HttpStatus.OK);
     }
 
     @GetMapping("/info")

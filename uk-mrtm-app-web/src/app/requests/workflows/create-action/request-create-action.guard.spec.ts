@@ -12,11 +12,12 @@ import { CREATE_ACTION_TYPE } from '@requests/common/types';
 import { WorkflowStore } from '@requests/workflows/+state';
 import { CREATE_ACTION } from '@requests/workflows/create-action/create-action.helpers';
 import { requestCreateActionGuard } from '@requests/workflows/create-action/request-create-action.guard';
+import { Mocked } from 'vitest';
 
 describe('requestCreateActionGuard', () => {
   let router: Router;
-  let requestsService: Partial<jest.Mocked<RequestsService>>;
-  let requestItemsService: Partial<jest.Mocked<RequestItemsService>>;
+  let requestsService: Partial<Mocked<RequestsService>>;
+  let requestItemsService: Partial<Mocked<RequestItemsService>>;
   let authStore: AuthStore;
   let workflowStore: WorkflowStore;
 
@@ -25,11 +26,11 @@ describe('requestCreateActionGuard', () => {
 
   beforeEach(() => {
     requestsService = {
-      processRequestCreateAction: jest.fn().mockReturnValue(of({})),
+      processRequestCreateAction: vi.fn().mockReturnValue(of({})),
     };
 
     requestItemsService = {
-      getItemsByRequest: jest.fn().mockReturnValue(
+      getItemsByRequest: vi.fn().mockReturnValue(
         of({
           items: [
             {

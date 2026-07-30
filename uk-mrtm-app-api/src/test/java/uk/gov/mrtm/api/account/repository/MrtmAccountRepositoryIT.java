@@ -99,6 +99,15 @@ class MrtmAccountRepositoryIT extends AbstractContainerBaseTest {
     }
 
     @Test
+    void findByImoNumberForUpdate() {
+        String imoNumber = "0000099";
+        MrtmAccount account = createAccount(99L, imoNumber, null, CompetentAuthorityEnum.ENGLAND);
+
+        assertEquals(account, repository.findByImoNumberForUpdate(imoNumber).get());
+        assertTrue(repository.findByImoNumberForUpdate("0000098").isEmpty());
+    }
+
+    @Test
     void findByBusinessId() {
         long accountId1 = 1234L;
         long accountId2 = 4321L;

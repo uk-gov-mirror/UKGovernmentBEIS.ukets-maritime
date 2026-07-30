@@ -12,9 +12,20 @@ export class AerEmissionSourcesAndFuelTypesUsedListPayloadMutator extends Payloa
   readonly subtask = EMISSIONS_SUB_TASK;
   step = AerEmissionsWizardStep.EMISSION_SOURCES_LIST;
 
-  apply(currentPayload: AerSubmitTaskPayload, userInput: string): Observable<any> {
+  apply(currentPayload: AerSubmitTaskPayload, userInput: string | string[]): Observable<any> {
     return of(
       produce(currentPayload, (payload: AerSubmitTaskPayload) => {
+        // An array of ids means "these needsReview entries are now valid" (see
+        // AerEmissionSourcesAndFuelTypesUsedListComponent.onContinue) rather than "delete this entry".
+        if (Array.isArray(userInput)) {
+          for (const uniqueIdentifier of userInput) {
+            delete payload.aerSectionsCompleted[
+              `${EMISSION_SOURCES_AND_FUEL_TYPES_USED_FORM_STEP}-${uniqueIdentifier}`
+            ];
+          }
+          return;
+        }
+
         payload.aer[this.subtask].ships = [
           ...payload.aer[this.subtask].ships.map((ship) => ({
             ...ship,

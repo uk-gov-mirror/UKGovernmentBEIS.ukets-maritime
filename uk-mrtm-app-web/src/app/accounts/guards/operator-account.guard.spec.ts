@@ -10,28 +10,29 @@ import { ActivatedRouteSnapshotStub, mockClass } from '@netz/common/testing';
 import { canActivateOperatorAccount } from '@accounts/guards/operator-account.guard';
 import { OperatorAccountsStore } from '@accounts/store';
 import { mockedAccount, mockReportingStatusesResults } from '@accounts/testing/accounts-data.mock';
+import { Mocked } from 'vitest';
 
 describe('canActivateOperatorAccount', () => {
-  let accountsService: Partial<jest.Mocked<MaritimeAccountsService>>;
-  let reportingStatusesService: Partial<jest.Mocked<AccountReportingStatusHistoryService>>;
-  let operatorAccountsStore: Partial<jest.Mocked<OperatorAccountsStore>>;
+  let accountsService: Partial<Mocked<MaritimeAccountsService>>;
+  let reportingStatusesService: Partial<Mocked<AccountReportingStatusHistoryService>>;
+  let operatorAccountsStore: Partial<Mocked<OperatorAccountsStore>>;
 
   const executeGuard: CanActivateFn = (route: ActivatedRouteSnapshotStub) =>
     TestBed.runInInjectionContext(() => canActivateOperatorAccount(route));
 
   beforeEach(() => {
     accountsService = {
-      getMaritimeAccount: jest.fn().mockReturnValueOnce(of(mockedAccount)),
+      getMaritimeAccount: vi.fn().mockReturnValueOnce(of(mockedAccount)),
     };
     reportingStatusesService = {
-      getAllReportingStatuses: jest.fn().mockReturnValueOnce(of(mockReportingStatusesResults)),
+      getAllReportingStatuses: vi.fn().mockReturnValueOnce(of(mockReportingStatusesResults)),
     };
 
     operatorAccountsStore = {
-      pipe: jest.fn().mockReturnValue(of({ paging: { page: 1, pageSize: 10 } })),
-      setCurrentAccount: jest.fn(),
-      setReportingStatuses: jest.fn(),
-      setReportingStatusTotal: jest.fn(),
+      pipe: vi.fn().mockReturnValue(of({ paging: { page: 1, pageSize: 10 } })),
+      setCurrentAccount: vi.fn(),
+      setReportingStatuses: vi.fn(),
+      setReportingStatusTotal: vi.fn(),
     };
 
     TestBed.configureTestingModule({

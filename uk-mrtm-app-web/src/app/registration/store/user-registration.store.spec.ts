@@ -38,7 +38,7 @@ describe('UserRegistrationStore', () => {
   });
 
   it('should return user info summary', async () => {
-    jest.spyOn(store, 'select').mockReturnValue(of(mockUserDTO));
+    vi.spyOn(store, 'select').mockReturnValue(of(mockUserDTO));
 
     const summary = await firstValueFrom(store.select('userRegistrationDTO'));
 

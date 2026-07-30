@@ -8,8 +8,11 @@ import { take, tap } from 'rxjs';
 
 import { AuthStore, selectUserId } from '@netz/common/auth';
 import {
+  RelatedAsyncDocumentsComponent,
   RelatedDocumentsComponent,
+  RelatedPreviewAsyncDocumentsMap,
   RelatedPreviewDocumentsMap,
+  TASK_RELATED_PREVIEW_ASYNC_DOCUMENTS_MAP,
   TASK_RELATED_PREVIEW_DOCUMENTS_MAP,
 } from '@netz/common/components';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
@@ -34,6 +37,7 @@ import { NotifyUsersService } from '@shared/services/notify-users.service';
     UserInfoResolverPipe,
     SelectComponent,
     RelatedDocumentsComponent,
+    RelatedAsyncDocumentsComponent,
   ],
   standalone: true,
   templateUrl: './notify-operator-form.component.html',
@@ -54,12 +58,21 @@ export class NotifyOperatorFormComponent {
   private readonly relatedPreviewDocumentsMap: RelatedPreviewDocumentsMap = inject(TASK_RELATED_PREVIEW_DOCUMENTS_MAP, {
     optional: true,
   });
+  private readonly relatedPreviewAsyncDocumentsMap: RelatedPreviewAsyncDocumentsMap = inject(
+    TASK_RELATED_PREVIEW_ASYNC_DOCUMENTS_MAP,
+    {
+      optional: true,
+    },
+  );
 
   accountId = this.store.select(requestTaskQuery.selectRequestTaskAccountId)();
   requestTaskId = this.store.select(requestTaskQuery.selectRequestTaskId)();
   requestTaskType = this.store.select(requestTaskQuery.selectRequestTaskType)();
   previewDocuments = this.relatedPreviewDocumentsMap?.()?.[this.requestTaskType]
     ? this.relatedPreviewDocumentsMap()[this.requestTaskType].filter((item) => item.visibleInNotify)
+    : [];
+  previewAsyncDocuments = this.relatedPreviewAsyncDocumentsMap?.()?.[this.requestTaskType]
+    ? this.relatedPreviewAsyncDocumentsMap()[this.requestTaskType].filter((item) => item.visibleInNotify)
     : [];
 
   readonly allOperatorsInfo = toSignal(this.notifyUsersService.getAllOperatorsInfo(this.accountId));

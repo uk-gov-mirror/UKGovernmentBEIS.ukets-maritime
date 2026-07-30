@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { ControlValueAccessor, FormsModule, NgControl, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
+import { ControlValueAccessor, NgControl, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 
 import { FormService } from '@netz/govuk-components';
 
@@ -9,7 +9,7 @@ import { FormService } from '@netz/govuk-components';
 */
 @Component({
   selector: 'div[mrtm-radio-option]',
-  imports: [FormsModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   standalone: true,
   templateUrl: './radio-option.component.html',
   host: { '[class.govuk-radios__item]': 'govukRadiosItem' },

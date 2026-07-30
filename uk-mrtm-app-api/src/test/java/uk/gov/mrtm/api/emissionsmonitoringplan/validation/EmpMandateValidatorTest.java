@@ -169,8 +169,14 @@ class EmpMandateValidatorTest {
 
         final EmissionsMonitoringPlanValidationResult result = validator.validate(empContainer, accountId);
         assertFalse(result.isValid());
-        assertThat(result.getEmpViolations()).extracting(EmissionsMonitoringPlanViolation::getMessage)
-            .containsExactly(INVALID_REGISTERED_OWNER_IMO_NUMBER_MATCH_ACCOUNT_IMO_NUMBER.getMessage());
+        assertThat(result.getEmpViolations())
+            .singleElement()
+            .satisfies(violation -> {
+                assertThat(violation.getMessage())
+                    .isEqualTo(INVALID_REGISTERED_OWNER_IMO_NUMBER_MATCH_ACCOUNT_IMO_NUMBER.getMessage());
+                assertThat(violation.getData())
+                    .containsExactly(ownerImoNumber2);
+            });
     }
 
     @Test

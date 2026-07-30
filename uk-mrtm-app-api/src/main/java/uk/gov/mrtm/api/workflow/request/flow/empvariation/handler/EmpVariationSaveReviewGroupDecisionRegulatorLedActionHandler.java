@@ -24,7 +24,7 @@ public class EmpVariationSaveReviewGroupDecisionRegulatorLedActionHandler implem
     @Override
     public RequestTaskPayload process(Long requestTaskId, String requestTaskActionType, AppUser appUser,
                                       EmpVariationSaveReviewGroupDecisionRegulatorLedRequestTaskActionPayload payload) {
-        final RequestTask requestTask = requestTaskService.findTaskById(requestTaskId);
+        final RequestTask requestTask = requestTaskService.findTaskByIdForUpdate(requestTaskId);
         empVariationSubmitRegulatorLedService.saveReviewGroupDecision(payload, requestTask);
 
         return requestTask.getPayload();

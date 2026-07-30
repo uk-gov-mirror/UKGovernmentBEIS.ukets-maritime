@@ -8,17 +8,18 @@ import { DocumentTemplateFilesService, FileDocumentTemplatesService, TasksServic
 import { ActivatedRouteStub, mockClass, testSchedulerFactory } from '@netz/common/testing';
 
 import { TemplateFileDownloadComponent } from '@templates/file-download/template-file-download.component';
+import { Mocked } from 'vitest';
 
 describe('TemplateFileDownloadComponent', () => {
   let component: TemplateFileDownloadComponent;
   let fixture: ComponentFixture<TemplateFileDownloadComponent>;
-  let documentTemplateFilesService: jest.Mocked<DocumentTemplateFilesService>;
+  let documentTemplateFilesService: Mocked<DocumentTemplateFilesService>;
 
   beforeEach(async () => {
-    Object.defineProperty(window, 'onfocus', { set: jest.fn() });
+    Object.defineProperty(window, 'onfocus', { set: vi.fn() });
     documentTemplateFilesService = mockClass(DocumentTemplateFilesService);
     documentTemplateFilesService.generateGetDocumentTemplateFileToken.mockReturnValue(
-      of({ token: 'abce', tokenExpirationMinutes: 1 }),
+      of({ token: 'abce', tokenExpirationMinutes: 1 }) as any,
     );
     const activatedRoute = new ActivatedRouteStub({ templateId: 11 });
 
@@ -49,7 +50,7 @@ describe('TemplateFileDownloadComponent', () => {
   });
 
   it('should refresh the download link', async () => {
-    documentTemplateFilesService.generateGetDocumentTemplateFileToken.mockClear().mockImplementation(() => {
+    (documentTemplateFilesService.generateGetDocumentTemplateFileToken.mockClear() as any).mockImplementation(() => {
       let subscribes = 0;
 
       return defer(() => {

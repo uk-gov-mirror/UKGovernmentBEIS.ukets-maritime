@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -12,30 +12,30 @@ describe('TableComponent', () => {
     standalone: true,
     template: `
       <govuk-table
-        [columns]="columns"
-        [data]="data"
-        [caption]="caption"
+        [columns]="columns()"
+        [data]="data()"
+        [caption]="caption()"
         (sort)="onSort($event)"
-        [rowCssClasses]="rowCssClasses" />
+        [rowCssClasses]="rowCssClasses()" />
     `,
   })
   class TestComponent {
-    columns: GovukTableColumn[] = [
+    readonly columns = signal<GovukTableColumn[]>([
       { header: 'Name', field: 'name', widthClass: 'govuk-!-width-one-quarter', isHeader: true },
       { header: 'Surname', field: 'surname' },
       { header: 'Age', field: 'age', isNumeric: true },
-    ];
-    data: any[] = [];
-    caption: string;
-    onSort = jest.fn((_: SortEvent) => null);
-    rowCssClasses?: (row: any) => string | string[] = undefined;
+    ]);
+    readonly data = signal<any[]>([]);
+    readonly caption = signal<string>(undefined);
+    onSort = vi.fn((_: SortEvent) => null);
+    readonly rowCssClasses = signal<((row: any) => string | string[]) | undefined>(undefined);
   }
 
   @Component({
     imports: [TableComponent],
     standalone: true,
     template: `
-      <govuk-table [columns]="columns" [data]="data" [caption]="caption" (sort)="onSort($event)">
+      <govuk-table [columns]="columns()" [data]="data()" [caption]="caption()" (sort)="onSort($event)">
         <ng-template let-column="column" let-row="row">
           @if (column.field === 'link') {
             <a>{{ row[column.field] }}</a>
@@ -47,13 +47,13 @@ describe('TableComponent', () => {
     `,
   })
   class TestTemplateComponent {
-    columns: GovukTableColumn[] = [
+    readonly columns = signal<GovukTableColumn[]>([
       { header: 'Link', field: 'link' },
       { header: 'Text', field: 'text' },
-    ];
-    data: any[] = [];
-    caption: string;
-    onSort = jest.fn((_: SortEvent) => null);
+    ]);
+    readonly data = signal<any[]>([]);
+    readonly caption = signal<string>(undefined);
+    onSort = vi.fn((_: SortEvent) => null);
   }
 
   let component: TableComponent<any>;
@@ -89,7 +89,7 @@ describe('TableComponent', () => {
 
     expect(caption).toBeNull();
 
-    hostComponent.caption = 'Test Caption';
+    hostComponent.caption.set('Test Caption');
     fixture.detectChanges();
 
     caption = hostElement.querySelector<HTMLTableCaptionElement>('caption');
@@ -112,7 +112,7 @@ describe('TableComponent', () => {
   });
 
   it('should render the data', () => {
-    hostComponent.data = TABLE_DATA;
+    hostComponent.data.set(TABLE_DATA);
     fixture.detectChanges();
 
     const hostElement: HTMLElement = fixture.nativeElement;
@@ -140,7 +140,7 @@ describe('TableComponent', () => {
   });
 
   it('should assign numeric class', () => {
-    hostComponent.data = TABLE_DATA;
+    hostComponent.data.set(TABLE_DATA);
     fixture.detectChanges();
 
     const hostElement: HTMLElement = fixture.nativeElement;
@@ -151,15 +151,15 @@ describe('TableComponent', () => {
   });
 
   it('should display sort buttons and emit event on click', () => {
-    hostComponent.columns = [
+    hostComponent.columns.set([
       { header: 'One', field: 'first', isSortable: true },
       { header: 'Second', field: 'second', isSortable: true },
       { header: 'Third', field: 'third', isSortable: false },
-    ];
-    hostComponent.data = [
+    ]);
+    hostComponent.data.set([
       { first: 1, second: new Date('2020-07-23T10:00:00Z'), third: 'abc' },
       { first: 2, second: new Date('2020-07-23T11:00:00Z'), third: 'cda' },
-    ];
+    ]);
 
     fixture.detectChanges();
     const sortButtons = fixture.debugElement.queryAll(By.css('[aria-sort] button'));
@@ -190,7 +190,7 @@ describe('TableComponent', () => {
 
   it('should display custom template', () => {
     const templateFixture = TestBed.createComponent(TestTemplateComponent);
-    templateFixture.componentInstance.data = [{ link: 'Go to', text: 'Something to watch' }];
+    templateFixture.componentInstance.data.set([{ link: 'Go to', text: 'Something to watch' }]);
     templateFixture.detectChanges();
 
     const element: HTMLElement = templateFixture.nativeElement;
@@ -201,8 +201,8 @@ describe('TableComponent', () => {
   });
 
   it('should add additional css class to row element', () => {
-    hostComponent.rowCssClasses = (item: any) => 'test-custom-css-row-class';
-    hostComponent.data = TABLE_DATA;
+    hostComponent.rowCssClasses.set((item: any) => 'test-custom-css-row-class');
+    hostComponent.data.set(TABLE_DATA);
     fixture.detectChanges();
 
     const element: HTMLElement = fixture.nativeElement;

@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { first, map, Observable, switchMap, withLatestFrom } from 'rxjs';
 
@@ -29,7 +29,7 @@ import { MrtmRequestType } from '@shared/types';
 
 @Component({
   selector: 'mrtm-process-actions',
-  imports: [AsyncPipe, PageHeadingComponent, PendingButtonDirective, ButtonDirective],
+  imports: [AsyncPipe, PageHeadingComponent, PendingButtonDirective, ButtonDirective, RouterLink],
   standalone: true,
   templateUrl: './process-actions.component.html',
   providers: [
@@ -99,6 +99,12 @@ export class ProcessActionsComponent {
       const accountStatusString = this.accountStatusPipe.transform(status)?.toUpperCase();
 
       return [`You cannot start the ${typeString} while the account status is ${accountStatusString}.`];
+    } else if (requestType === 'SITE_VISIT') {
+      return [
+        'there are no eligible reporting years',
+        'an application is already in progress',
+        'an application has been completed',
+      ];
     } else {
       return result.requests.map((r) => this.createErrorMessage(requestType, r as MrtmRequestType));
     }

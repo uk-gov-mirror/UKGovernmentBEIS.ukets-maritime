@@ -5,6 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import uk.gov.mrtm.api.account.domain.dto.MrtmDocumentTemplateAccountData;
 import uk.gov.netz.api.authorization.rules.domain.ResourceType;
 import uk.gov.netz.api.common.exception.BusinessException;
 import uk.gov.netz.api.common.exception.ErrorCode;
@@ -41,6 +43,9 @@ class PreviewOfficialNoticeServiceTest {
 
     @Mock
     private DecisionNotificationUsersService decisionNotificationUsersService;
+    
+    @Mock
+    private MrtmDocumentTemplateAccountDataCollectFromAccountService templateAccountDataCollectFromAccountService;
 
     @Mock
     private DocumentTemplateOfficialNoticeParamsProvider documentTemplateOfficialNoticeParamsProvider;
@@ -60,28 +65,38 @@ class PreviewOfficialNoticeServiceTest {
                     .resourceType(ResourceType.ACCOUNT)
                     .build()))
             .build();
+        
+        MrtmDocumentTemplateAccountData accountData = MrtmDocumentTemplateAccountData.builder()
+        		.imoNumber("123")
+        		.build();
 
         when(requestAccountContactQueryService.getRequestAccountPrimaryContact(request))
             .thenReturn(Optional.of(accountPrimaryContact));
         when(decisionNotificationUsersService.findUserEmails(decisionNotification)).thenReturn(ccEmails);
+        when(templateAccountDataCollectFromAccountService.collect(accountId)).thenReturn(accountData);
         when(documentTemplateOfficialNoticeParamsProvider.constructTemplateParams(DocumentTemplateParamsSourceData.builder()
             .request(request)
             .signatory(decisionNotification.getSignatory())
             .accountPrimaryContact(accountPrimaryContact)
             .toRecipientEmail(accountPrimaryContact.getEmail())
-            .ccRecipientsEmails(ccEmails).build())).thenReturn(expectedTemplateParams);
+            .ccRecipientsEmails(ccEmails)
+            .accountData(accountData)
+            .build())).thenReturn(expectedTemplateParams);
 
         TemplateParams actualTemplateParams = service.generateCommonParams(request, decisionNotification);
         assertEquals(expectedTemplateParams, actualTemplateParams);
 
         verify(requestAccountContactQueryService).getRequestAccountPrimaryContact(request);
         verify(decisionNotificationUsersService).findUserEmails(decisionNotification);
+        verify(templateAccountDataCollectFromAccountService).collect(accountId);
         verify(documentTemplateOfficialNoticeParamsProvider).constructTemplateParams(DocumentTemplateParamsSourceData.builder()
             .request(request)
             .signatory(decisionNotification.getSignatory())
             .accountPrimaryContact(accountPrimaryContact)
             .toRecipientEmail(accountPrimaryContact.getEmail())
-            .ccRecipientsEmails(ccEmails).build());
+            .ccRecipientsEmails(ccEmails)
+            .accountData(accountData)
+            .build());
         verifyNoMoreInteractions(expectedTemplateParams, requestAccountContactQueryService,
             decisionNotificationUsersService, documentTemplateOfficialNoticeParamsProvider);
     }

@@ -70,3 +70,4 @@ export * from './aer-data-initial-source-type.enum';
 export * from './aer-ship-emission-table-list-item.iterface';
 export * from './registry-account-update-dto.interface';
 export * from './registry-notice-event-submitted-dto.interface';
+export * from './site-visit-application-details.dto';

@@ -9,16 +9,17 @@ import { ActivatedRouteSnapshotStub, expectBusinessErrorToBe } from '@netz/commo
 
 import { viewNotFoundOperatorError } from '@accounts/errors';
 import { ReplaceVerifierGuard } from '@accounts/guards';
+import { Mocked } from 'vitest';
 
 describe('ReplaceVerifierGuard', () => {
   let guard: ReplaceVerifierGuard;
-  let accountVerificationBodyService: Partial<jest.Mocked<AccountVerificationBodyService>>;
+  let accountVerificationBodyService: Partial<Mocked<AccountVerificationBodyService>>;
 
   const route = new ActivatedRouteSnapshotStub({ accountId: '1' });
 
   beforeEach(() => {
     accountVerificationBodyService = {
-      getVerificationBodyOfAccount: jest.fn(),
+      getVerificationBodyOfAccount: vi.fn() as any,
     };
     TestBed.configureTestingModule({
       providers: [{ provide: AccountVerificationBodyService, useValue: accountVerificationBodyService }],
@@ -31,7 +32,7 @@ describe('ReplaceVerifierGuard', () => {
   });
 
   it('should allow access if a verification body is found', async () => {
-    accountVerificationBodyService.getVerificationBodyOfAccount = jest
+    accountVerificationBodyService.getVerificationBodyOfAccount = vi
       .fn()
       .mockReturnValueOnce(of({ id: 1, name: 'testName' }));
 

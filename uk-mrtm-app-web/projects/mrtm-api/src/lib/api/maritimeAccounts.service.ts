@@ -27,6 +27,7 @@ import { AccountSearchResults } from '../model/accountSearchResults';
 import { MrtmAccountDTO } from '../model/mrtmAccountDTO';
 import { MrtmAccountEmpDTO } from '../model/mrtmAccountEmpDTO';
 import { MrtmAccountInfoDTO } from '../model/mrtmAccountInfoDTO';
+import { MrtmAccountSearchCriteria } from '../model/mrtmAccountSearchCriteria';
 import { BASE_PATH } from '../variables';
 
 @Injectable({
@@ -437,60 +438,43 @@ export class MaritimeAccountsService {
 
   /**
    * Retrieves the current user associated maritime accounts
-   * @param page The page number starting from zero
-   * @param size The page size
-   * @param term The term to search
+   * @param searchCriteria The account search criteria
    * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
    * @param reportProgress flag to report request and response progress.
    */
   public searchCurrentUserMrtmAccounts(
-    page: number,
-    size: number,
-    term?: string,
+    searchCriteria: MrtmAccountSearchCriteria,
     observe?: 'body',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<AccountSearchResults>;
   public searchCurrentUserMrtmAccounts(
-    page: number,
-    size: number,
-    term?: string,
+    searchCriteria: MrtmAccountSearchCriteria,
     observe?: 'response',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpResponse<AccountSearchResults>>;
   public searchCurrentUserMrtmAccounts(
-    page: number,
-    size: number,
-    term?: string,
+    searchCriteria: MrtmAccountSearchCriteria,
     observe?: 'events',
     reportProgress?: boolean,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpEvent<AccountSearchResults>>;
   public searchCurrentUserMrtmAccounts(
-    page: number,
-    size: number,
-    term?: string,
+    searchCriteria: MrtmAccountSearchCriteria,
     observe: any = 'body',
     reportProgress: boolean = false,
     options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<any> {
-    if (page === null || page === undefined) {
-      throw new Error('Required parameter page was null or undefined when calling searchCurrentUserMrtmAccounts.');
-    }
-    if (size === null || size === undefined) {
-      throw new Error('Required parameter size was null or undefined when calling searchCurrentUserMrtmAccounts.');
+    if (searchCriteria === null || searchCriteria === undefined) {
+      throw new Error(
+        'Required parameter searchCriteria was null or undefined when calling searchCurrentUserMrtmAccounts.',
+      );
     }
 
     let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-    if (term !== undefined && term !== null) {
-      localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>term, 'term');
-    }
-    if (page !== undefined && page !== null) {
-      localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>page, 'page');
-    }
-    if (size !== undefined && size !== null) {
-      localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>size, 'size');
+    if (searchCriteria !== undefined && searchCriteria !== null) {
+      localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>searchCriteria, 'searchCriteria');
     }
 
     let localVarHeaders = this.defaultHeaders;

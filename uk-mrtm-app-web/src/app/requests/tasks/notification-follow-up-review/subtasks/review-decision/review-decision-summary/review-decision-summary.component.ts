@@ -1,7 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject, Signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { PageHeadingComponent, ReturnToTaskOrActionPageComponent } from '@netz/common/components';
+import {
+  FeedbackBannerComponent,
+  PageHeadingComponent,
+  ReturnToTaskOrActionPageComponent,
+} from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { TaskService } from '@netz/common/forms';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
@@ -18,7 +22,6 @@ import { followUpReviewDecisionMap } from '@requests/tasks/notification-follow-u
 import {
   FollowUpResponseRegulatorSummaryTemplateComponent,
   FollowUpReviewDecisionSummaryTemplateComponent,
-  NotificationBannerComponent,
 } from '@shared/components';
 import { FollowUpResponseDTO, FollowUpReviewDecisionDTO, SubTaskListMap } from '@shared/types';
 
@@ -39,7 +42,7 @@ interface ViewModel {
     ReturnToTaskOrActionPageComponent,
     PendingButtonDirective,
     ButtonDirective,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
   ],
   standalone: true,
   templateUrl: './review-decision-summary.component.html',

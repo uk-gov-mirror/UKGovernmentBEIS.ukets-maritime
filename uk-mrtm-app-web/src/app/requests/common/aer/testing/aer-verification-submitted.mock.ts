@@ -46,8 +46,6 @@ const mockOpinionStatement: AerOpinionStatement = {
   emissionsCorrect: false,
   manuallyProvidedTotalEmissions: '1',
   manuallyProvidedSurrenderEmissions: '1',
-  manuallyProvidedLessIslandFerryDeduction: '1',
-  manuallyProvidedLess5PercentIceClassDeduction: '1',
   additionalChangesNotCovered: true,
   additionalChangesNotCoveredDetails: 'asdf',
   siteVisit: {
@@ -148,8 +146,6 @@ const mockAerVerificationReport: AerVerificationReport = {
 const mockTotalReportableEmissions: AerTotalReportableEmissions = {
   surrenderEmissions: '33',
   totalEmissions: '90',
-  less5PercentIceClassDeduction: '33',
-  lessIslandFerryDeduction: '35',
 };
 
 export const mockAerVerificationSubmittedPayload: AerApplicationVerificationSubmittedRequestActionPayload = {

@@ -16,7 +16,7 @@ describe('RequestedChangesQuestionComponent', () => {
   let fixture: ComponentFixture<RequestedChangesQuestionComponent>;
 
   const taskServiceMock: MockType<TaskService<any>> = {
-    saveSubtask: jest.fn().mockReturnValue(of({})),
+    saveSubtask: vi.fn().mockReturnValue(of({})),
   };
 
   beforeEach(async () => {

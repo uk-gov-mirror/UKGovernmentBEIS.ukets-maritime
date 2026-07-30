@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.mrtm.api.common.exception.MrtmErrorCode;
+import uk.gov.mrtm.api.workflow.request.core.validation.WorkflowAttachmentsValidator;
 import uk.gov.mrtm.api.workflow.request.flow.empnotification.domain.DateOfNonSignificantChange;
 import uk.gov.mrtm.api.workflow.request.flow.empnotification.domain.EmissionsMonitoringPlanNotification;
 import uk.gov.mrtm.api.workflow.request.flow.empnotification.domain.EmissionsMonitoringPlanNotificationContainer;
@@ -31,24 +32,24 @@ class EmpNotificationApplicationSubmitValidatorServiceTest {
     private EmpNotificationApplicationSubmitValidatorService service;
 
     @Mock
-    private EmpNotificationAttachmentsValidator empNotificationAttachmentsValidator;
+    private WorkflowAttachmentsValidator workflowAttachmentsValidator;
 
     @Test
     void validateEmpNotification() {
         EmissionsMonitoringPlanNotificationContainer emissionsMonitoringPlanNotificationContainer =
                 createEmissionsMonitoringPlanNotificationContainer();
 
-        when(empNotificationAttachmentsValidator.attachmentsExist(Set.of(RANDOM_UUID))).thenReturn(true);
-        when(empNotificationAttachmentsValidator.sectionAttachmentsReferencedInEmpNotification(
+        when(workflowAttachmentsValidator.attachmentsExist(Set.of(RANDOM_UUID))).thenReturn(true);
+        when(workflowAttachmentsValidator.sectionAttachmentsReferencedInWorkflow(
                 Set.of(RANDOM_UUID), Set.of(RANDOM_UUID))).thenReturn(true);
 
         // Invoke
         service.validateEmpNotification(emissionsMonitoringPlanNotificationContainer);
 
         // Verify
-        verify(empNotificationAttachmentsValidator).attachmentsExist(Set.of(RANDOM_UUID));
-        verify(empNotificationAttachmentsValidator)
-                .sectionAttachmentsReferencedInEmpNotification(Set.of(RANDOM_UUID), Set.of(RANDOM_UUID));
+        verify(workflowAttachmentsValidator).attachmentsExist(Set.of(RANDOM_UUID));
+        verify(workflowAttachmentsValidator)
+                .sectionAttachmentsReferencedInWorkflow(Set.of(RANDOM_UUID), Set.of(RANDOM_UUID));
     }
 
     @Test
@@ -56,7 +57,7 @@ class EmpNotificationApplicationSubmitValidatorServiceTest {
         EmissionsMonitoringPlanNotificationContainer emissionsMonitoringPlanNotificationContainer =
                 createEmissionsMonitoringPlanNotificationContainer();
 
-        when(empNotificationAttachmentsValidator.attachmentsExist(Set.of(RANDOM_UUID))).thenReturn(false);
+        when(workflowAttachmentsValidator.attachmentsExist(Set.of(RANDOM_UUID))).thenReturn(false);
 
         // Invoke
         BusinessException ex = assertThrows(BusinessException.class,
@@ -66,8 +67,8 @@ class EmpNotificationApplicationSubmitValidatorServiceTest {
         assertThat(ex.getErrorCode()).isEqualTo(MrtmErrorCode.INVALID_EMP_NOTIFICATION);
         assertThat(ex.getData()).isEqualTo(new Object[] {"Attachment not found"});
 
-        verify(empNotificationAttachmentsValidator).attachmentsExist(Set.of(RANDOM_UUID));
-        verifyNoMoreInteractions(empNotificationAttachmentsValidator);
+        verify(workflowAttachmentsValidator).attachmentsExist(Set.of(RANDOM_UUID));
+        verifyNoMoreInteractions(workflowAttachmentsValidator);
     }
 
     @Test
@@ -75,8 +76,8 @@ class EmpNotificationApplicationSubmitValidatorServiceTest {
         EmissionsMonitoringPlanNotificationContainer emissionsMonitoringPlanNotificationContainer =
                 createEmissionsMonitoringPlanNotificationContainer();
 
-        when(empNotificationAttachmentsValidator.attachmentsExist(Set.of(RANDOM_UUID))).thenReturn(true);
-        when(empNotificationAttachmentsValidator.sectionAttachmentsReferencedInEmpNotification(
+        when(workflowAttachmentsValidator.attachmentsExist(Set.of(RANDOM_UUID))).thenReturn(true);
+        when(workflowAttachmentsValidator.sectionAttachmentsReferencedInWorkflow(
                 Set.of(RANDOM_UUID), Set.of(RANDOM_UUID))).thenReturn(false);
 
         // Invoke
@@ -87,9 +88,9 @@ class EmpNotificationApplicationSubmitValidatorServiceTest {
         assertThat(ex.getErrorCode()).isEqualTo(MrtmErrorCode.INVALID_EMP_NOTIFICATION);
         assertThat(ex.getData()).isEqualTo(new Object[] {"Attachment is not referenced in EMP notification"});
 
-        verify(empNotificationAttachmentsValidator).attachmentsExist(Set.of(RANDOM_UUID));
-        verify(empNotificationAttachmentsValidator)
-                .sectionAttachmentsReferencedInEmpNotification(Set.of(RANDOM_UUID), Set.of(RANDOM_UUID));
+        verify(workflowAttachmentsValidator).attachmentsExist(Set.of(RANDOM_UUID));
+        verify(workflowAttachmentsValidator)
+                .sectionAttachmentsReferencedInWorkflow(Set.of(RANDOM_UUID), Set.of(RANDOM_UUID));
     }
 
     private EmissionsMonitoringPlanNotificationContainer createEmissionsMonitoringPlanNotificationContainer() {

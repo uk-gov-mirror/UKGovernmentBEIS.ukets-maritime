@@ -1,6 +1,6 @@
 @if (vm(); as vm) {
   <netz-page-heading [caption]="vm.followUpReviewDecisionMap.title">Check your answers</netz-page-heading>
-  <mrtm-notification-banner />
+  <netz-feedback-banner />
   <mrtm-follow-up-response-regulator-summary-template [followUpResponseDTO]="vm.followUpResponseDTO" />
   <mrtm-follow-up-review-decision-summary-template
     [followUpReviewDecision]="vm.followUpReviewDecisionDTO"

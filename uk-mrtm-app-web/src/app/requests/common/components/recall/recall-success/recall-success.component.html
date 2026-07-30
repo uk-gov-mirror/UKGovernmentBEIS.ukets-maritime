@@ -1,10 +1,14 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     <govuk-panel [title]="actionMap?.successMessage" />
-    @if (actionMap?.recallType === 'EMP' || actionMap?.recallType === 'EMP_VARIATION') {
+    @if (
+      actionMap?.recallType === 'EMP' ||
+      actionMap?.recallType === 'EMP_VARIATION' ||
+      actionMap?.recallType === 'SITE_VISIT'
+    ) {
       <p class="govuk-body">Their task list will show that you are deciding the result of the application.</p>
       <h4 class="govuk-heading-s">What happens next</h4>
-      @if (actionMap?.recallType === 'EMP') {
+      @if (actionMap?.recallType === 'EMP' || actionMap?.recallType === 'SITE_VISIT') {
         <p class="govuk-body">You can continue with your review of the application.</p>
       } @else {
         <p class="govuk-body">

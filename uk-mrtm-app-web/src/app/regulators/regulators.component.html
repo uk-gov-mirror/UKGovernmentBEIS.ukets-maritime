@@ -1,7 +1,8 @@
-<mrtm-notification-banner />
+<netz-feedback-banner />
 <netz-page-heading size="xl">Regulator users and contacts</netz-page-heading>
-<govuk-tabs>
-  <ng-template govukTab id="regulator-users" label="Regulator users">
+<govuk-tabs (selectedTab)="selectTab($event)">
+  <ng-template govukTabLazy id="regulator-users" label="Regulator users">
+    <h2 class="govuk-heading-m">Regulator users</h2>
     @if (isEditable$ | async) {
       <button govukButton id="add-regulator" routerLink="add" type="button">Add a new user</button>
     }
@@ -56,10 +57,10 @@
       }
     </form>
   </ng-template>
-  <ng-template govukTab id="site-contacts" label="Site contacts">
+  <ng-template govukTabLazy id="site-contacts" label="Site contacts">
     <mrtm-site-contacts />
   </ng-template>
-  <ng-template govukTab id="external-contacts" label="External contacts">
+  <ng-template govukTabLazy id="external-contacts" label="External contacts">
     <mrtm-external-contacts />
   </ng-template>
 </govuk-tabs>

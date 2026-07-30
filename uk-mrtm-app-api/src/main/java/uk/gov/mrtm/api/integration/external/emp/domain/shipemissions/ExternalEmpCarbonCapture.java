@@ -10,7 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.netz.api.common.validation.SpELExpression;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -35,5 +34,5 @@ public class ExternalEmpCarbonCapture {
     @Schema(description = "Emission source names this technology is applied to")
     @Builder.Default
     @JsonDeserialize(as = LinkedHashSet.class)
-    private Set<String> emissionSourceName = new HashSet<>();
+    private Set<String> emissionSourceName = new LinkedHashSet<>();
 }

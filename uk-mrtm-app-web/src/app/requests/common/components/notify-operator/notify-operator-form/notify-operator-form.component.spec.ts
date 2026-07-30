@@ -24,7 +24,7 @@ describe('NotifyOperatorFormComponent', () => {
 
   const route = new ActivatedRouteStub({});
   const notifyUsersService: MockType<NotifyUsersService> = {
-    getAllOperatorsInfo: jest.fn().mockReturnValue(
+    getAllOperatorsInfo: vi.fn().mockReturnValue(
       of({
         autoNotifiedOperators: {
           '33333333-3333-4333-a333-333333333333': {
@@ -42,7 +42,7 @@ describe('NotifyOperatorFormComponent', () => {
         },
       }),
     ),
-    getExternalContacts: jest.fn().mockReturnValue(
+    getExternalContacts: vi.fn().mockReturnValue(
       of([
         {
           id: 5,
@@ -53,7 +53,7 @@ describe('NotifyOperatorFormComponent', () => {
         },
       ]),
     ),
-    getAssignees: jest.fn().mockReturnValue(
+    getAssignees: vi.fn().mockReturnValue(
       of([
         {
           text: 'Regulator England',
@@ -65,9 +65,9 @@ describe('NotifyOperatorFormComponent', () => {
         },
       ]),
     ),
-    submitDecisionToOperator: jest.fn().mockReturnValue(of({})),
+    submitDecisionToOperator: vi.fn().mockReturnValue(of({})),
   };
-  const notifyUsersServiceSpy = jest.spyOn(notifyUsersService, 'submitDecisionToOperator');
+  const notifyUsersServiceSpy = vi.spyOn(notifyUsersService, 'submitDecisionToOperator');
 
   class Page extends BasePage<NotifyOperatorFormComponent> {
     get headingsOrLabels(): HTMLHeadingElement[] | HTMLLegendElement[] {
@@ -101,7 +101,7 @@ describe('NotifyOperatorFormComponent', () => {
     component = fixture.componentInstance;
     page = new Page(fixture);
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(async () => {
@@ -212,7 +212,7 @@ describe('NotifyOperatorFormComponent', () => {
     });
 
     it(`should edit and submit a valid form`, async () => {
-      const routerSpy = jest.spyOn(router, 'navigate');
+      const routerSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
       page.otherOperatorsCheckboxes[0].click();
       page.externalCheckboxes[0].click();
       page.signatory = '22222222-2222-4222-a222-222222222222';

@@ -44,7 +44,7 @@ public class EmpIssuanceApprovedAddRequestActionService {
 
         EmpIssuanceApplicationApprovedRequestActionPayload requestActionPayload =
                 EMP_REVIEW_MAPPER.toEmpIssuanceApplicationApprovedRequestActionPayload(requestPayload, accountInfo.getName(),
-                        usersInfo, addressStateMapper.toAddressState(accountInfo.getAddress()),
+                        usersInfo, addressStateMapper.toAddressStateDTO(accountInfo.getAddress()),
                         MrtmRequestActionPayloadType.EMP_ISSUANCE_APPLICATION_APPROVED_PAYLOAD);
 
         requestService.addActionToRequest(request,

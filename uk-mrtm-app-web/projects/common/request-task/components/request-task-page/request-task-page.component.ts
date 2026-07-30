@@ -15,10 +15,13 @@ import { ItemDTO, RequestActionInfoDTO, RequestTaskDTO, RequestTaskItemDTO } fro
 
 import {
   PageHeadingComponent,
+  PreviewAsyncDocument,
   PreviewDocument,
   RelatedActionsComponent,
+  RelatedPreviewAsyncDocumentsMap,
   RelatedPreviewDocumentsMap,
   RelatedTasksComponent,
+  TASK_RELATED_PREVIEW_ASYNC_DOCUMENTS_MAP,
   TASK_RELATED_PREVIEW_DOCUMENTS_MAP,
   TaskHeaderInfoComponent,
   TaskListComponent,
@@ -50,6 +53,7 @@ type ViewModel = {
   relatedActions: RequestTaskItemDTO['allowedRequestTaskActions'];
   hasSidebar: boolean;
   previewDocuments: PreviewDocument[];
+  previewAsyncDocuments: PreviewAsyncDocument[];
 };
 
 /* eslint-disable @angular-eslint/use-component-view-encapsulation */
@@ -76,6 +80,12 @@ export class RequestTaskPageComponent {
   private readonly relatedPreviewDocumentsMap: RelatedPreviewDocumentsMap = inject(TASK_RELATED_PREVIEW_DOCUMENTS_MAP, {
     optional: true,
   });
+  private readonly relatedPreviewAsyncDocumentsMap: RelatedPreviewAsyncDocumentsMap = inject(
+    TASK_RELATED_PREVIEW_ASYNC_DOCUMENTS_MAP,
+    {
+      optional: true,
+    },
+  );
   private readonly injector: Injector = inject(Injector);
   private readonly relatedActionsHiddenFromSidebar = ['SYSTEM_MESSAGE_DISMISS'];
 
@@ -103,9 +113,13 @@ export class RequestTaskPageComponent {
     const previewDocuments = this.relatedPreviewDocumentsMap?.()?.[requestTask.type]
       ? this.relatedPreviewDocumentsMap()[requestTask.type].filter((item) => item.visibleInRelatedActions)
       : [];
+    const previewAsyncDocuments = this.relatedPreviewAsyncDocumentsMap?.()?.[requestTask.type]
+      ? this.relatedPreviewAsyncDocumentsMap()[requestTask.type].filter((item) => item.visibleInRelatedActions)
+      : [];
     const hasSidebar =
       relatedActions?.filter((action) => !this.relatedActionsHiddenFromSidebar.includes(action)).length > 0 ||
       previewDocuments?.length > 0 ||
+      previewAsyncDocuments?.length > 0 ||
       showAssignAction;
 
     return {
@@ -127,6 +141,7 @@ export class RequestTaskPageComponent {
       hasTimeline: timeline?.length > 0,
       hasSidebar,
       previewDocuments,
+      previewAsyncDocuments,
     };
   });
 

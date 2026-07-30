@@ -85,6 +85,86 @@ export const addFuelDetailsFormControl = (
   });
 };
 
+/**
+ * Builds the core name/type/sourceClass/fuelDetails/monitoringMethod controls shared by both the
+ * routed edit form and any other place (e.g. the list's "continue" re-validation) that needs to
+ * check an EmissionsSources entry against the exact same rules.
+ */
+export const buildEmissionSourceBaseFormControls = (
+  fb: FormBuilder,
+  source: EmissionsSources | undefined,
+  sources: EmissionsSources[],
+  sourceId: EmissionsSources['uniqueIdentifier'],
+  fuelFactors: FuelsAndEmissionsFactors[] | AerFuelsAndEmissionsFactors[],
+): Omit<EmissionSourcesAndFuelTypesUsedFormModel, 'uniqueIdentifier' | 'shipId'> => ({
+  name: fb.control<EmissionSourcesAndFuelTypesUsedFormType['name'] | null>(source?.name, {
+    validators: [
+      GovukValidators.required('Enter a name'),
+      GovukValidators.maxLength(255, 'Enter up to 255 characters'),
+      uniqueNameValidation(sources, sourceId),
+    ],
+  }),
+  type: fb.control<EmissionSourcesAndFuelTypesUsedFormType['type'] | null>(source?.type, {
+    validators: [GovukValidators.required('Select a type')],
+  }),
+  sourceClass: fb.control<EmissionSourcesAndFuelTypesUsedFormType['sourceClass'] | null>(source?.sourceClass, {
+    validators: [GovukValidators.required('Select the emission source class')],
+  }),
+  fuelDetails: fb.array(
+    source?.fuelDetails?.length > 0
+      ? source.fuelDetails.map((fuelOriginTypeName) => addFuelDetailsFormControl(fuelFactors, fuelOriginTypeName))
+      : [addFuelDetailsFormControl(fuelFactors)],
+  ),
+  monitoringMethod: fb.control<EmissionSourcesAndFuelTypesUsedFormType['monitoringMethod'] | null>(
+    source?.monitoringMethod,
+    {
+      validators: [GovukValidators.required('Select a monitoring method')],
+    },
+  ),
+});
+
+/**
+ * Builds the same FormGroup the EMP routed edit form uses (base controls + referenceNumber), so
+ * any other place can validate an EmpEmissionsSources entry against the identical rules without
+ * going through the ActivatedRoute-backed provider factory below.
+ */
+export const buildEmpEmissionSourceValidationFormGroup = (
+  fb: FormBuilder,
+  source: EmpEmissionsSources | undefined,
+  sources: EmissionsSources[],
+  sourceId: EmissionsSources['uniqueIdentifier'],
+  fuelFactors: FuelsAndEmissionsFactors[],
+): FormGroup<EmpEmissionSourcesAndFuelTypesUsedFormModel> =>
+  new FormGroup<EmpEmissionSourcesAndFuelTypesUsedFormModel>({
+    ...buildEmissionSourceBaseFormControls(fb, source, sources, sourceId, fuelFactors),
+    referenceNumber: fb.control<EmpEmissionSourcesAndFuelTypesUsedFormType['referenceNumber'] | null>(
+      source?.referenceNumber,
+      { validators: [GovukValidators.maxLength(30, 'Enter up to 30 characters')] },
+    ),
+  } as EmpEmissionSourcesAndFuelTypesUsedFormModel);
+
+/**
+ * Builds the same FormGroup the AER routed edit form uses (base controls only, no
+ * referenceNumber), so any other place can validate an EmissionsSources entry against the
+ * identical rules without going through the ActivatedRoute-backed provider factory below.
+ */
+export const buildAerEmissionSourceValidationFormGroup = (
+  fb: FormBuilder,
+  source: EmissionsSources | undefined,
+  sources: EmissionsSources[],
+  sourceId: EmissionsSources['uniqueIdentifier'],
+  fuelFactors: AerFuelsAndEmissionsFactors[],
+): FormGroup<EmissionSourcesAndFuelTypesUsedFormModel> =>
+  new FormGroup<EmissionSourcesAndFuelTypesUsedFormModel>(
+    buildEmissionSourceBaseFormControls(
+      fb,
+      source,
+      sources,
+      sourceId,
+      fuelFactors,
+    ) as EmissionSourcesAndFuelTypesUsedFormModel,
+  );
+
 export const emissionSourcesAndFuelTypesUsedFormProvider: Provider = {
   provide: TASK_FORM,
   deps: [FormBuilder, RequestTaskStore, ActivatedRoute],
@@ -99,30 +179,7 @@ export const emissionSourcesAndFuelTypesUsedFormProvider: Provider = {
     const fuelFactors = store.select(commonSubtaskStepsQuery.selectShipFuelsAndEmissionsFactors(shipId))();
 
     const baseFormGroup = {
-      name: fb.control<EmissionSourcesAndFuelTypesUsedFormType['name'] | null>(source?.name, {
-        validators: [
-          GovukValidators.required('Enter a name'),
-          GovukValidators.maxLength(255, 'Enter up to 255 characters'),
-          uniqueNameValidation(sources, sourceId),
-        ],
-      }),
-      type: fb.control<EmissionSourcesAndFuelTypesUsedFormType['type'] | null>(source?.type, {
-        validators: [GovukValidators.required('Select a type')],
-      }),
-      sourceClass: fb.control<EmissionSourcesAndFuelTypesUsedFormType['sourceClass'] | null>(source?.sourceClass, {
-        validators: [GovukValidators.required('Select the emission source class')],
-      }),
-      fuelDetails: fb.array(
-        source?.fuelDetails?.length > 0
-          ? source.fuelDetails.map((fuelOriginTypeName) => addFuelDetailsFormControl(fuelFactors, fuelOriginTypeName))
-          : [addFuelDetailsFormControl(fuelFactors)],
-      ),
-      monitoringMethod: fb.control<EmissionSourcesAndFuelTypesUsedFormType['monitoringMethod'] | null>(
-        source?.monitoringMethod,
-        {
-          validators: [GovukValidators.required('Select a monitoring method')],
-        },
-      ),
+      ...buildEmissionSourceBaseFormControls(fb, source, sources, sourceId, fuelFactors),
       uniqueIdentifier: fb.control<EmissionSourcesAndFuelTypesUsedFormType['uniqueIdentifier'] | null>(sourceId),
       shipId: fb.control<EmissionSourcesAndFuelTypesUsedFormType['shipId'] | null>(shipId),
     };

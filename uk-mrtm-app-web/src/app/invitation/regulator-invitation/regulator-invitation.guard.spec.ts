@@ -9,11 +9,12 @@ import { InvitedUserInfoDTO, RegulatorUsersRegistrationService } from '@mrtm/api
 import { ActivatedRouteSnapshotStub, mockClass } from '@netz/common/testing';
 
 import { RegulatorInvitationGuard } from '@invitation/regulator-invitation/regulator-invitation.guard';
+import { Mocked } from 'vitest';
 
 describe('RegulatorInvitationGuard', () => {
   let guard: RegulatorInvitationGuard;
   let router: Router;
-  let regulatorUsersRegistrationService: jest.Mocked<RegulatorUsersRegistrationService>;
+  let regulatorUsersRegistrationService: Mocked<RegulatorUsersRegistrationService>;
 
   beforeEach(() => {
     regulatorUsersRegistrationService = mockClass(RegulatorUsersRegistrationService);
@@ -41,7 +42,7 @@ describe('RegulatorInvitationGuard', () => {
   });
 
   it('should navigate to invalid link for all 400 errors', async () => {
-    const navigateSpy = jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     regulatorUsersRegistrationService.acceptRegulatorInvitation.mockReturnValue(
       throwError(() => new HttpErrorResponse({ error: { code: 'testCode' }, status: 400 })),
     );
@@ -59,7 +60,7 @@ describe('RegulatorInvitationGuard', () => {
       email: 'user@pmrv.uk',
       invitationStatus: 'ALREADY_REGISTERED_SET_PASSWORD_ONLY',
     };
-    regulatorUsersRegistrationService.acceptRegulatorInvitation.mockReturnValue(of(invitedUser));
+    regulatorUsersRegistrationService.acceptRegulatorInvitation.mockReturnValue(of(invitedUser) as any);
 
     await lastValueFrom(guard.canActivate(new ActivatedRouteSnapshotStub(undefined, { token: 'token' })));
 
@@ -70,9 +71,9 @@ describe('RegulatorInvitationGuard', () => {
   });
 
   it('should resolved the invited user and navigate to confirmed when invitation status is already registered', async () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     const invitedUser: InvitedUserInfoDTO = { email: 'user@pmrv.uk', invitationStatus: 'ALREADY_REGISTERED' };
-    regulatorUsersRegistrationService.acceptRegulatorInvitation.mockReturnValue(of(invitedUser));
+    regulatorUsersRegistrationService.acceptRegulatorInvitation.mockReturnValue(of(invitedUser) as any);
 
     await lastValueFrom(guard.canActivate(new ActivatedRouteSnapshotStub(undefined, { token: 'token' })));
     expect(guard.resolve()).toEqual(invitedUser);

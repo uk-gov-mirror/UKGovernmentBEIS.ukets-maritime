@@ -6,7 +6,7 @@ import { take } from 'rxjs';
 
 import { AerShipEmissions } from '@mrtm/api';
 
-import { PageHeadingComponent } from '@netz/common/components';
+import { FeedbackBannerComponent, FeedbackBannerStore, PageHeadingComponent } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { TaskService } from '@netz/common/forms';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
@@ -19,7 +19,6 @@ import { AerPortsWizardStep } from '@requests/common/aer/subtasks/aer-ports';
 import { AER_PORTS_SUB_TASK } from '@requests/common/aer/subtasks/aer-ports/aer-ports.helpers';
 import { aerPortsMap } from '@requests/common/aer/subtasks/aer-ports/aer-ports-subtask-list.map';
 import { validateIfUsedFuelsExistInEmissionsValidator } from '@requests/common/aer/subtasks/utils';
-import { NotificationBannerComponent, NotificationBannerStore } from '@shared/components/notification-banner';
 import { PortCallSummaryTemplateComponent } from '@shared/components/summaries';
 import { isNil } from '@shared/utils';
 
@@ -32,7 +31,7 @@ import { isNil } from '@shared/utils';
     LinkDirective,
     RouterLink,
     PendingButtonDirective,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
   ],
   standalone: true,
   templateUrl: './aer-port-call-summary.component.html',
@@ -40,7 +39,7 @@ import { isNil } from '@shared/utils';
 })
 export class AerPortCallSummaryComponent {
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
-  private readonly notificationBannerStore: NotificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly taskService: TaskService<AerSubmitTaskPayload> = inject(TaskService);
 
@@ -74,7 +73,7 @@ export class AerPortCallSummaryComponent {
 
     if (!isNil(errors)) {
       this.form.setErrors(errors);
-      this.notificationBannerStore.setInvalidForm(this.form);
+      this.feedbackBannerStore.setInvalidForm(this.form);
       return;
     }
 

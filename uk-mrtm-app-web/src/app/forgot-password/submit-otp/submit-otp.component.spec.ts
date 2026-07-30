@@ -1,7 +1,7 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 
 import { of, throwError } from 'rxjs';
 
@@ -57,7 +57,7 @@ describe('SubmitOtpComponent', () => {
       token: 'token',
     });
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should create', () => {
@@ -105,7 +105,7 @@ describe('SubmitOtpComponent', () => {
   });
 
   it('should navigate to 404 if user status is invalid', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     forgotPasswordService.resetPassword.mockReturnValue(
       throwError(() => new HttpErrorResponse({ status: 400, error: { code: ErrorCodes.USER1005 } })),
     );
@@ -124,7 +124,29 @@ describe('SubmitOtpComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['error', '404']);
   });
 
-  it('should go to login after clicking link', () => {
+  it('should navigate to invalid-link if the email is no longer valid', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    forgotPasswordService.resetPassword.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: 400, error: { code: ErrorCodes.EMAIL1001 } })),
+    );
+
+    page.passwordValue = '123456';
+    page.submitButton.click();
+    fixture.detectChanges();
+
+    expect(forgotPasswordService.resetPassword).toHaveBeenCalledTimes(1);
+    expect(forgotPasswordService.resetPassword).toHaveBeenCalledWith({
+      password: 'password',
+      token: 'token',
+      otp: '123456',
+    });
+
+    expect(navigateSpy).toHaveBeenCalledWith(['../', 'invalid-link'], {
+      relativeTo: TestBed.inject(ActivatedRoute),
+    });
+  });
+
+  it('should link back to sign in after successful submit', () => {
     forgotPasswordService.resetPassword.mockReturnValueOnce(of({} as any));
 
     page.passwordValue = '123456';

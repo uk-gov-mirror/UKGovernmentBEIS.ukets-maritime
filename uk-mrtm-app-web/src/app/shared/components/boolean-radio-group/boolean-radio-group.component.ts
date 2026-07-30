@@ -11,7 +11,7 @@ import {
   OnInit,
   viewChild,
 } from '@angular/core';
-import { ControlContainer, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ControlContainer, ReactiveFormsModule } from '@angular/forms';
 
 import { Observable, startWith, tap } from 'rxjs';
 
@@ -22,7 +22,7 @@ import { existingControlContainer } from '@shared/providers';
 // eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: 'mrtm-boolean-radio-group',
-  imports: [RadioComponent, FormsModule, ReactiveFormsModule, RadioOptionComponent, AsyncPipe],
+  imports: [RadioComponent, ReactiveFormsModule, RadioOptionComponent, AsyncPipe],
   standalone: true,
   templateUrl: './boolean-radio-group.component.html',
   providers: [existingControlContainer],

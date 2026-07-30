@@ -22,10 +22,10 @@ describe('EmissionSourcesSummaryComponent', () => {
 
   const activatedRouteStub = new ActivatedRouteStub();
   const taskServiceMock: MockType<TaskService<unknown>> = {
-    submitSubtask: jest.fn().mockReturnValue(of({})),
+    submitSubtask: vi.fn().mockReturnValue(of({})),
   };
 
-  const taskServiceSpy = jest.spyOn(taskServiceMock, 'submitSubtask');
+  const taskServiceSpy = vi.spyOn(taskServiceMock, 'submitSubtask');
 
   class Page extends BasePage<EmissionSourcesSummaryComponent> {
     get summaryListTerms(): string[] {

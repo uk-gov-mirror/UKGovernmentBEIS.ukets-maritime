@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 
 import { takeUntil } from 'rxjs';
 
@@ -45,6 +45,7 @@ export class AerFuelsAndEmissionsFactorsListComponent {
     this.store.select(aerCommonQuery.selectShipFuelsAndEmissionsFactors(this.shipId()))(),
   );
   readonly canContinue = computed(() => aerFuelsAndEmissionsFactorsValidator(this.fuelsAndEmissionsFactors()));
+  readonly hasDeletion = signal(false);
 
   readonly isEditable = this.store.select(requestTaskQuery.selectIsEditable)();
   readonly taskMap = emissionsShipSubtaskMap;
@@ -59,8 +60,16 @@ export class AerFuelsAndEmissionsFactorsListComponent {
     });
   }
 
+  // TODO align with EMP using isAnyEmissionsNeedsReview
   handleContinue(): void {
-    this.router.navigate([`../../${AerEmissionsWizardStep.EMISSION_SOURCES_LIST}`], { relativeTo: this.route });
+    const extraOptions: NavigationExtras = {
+      relativeTo: this.route,
+    };
+    if (this.hasDeletion()) {
+      extraOptions.queryParams = { change: true };
+      extraOptions.queryParamsHandling = 'merge';
+    }
+    this.router.navigate([`../../${AerEmissionsWizardStep.EMISSION_SOURCES_LIST}`], extraOptions);
   }
 
   handleDelete(event: FuelsAndEmissionsFactors) {
@@ -70,6 +79,6 @@ export class AerFuelsAndEmissionsFactorsListComponent {
         fuelId: event.uniqueIdentifier,
       })
       .pipe(takeUntil(this.destroy$))
-      .subscribe();
+      .subscribe(() => this.hasDeletion.update(() => true));
   }
 }

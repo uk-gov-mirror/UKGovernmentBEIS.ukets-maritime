@@ -6,7 +6,12 @@ import { take } from 'rxjs';
 
 import { AerShipAggregatedData } from '@mrtm/api';
 
-import { PageHeadingComponent, ReturnToTaskOrActionPageComponent } from '@netz/common/components';
+import {
+  FeedbackBannerComponent,
+  FeedbackBannerStore,
+  PageHeadingComponent,
+  ReturnToTaskOrActionPageComponent,
+} from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { TaskService } from '@netz/common/forms';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
@@ -22,9 +27,8 @@ import { aerAggregatedDataSubtasksListMap } from '@requests/common/aer/subtasks/
 import { FilterByShip, FilterByShipComponent } from '@requests/common/components';
 import { TaskItemStatus } from '@requests/common/task-item-status';
 import { PaginationStatePersistableComponent } from '@shared/abstraction';
-import { AggregatedDataListSummaryTemplateComponent, NotificationBannerComponent } from '@shared/components';
+import { AggregatedDataListSummaryTemplateComponent } from '@shared/components';
 import { DropdownButtonGroupComponent, DropdownButtonItemComponent } from '@shared/components/dropdown-button-group';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { PersistablePaginationState } from '@shared/services';
 import { AerAggregatedDataSummaryItemDto, SubTaskListMap } from '@shared/types';
 import { isNil } from '@shared/utils';
@@ -42,7 +46,7 @@ import { isNil } from '@shared/utils';
     AggregatedDataListSummaryTemplateComponent,
     PendingButtonDirective,
     WarningTextComponent,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
   ],
   standalone: true,
   templateUrl: './aer-aggregated-data-list.component.html',
@@ -51,7 +55,7 @@ import { isNil } from '@shared/utils';
 export class AerAggregatedDataListComponent extends PaginationStatePersistableComponent {
   private readonly store = inject(RequestTaskStore);
   private readonly service = inject(TaskService<AerSubmitTaskPayload>);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private readonly formGroup = new UntypedFormGroup({});
   private readonly shipsWithoutAggregatedData = computed(() =>
     this.store
@@ -140,7 +144,7 @@ export class AerAggregatedDataListComponent extends PaginationStatePersistableCo
   onDelete(aggregatedDataItems: Array<AerAggregatedDataSummaryItemDto>): void {
     if (aggregatedDataItems.length) {
       this.formGroup.reset();
-      this.notificationBannerStore.reset();
+      this.feedbackBannerStore.reset();
 
       this.service
         .saveSubtask(
@@ -153,7 +157,7 @@ export class AerAggregatedDataListComponent extends PaginationStatePersistableCo
         .subscribe();
     } else {
       this.formGroup.setErrors({ NONE_SELECTED: 'Select the aggregated data to delete' });
-      this.notificationBannerStore.setInvalidForm(this.formGroup);
+      this.feedbackBannerStore.setInvalidForm(this.formGroup);
     }
   }
 
@@ -178,12 +182,12 @@ export class AerAggregatedDataListComponent extends PaginationStatePersistableCo
 
     if (!isValid) {
       this.formGroup.setErrors(errors);
-      this.notificationBannerStore.setInvalidForm(this.formGroup);
+      this.feedbackBannerStore.setInvalidForm(this.formGroup);
       return;
     }
 
     this.formGroup.reset();
-    this.notificationBannerStore.reset();
+    this.feedbackBannerStore.reset();
 
     await this.router.navigate(['../'], { relativeTo: this.activatedRoute });
   }
@@ -191,12 +195,12 @@ export class AerAggregatedDataListComponent extends PaginationStatePersistableCo
   onAddAggregatedData(): void {
     if (this.shipsWithoutAggregatedData().length === 0) {
       this.formGroup.setErrors({ notAllowed: 'All ships already have aggregated data recorded' });
-      this.notificationBannerStore.setInvalidForm(this.formGroup);
+      this.feedbackBannerStore.setInvalidForm(this.formGroup);
       return;
     }
 
     this.formGroup.reset();
-    this.notificationBannerStore.reset();
+    this.feedbackBannerStore.reset();
 
     this.router.navigate(['add', crypto.randomUUID(), this.wizardStep.SELECT_SHIP], {
       relativeTo: this.activatedRoute,

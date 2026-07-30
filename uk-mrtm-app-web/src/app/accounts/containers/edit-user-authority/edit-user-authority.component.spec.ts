@@ -1,4 +1,5 @@
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
@@ -22,6 +23,7 @@ describe('EditUserAuthorityComponent', () => {
       imports: [EditUserAuthorityComponent],
       providers: [
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: ActivatedRoute, useValue: route },
         { provide: OperatorUsersInvitationService, useValue: mockClass(OperatorUsersInvitationService) },
         { provide: OperatorUsersService, useValue: mockClass(OperatorUsersService) },

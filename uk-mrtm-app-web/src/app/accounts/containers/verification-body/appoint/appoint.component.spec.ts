@@ -23,6 +23,7 @@ import {
   saveNotFoundVerificationBodyError,
   savePartiallyNotFoundOperatorError,
 } from '@accounts/errors';
+import { Mocked } from 'vitest';
 
 describe('AppointComponent', () => {
   let component: AppointComponent;
@@ -34,11 +35,11 @@ describe('AppointComponent', () => {
     { id: 3, name: 'Verifying company 2' },
   ];
 
-  const accountVerificationBodyService: Partial<jest.Mocked<AccountVerificationBodyService>> = {
-    appointVerificationBodyToAccount: jest.fn(),
-    replaceVerificationBodyToAccount: jest.fn(),
-    unappointVerificationBodyFromAccount: jest.fn(),
-    getActiveVerificationBodies: jest.fn().mockReturnValue(asyncData(activeBodies)),
+  const accountVerificationBodyService: Partial<Mocked<AccountVerificationBodyService>> = {
+    appointVerificationBodyToAccount: vi.fn() as any,
+    replaceVerificationBodyToAccount: vi.fn() as any,
+    unappointVerificationBodyFromAccount: vi.fn() as any,
+    getActiveVerificationBodies: vi.fn().mockReturnValue(asyncData(activeBodies)),
   };
 
   let page: Page;
@@ -73,7 +74,7 @@ describe('AppointComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   };
 
   beforeEach(async () => {
@@ -178,7 +179,7 @@ describe('AppointComponent', () => {
     it('should not allow replacing with the same verification body', () => {
       expect(page.errorSummary).toBeFalsy();
 
-      const navigateSpy = jest.spyOn(TestBed.inject(Router), 'navigate');
+      const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
       page.submit.click();
       fixture.detectChanges();
 

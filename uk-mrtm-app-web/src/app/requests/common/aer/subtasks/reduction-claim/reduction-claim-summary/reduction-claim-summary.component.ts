@@ -6,7 +6,12 @@ import { take } from 'rxjs';
 
 import { AerFuelOriginFossilTypeName, AerSmf } from '@mrtm/api';
 
-import { PageHeadingComponent, ReturnToTaskOrActionPageComponent } from '@netz/common/components';
+import {
+  FeedbackBannerComponent,
+  FeedbackBannerStore,
+  PageHeadingComponent,
+  ReturnToTaskOrActionPageComponent,
+} from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { TaskService } from '@netz/common/forms';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
@@ -22,11 +27,9 @@ import {
 import { reductionClaimMap } from '@requests/common/aer/subtasks/reduction-claim/reduction-claim.map';
 import { TaskItemStatus } from '@requests/common/task-item-status';
 import {
-  NotificationBannerComponent,
   ReductionClaimDetailsSummaryTemplateComponent,
   ReductionClaimSummaryTemplateComponent,
 } from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { ReductionClaimDetailsListItemDto, SubTaskListMap, WithNeedsReview } from '@shared/types';
 
 @Component({
@@ -40,7 +43,7 @@ import { ReductionClaimDetailsListItemDto, SubTaskListMap, WithNeedsReview } fro
     ReductionClaimDetailsSummaryTemplateComponent,
     RouterLink,
     WarningTextComponent,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
   ],
   standalone: true,
   templateUrl: './reduction-claim-summary.component.html',
@@ -51,7 +54,7 @@ export class ReductionClaimSummaryComponent {
   private readonly service: TaskService<AerSubmitTaskPayload> = inject(TaskService);
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private readonly notificationBannerStore: NotificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
   private readonly status: Signal<TaskItemStatus> = this.store.select(aerCommonQuery.selectStatusForReductionClaim);
   private readonly form = new UntypedFormGroup({});
 
@@ -123,7 +126,7 @@ export class ReductionClaimSummaryComponent {
 
     if (!isValid) {
       this.form.setErrors(errors);
-      this.notificationBannerStore.setInvalidForm(this.form);
+      this.feedbackBannerStore.setInvalidForm(this.form);
       return;
     }
 

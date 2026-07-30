@@ -32,7 +32,6 @@ public class AerViolation {
         INVALID_IMO_NUMBER("IMO number does not exist"),
         SHIP_NOT_FOUND_IN_LIST_OF_SHIPS("Ship IMO number does not exist in list of ships"),
         NEGATIVE_EMISSIONS_INPUT("Emissions input is negative"),
-        TOTAL_EMISSIONS_IS_ZERO("Total emissions is zero"),
         NO_DIRECT_EMISSIONS_OR_FUEL_CONSUMPTIONS("Port does not contain direct emissions or fuel consumptions"),
         PORT_VISIT_INVALID_PORT_CODE("Port code is not correct"),
         PORT_VISIT_INVALID_PORT_COUNTRY("Port country is not correct"),

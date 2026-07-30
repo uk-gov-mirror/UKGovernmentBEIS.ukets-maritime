@@ -3,43 +3,43 @@ import { signal } from '@angular/core';
 import { AuthoritiesService, TermsAndConditionsService, UsersService } from '@mrtm/api';
 
 import { AuthService, KeycloakService } from '@core/services';
-import Mock = jest.Mock;
+import { Mock } from 'vitest';
 
 export const mockKeycloakService: Record<keyof KeycloakService, any> = {
-  login: jest.fn(),
-  logout: jest.fn(),
-  isLoggedIn: jest.fn(),
-  loadUserProfile: jest.fn(),
-  init: jest.fn(),
-  getKeycloakInstance: jest.fn(),
-  getToken: jest.fn(),
-  updateToken: jest.fn(),
-  getUserProfile: jest.fn(),
-  isTokenExpired: jest.fn(),
-  getTokenParsed: jest.fn(),
-  getRefreshTokenParsed: jest.fn(),
+  login: vi.fn(),
+  logout: vi.fn(),
+  isLoggedIn: vi.fn(),
+  loadUserProfile: vi.fn(),
+  init: vi.fn(),
+  getKeycloakInstance: vi.fn(),
+  getToken: vi.fn(),
+  updateToken: vi.fn(),
+  getUserProfile: vi.fn(),
+  isTokenExpired: vi.fn(),
+  getTokenParsed: vi.fn(),
+  getRefreshTokenParsed: vi.fn(),
   keycloakEvents: signal(null),
 } as any;
 
 export const mockAuthService: Partial<Record<keyof AuthService, Mock>> = {
-  checkUser: jest.fn(),
-  login: jest.fn(),
-  logout: jest.fn(),
-  loadUser: jest.fn(),
-  loadUserState: jest.fn(),
-  loadUserProfile: jest.fn(),
-  loadUserTerms: jest.fn(),
-  loadIsLoggedIn: jest.fn(),
+  checkUser: vi.fn(),
+  login: vi.fn(),
+  logout: vi.fn(),
+  loadUser: vi.fn(),
+  loadUserState: vi.fn(),
+  loadUserProfile: vi.fn(),
+  loadUserTerms: vi.fn(),
+  loadIsLoggedIn: vi.fn(),
 };
 
 export const mockUsersService: Partial<Record<keyof UsersService, Mock>> = {
-  getCurrentUser: jest.fn(),
+  getCurrentUser: vi.fn(),
 };
 
 export const mockAuthorityService: Partial<Record<keyof AuthoritiesService, Mock>> = {
-  getCurrentUserState: jest.fn(),
+  getCurrentUserState: vi.fn(),
 };
 
 export const mockTermsAndConditionsService: Partial<Record<keyof TermsAndConditionsService, Mock>> = {
-  getLatestTerms: jest.fn(),
+  getLatestTerms: vi.fn(),
 };

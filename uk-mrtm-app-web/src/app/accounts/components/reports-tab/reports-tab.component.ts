@@ -1,7 +1,7 @@
 import { I18nSelectPipe, KeyValuePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, switchMap } from 'rxjs';
@@ -24,7 +24,6 @@ import BigNumber from 'bignumber.js';
   imports: [
     CheckboxComponent,
     CheckboxesComponent,
-    FormsModule,
     KeyValuePipe,
     ReactiveFormsModule,
     GovukDatePipe,

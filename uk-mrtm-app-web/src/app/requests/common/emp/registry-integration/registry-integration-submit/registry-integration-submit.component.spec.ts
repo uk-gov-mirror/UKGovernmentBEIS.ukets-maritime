@@ -88,15 +88,15 @@ describe('RegistryIntegrationSubmitComponent', () => {
 
   const route = new ActivatedRouteStub();
   const registryIntegrationApiService: MockType<RegistryIntegrationApiService> = {
-    submit: jest.fn().mockReturnValue(of({})),
+    submit: vi.fn().mockReturnValue(of({})),
   };
 
-  const taskServiceSpy = jest.spyOn(registryIntegrationApiService, 'submit');
+  const taskServiceSpy = vi.spyOn(registryIntegrationApiService, 'submit');
   const mrtmAccountsService: MockType<MaritimeAccountsService> = {
-    getMaritimeAccount: jest.fn().mockReturnValue(of(mockAccountDetails)),
+    getMaritimeAccount: vi.fn().mockReturnValue(of(mockAccountDetails)),
   };
   const countryService: MockType<CountryService> = {
-    getCountry: jest.fn().mockReturnValue(
+    getCountry: vi.fn().mockReturnValue(
       of({
         code: 'CY',
         name: 'Cyprus',

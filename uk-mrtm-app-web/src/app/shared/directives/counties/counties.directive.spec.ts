@@ -12,7 +12,7 @@ import { CountyService } from '@core/services/county.service';
 import { CountiesDirective } from '@shared/directives';
 
 const mockCountyService: MockType<CountyService> = {
-  getUkCounties: jest.fn().mockReturnValue(
+  getUkCounties: vi.fn().mockReturnValue(
     of([
       {
         id: 1,

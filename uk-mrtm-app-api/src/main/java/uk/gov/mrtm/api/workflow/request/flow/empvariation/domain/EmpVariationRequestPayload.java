@@ -89,5 +89,10 @@ public class EmpVariationRequestPayload extends RequestPayload
     private FileInfoDTO officialNotice;
     
     private FileInfoDTO empDocument;
+    
+	public boolean shouldGenerateEmpDocument() {
+		return (determination != null && determination.getType() == EmpVariationDeterminationType.APPROVED)
+				|| reasonRegulatorLed != null;
+	}
 	
 }

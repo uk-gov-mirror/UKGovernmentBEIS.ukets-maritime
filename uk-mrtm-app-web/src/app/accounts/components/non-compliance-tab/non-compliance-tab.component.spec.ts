@@ -1,4 +1,5 @@
 import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
@@ -59,6 +60,7 @@ describe('NonComplianceHistoryTabComponent', () => {
       imports: [],
       providers: [
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: RequestsService, useValue: requestsService },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
       ],
@@ -67,11 +69,20 @@ describe('NonComplianceHistoryTabComponent', () => {
     store = TestBed.inject(OperatorAccountsStore);
     store.setCurrentAccount(mockedAccount);
 
+    // The form streams use `debounceTime(0)` (RxJS asyncScheduler -> setInterval) and the filter
+    // tests flush it with `setTimeout`. Fake the timer functions so no real Node timer is ever
+    // created (which would trip detectAsyncLeaks); advance them explicitly to fire the debounce.
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'] });
+
     fixture = TestBed.createComponent(NonComplianceTabComponent);
     component = fixture.componentInstance;
     page = new Page(fixture);
 
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('should create', () => {
@@ -81,7 +92,8 @@ describe('NonComplianceHistoryTabComponent', () => {
 
   it('should filter results upon clicking on different checkboxes', async () => {
     page.typeCheckbox.click();
-    await fixture.whenStable();
+    await vi.advanceTimersByTimeAsync(0);
+    fixture.detectChanges();
     expect(requestsService.getRequestDetailsByResource).toHaveBeenCalledTimes(1);
     expect(requestsService.getRequestDetailsByResource).toHaveBeenLastCalledWith({
       resourceType: 'ACCOUNT',
@@ -94,7 +106,8 @@ describe('NonComplianceHistoryTabComponent', () => {
     });
 
     page.completedStatusCheckbox.click();
-    await fixture.whenStable();
+    await vi.advanceTimersByTimeAsync(0);
+    fixture.detectChanges();
     expect(requestsService.getRequestDetailsByResource).toHaveBeenCalledTimes(2);
     expect(requestsService.getRequestDetailsByResource).toHaveBeenLastCalledWith({
       resourceType: 'ACCOUNT',

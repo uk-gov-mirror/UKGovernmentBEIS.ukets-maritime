@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, OnInit, signal, viewChild } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { ButtonDirective, DetailsComponent, FormGroupComponent, LinkDirective } from '@netz/govuk-components';
@@ -19,7 +19,6 @@ import { DatePickerComponent } from '@shared/components/date-picker';
 @Component({
   selector: 'mrtm-filter-by-ship-and-date-range',
   imports: [
-    FormsModule,
     ReactiveFormsModule,
     ButtonDirective,
     AutocompleteSelectComponent,

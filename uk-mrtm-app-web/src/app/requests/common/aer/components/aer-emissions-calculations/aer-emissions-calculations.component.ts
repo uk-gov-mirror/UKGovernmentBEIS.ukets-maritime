@@ -7,7 +7,7 @@ import { map, take } from 'rxjs';
 
 import { AerFuelConsumption, AerShipEmissions } from '@mrtm/api';
 
-import { PageHeadingComponent } from '@netz/common/components';
+import { FeedbackBannerComponent, FeedbackBannerStore, PageHeadingComponent } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { TaskService } from '@netz/common/forms';
 import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
@@ -30,10 +30,8 @@ import { AER_EMISSIONS_CALCULATIONS_SELECTOR } from '@requests/common/aer/compon
 import { AER_PORTS_SUB_TASK, AerPortsWizardStep } from '@requests/common/aer/subtasks/aer-ports/aer-ports.helpers';
 import {
   FuelConsumptionAndDirectEmissionsSummaryTemplateComponent,
-  NotificationBannerComponent,
   VoyageOrPortCallEmissionsSummaryTemplateComponent,
 } from '@shared/components';
-import { NotificationBannerStore } from '@shared/components/notification-banner';
 import { AerJourneyTypeEnum, FuelsAndEmissionsFactors } from '@shared/types';
 import { isNil } from '@shared/utils';
 import BigNumber from 'bignumber.js';
@@ -47,9 +45,9 @@ import BigNumber from 'bignumber.js';
     RouterLink,
     VoyageOrPortCallEmissionsSummaryTemplateComponent,
     PendingButtonDirective,
-    NotificationBannerComponent,
     WarningTextComponent,
     FuelConsumptionAndDirectEmissionsSummaryTemplateComponent,
+    FeedbackBannerComponent,
   ],
   standalone: true,
   templateUrl: './aer-emissions-calculations.component.html',
@@ -63,7 +61,7 @@ export class AerEmissionsCalculationsComponent {
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private readonly notificationBannerStore: NotificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
   private readonly form: UntypedFormGroup = new UntypedFormGroup({});
   private readonly service: TaskService<AerSubmitTaskPayload> = inject(TaskService);
 
@@ -125,12 +123,12 @@ export class AerEmissionsCalculationsComponent {
 
     if (!isValid) {
       this.form.setErrors(errors);
-      this.notificationBannerStore.setInvalidForm(this.form);
+      this.feedbackBannerStore.setInvalidForm(this.form);
       return;
     }
 
     this.form.reset();
-    this.notificationBannerStore.reset();
+    this.feedbackBannerStore.reset();
 
     this.service
       .saveSubtask(this.subtask, AER_EMISSIONS_CALCULATIONS_STEP, this.activatedRoute, {})
@@ -141,12 +139,12 @@ export class AerEmissionsCalculationsComponent {
   public onAddDirectEmissions(): void {
     if (!isNil(this.emissionsCalculationObject()?.directEmissions)) {
       this.form.setErrors({ notAllowed: 'You can only add direct emissions once.' });
-      this.notificationBannerStore.setInvalidForm(this.form);
+      this.feedbackBannerStore.setInvalidForm(this.form);
       return;
     }
 
     this.form.reset();
-    this.notificationBannerStore.reset();
+    this.feedbackBannerStore.reset();
     this.router.navigate(['./', AER_DIRECT_EMISSIONS_STEP], { relativeTo: this.activatedRoute });
   }
 
@@ -159,7 +157,7 @@ export class AerEmissionsCalculationsComponent {
       .saveSubtask(this.subtask, AER_DELETE_DIRECT_EMISSIONS_STEP, this.activatedRoute, this.objectId())
       .pipe(take(1))
       .subscribe(() => {
-        this.notificationBannerStore.setSuccessMessages(['Direct emissions has been removed successfully']);
+        this.feedbackBannerStore.setSuccessMessages(['Direct emissions has been removed successfully']);
       });
   }
 
@@ -171,7 +169,7 @@ export class AerEmissionsCalculationsComponent {
       })
       .pipe(take(1))
       .subscribe(() => {
-        this.notificationBannerStore.setSuccessMessages(['Fuel consumption has been removed successfully']);
+        this.feedbackBannerStore.setSuccessMessages(['Fuel consumption has been removed successfully']);
       });
   }
 }

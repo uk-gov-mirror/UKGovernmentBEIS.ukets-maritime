@@ -8,12 +8,11 @@ import { take } from 'rxjs';
 
 import { VerificationBodyUpdateStatusDTO } from '@mrtm/api';
 
-import { PageHeadingComponent } from '@netz/common/components';
+import { FeedbackBannerComponent, FeedbackBannerStore, PageHeadingComponent } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { BusinessErrorService, catchBadRequest, ErrorCodes } from '@netz/common/error';
 import { ButtonDirective } from '@netz/govuk-components';
 
-import { NotificationBannerComponent, NotificationBannerStore } from '@shared/components/notification-banner';
 import { FormUtils } from '@shared/utils';
 import {
   selectIsEditableVerificationBodiesList,
@@ -36,7 +35,7 @@ import {
     ReactiveFormsModule,
     VerificationBodiesListComponent,
     PendingButtonDirective,
-    NotificationBannerComponent,
+    FeedbackBannerComponent,
   ],
   standalone: true,
   templateUrl: './verification-bodies.component.html',
@@ -51,7 +50,7 @@ export class VerificationBodiesComponent implements OnInit {
   private readonly destroyRef: DestroyRef = inject(DestroyRef);
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private readonly notificationBannerStore = inject(NotificationBannerStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private readonly businessErrorService = inject(BusinessErrorService);
 
   public handleAddNewVerificationBody(): void {
@@ -84,7 +83,7 @@ export class VerificationBodiesComponent implements OnInit {
       )
       .subscribe(() => {
         if (FormUtils.findDirtyControlsKeys(this.formGroup).includes('status')) {
-          this.notificationBannerStore.setSuccessMessages(['Account status updated']);
+          this.feedbackBannerStore.setSuccessMessages(['Account status updated']);
         }
         this.formGroup.markAsPristine();
       });

@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
 import { PageHeadingComponent } from '@netz/common/components';
 import { LinkDirective } from '@netz/govuk-components';
 
 @Component({
   selector: 'netz-page-not-found',
-  imports: [PageHeadingComponent, LinkDirective, RouterLink],
+  imports: [PageHeadingComponent, LinkDirective],
   standalone: true,
   template: `
     <netz-page-heading size="xl">Page Not Found</netz-page-heading>

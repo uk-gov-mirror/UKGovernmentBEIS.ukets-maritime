@@ -17,7 +17,7 @@ describe('AmendsDetailsComponent', () => {
   let store: RequestTaskStore;
 
   const taskServiceMock: MockType<TaskService<FollowUpAmendTaskPayload>> = {
-    submitSubtask: jest.fn().mockReturnValue(of(true)),
+    submitSubtask: vi.fn().mockReturnValue(of(true)),
   };
 
   beforeEach(async () => {

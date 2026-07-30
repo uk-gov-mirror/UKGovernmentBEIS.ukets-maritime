@@ -3,6 +3,7 @@ import { MrtmRequestType } from '@shared/types';
 export interface WorkflowLabel {
   title: string;
   button: string;
+  routerLink?: string | string[];
   type: MrtmRequestType;
   errors: string[];
 }

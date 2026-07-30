@@ -10,14 +10,15 @@ import { FileAttachmentsService, RequestTaskAttachmentsHandlingService, TasksSer
 import { ActivatedRouteStub, mockClass } from '@netz/common/testing';
 
 import { FileDownloadComponent } from '@shared/components/file-download/file-download.component';
+import { Mocked } from 'vitest';
 
 describe('FileDownloadComponent', () => {
   let component: FileDownloadComponent;
   let fixture: ComponentFixture<FileDownloadComponent>;
-  let requestTaskAttachmentsHandlingService: jest.Mocked<RequestTaskAttachmentsHandlingService>;
+  let requestTaskAttachmentsHandlingService: Mocked<RequestTaskAttachmentsHandlingService>;
 
   beforeEach(async () => {
-    Object.defineProperty(window, 'onfocus', { set: jest.fn() });
+    Object.defineProperty(window, 'onfocus', { set: vi.fn() });
     requestTaskAttachmentsHandlingService = mockClass(RequestTaskAttachmentsHandlingService);
     requestTaskAttachmentsHandlingService.generateRequestTaskGetFileAttachmentToken.mockReturnValue(
       of({ token: 'abce', tokenExpirationMinutes: 1 } as any),
@@ -38,10 +39,14 @@ describe('FileDownloadComponent', () => {
   });
 
   beforeEach(() => {
-    jest.useFakeTimers();
+    vi.useFakeTimers();
     fixture = TestBed.createComponent(FileDownloadComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('should create', () => {

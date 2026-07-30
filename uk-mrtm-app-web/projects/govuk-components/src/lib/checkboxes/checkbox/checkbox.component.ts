@@ -1,40 +1,31 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  contentChild,
-  inject,
-  input,
-  TemplateRef,
-  viewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, contentChild, input, signal, TemplateRef, viewChild } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 
 import { ConditionalContentDirective } from '../../directives';
 
 @Component({
   selector: 'govuk-checkbox',
-  imports: [],
   standalone: true,
   templateUrl: './checkbox.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckboxComponent<T> implements ControlValueAccessor {
-  readonly changeDetectorRef = inject(ChangeDetectorRef);
-
   readonly value = input<T>();
   readonly label = input<string>();
   readonly hint = input<string>();
+  readonly divider = input<string | null>(null);
+
   readonly conditional = contentChild(ConditionalContentDirective);
   readonly conditionalTemplate = viewChild<TemplateRef<any>>('conditionalTemplate');
   readonly optionTemplate = viewChild<TemplateRef<any>>('checkboxTemplate');
 
-  isChecked: boolean;
-  index: number;
-  isDisabled: boolean;
-  isTouched: boolean;
+  readonly isChecked = signal(false);
+  readonly isDisabled = signal(false);
+  readonly isTouched = signal(false);
+
   onBlur: () => any;
   onChange: (event: Event) => any;
+  index: number;
   groupIdentifier: string;
 
   get identifier(): string {
@@ -50,24 +41,23 @@ export class CheckboxComponent<T> implements ControlValueAccessor {
 
   registerOnTouched(onBlur: () => any): void {
     this.onBlur = () => {
-      this.isTouched = true;
+      this.isTouched.set(true);
       onBlur();
     };
   }
 
   writeValue(value: boolean): void {
-    this.isChecked = value;
-    this.setConditionalDisabledState();
+    this.isChecked.set(value);
+    this.updateConditionalState();
   }
 
   setDisabledState(isDisabled: boolean) {
-    this.isDisabled = isDisabled;
-    this.setConditionalDisabledState();
-    this.changeDetectorRef.markForCheck();
+    this.isDisabled.set(isDisabled);
+    this.updateConditionalState();
   }
 
-  private setConditionalDisabledState() {
-    if (this.isChecked && !this.isDisabled) {
+  private updateConditionalState() {
+    if (this.isChecked() && !this.isDisabled()) {
       this.conditional()?.enableControls();
     } else {
       this.conditional()?.disableControls();

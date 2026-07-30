@@ -43,17 +43,19 @@
                     <a [routerLink]="['workflows', workflow.id]" govukLink>
                       {{ taskActionTypeToTitleTransformer(workflow.requestType, getYearFromRequestId(workflow.id)) }}
                     </a>
-                    @if ($any(workflow?.requestMetadata)?.emissions) {
-                      <p class="govuk-body govuk-!-margin-0">
-                        {{ $any(workflow?.requestMetadata)?.emissions?.totalEmissions | bigNumber }} tCO2 total maritime
-                        emissions
-                      </p>
-                      <p class="govuk-body govuk-!-margin-0">
-                        {{ $any(workflow?.requestMetadata)?.emissions?.surrenderEmissions | bigNumber }} tCO2 emissions
-                        figure for surrender
-                      </p>
-                    } @else {
-                      <p class="govuk-body govuk-!-margin-0">No emissions reported</p>
+                    @if (workflow.requestType !== 'SITE_VISIT') {
+                      @if ($any(workflow?.requestMetadata)?.emissions) {
+                        <p class="govuk-body govuk-!-margin-0">
+                          {{ $any(workflow?.requestMetadata)?.emissions?.totalEmissions | bigNumber }} tCO2 total
+                          maritime emissions
+                        </p>
+                        <p class="govuk-body govuk-!-margin-0">
+                          {{ $any(workflow?.requestMetadata)?.emissions?.surrenderEmissions | bigNumber }} tCO2
+                          emissions figure for surrender
+                        </p>
+                      } @else {
+                        <p class="govuk-body govuk-!-margin-0">No emissions reported</p>
+                      }
                     }
                     <div>Created on: {{ workflow.creationDate | govukDate }}</div>
                   </div>

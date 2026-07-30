@@ -7,7 +7,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskActionType;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskType;
 import uk.gov.mrtm.api.workflow.request.flow.empissuance.review.domain.EmpIssuanceApplicationReviewRequestTaskPayload;
-import uk.gov.netz.api.workflow.request.core.domain.RequestTask;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;

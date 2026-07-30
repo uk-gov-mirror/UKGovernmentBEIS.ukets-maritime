@@ -1,5 +1,9 @@
 <mrtm-wizard-step (formSubmit)="handleSubmit()" [formGroup]="form" heading="Edit operator account">
-  <mrtm-operator-account-form formMode="EDIT" />
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <mrtm-operator-account-form formMode="EDIT" />
+    </div>
+  </div>
 </mrtm-wizard-step>
 <div>
   <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" aria-hidden="true" />

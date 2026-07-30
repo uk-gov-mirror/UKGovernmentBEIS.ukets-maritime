@@ -1,0 +1,24 @@
+<form [formGroup]="formGroup" (submit)="onSubmit()" (reset)="onSubmit()" class="govuk-!-width-one-half">
+  <div
+    govuk-text-input
+    inputType="search"
+    formControlName="term"
+    label="Enter Account ID, Operator name, IMO number or Registry ID"></div>
+  <govuk-details summary="More filters">
+    <div
+      govuk-select
+      widthClass="govuk-!-width-full"
+      [options]="availableStatuses"
+      formControlName="status"
+      label="Status"></div>
+    <div govuk-text-input formControlName="contactEmail" label="Contact's email address"></div>
+  </govuk-details>
+  <button govukButton netzPendingButton type="submit">Search</button>
+  @if (hasAppliedFilters()) {
+    <span class="govuk-!-display-block govuk-!-margin-bottom-7">
+      <a govukLink type="reset" class="govuk-!-font-size-19" [routerLink]="[]" (click)="formGroup.reset()">
+        Clear all filters
+      </a>
+    </span>
+  }
+</form>

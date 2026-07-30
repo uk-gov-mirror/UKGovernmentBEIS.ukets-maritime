@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, provideRouter, RouterOutlet } from '@angular/router';
@@ -26,12 +26,12 @@ describe('PaginationComponent', () => {
     imports: [PaginationComponent],
     standalone: true,
     template: `
-      <govuk-pagination [count]="count" [pageSize]="pageSize" (currentPageChange)="this.currentPage = $event" />
+      <govuk-pagination [count]="count()" [pageSize]="pageSize()" (currentPageChange)="this.currentPage = $event" />
     `,
   })
   class TestComponent {
-    count;
-    pageSize;
+    readonly count = signal<number>(undefined);
+    readonly pageSize = signal<number>(undefined);
     currentPage;
   }
 
@@ -68,15 +68,15 @@ describe('PaginationComponent', () => {
   it('should calculate total pages', () => {
     expect(getActiveLinks().length).toEqual(0);
 
-    hostComponent.count = 36;
-    hostComponent.pageSize = 10;
+    hostComponent.count.set(36);
+    hostComponent.pageSize.set(10);
     fixture.detectChanges();
 
     expect(getActiveLinks().length).toEqual(4);
     expect(component.pageNumbers).toEqual([1, 2, 3, 4]);
 
-    hostComponent.count = 53;
-    hostComponent.pageSize = 10;
+    hostComponent.count.set(53);
+    hostComponent.pageSize.set(10);
     fixture.detectChanges();
 
     expect(getActiveLinks().length).toEqual(6);
@@ -88,8 +88,8 @@ describe('PaginationComponent', () => {
     expect(hostComponent.currentPage).toEqual(1);
     expect(links).toBeFalsy;
 
-    hostComponent.count = 36;
-    hostComponent.pageSize = 10;
+    hostComponent.count.set(36);
+    hostComponent.pageSize.set(10);
     fixture.detectChanges();
 
     const page3 = getActiveLinks()[1];
@@ -104,8 +104,8 @@ describe('PaginationComponent', () => {
   });
 
   it('should show dots for a large amount of pages', async () => {
-    hostComponent.count = 126;
-    hostComponent.pageSize = 10;
+    hostComponent.count.set(126);
+    hostComponent.pageSize.set(10);
     fixture.detectChanges();
 
     expect(getEllipsisItems()?.length).toEqual(1);
@@ -113,38 +113,41 @@ describe('PaginationComponent', () => {
     expect(getNextButton()).toBeTruthy();
   });
 
-  it('should limit page size to the current count', () => {
-    hostComponent.count = 3;
-    hostComponent.pageSize = 10;
+  it('should limit page size to the current count', async () => {
+    hostComponent.count.set(3);
+    hostComponent.pageSize.set(10);
     fixture.detectChanges();
 
     expect(getDetails()).toEqual(['1', '3', '3']);
 
-    hostComponent.count = 15;
-    hostComponent.pageSize = 10;
+    hostComponent.count.set(15);
+    hostComponent.pageSize.set(10);
     fixture.detectChanges();
 
     getActiveLinks()[1].click();
+    await fixture.whenStable();
     fixture.detectChanges();
 
     expect(getDetails()).toEqual(['11', '15', '15']);
   });
 
-  it('should not show previous on first page or next on last page', () => {
-    hostComponent.count = 30;
-    hostComponent.pageSize = 10;
+  it('should not show previous on first page or next on last page', async () => {
+    hostComponent.count.set(30);
+    hostComponent.pageSize.set(10);
     fixture.detectChanges();
 
     expect(getPreviousButton()).toBeFalsy();
     expect(getNextButton()).toBeTruthy();
 
     getActiveLinks()[0].click();
+    await fixture.whenStable();
     fixture.detectChanges();
 
     expect(getPreviousButton()).toBeFalsy();
     expect(getNextButton()).toBeTruthy();
 
     getActiveLinks()[2].click();
+    await fixture.whenStable();
     fixture.detectChanges();
 
     expect(getPreviousButton()).toBeTruthy();
@@ -152,8 +155,8 @@ describe('PaginationComponent', () => {
   });
 
   it('should not display a page if no results exist', () => {
-    hostComponent.count = 0;
-    hostComponent.pageSize = 0;
+    hostComponent.count.set(0);
+    hostComponent.pageSize.set(0);
     fixture.detectChanges();
 
     expect(getActiveLinks().length).toEqual(0);

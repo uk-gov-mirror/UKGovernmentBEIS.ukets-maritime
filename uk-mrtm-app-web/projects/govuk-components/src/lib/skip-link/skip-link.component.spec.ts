@@ -42,11 +42,9 @@ describe('SkipLinkComponent', () => {
 
   it('should correctly set routerLink', async () => {
     const originalNavigateByUrl = router.navigateByUrl;
-    jest
-      .spyOn(router, 'navigateByUrl')
-      .mockImplementation((...options) =>
-        TestBed.inject(NgZone).run(() => originalNavigateByUrl.apply(router, options)),
-      );
+    vi.spyOn(router, 'navigateByUrl').mockImplementation((...options) =>
+      TestBed.inject(NgZone).run(() => originalNavigateByUrl.apply(router, options)),
+    );
     await router.navigateByUrl('/test');
     fixture.detectChanges();
 

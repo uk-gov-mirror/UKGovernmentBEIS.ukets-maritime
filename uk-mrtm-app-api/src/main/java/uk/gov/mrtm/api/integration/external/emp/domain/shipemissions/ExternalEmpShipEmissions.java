@@ -11,7 +11,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.netz.api.common.validation.uniqueelements.UniqueField;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -31,20 +30,20 @@ public class ExternalEmpShipEmissions {
     @Valid
     @NotEmpty
     @JsonDeserialize(as = LinkedHashSet.class)
-    private Set<@NotNull ExternalEmpFuelsAndEmissionsFactors> fuelTypes = new HashSet<>();
+    private Set<@NotNull ExternalEmpFuelsAndEmissionsFactors> fuelTypes = new LinkedHashSet<>();
 
     @Builder.Default
     @JsonDeserialize(as = LinkedHashSet.class)
     @NotEmpty
     @Valid
-    private Set<@NotNull ExternalEmpEmissionsSources> emissionsSources = new HashSet<>();
+    private Set<@NotNull ExternalEmpEmissionsSources> emissionsSources = new LinkedHashSet<>();
 
     @Schema(description = "Level of uncertainty associated with the fuel monitoring methods")
     @Builder.Default
     @JsonDeserialize(as = LinkedHashSet.class)
     @NotEmpty
     @Valid
-    private Set<@NotNull ExternalEmpUncertaintyLevel> uncertaintyLevel = new HashSet<>();
+    private Set<@NotNull ExternalEmpUncertaintyLevel> uncertaintyLevel = new LinkedHashSet<>();
 
     @Schema(description = "Application of carbon capture and storage technologies")
     @Valid
@@ -56,7 +55,7 @@ public class ExternalEmpShipEmissions {
     @JsonDeserialize(as = LinkedHashSet.class)
     @NotEmpty
     @Valid
-    private Set<@NotNull ExternalEmpMeasurementDescription> measuringEquipment = new HashSet<>();
+    private Set<@NotNull ExternalEmpMeasurementDescription> measuringEquipment = new LinkedHashSet<>();
 
     @Schema(description = "Conditions of exemption from per voyage reporting")
     @Valid

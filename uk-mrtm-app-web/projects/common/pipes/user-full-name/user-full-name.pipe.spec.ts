@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
 import { UserDTO } from '@mrtm/api';
 
@@ -23,7 +23,7 @@ describe('UserFullNamePipe', () => {
     expect(pipe).toBeTruthy();
   });
 
-  it('should return the country code and calling code', fakeAsync(() => {
+  it('should return the country code and calling code', () => {
     expect(pipe.transform(testUser as UserDTO)).toEqual('CD PR');
-  }));
+  });
 });

@@ -25,7 +25,7 @@ public class EmpVariationSaveRegulatorLedActionHandler
     @Override
     public RequestTaskPayload process(Long requestTaskId, String requestTaskActionType, AppUser appUser,
                                       EmpVariationSaveApplicationRegulatorLedRequestTaskActionPayload payload) {
-        final RequestTask requestTask = requestTaskService.findTaskById(requestTaskId);
+        final RequestTask requestTask = requestTaskService.findTaskByIdForUpdate(requestTaskId);
         empVariationSubmitRegulatorLedService.saveEmpVariation(payload, requestTask);
 
         return requestTask.getPayload();

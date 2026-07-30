@@ -27,6 +27,7 @@ import uk.gov.netz.api.security.AuthorizedAspect;
 import uk.gov.netz.api.workflow.request.core.service.AvailableRequestService;
 import uk.gov.netz.api.workflow.request.flow.common.domain.dto.RequestCreateValidationResult;
 
+import java.time.Year;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -35,6 +36,8 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -98,6 +101,8 @@ class AvailableRequestControllerTest {
                 .andExpect(content().string("{\"DUMMY_REQUEST_CREATE_ACTION_TYPE\":{\"valid\":true}}"));
 
         verify(availableRequestService, times(1)).getAvailableWorkflows(resourceId, resourceType, appUser);
+        verifyNoInteractions(mrtmAvailableRequestService);
+        verifyNoMoreInteractions(availableRequestService);
     }
 
     @Test
@@ -114,7 +119,7 @@ class AvailableRequestControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_PATH + "/" + resourceType + "/" + resourceId))
             .andExpect(status().isForbidden());
 
-        verify(availableRequestService, never()).getAvailableWorkflows(anyString(), anyString(), any());
+        verifyNoInteractions(mrtmAvailableRequestService, availableRequestService);
     }
 
     @Test
@@ -133,6 +138,8 @@ class AvailableRequestControllerTest {
                 .andExpect(content().string("{\"AER\":{\"valid\":true}}"));
 
         verify(mrtmAvailableRequestService, times(1)).getAvailableAerWorkflows(requestId, appUser);
+        verifyNoInteractions(availableRequestService);
+        verifyNoMoreInteractions(mrtmAvailableRequestService);
     }
 
     @Test
@@ -148,6 +155,42 @@ class AvailableRequestControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_PATH + "/" + "/reporting/aer/" +  requestId))
                 .andExpect(status().isForbidden());
 
-        verify(availableRequestService, never()).getAvailableWorkflows(anyString(), anyString(), any());
+        verifyNoInteractions(availableRequestService, mrtmAvailableRequestService);
+    }
+
+    @Test
+    void getAvailableSiteVisitWorkflows() throws Exception {
+        final long accountId = 1L;
+        final AppUser appUser = AppUser.builder().userId("id").build();
+        final Map<Year, RequestCreateValidationResult> results =
+            Map.of(Year.of(2026),
+                RequestCreateValidationResult.builder().valid(true).build());
+
+        when(appSecurityComponent.getAuthenticatedUser()).thenReturn(appUser);
+        when(mrtmAvailableRequestService.getAvailableSiteVisitWorkflows(accountId)).thenReturn(results);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_PATH + "/site-visit/" + accountId))
+            .andExpect(status().isOk())
+            .andExpect(content().string("{\"2026\":{\"valid\":true}}"));
+
+        verify(mrtmAvailableRequestService, times(1)).getAvailableSiteVisitWorkflows(accountId);
+        verifyNoInteractions(availableRequestService);
+        verifyNoMoreInteractions(mrtmAvailableRequestService);
+    }
+
+    @Test
+    void getAvailableSiteVisitWorkflows_forbidden() throws Exception {
+        final long accountId = 1L;
+        final AppUser appUser = AppUser.builder().userId("id").build();
+
+        when(appSecurityComponent.getAuthenticatedUser()).thenReturn(appUser);
+        doThrow(new BusinessException(ErrorCode.FORBIDDEN))
+            .when(appUserAuthorizationService)
+            .authorize(appUser, "getAvailableSiteVisitWorkflows", String.valueOf(accountId), null,  null);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_PATH + "/site-visit/" +  accountId))
+            .andExpect(status().isForbidden());
+
+        verifyNoInteractions(availableRequestService, mrtmAvailableRequestService);
     }
 }
