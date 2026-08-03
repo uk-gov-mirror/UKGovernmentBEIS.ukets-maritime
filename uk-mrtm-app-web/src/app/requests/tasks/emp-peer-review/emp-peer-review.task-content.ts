@@ -6,7 +6,7 @@ import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
 
 import { EMISSIONS_SUB_TASK } from '@requests/common/components/emissions/emissions.helpers';
 import { OPERATOR_DETAILS_SUB_TASK } from '@requests/common/components/operator-details';
-import { empAmendQuery, empReviewQuery } from '@requests/common/emp/+state';
+import { empReviewQuery } from '@requests/common/emp/+state';
 import { ABBREVIATIONS_SUB_TASK } from '@requests/common/emp/subtasks/abbreviations';
 import { CONTROL_ACTIVITIES_SUB_TASK } from '@requests/common/emp/subtasks/control-activities';
 import { DATA_GAPS_SUB_TASK } from '@requests/common/emp/subtasks/data-gaps';
@@ -87,7 +87,7 @@ export const empPeerReviewTaskContent: RequestTaskPageContentFactory = () => {
         tasks: [
           {
             name: MANDATE_SUB_TASK,
-            status: store.select(empAmendQuery.selectStatusForSubtask(MANDATE_SUB_TASK))(),
+            status: store.select(empReviewQuery.selectStatusForSubtask(MANDATE_SUB_TASK))(),
             linkText: mandateMap.title,
             link: `${routePrefix}/mandate`,
           },

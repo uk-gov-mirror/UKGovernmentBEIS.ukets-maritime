@@ -6,6 +6,7 @@ import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
 
 import { MrtmRequestActionType, MrtmRequestTaskActionType } from '@shared/types';
 
+// TODO refactor, see conflict with isEditableTaskResolver and emp-peer-review-action-buttons.component.ts:29
 const isEditableExtraTaskResolverMap: Record<
   MrtmRequestTaskActionType | MrtmRequestActionType,
   RequestTaskIsEditableResolver

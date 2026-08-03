@@ -26,7 +26,7 @@ export class EmpPeerReviewActionButtonsComponent {
 
   readonly canBeDisplayed = computed(
     () =>
-      this.store.select(requestTaskQuery.selectIsEditable)() &&
+      !this.store.select(requestTaskQuery.selectFinalDocumentsGenerationInProgress)() &&
       this.authStore.select(selectUserId)() === this.store.select(requestTaskQuery.selectAssigneeUserId)() &&
       this.store.select(empReviewQuery.selectIsOverallDecisionCompleted)() &&
       (this.store.select(requestTaskQuery.selectAllowedRequestTaskActions)() ?? []).includes(
