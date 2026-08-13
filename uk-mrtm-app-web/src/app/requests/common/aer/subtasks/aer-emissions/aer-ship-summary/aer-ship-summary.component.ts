@@ -72,7 +72,7 @@ export class AerShipSummaryComponent {
           : AerEmissionsWizardStep.FUELS_AND_EMISSIONS_FORM,
         crypto.randomUUID(),
       ],
-      { relativeTo: this.activatedRoute, queryParams: { change: true }, queryParamsHandling: 'merge' },
+      { relativeTo: this.activatedRoute, queryParams: { change: true, create: true }, queryParamsHandling: 'merge' },
     );
   }
 

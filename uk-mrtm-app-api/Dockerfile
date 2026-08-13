@@ -10,4 +10,4 @@ COPY target/uk-mrtm-app-api-env_version.jar /opt/applications/uk-mrtm-app-api/
 RUN groupadd -g 499 mrtm && useradd -m -r -u 499 -g mrtm mrtm
 USER mrtm
 WORKDIR /opt/applications/uk-mrtm-app-api/
-CMD ["/bin/bash", "-c", "sleep 15 && java -XX:+PrintFlagsFinal -Xmx1024m -Xms512m -jar uk-mrtm-app-api-env_version.jar"]
+CMD ["/bin/bash", "-c", "sleep 15 && java -XX:+PrintFlagsFinal -Xmx2048m -Xms2048m -jar uk-mrtm-app-api-env_version.jar"]

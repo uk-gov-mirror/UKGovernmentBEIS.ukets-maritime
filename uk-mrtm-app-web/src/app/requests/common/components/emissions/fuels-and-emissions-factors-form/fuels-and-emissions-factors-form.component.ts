@@ -72,7 +72,8 @@ export class FuelsAndEmissionsFactorsFormComponent implements OnInit {
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
   private readonly taskService = inject(TaskService);
   private readonly store = inject(RequestTaskStore);
-  private readonly isChange = this.route.snapshot.queryParamMap.get('change') === 'true';
+  private readonly isChange =
+    this.route.snapshot.queryParamMap.get('change') === 'true' && !this.route.snapshot.queryParamMap.has('create');
 
   readonly map = emissionsShipSubtaskMap;
   readonly fuelTypeOptions = FUEL_TYPES_BY_ORIGIN;

@@ -14,7 +14,7 @@ export const siteVisitSubmittedTaskContent: RequestTaskPageContentFactory = () =
   const submitter = store.select(requestActionQuery.selectSubmitter)();
 
   return {
-    header: `${taskActionTypeToTitleTransformer(actionType, year)} by ${submitter}`,
+    header: `${taskActionTypeToTitleTransformer(actionType, year)} submitted by ${submitter}`,
     component: SiteVisitSubmittedDetailsComponent,
   };
 };

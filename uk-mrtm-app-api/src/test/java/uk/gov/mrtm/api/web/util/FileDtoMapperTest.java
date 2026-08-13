@@ -28,4 +28,14 @@ class FileDtoMapperTest {
         assertThat(fileDTO.getFileType()).isEqualTo("text/plain");
         assertThat(fileDTO.getCreatedBy()).isEqualTo(createdBy);
     }
+
+
+    @Test
+    void toFileDTO_when_file_is_null() throws IOException {
+        String createdBy = "user-id";
+
+        FileDTO fileDTO = mapper.toFileDTO(null, createdBy);
+
+        assertThat(fileDTO).isNull();
+    }
 }

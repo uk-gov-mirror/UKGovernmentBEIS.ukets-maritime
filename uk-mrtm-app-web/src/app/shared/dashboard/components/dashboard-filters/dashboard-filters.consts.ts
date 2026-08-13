@@ -14,6 +14,7 @@ export const WORKFLOW_FILTER_ITEMS: Record<
     { value: 'EMP_VARIATION', text: 'Emission monitoring plan variation' },
     { value: 'DOE', text: 'Determination of emissions' },
     { value: 'VIR', text: 'Verifier improvement report' },
+    { value: 'SITE_VISIT', text: 'Virtual site visit' },
     { value: 'NON_COMPLIANCE', text: 'Non-compliance' },
   ],
   OPERATOR: [
@@ -22,6 +23,7 @@ export const WORKFLOW_FILTER_ITEMS: Record<
     { value: 'EMP_ISSUANCE', text: 'Emission monitoring plan' },
     { value: 'EMP_VARIATION', text: 'Emission monitoring plan variation' },
     { value: 'VIR', text: 'Verifier improvement report' },
+    { value: 'SITE_VISIT', text: 'Virtual site visit' },
   ],
   VERIFIER: [
     { value: null, text: 'All workflows' },

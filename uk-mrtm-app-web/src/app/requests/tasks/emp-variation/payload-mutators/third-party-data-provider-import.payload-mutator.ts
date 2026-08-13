@@ -7,6 +7,7 @@ import { PayloadMutator } from '@netz/common/forms';
 
 import { EmpVariationTaskPayload } from '@requests/common';
 import { EMISSIONS_SUB_TASK } from '@requests/common/components/emissions/emissions.helpers';
+import { subtaskReviewGroupMap } from '@requests/common/emp/utils';
 import { TaskItemStatus } from '@requests/common/task-item-status';
 import {
   IMPORT_THIRD_PARTY_DATA_PROVIDER_SUB_TASK,
@@ -25,7 +26,9 @@ export class ThirdPartyDataProviderImportPayloadMutator extends PayloadMutator {
   ): Observable<EmpVariationTaskPayload> {
     return of(
       produce(currentPayload, (payload: EmpVariationTaskPayload) => {
+        payload.updatedSubtasks = payload.updatedSubtasks ?? [];
         this.affectedTasks.forEach((subtask) => {
+          const updatedSubtask = subtaskReviewGroupMap[subtask];
           payload.emissionsMonitoringPlan[subtask] = userInput[subtask];
           payload.empSectionsCompleted[subtask] = TaskItemStatus.COMPLETED;
 
@@ -39,6 +42,10 @@ export class ThirdPartyDataProviderImportPayloadMutator extends PayloadMutator {
               payload.empSectionsCompleted[`${EMISSIONS_SUB_TASK}-ship-${ship.uniqueIdentifier}`] =
                 TaskItemStatus.COMPLETED;
             });
+          }
+
+          if (!payload.updatedSubtasks.includes(updatedSubtask)) {
+            payload.updatedSubtasks.push(updatedSubtask);
           }
         });
       }),

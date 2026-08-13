@@ -46,6 +46,7 @@ public class AerBuildMonitoringPlanVersionsService {
 
     private List<AerMonitoringPlanVersion> findMonitoringPlanVersionsForVariation(Long accountId, String empId) {
         return empVariationRequestQueryService.findEmpVariationRequests(accountId).stream()
+                .filter(empVariationRequestInfo -> empVariationRequestInfo.getEndDate() != null)
                 .map(empVariationRequestInfo -> AerMonitoringPlanVersion.builder()
                         .empId(empId)
                         .empApprovalDate(empVariationRequestInfo.getEndDate().toLocalDate())

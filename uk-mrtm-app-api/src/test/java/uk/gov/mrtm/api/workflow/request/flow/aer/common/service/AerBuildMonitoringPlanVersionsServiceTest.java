@@ -70,6 +70,61 @@ class AerBuildMonitoringPlanVersionsServiceTest {
     }
 
     @Test
+    void build_skips_emp_variations_with_null_end_date() {
+        Year reportingYear = Year.now();
+        Long accountId = 1L;
+        String empId = "empId";
+
+        when(emissionsMonitoringPlanQueryService.getEmpIdByAccountId(accountId)).thenReturn(Optional.of(empId));
+
+        when(empVariationRequestQueryService.findEmpVariationRequests(accountId)).thenReturn(
+                List.of(
+                        createEmpVariationRequestInfo("openVariation", null, 11),
+                        createEmpVariationRequestInfo("completedVariation",
+                                LocalDateTime.of(reportingYear.getValue(), 5, 17, 11, 15), 10)
+                ));
+
+        AerMonitoringPlanVersion expectedResult =
+                createAerMonitoringPlanVersion(empId, LocalDate.of(reportingYear.getValue(), 5, 17), 10);
+
+        Optional<AerMonitoringPlanVersion> actualResult = aerBuildMonitoringPlanVersionsService.build(accountId, reportingYear);
+
+        assertThat(actualResult).contains(expectedResult);
+
+        verify(emissionsMonitoringPlanQueryService, times(1)).getEmpIdByAccountId(accountId);
+        verify(empVariationRequestQueryService, times(1)).findEmpVariationRequests(accountId);
+        verifyNoInteractions(aerRequestQueryService);
+    }
+
+    @Test
+    void build_falls_back_to_issuance_when_only_emp_variations_have_null_end_date() {
+        Year reportingYear = Year.now();
+        Long accountId = 1L;
+        String empId = "empId";
+
+        when(emissionsMonitoringPlanQueryService.getEmpIdByAccountId(accountId)).thenReturn(Optional.of(empId));
+
+        when(empVariationRequestQueryService.findEmpVariationRequests(accountId)).thenReturn(
+                List.of(createEmpVariationRequestInfo("openVariation", null, 11)));
+
+        when(aerRequestQueryService.findEndDateOfApprovedEmpIssuanceByAccountId(accountId,
+                MrtmRequestType.EMP_ISSUANCE))
+                .thenReturn(Optional.of(LocalDateTime.of(reportingYear.minusYears(1).getValue(), 2, 15, 12, 20)));
+
+        AerMonitoringPlanVersion expectedResult =
+                createAerMonitoringPlanVersion(empId, LocalDate.of(reportingYear.minusYears(1).getValue(), 2, 15), 1);
+
+        Optional<AerMonitoringPlanVersion> actualResult = aerBuildMonitoringPlanVersionsService.build(accountId, reportingYear);
+
+        assertThat(actualResult).contains(expectedResult);
+
+        verify(emissionsMonitoringPlanQueryService, times(1)).getEmpIdByAccountId(accountId);
+        verify(empVariationRequestQueryService, times(1)).findEmpVariationRequests(accountId);
+        verify(aerRequestQueryService, times(1))
+                .findEndDateOfApprovedEmpIssuanceByAccountId(accountId, MrtmRequestType.EMP_ISSUANCE);
+    }
+
+    @Test
     void build_emp_variations_not_in_AER_year_exists() {
         Year reportingYear = Year.now();
         Long accountId = 1L;

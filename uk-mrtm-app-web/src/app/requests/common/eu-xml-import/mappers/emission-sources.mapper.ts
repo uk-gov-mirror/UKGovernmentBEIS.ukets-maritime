@@ -14,8 +14,8 @@ export function mapEmissionSources(plan: EuXmlMonitoringPlan): {
 
   const listCompletion = mapProcedureForm(b5, 'Emission sources (list completion procedure)', warnings);
   const emissionFactors: EmpEmissionFactors = b8
-    ? { exist: true, factors: mapProcedureForm(b8, 'Emission sources (emission factors procedure)', warnings) }
-    : { exist: false };
+    ? { exist: false, factors: mapProcedureForm(b8, 'Emission sources (emission factors procedure)', warnings) }
+    : { exist: true };
   const emissionCompliance: EmpEmissionCompliance = { exist: false };
 
   return { emissionSources: { listCompletion, emissionFactors, emissionCompliance }, procedureWarnings: warnings };

@@ -130,8 +130,13 @@ export class EmpVariationApiService extends TaskApiService<EmpVariationTaskPaylo
 
   private createImportThirdPartyDataAction(payload: EmpVariationTaskPayload): RequestTaskActionProcessDTO {
     const requestTaskId = this.store.select(requestTaskQuery.selectRequestTaskId)();
-    const { emissionsMonitoringPlan, empSectionsCompleted, empVariationDetailsCompleted, empVariationDetails } =
-      payload;
+    const {
+      emissionsMonitoringPlan,
+      empSectionsCompleted,
+      empVariationDetailsCompleted,
+      empVariationDetails,
+      updatedSubtasks,
+    } = payload;
     const { actionType, actionPayloadType } = this.importThirdPartyDataActionTypes;
 
     return {
@@ -143,6 +148,7 @@ export class EmpVariationApiService extends TaskApiService<EmpVariationTaskPaylo
         empSectionsCompleted,
         empVariationDetailsCompleted,
         empVariationDetails,
+        updatedSubtasks: updatedSubtasks ?? [],
       },
     } as RequestTaskActionProcessDTO;
   }

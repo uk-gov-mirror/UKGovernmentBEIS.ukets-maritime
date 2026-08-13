@@ -92,7 +92,7 @@ export const AER_EMISSIONS_ROUTES: Routes = [
       {
         path: `${AerEmissionsWizardStep.FUELS_AND_EMISSIONS_FORM}/:factoryId`,
         title: (route: ActivatedRouteSnapshot) =>
-          route.queryParamMap.get('change') === 'true'
+          route.queryParamMap.get('change') === 'true' && !route.queryParamMap.has('create')
             ? emissionsShipSubtaskMap.fuelsAndEmissionsFactorsFormEdit.title
             : emissionsShipSubtaskMap.fuelsAndEmissionsFactorsFormAdd.title,
         data: { breadcrumb: false },

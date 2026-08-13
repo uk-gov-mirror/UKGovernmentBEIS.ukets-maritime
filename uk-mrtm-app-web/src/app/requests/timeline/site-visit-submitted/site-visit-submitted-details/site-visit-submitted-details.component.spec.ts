@@ -54,7 +54,7 @@ describe('SiteVisitSubmittedDetailsComponent', () => {
   });
 
   it('should display all HTML elements', () => {
-    expect(page.heading2.textContent.trim()).toBe('Evidence for a virtual site visit application');
+    expect(page.heading2.textContent.trim()).toBe('Application details');
     expect(page.summariesContents).toEqual([
       'Reporting year',
       '2025',
