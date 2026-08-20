@@ -80,8 +80,3 @@ export const SOURCE_REF_MAX = 30;
 export const MEASUREMENT_NAME_MAX = 250;
 export const MEASUREMENT_DESC_MAX = 10000;
 export const CARBON_CAPTURE_DESC_MAX = 10000;
-
-export const OPERATOR_NAME_MAX = 256;
-export const ADDRESS_LINE_MAX = 256;
-export const ADDRESS_CITY_MAX = 256;
-export const ADDRESS_COUNTRY_MAX = 256;

@@ -14,7 +14,6 @@ import { mockClass } from '@netz/common/testing';
 import { EuXmlImportData } from '@requests/common/eu-xml-import/eu-xml-import.types';
 import { EuXmlImportSaveService } from '@requests/common/eu-xml-import/eu-xml-import-save.service';
 import { mapAbbreviations } from '@requests/common/eu-xml-import/mappers/abbreviations.mapper';
-import { mapOperatorDetails } from '@requests/common/eu-xml-import/mappers/company.mapper';
 import { mapControlActivities } from '@requests/common/eu-xml-import/mappers/control-activities.mapper';
 import { mapDataGaps } from '@requests/common/eu-xml-import/mappers/data-gaps.mapper';
 import { mapEmissionSources } from '@requests/common/eu-xml-import/mappers/emission-sources.mapper';
@@ -31,7 +30,6 @@ const buildImportData = (): EuXmlImportData => {
     emissionSources: mapEmissionSources(plan).emissionSources,
     controlActivities: mapControlActivities(plan).controlActivities,
     abbreviations: mapAbbreviations(plan).abbreviations,
-    operatorDetails: mapOperatorDetails(plan).operatorDetails,
     managementProcedures: mapManagementProcedures(plan).managementProcedures,
     dataGaps: mapDataGaps(plan).dataGaps,
     greenhouseGas: mapGreenhouseGas(plan).greenhouseGas,
@@ -112,7 +110,6 @@ describe('EuXmlImportSaveService', () => {
             sources: importData.emissionSources,
             controlActivities: importData.controlActivities,
             abbreviations: importData.abbreviations,
-            operatorDetails: importData.operatorDetails,
             managementProcedures: importData.managementProcedures,
             dataGaps: importData.dataGaps,
             greenhouseGas: importData.greenhouseGas,
@@ -127,13 +124,28 @@ describe('EuXmlImportSaveService', () => {
             managementProcedures: 'IN_PROGRESS',
             dataGaps: 'IN_PROGRESS',
             greenhouseGas: 'IN_PROGRESS',
-            operatorDetails: 'IN_PROGRESS',
             // the minimal fixture has no ISM company, so `exist: false` is already complete
             mandate: 'COMPLETED',
             [`emissions-ship-${importData.shipEmissions[0].uniqueIdentifier}`]: 'IN_PROGRESS',
           },
         },
       });
+    });
+
+    it('leaves the existing operator details untouched, since the import process must not modify that subtask', async () => {
+      const existingOperatorDetails = { operatorName: 'Existing Operator Ltd', imoNumber: '1111111' };
+      setPayload({
+        payloadType: 'EMP_ISSUANCE_SAVE_APPLICATION_PAYLOAD',
+        emissionsMonitoringPlan: { operatorDetails: existingOperatorDetails },
+      });
+      tasksService.processRequestTaskAction.mockReturnValue(of(undefined));
+
+      await firstValueFrom(service.save(buildImportData()));
+
+      const [action] = tasksService.processRequestTaskAction.mock.calls[0];
+      const payload = action.requestTaskActionPayload as any;
+      expect(payload.emissionsMonitoringPlan.operatorDetails).toEqual(existingOperatorDetails);
+      expect(payload.empSectionsCompleted.operatorDetails).toBeUndefined();
     });
 
     it('marks a subtask completed once its imported data satisfies that subtask’s completion criteria', async () => {

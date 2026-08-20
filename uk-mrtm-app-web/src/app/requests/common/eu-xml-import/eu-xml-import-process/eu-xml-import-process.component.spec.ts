@@ -103,7 +103,7 @@ describe('EuXmlImportProcessComponent', () => {
       expect(component.parsedData()?.shipEmissions).toHaveLength(1);
     });
 
-    it('fetches the IMO number from the maritime account and uses it for the parsed operator details', async () => {
+    it('fetches the IMO number from the maritime account and makes it available for parsing', async () => {
       accountService.getMaritimeAccount.mockReturnValue(of({ account: { imoNumber: '7654321' } } as any));
       fixture = TestBed.createComponent(EuXmlImportProcessComponent);
       component = fixture.componentInstance;
@@ -111,11 +111,6 @@ describe('EuXmlImportProcessComponent', () => {
 
       expect(accountService.getMaritimeAccount).toHaveBeenCalledWith(1);
       expect(component.accountImoNumber()).toBe('7654321');
-
-      const file = new File([VALID_XML], 'test.xml', { type: 'text/xml' });
-      await component.onFileSelect(fileSelectEvent(file));
-
-      expect(component.parsedData()?.operatorDetails?.imoNumber).toBe('7654321');
     });
 
     it('resets previously shown errors and confirmation state before processing the new file', async () => {

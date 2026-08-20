@@ -4,7 +4,6 @@ import { EmpShipEmissions } from '@mrtm/api';
 
 import { EuXmlImportResult, EuXmlMonitoringPlan, EuXmlRoot } from '@requests/common/eu-xml-import/eu-xml-import.types';
 import { mapAbbreviations } from '@requests/common/eu-xml-import/mappers/abbreviations.mapper';
-import { mapOperatorDetails } from '@requests/common/eu-xml-import/mappers/company.mapper';
 import { mapControlActivities } from '@requests/common/eu-xml-import/mappers/control-activities.mapper';
 import { mapDataGaps } from '@requests/common/eu-xml-import/mappers/data-gaps.mapper';
 import { mapEmissionSources } from '@requests/common/eu-xml-import/mappers/emission-sources.mapper';
@@ -81,9 +80,6 @@ export class EuXmlImportService {
     const { abbreviations, abbrevWarnings } = mapAbbreviations(firstPlan);
     warnings.push(...abbrevWarnings);
 
-    const { operatorDetails, operatorWarnings } = mapOperatorDetails(firstPlan, accountImoNumber);
-    warnings.push(...operatorWarnings);
-
     const { managementProcedures, managementProceduresWarnings } = mapManagementProcedures(firstPlan);
     warnings.push(...managementProceduresWarnings);
 
@@ -102,7 +98,6 @@ export class EuXmlImportService {
         emissionSources,
         controlActivities,
         abbreviations,
-        operatorDetails,
         managementProcedures,
         dataGaps,
         greenhouseGas,

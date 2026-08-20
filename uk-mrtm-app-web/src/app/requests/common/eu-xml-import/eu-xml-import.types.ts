@@ -6,7 +6,6 @@ import {
   EmpManagementProcedures,
   EmpMandate,
   EmpMonitoringGreenhouseGas,
-  EmpOperatorDetails,
   EmpShipEmissions,
 } from '@mrtm/api';
 
@@ -170,7 +169,6 @@ export interface EuXmlImportData {
   emissionSources: EmpEmissionSources;
   controlActivities: EmpControlActivities;
   abbreviations: EmpAbbreviations;
-  operatorDetails: Partial<EmpOperatorDetails>;
   managementProcedures: EmpManagementProcedures;
   dataGaps: EmpDataGaps;
   greenhouseGas: EmpMonitoringGreenhouseGas;

@@ -24,6 +24,7 @@ const uniqueNameValidation =
   (emissionsSources: EmissionsSources[], sourceId: EmissionsSources['uniqueIdentifier']): ValidatorFn =>
   (control: AbstractControl): ValidationErrors => {
     if (
+      !control.hasError('required') &&
       emissionsSources.filter(
         (emissionsSource) =>
           emissionsSource.uniqueIdentifier !== sourceId &&

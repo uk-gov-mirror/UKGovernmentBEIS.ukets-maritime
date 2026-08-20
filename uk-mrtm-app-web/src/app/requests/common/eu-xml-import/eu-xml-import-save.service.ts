@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { catchError, map, Observable, throwError } from 'rxjs';
 
-import { EmpOperatorDetails, RequestTaskActionProcessDTO, TasksService } from '@mrtm/api';
+import { RequestTaskActionProcessDTO, TasksService } from '@mrtm/api';
 
 import {
   BusinessErrorService,
@@ -33,7 +33,6 @@ import {
   MANAGEMENT_PROCEDURES_SUB_TASK,
 } from '@requests/common/emp/subtasks/management-procedures';
 import { isWizardCompleted, MANDATE_SUB_TASK } from '@requests/common/emp/subtasks/mandate';
-import { isEmpOperatorDetailsCompleted } from '@requests/common/emp/subtasks/operator-details';
 import { EuXmlImportData } from '@requests/common/eu-xml-import/eu-xml-import.types';
 
 const SUPPORTED_TASK_TYPES = ['EMP_ISSUANCE_APPLICATION_SUBMIT'] as const;
@@ -62,7 +61,9 @@ export class EuXmlImportSaveService {
       sources: importData.emissionSources,
       controlActivities: importData.controlActivities,
       abbreviations: importData.abbreviations,
-      operatorDetails: importData.operatorDetails,
+      // Operator details are tied to the requester's account, not the imported EU XML, so the
+      // import process must leave whatever is already on the task untouched.
+      operatorDetails: currentPayload?.emissionsMonitoringPlan?.operatorDetails,
       managementProcedures: importData.managementProcedures,
       dataGaps: importData.dataGaps,
       greenhouseGas: importData.greenhouseGas,
@@ -98,7 +99,6 @@ export class EuXmlImportSaveService {
       [MANAGEMENT_PROCEDURES_SUB_TASK]: isManagementProceduresCompleted(mergedPlan.managementProcedures),
       [DATA_GAPS_SUB_TASK]: isDataGapsCompleted(mergedPlan.dataGaps),
       [GREENHOUSE_GAS_SUB_TASK]: isGreenhouseGasCompleted(mergedPlan.greenhouseGas),
-      [OPERATOR_DETAILS_SUB_TASK]: isEmpOperatorDetailsCompleted(mergedPlan.operatorDetails as EmpOperatorDetails),
       [MANDATE_SUB_TASK]: isWizardCompleted(extendedMandate, ismShipImoNumbers),
     };
 
@@ -112,6 +112,7 @@ export class EuXmlImportSaveService {
           statusFor(shipsCompletion.get(ship.uniqueIdentifier)),
         ]),
       ),
+      [OPERATOR_DETAILS_SUB_TASK]: currentPayload?.empSectionsCompleted?.[OPERATOR_DETAILS_SUB_TASK],
     };
 
     const action = this.buildSaveAction(taskType, requestTaskId, mergedPlan, updatedSectionsCompleted);
