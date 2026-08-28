@@ -28,12 +28,12 @@
         <uk-netz-app-api-notificationapi.version>1.3.0</uk-netz-app-api-notificationapi.version>
         <uk-netz-app-api-documenttemplate.version>1.8.0</uk-netz-app-api-documenttemplate.version>
         <uk-netz-app-api-userinfoapi.version>1.2.0</uk-netz-app-api-userinfoapi.version>
-        <uk-netz-app-api-mireport.version>1.11.0</uk-netz-app-api-mireport.version>
+        <uk-netz-app-api-mireport.version>1.11.1</uk-netz-app-api-mireport.version>
         <uk-netz-app-api-alert.version>1.2.0</uk-netz-app-api-alert.version>
         <uk-netz-app-api-rest-logging.version>1.6.0</uk-netz-app-api-rest-logging.version>
         <uk-netz-app-api-restclient.version>1.2.0</uk-netz-app-api-restclient.version>
         <uk-netz-app-api-user.version>1.10.0</uk-netz-app-api-user.version>
-        <uk-netz-app-api-request.version>1.34.0</uk-netz-app-api-request.version>
+        <uk-netz-app-api-request.version>1.34.1</uk-netz-app-api-request.version>
         <uk-netz-app-api-swagger.version>1.2.0</uk-netz-app-api-swagger.version>
         <uk-netz-app-api-feedback.version>1.3.0</uk-netz-app-api-feedback.version>
         <uk-netz-app-api-security.version>1.6.0</uk-netz-app-api-security.version>
