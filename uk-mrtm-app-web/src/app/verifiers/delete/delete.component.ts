@@ -34,10 +34,10 @@ import { saveNotFoundVerifierError } from '@verifiers/errors/business-error';
 })
 export class DeleteComponent {
   private readonly store: VerifierUserStore = inject(VerifierUserStore);
-  public readonly verifierUserInfo$ = this.store.pipe(selectUserAuthority, take(1));
   private readonly businessErrorService: BusinessErrorService = inject(BusinessErrorService);
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  public readonly verifierUserInfo$ = this.store.pipe(selectUserAuthority, take(1));
   public readonly verificationBodyId$ = this.activatedRoute.queryParamMap.pipe(
     map((params) => (params.has('verificationBodyId') ? Number(params.get('verificationBodyId')) : null)),
   );

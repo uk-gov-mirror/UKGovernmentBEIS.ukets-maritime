@@ -62,6 +62,14 @@ type TableData = AccountContactVbInfoDTO & { user: UserAuthorityInfoDTO };
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteContactsComponent implements OnInit {
+  private readonly fb = inject(UntypedFormBuilder);
+  private readonly route = inject(ActivatedRoute);
+  private readonly siteContactsService = inject(VBSiteContactsService);
+  private readonly fullNamePipe = inject(UserFullNamePipe);
+  private readonly verifiersAuthoritiesService = inject(VerifierAuthoritiesService);
+  private readonly businessErrorService = inject(BusinessErrorService);
+  private readonly destroy$ = inject(DestroySubject);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   page$ = new ReplaySubject<number>(1);
   count$: Observable<number>;
   columns: GovukTableColumn<TableData>[] = SITE_CONTACTS_LIST_COLUMNS;
@@ -70,15 +78,7 @@ export class SiteContactsComponent implements OnInit {
   readonly pageSize = 50;
   assigneeOptions$: Observable<GovukSelectOption<string>[]>;
   refresh$ = new Subject<void>();
-  private readonly fb = inject(UntypedFormBuilder);
   form = this.fb.group({ siteContacts: this.fb.array([]) });
-  private readonly route = inject(ActivatedRoute);
-  private readonly siteContactsService = inject(VBSiteContactsService);
-  private readonly fullNamePipe = inject(UserFullNamePipe);
-  private readonly verifiersAuthoritiesService = inject(VerifierAuthoritiesService);
-  private readonly businessErrorService = inject(BusinessErrorService);
-  private readonly destroy$ = inject(DestroySubject);
-  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private modifiedAccounts: string[] = [];
 
   ngOnInit(): void {
@@ -117,12 +117,10 @@ export class SiteContactsComponent implements OnInit {
       verifiers$,
     ]).pipe(
       map(([contacts, users]) =>
-        contacts.map(
-          (contact): TableData => ({
-            ...contact,
-            user: users.find((user) => user.userId === contact.userId),
-          }),
-        ),
+        contacts.map((contact): TableData => ({
+          ...contact,
+          user: users.find((user) => user.userId === contact.userId),
+        })),
       ),
       tap((contacts) =>
         this.form.setControl(

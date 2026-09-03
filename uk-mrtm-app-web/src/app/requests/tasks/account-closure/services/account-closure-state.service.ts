@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { Observable, tap } from 'rxjs';
 import { produce } from 'immer';
@@ -22,9 +22,7 @@ import {
 import { PendingRequestService } from '@netz/common/services';
 import { RequestTaskStore } from '@netz/common/store';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class AccountClosureStateService {
   private readonly store = inject(RequestTaskStore);
   private readonly businessErrorService = inject(BusinessErrorService);

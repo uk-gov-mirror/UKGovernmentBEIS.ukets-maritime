@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { BehaviorSubject } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RequestActionReportService {
   private printReportSubject$ = new BehaviorSubject<string | null>(null);
   printReport$ = this.printReportSubject$.asObservable();

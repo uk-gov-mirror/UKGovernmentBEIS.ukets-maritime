@@ -43,12 +43,12 @@ import { ShipEmissionTableListItem } from '@shared/types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AerListOfShipsComponent {
-  private readonly formGroup: UntypedFormGroup = new UntypedFormGroup({});
   private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
   private readonly store = inject(RequestTaskStore);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly accountService = inject(MaritimeAccountsService);
+  private readonly formGroup: UntypedFormGroup = new UntypedFormGroup({});
 
   private readonly accountId = this.store.select(requestTaskQuery.selectRequestTaskAccountId);
   private readonly accountStatus: Signal<MrtmAccountViewDTO['status']> = toSignal(

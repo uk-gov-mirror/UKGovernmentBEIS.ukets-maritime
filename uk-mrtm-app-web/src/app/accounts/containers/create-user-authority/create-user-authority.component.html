@@ -1,9 +1,10 @@
+@let type = userType();
 <mrtm-wizard-step
   (formSubmit)="handleSubmit()"
   [formGroup]="form"
   caption="Add a new user"
-  heading="Enter {{ userType$ | async | userType }} details">
-  @switch (userType$ | async) {
+  heading="Enter {{ type | userType }} details">
+  @switch (type) {
     @case ('operator_admin') {
       <mrtm-operator-admin-info />
     }
@@ -15,6 +16,9 @@
     }
     @case ('emitter_contact') {
       <mrtm-emitter-contact-info />
+    }
+    @default {
+      <!-- The userType route param is untyped; an unrecognised value shows no type-specific info block. -->
     }
   }
 

@@ -26,13 +26,13 @@ import { LinkDirective, PanelComponent } from '@netz/govuk-components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmationSharedComponent implements OnInit {
+  protected readonly breadcrumbs = inject(BreadcrumbService);
   readonly title = input<string>();
   readonly titleReferenceText = input<string>();
   readonly titleReferenceId = input<string>();
   readonly whatHappensNextTemplate = input<TemplateRef<any>>();
-  readonly returnToLink = input('/dashboard');
 
-  protected readonly breadcrumbs = inject(BreadcrumbService);
+  readonly returnToLink = input('/dashboard');
 
   ngOnInit(): void {
     this.breadcrumbs.showDashboardBreadcrumb();

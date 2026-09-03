@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { RfiSubmitPayload } from '@mrtm/api';
 
@@ -12,7 +12,7 @@ import { EmpRfiTaskPayload } from '@requests/common/emp/request-for-information/
 import { UploadedFile } from '@shared/types';
 import { transformToTaskAttachments } from '@shared/utils';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RequestForInformationStore
   extends SignalStore<EmpRfiTaskPayload & { rfiAttachments?: { [key: string]: string } }>
   implements RequestNotificationService

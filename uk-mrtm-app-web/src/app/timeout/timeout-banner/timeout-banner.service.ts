@@ -1,10 +1,10 @@
-import { computed, effect, inject, Injectable, OnDestroy, signal } from '@angular/core';
+import { computed, effect, inject, OnDestroy, Service, signal } from '@angular/core';
 
 import { KeycloakEventType } from '@core/interfaces';
 import { AuthService, KeycloakService } from '@core/services';
 import { environment } from '@environments/environment';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class TimeoutBannerService implements OnDestroy {
   private readonly keycloak = inject(KeycloakService);
   private readonly authService = inject(AuthService);

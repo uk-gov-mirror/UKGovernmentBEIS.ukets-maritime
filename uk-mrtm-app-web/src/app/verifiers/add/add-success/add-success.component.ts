@@ -18,11 +18,11 @@ import { VerifierUserStore } from '@verifiers/+state/verifier-user.store';
 })
 export class AddSuccessComponent {
   private readonly store: VerifierUserStore = inject(VerifierUserStore);
+  private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   userEmail$: Observable<string> = this.store.pipe(
     selectNewUserAuthority,
     map((userAuthority) => userAuthority?.email),
     take(1),
   );
-  private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   verificationBodyId$ = this.activatedRoute.queryParamMap.pipe(map((params) => params.get('verificationBodyId')));
 }

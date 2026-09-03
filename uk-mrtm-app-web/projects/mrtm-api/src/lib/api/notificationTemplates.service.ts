@@ -17,7 +17,7 @@ import {
   HttpParams,
   HttpResponse,
 } from '@angular/common/http';
-import { Inject, Injectable, Optional } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
@@ -28,20 +28,19 @@ import { NotificationTemplateSearchResults } from '../model/notificationTemplate
 import { NotificationTemplateUpdateDTO } from '../model/notificationTemplateUpdateDTO';
 import { BASE_PATH } from '../variables';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class NotificationTemplatesService {
+  protected httpClient = inject(HttpClient);
+
   protected basePath = '/api';
   public defaultHeaders = new HttpHeaders();
   public configuration = new Configuration();
   public encoder: HttpParameterCodec;
 
-  constructor(
-    protected httpClient: HttpClient,
-    @Optional() @Inject(BASE_PATH) basePath: string | string[],
-    @Optional() configuration: Configuration,
-  ) {
+  constructor() {
+    let basePath: string | string[] | null = inject(BASE_PATH, { optional: true });
+    const configuration = inject(Configuration, { optional: true });
+
     if (configuration) {
       this.configuration = configuration;
     }

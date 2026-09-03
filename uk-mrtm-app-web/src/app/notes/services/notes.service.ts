@@ -1,5 +1,5 @@
 import { HttpEvent } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { BehaviorSubject, distinctUntilChanged, filter, map, Observable, of, switchMap } from 'rxjs';
 
@@ -17,9 +17,7 @@ import { PendingRequestService } from '@netz/common/services';
 
 import { NoteResponseUnion } from '@notes/types';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class NotesService {
   private readonly accountNotesService: AccountNotesService = inject(AccountNotesService);
   private readonly requestNotesService: RequestNotesService = inject(RequestNotesService);

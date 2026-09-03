@@ -63,7 +63,7 @@ export class AccordionComponent implements OnInit, AfterContentInit {
   ngAfterContentInit(): void {
     this.areExpanded$ = this.accordionItems$.pipe(
       startWith(this.accordionItems()),
-      switchMap((items: AccordionItemComponent[]) => combineLatest(items.map((item) => item.isExpanded$))),
+      switchMap((items: readonly AccordionItemComponent[]) => combineLatest(items.map((item) => item.isExpanded$))),
       map((areExpanded) => areExpanded.every((isExpanded) => isExpanded)),
     );
   }

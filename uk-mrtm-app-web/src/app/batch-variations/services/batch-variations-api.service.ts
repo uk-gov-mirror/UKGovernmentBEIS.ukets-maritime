@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
@@ -14,7 +14,7 @@ import { PendingRequestService } from '@netz/common/services';
 
 import { anotherInProgressError, noMatchingEmittersError } from '@batch-variations/errors';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class BatchVariationsApiService {
   private readonly apiService = inject(RequestsService);
   private readonly pendingRequestService = inject(PendingRequestService);

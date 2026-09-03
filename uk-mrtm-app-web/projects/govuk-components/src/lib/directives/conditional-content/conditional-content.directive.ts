@@ -9,7 +9,7 @@ export class ConditionalContentDirective {
   private readonly childControls = contentChildren(NgControl, { descendants: true });
   private readonly childContainers = contentChildren(ControlContainer, { descendants: true });
 
-  private readonly childConditionals = contentChildren(
+  private readonly childConditionals = contentChildren<ConditionalContentDirective>(
     forwardRef(() => ConditionalContentDirective),
     { descendants: true },
   );
@@ -20,11 +20,9 @@ export class ConditionalContentDirective {
 
   enableControls(): void {
     // There seems to be an extreme case in content projection that it detects itself
-    const nestedControls: AbstractControl[] = [].concat(
-      ...this.childConditionals()
-        .filter((conditional) => conditional !== this)
-        .map((conditional) => conditional.childControlsAndContainers.map(({ control }) => control)),
-    );
+    const nestedControls: AbstractControl[] = this.childConditionals()
+      .filter((conditional) => conditional !== this)
+      .flatMap((conditional) => conditional.childControlsAndContainers.map(({ control }) => control));
 
     const nestedStatuses = nestedControls.map((nested) => nested.status);
 

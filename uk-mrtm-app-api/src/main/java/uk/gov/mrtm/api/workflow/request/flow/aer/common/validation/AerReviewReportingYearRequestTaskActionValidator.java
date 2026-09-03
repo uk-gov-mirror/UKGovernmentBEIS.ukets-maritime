@@ -1,5 +1,6 @@
 package uk.gov.mrtm.api.workflow.request.flow.aer.common.validation;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.mrtm.api.common.exception.MrtmRequestTaskActionValidationErrorCodes;
 import uk.gov.mrtm.api.workflow.request.core.domain.constants.MrtmRequestTaskActionType;
@@ -13,6 +14,9 @@ import java.util.Set;
 
 @Service
 public class AerReviewReportingYearRequestTaskActionValidator extends RequestTaskActionConflictBasedAbstractValidator {
+
+    @Value("${feature-flag.aer.current.year.submission.enabled}")
+    private boolean aerCurrentYearSubmitEnabled;
 
     @Override
     protected String getErrorCode() {
@@ -34,6 +38,10 @@ public class AerReviewReportingYearRequestTaskActionValidator extends RequestTas
 
     @Override
     public RequestTaskActionValidationResult validate(final RequestTask requestTask) {
+        if (aerCurrentYearSubmitEnabled) {
+            return RequestTaskActionValidationResult.validResult();
+        }
+
         boolean validYear = ((AerApplicationSubmitRequestTaskPayload) requestTask.getPayload()).getReportingYear()
             .isBefore(Year.now());
 

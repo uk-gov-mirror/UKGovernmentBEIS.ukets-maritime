@@ -30,12 +30,12 @@ import { aerVerificationSubmitQuery } from '@requests/tasks/aer-verification-sub
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverallVerificationDecisionCommentsListComponent {
-  readonly map = overallVerificationDecisionMap;
-  readonly wizardStep = OverallVerificationDecisionStep;
-  private readonly subtask = OVERALL_VERIFICATION_DECISION_SUB_TASK;
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
   private readonly store = inject(RequestTaskStore);
+  readonly map = overallVerificationDecisionMap;
+  readonly wizardStep = OverallVerificationDecisionStep;
+  private readonly subtask = OVERALL_VERIFICATION_DECISION_SUB_TASK;
 
   readonly isEditable = this.store.select(requestTaskQuery.selectIsEditable);
   readonly reasons = this.store.select(aerVerificationSubmitQuery.selectOverallVerificationDecisionReasons);

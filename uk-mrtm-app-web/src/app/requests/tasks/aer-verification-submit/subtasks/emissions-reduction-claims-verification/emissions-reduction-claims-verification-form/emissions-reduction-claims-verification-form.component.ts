@@ -41,8 +41,8 @@ export class EmissionsReductionClaimsVerificationFormComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
 
-  readonly map = emissionsReductionClaimVerificationSubtaskListMap;
   readonly formGroup = inject(TASK_FORM);
+  readonly map = emissionsReductionClaimVerificationSubtaskListMap;
 
   onSubmit() {
     this.service

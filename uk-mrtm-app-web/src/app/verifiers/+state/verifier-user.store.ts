@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { combineLatest, iif, map, Observable, switchMap, tap } from 'rxjs';
 
@@ -27,7 +27,7 @@ import {
 } from '@verifiers/+state/verifier-user.state';
 import { saveNotFoundVerifierError, viewNotFoundVerifierError } from '@verifiers/errors/business-error';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class VerifierUserStore extends Store<VerifierUserState> {
   private readonly verifierUsersInvitationService: VerifierUsersInvitationService =
     inject(VerifierUsersInvitationService);

@@ -8,10 +8,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +41,7 @@ import static uk.gov.mrtm.api.web.constants.SwaggerApiInfo.OK;
 @RequestMapping(path = "/v1.0/tasks")
 @RequiredArgsConstructor
 @Tag(name = "Tasks")
+@Log4j2
 public class RequestTaskController {
 
     private final RequestTaskViewService requestTaskViewService;
@@ -53,9 +56,13 @@ public class RequestTaskController {
             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
     @ApiResponse(responseCode = "500", description = INTERNAL_SERVER_ERROR, content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
     @Authorized(resourceId = "#taskId")
+    @Transactional
     public ResponseEntity<RequestTaskItemDTO> getTaskItemInfoById(@Parameter(hidden = true) AppUser appUser,
                                                                   @PathVariable("id") @Parameter(description = "The task id") Long taskId) {
+        long startTime = System.nanoTime();
         final RequestTaskItemDTO taskItem = requestTaskViewService.getTaskItemInfo(taskId, appUser);
+        long duration = (System.nanoTime() - startTime) / 1_000_000;
+        log.info("Service execution time: {} ms", duration);
         return new ResponseEntity<>(taskItem, HttpStatus.OK);
     }
 

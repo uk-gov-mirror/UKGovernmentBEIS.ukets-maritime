@@ -36,11 +36,11 @@ import { MultipleFileInputComponent, WizardStepComponent } from '@shared/compone
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReportingObligationFormComponent {
-  protected readonly map = reportingObligationMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service: TaskService<AerSubmitTaskPayload> = inject(TaskService<AerSubmitTaskPayload>);
   private readonly store = inject(RequestTaskStore);
+  protected readonly map = reportingObligationMap;
   private readonly year = this.store.select(aerCommonQuery.selectReportingYear);
 
   readonly reportingRequiredLegend = computed(() =>

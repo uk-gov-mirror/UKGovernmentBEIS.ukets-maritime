@@ -31,6 +31,7 @@ export class DetailsComponent {
   private readonly router: Router = inject(Router);
   private readonly authStore = inject(AuthStore);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  private readonly store = inject(VerifierUserStore);
   public readonly userId$ = this.activatedRoute.paramMap.pipe(map((params) => params.get('userId')));
   public readonly isCurrentUser$ = combineLatest([this.userId$, this.authStore.rxSelect(selectUserId)]).pipe(
     map(([routeUserId, authUserId]) => routeUserId === authUserId),
@@ -45,7 +46,6 @@ export class DetailsComponent {
       }
     }),
   );
-  private readonly store = inject(VerifierUserStore);
 
   public readonly currentUser$ = this.store.pipe(selectUserAuthority);
 }

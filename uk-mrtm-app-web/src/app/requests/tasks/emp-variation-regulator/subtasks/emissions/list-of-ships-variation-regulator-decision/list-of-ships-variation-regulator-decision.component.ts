@@ -49,12 +49,12 @@ import { ListOfShipsSummaryTemplateComponent } from '@shared/components/summarie
 export class ListOfShipsVariationRegulatorDecisionComponent {
   protected readonly form: VariationRegulatorDecisionFormModel = inject(VARIATION_REGULATOR_DECISION_FORM);
 
-  private readonly formGroup = new UntypedFormGroup({});
   private readonly feedbackBannerStore = inject(FeedbackBannerStore);
-
   private readonly store = inject(RequestTaskStore);
+
   private readonly service = inject<TaskService<EmpVariationRegulatorTaskPayload>>(TaskService);
   private readonly route = inject(ActivatedRoute);
+  private readonly formGroup = new UntypedFormGroup({});
 
   readonly ships = this.store.select(empCommonQuery.selectListOfShips);
   readonly originalShips = this.store.select(empVariationRegulatorQuery.selectOriginalListOfShips);

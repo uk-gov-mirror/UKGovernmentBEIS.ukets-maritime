@@ -2,7 +2,7 @@ import { AsyncPipe, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { catchError, combineLatest, EMPTY, map, Observable, of, switchMap } from 'rxjs';
+import { catchError, combineLatest, distinctUntilChanged, EMPTY, map, Observable, of, switchMap } from 'rxjs';
 
 import { MaritimeAccountsService, MrtmAccountEmpDTO } from '@mrtm/api';
 
@@ -30,14 +30,26 @@ export class IncorporateHeaderComponent {
     this.requestActionStore.rxSelect(requestActionQuery.selectAction).pipe(map((action) => action?.requestAccountId)),
     this.operatorAccountsStore.pipe(selectCurrentAccount),
   ]).pipe(
-    map(
-      ([requestTaskAccountId, requestActionAccountId, currentAccount]) =>
-        requestTaskAccountId ?? requestActionAccountId ?? currentAccount?.account?.id,
+    map(([requestTaskAccountId, requestActionAccountId, currentAccount]) => ({
+      accountId: Number(requestTaskAccountId ?? requestActionAccountId ?? currentAccount?.account?.id) || null,
+      currentAccount,
+    })),
+    // The store emits on every state change, most of which leave the account untouched.
+    distinctUntilChanged(
+      (a, b) => a.accountId === b.accountId && a.currentAccount?.account === b.currentAccount?.account,
     ),
-    switchMap((accountId) => {
-      return (accountId ? this.maritimeAccountsService.getMaritimeAccount(Number(accountId)) : of(null)).pipe(
-        catchError(() => EMPTY),
-      );
+    switchMap(({ accountId, currentAccount }) => {
+      if (!accountId) {
+        return of(null);
+      }
+
+      // The account guard has already loaded this account into the store, so asking the API again
+      // would just duplicate its request on every account page.
+      if (currentAccount?.account?.id === accountId) {
+        return of(currentAccount);
+      }
+
+      return this.maritimeAccountsService.getMaritimeAccount(accountId).pipe(catchError(() => EMPTY));
     }),
   );
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { produce } from 'immer';
 
@@ -10,7 +10,7 @@ import {
   SiteContactsState,
 } from '@regulators/site-contacts/+store/site-contacts.state';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class SiteContactsStore extends SignalStore<SiteContactsState> {
   constructor() {
     super(initialState);

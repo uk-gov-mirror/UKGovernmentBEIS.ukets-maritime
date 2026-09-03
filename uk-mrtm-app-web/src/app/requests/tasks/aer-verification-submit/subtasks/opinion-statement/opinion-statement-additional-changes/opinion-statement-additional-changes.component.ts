@@ -37,11 +37,11 @@ import { MonitoringPlanChangesSummaryTemplateComponent, WizardStepComponent } fr
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OpinionStatementAdditionalChangesComponent {
-  readonly map = opinionStatementMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
   private readonly store = inject(RequestTaskStore);
+  readonly map = opinionStatementMap;
 
   readonly monitoringPlanVersion = this.store.select(aerCommonQuery.selectMonitoringPlanVersion);
   readonly monitoringPlanChanges = this.store.select(aerCommonQuery.selectMonitoringPlanChanges);

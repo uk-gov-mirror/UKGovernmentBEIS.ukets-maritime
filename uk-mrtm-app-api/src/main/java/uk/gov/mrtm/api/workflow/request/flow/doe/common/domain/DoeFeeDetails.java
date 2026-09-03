@@ -2,7 +2,6 @@ package uk.gov.mrtm.api.workflow.request.flow.doe.common.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -10,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.netz.api.common.validation.NotBeforeCurrentDateInZone;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -31,7 +31,7 @@ public class DoeFeeDetails {
     private BigDecimal hourlyRate;
 
     @NotNull
-    @FutureOrPresent
+    @NotBeforeCurrentDateInZone
     private LocalDate dueDate;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)

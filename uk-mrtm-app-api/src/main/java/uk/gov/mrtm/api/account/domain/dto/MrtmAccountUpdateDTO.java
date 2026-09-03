@@ -37,6 +37,10 @@ public class MrtmAccountUpdateDTO {
     @Min(value = 0)
     @Max(value = 9999999999L)
     private Long sopId;
+
+    @NotBlank(message = "Enter a reason")
+    @Size(max = 10000)
+    private String reason;
 }
 
 

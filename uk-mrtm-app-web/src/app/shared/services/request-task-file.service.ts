@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 
 import { Observable } from 'rxjs';
@@ -16,7 +16,7 @@ import { createCommonFileValidators } from '@shared/components/file-input/file-v
 import { FileUploadService } from '@shared/services';
 import { FileUploadEvent } from '@shared/types';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RequestTaskFileService {
   private readonly fileUploadService = inject(FileUploadService);
   private readonly requestTaskAttachmentsHandlingService = inject(RequestTaskAttachmentsHandlingService);

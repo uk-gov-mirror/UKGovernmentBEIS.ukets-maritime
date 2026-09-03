@@ -5,8 +5,7 @@ import { AerFuelsAndEmissionsFactors, EmpFuelsAndEmissionsFactors } from '@mrtm/
 import { FuelType } from '@shared/types';
 
 export type FuelsAndEmissionsFactorsExtended =
-  | AerFuelsAndEmissionsFactorsExtended
-  | EmpFuelsAndEmissionsFactorsExtended;
+  AerFuelsAndEmissionsFactorsExtended | EmpFuelsAndEmissionsFactorsExtended;
 
 export interface AerFuelsAndEmissionsFactorsExtended extends AerFuelsAndEmissionsFactors {
   type: FuelType;

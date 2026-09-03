@@ -10,12 +10,10 @@ import { PendingButtonDirective } from '@netz/common/directives';
 import { ErrorCodes, isBadRequest } from '@netz/common/error';
 import { ButtonDirective, LinkDirective } from '@netz/govuk-components';
 
+import { VerificationBodySummaryComponent } from '@shared/components/summaries/verification-body-summary';
 import { selectNewVerificationBody } from '@verification-bodies/+state/verification-bodies.selectors';
 import { VerificationBodiesStoreService } from '@verification-bodies/+state/verification-bodies-store.service';
-import {
-  VerificationBodyAdminUserSummaryComponent,
-  VerificationBodySummaryComponent,
-} from '@verification-bodies/components';
+import { VerificationBodyAdminUserSummaryComponent } from '@verification-bodies/components';
 
 @Component({
   selector: 'mrtm-summary',

@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { map, Observable, pipe, shareReplay } from 'rxjs';
 
@@ -31,9 +31,7 @@ import { GovukSelectOption } from '@netz/govuk-components';
 import { AccountOperatorUser, MrtmRequestTaskActionPayloadType, NotifyAccountOperatorUsersInfo } from '@shared/types';
 import { MrtmRequestTaskActionType } from '@shared/types/mrtm-request-task-action-type.type';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class NotifyUsersService {
   private readonly operatorAuthoritiesService: OperatorAuthoritiesService = inject(OperatorAuthoritiesService);
   private readonly externalContactsService: CaExternalContactsService = inject(CaExternalContactsService);

@@ -29,12 +29,12 @@ import { FeedbackBannerStore } from './feedback-banner.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FeedbackBannerComponent implements OnInit, OnDestroy {
-  private readonly bannerContEl = viewChild<ElementRef<HTMLDivElement>>('bannerContainer');
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly store = inject(FeedbackBannerStore);
   private readonly destroyRef = inject(DestroyRef);
   private readonly title = inject(Title);
+  private readonly bannerContEl = viewChild<ElementRef<HTMLDivElement>>('bannerContainer');
 
   readonly preventResetOnNavigation = input<boolean>(false);
 

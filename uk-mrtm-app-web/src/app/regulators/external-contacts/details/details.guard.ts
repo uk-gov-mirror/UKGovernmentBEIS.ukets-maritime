@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 
 import { map, Observable, tap } from 'rxjs';
@@ -9,7 +9,7 @@ import { BusinessErrorService, catchBadRequest, ErrorCodes } from '@netz/common/
 
 import { viewNotFoundExternalContactError } from '@regulators/errors/business-error';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class DetailsGuard {
   private readonly caExternalContactsService = inject(CaExternalContactsService);
   private readonly businessErrorService = inject(BusinessErrorService);

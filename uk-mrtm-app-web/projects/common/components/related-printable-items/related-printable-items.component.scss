@@ -1,4 +1,4 @@
-@use 'govuk-frontend/dist/govuk/index' as govuk;
+@use 'govuk-frontend/dist/govuk/base' as govuk;
 
 .app-related-items {
   padding-top: govuk.govuk-spacing(1);

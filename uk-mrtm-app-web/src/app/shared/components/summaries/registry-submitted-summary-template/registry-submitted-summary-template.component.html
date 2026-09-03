@@ -23,19 +23,16 @@
 </dl>
 
 <h2 class="govuk-heading-m">Organisation details</h2>
+@let legalStatusType = data()?.organisationStructure.legalStatusType;
 <dl govuk-summary-list>
   <div govukSummaryListRow>
     <dt govukSummaryListRowKey>Organisation legal status</dt>
     <dd govukSummaryListRowValue>
-      {{ data()?.organisationStructure.legalStatusType | legalStatusTypeDisplayText }}
+      {{ legalStatusType | legalStatusTypeDisplayText }}
     </dd>
   </div>
   <div govukSummaryListRow>
-    @switch (data()?.organisationStructure.legalStatusType) {
-      @case ('INDIVIDUAL') {
-        <dt govukSummaryListRowKey>Full name</dt>
-        <dd govukSummaryListRowValue>{{ $any(data()?.organisationStructure)?.fullName }}</dd>
-      }
+    @switch (legalStatusType) {
       @case ('LIMITED_COMPANY') {
         <dt govukSummaryListRowKey>Company registration number</dt>
         <dd govukSummaryListRowValue>{{ $any(data()?.organisationStructure)?.registrationNumber }}</dd>
@@ -44,6 +41,11 @@
         <dt govukSummaryListRowKey>Name of the partnership</dt>
         <dd govukSummaryListRowValue>{{ $any(data()?.organisationStructure)?.partnershipName }}</dd>
       }
+      @case ('INDIVIDUAL') {
+        <dt govukSummaryListRowKey>Full name</dt>
+        <dd govukSummaryListRowValue>{{ $any(data()?.organisationStructure)?.fullName }}</dd>
+      }
+      @default never;
     }
   </div>
   <div govukSummaryListRow>

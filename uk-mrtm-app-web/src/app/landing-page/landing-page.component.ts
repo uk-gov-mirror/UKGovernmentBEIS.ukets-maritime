@@ -38,6 +38,9 @@ interface ViewModel {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingPageComponent {
+  private readonly authStore = inject(AuthStore);
+
+  public readonly authService = inject(AuthService);
   readonly vm: Signal<ViewModel> = computed(() => {
     return {
       isLoggedIn: this.authStore.select(selectIsLoggedIn)(),
@@ -46,7 +49,4 @@ export class LandingPageComponent {
       status: this.authStore.select(selectUserState)()?.status,
     };
   });
-
-  private readonly authStore = inject(AuthStore);
-  public readonly authService = inject(AuthService);
 }

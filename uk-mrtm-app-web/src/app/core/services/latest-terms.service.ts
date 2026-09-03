@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { combineLatest, map, Observable, of, switchMap, tap } from 'rxjs';
 
@@ -10,7 +10,7 @@ import { selectIsFeatureEnabled } from '@core/config/config.selectors';
 import { ConfigStore } from '@core/config/config.store';
 import { LatestTermsStore } from '@core/store/latest-terms/latest-terms.store';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class LatestTermsService {
   private readonly latestTermsStore = inject(LatestTermsStore);
   private readonly configStore = inject(ConfigStore);

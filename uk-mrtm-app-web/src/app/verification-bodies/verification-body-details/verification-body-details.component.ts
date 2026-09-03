@@ -10,6 +10,7 @@ import { BusinessErrorService, ErrorCodes, isBadRequest } from '@netz/common/err
 import { TabDirective, TabLazyDirective, TabsComponent } from '@netz/govuk-components';
 
 import { VerifierUsersListComponent } from '@shared/components';
+import { VerificationBodySummaryComponent } from '@shared/components/summaries';
 import { deleteUniqueActiveVerifierError, savePartiallyNotFoundVerifierError } from '@shared/errors';
 import { FormUtils } from '@shared/utils';
 import {
@@ -18,7 +19,6 @@ import {
   selectVerificationBodyContactsState,
 } from '@verification-bodies/+state/verification-bodies.selectors';
 import { VerificationBodiesStoreService } from '@verification-bodies/+state/verification-bodies-store.service';
-import { VerificationBodySummaryComponent } from '@verification-bodies/components';
 import { DataSupplierTabComponent } from '@verification-bodies/components/data-supplier-tab';
 import { VerifierUserStore } from '@verifiers/+state/verifier-user.store';
 
@@ -40,17 +40,17 @@ import { VerifierUserStore } from '@verifiers/+state/verifier-user.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerificationBodyDetailsComponent implements OnInit {
-  readonly currentTab$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  public readonly verificationBodyId = toSignal(
-    this.activatedRoute.paramMap.pipe(map((paramMap) => Number(paramMap.get('id')))),
-  );
   private readonly verifierUserStore: VerifierUserStore = inject(VerifierUserStore);
   private readonly businessErrorService: BusinessErrorService = inject(BusinessErrorService);
   private readonly verificationBodiesStoreService: VerificationBodiesStoreService =
     inject(VerificationBodiesStoreService);
   private readonly feedbackBannerStore = inject(FeedbackBannerStore);
+  readonly currentTab$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  public readonly verificationBodyId = toSignal(
+    this.activatedRoute.paramMap.pipe(map((paramMap) => Number(paramMap.get('id')))),
+  );
   public readonly summaryInfo$ = this.verificationBodiesStoreService.pipe(selectCurrentVerificationBody);
   private readonly verifierUsers$ = this.verificationBodiesStoreService.pipe(
     selectVerificationBodyContactsState,

@@ -1,10 +1,10 @@
 package uk.gov.mrtm.api.workflow.request.flow.empnotification.domain;
 
-import jakarta.validation.constraints.Future;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import uk.gov.netz.api.common.validation.NotBeforeCurrentDateInZone;
 import uk.gov.netz.api.workflow.request.flow.common.domain.review.ChangesRequiredDecisionDetails;
 
 import java.time.LocalDate;
@@ -15,6 +15,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class EmpNotificationFollowupRequiredChangesDecisionDetails extends ChangesRequiredDecisionDetails {
 
-    @Future
+    @NotBeforeCurrentDateInZone(inclusive = false)
     private LocalDate dueDate;
 }

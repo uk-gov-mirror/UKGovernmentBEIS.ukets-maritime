@@ -52,6 +52,7 @@ export class VariationDetailsDecisionComponent {
     TaskService<EmpVariationReviewTaskPayload>,
   );
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
+  private readonly route: ActivatedRoute = inject(ActivatedRoute);
   readonly vm: Signal<ViewModel> = computed(() => {
     return {
       variationDetails: this.store.select(empVariationQuery.selectEmpVariationDetails)(),
@@ -60,7 +61,6 @@ export class VariationDetailsDecisionComponent {
       wizardStep: transformWizardStepDecision(VariationDetailsWizardStep),
     };
   });
-  private readonly route: ActivatedRoute = inject(ActivatedRoute);
 
   onSubmit() {
     (this.service as EmpVariationReviewService)

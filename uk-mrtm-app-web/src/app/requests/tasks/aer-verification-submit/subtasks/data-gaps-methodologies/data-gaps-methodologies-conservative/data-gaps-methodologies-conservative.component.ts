@@ -38,10 +38,10 @@ import { WizardStepComponent } from '@shared/components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataGapsMethodologiesConservativeComponent {
-  readonly map = dataGapsMethodologiesMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
+  readonly map = dataGapsMethodologiesMap;
 
   onSubmit() {
     this.service

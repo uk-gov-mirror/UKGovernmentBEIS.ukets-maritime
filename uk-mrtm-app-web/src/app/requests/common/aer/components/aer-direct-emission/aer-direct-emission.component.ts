@@ -42,14 +42,14 @@ export class AerDirectEmissionComponent {
   private readonly relatedShipSelector = inject(AER_RELATED_SHIP_SELECTOR);
 
   public readonly wizardMap = inject(AER_SUBTASK_LIST_MAP);
+  public readonly form: FormGroup<AerDirectEmissionsFormGroupModel> = inject(TASK_FORM);
   private readonly objectId: Signal<string> = toSignal(
     this.activatedRoute.params.pipe(map((param) => param?.[this.routeParamKey])),
   );
+
   public readonly ship: Signal<AerShipEmissions> = computed(() =>
     this.store.select(this.relatedShipSelector(this.objectId()))(),
   );
-
-  public readonly form: FormGroup<AerDirectEmissionsFormGroupModel> = inject(TASK_FORM);
 
   public readonly currentFormValue = toSignal(this.form.valueChanges, { initialValue: this.form.value });
 

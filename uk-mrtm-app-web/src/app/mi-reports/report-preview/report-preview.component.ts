@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormGroup, ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { PendingButtonDirective } from '@netz/common/directives';
 import { PendingRequestService } from '@netz/common/services';
@@ -23,6 +24,7 @@ import { MiReportType } from '@mi-reports/core/mi-report-type.enum';
 import { MI_REPORT_USE_CASE_SERVICE, MiReportUseCaseService } from '@mi-reports/use-cases/common';
 import { WizardStepComponent } from '@shared/components';
 import { ScrollablePaneDirective } from '@shared/directives';
+import { isNil } from '@shared/utils';
 
 @Component({
   selector: 'mrtm-report-preview',
@@ -43,7 +45,8 @@ import { ScrollablePaneDirective } from '@shared/directives';
 export class ReportPreviewComponent {
   private readonly useCaseService = inject<MiReportUseCaseService>(MI_REPORT_USE_CASE_SERVICE);
   private readonly destroyRef = inject(DestroyRef);
-
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly pendingRequestsService: PendingRequestService = inject(PendingRequestService);
   private readonly reportFormGroup = inject(MI_REPORT_FORM_GROUP, { optional: true });
   public readonly reportFormComponent = inject(MI_REPORT_FORM_COMPONENT, { optional: true });
@@ -76,6 +79,8 @@ export class ReportPreviewComponent {
       return;
     }
 
+    this.resetPagination();
+
     this.useCaseService
       .getReportData(this.formGroup.value)
       .pipe(this.pendingRequestsService.trackRequest(), takeUntilDestroyed(this.destroyRef))
@@ -91,5 +96,11 @@ export class ReportPreviewComponent {
       .exportToExcel(this.formGroup.value)
       .pipe(this.pendingRequestsService.trackRequest(), takeUntilDestroyed(this.destroyRef))
       .subscribe();
+  }
+
+  private resetPagination() {
+    if (!isNil(this.route.snapshot.queryParams['page'])) {
+      this.router.navigate([], { queryParams: { page: 1 }, queryParamsHandling: 'merge', relativeTo: this.route });
+    }
   }
 }

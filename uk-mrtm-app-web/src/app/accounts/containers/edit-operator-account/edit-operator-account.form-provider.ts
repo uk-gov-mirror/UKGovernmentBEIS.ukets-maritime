@@ -52,6 +52,12 @@ export const editOperatorAccountFormProvider: Provider = {
           GovukValidators.pattern(/^\d*$/, 'The SOP ID should contain numbers only'),
         ],
       }),
+      reason: new FormControl<MrtmAccountUpdateDTO['reason'] | null>(null, {
+        validators: [
+          GovukValidators.required('Enter a reason'),
+          GovukValidators.maxLength(10000, 'Enter up to 10000 characters'),
+        ],
+      }),
       ...getLocationStateFormGroup(currentOperatorAccount),
     });
   },

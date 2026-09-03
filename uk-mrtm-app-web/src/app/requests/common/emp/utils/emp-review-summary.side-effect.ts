@@ -26,8 +26,7 @@ export const provideEmpReviewSideEffect = (empSubtask: keyof EmissionsMonitoring
 
       apply: (
         currentPayload:
-          | EmpIssuanceApplicationReviewRequestTaskPayload
-          | EmpVariationApplicationReviewRequestTaskPayload,
+          EmpIssuanceApplicationReviewRequestTaskPayload | EmpVariationApplicationReviewRequestTaskPayload,
       ): Observable<any> => {
         return of(
           produce(currentPayload, (payload) => {

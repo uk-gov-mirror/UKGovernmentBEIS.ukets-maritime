@@ -25,6 +25,7 @@ import { selectNewUserAuthority } from '@accounts/store/user-authority.selectors
 export class CreateUserAuthoritySummaryComponent {
   private readonly store: UserAuthorityStore = inject(UserAuthorityStore);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  private readonly router: Router = inject(Router);
   public userType$ = this.activatedRoute.paramMap.pipe(map((params) => params.get('userType')));
   public summaryInfo$: Observable<OperatorUserInvitationDTO> = combineLatest([
     this.store.pipe(selectNewUserAuthority),
@@ -35,7 +36,6 @@ export class CreateUserAuthoritySummaryComponent {
       roleCode,
     })),
   );
-  private readonly router: Router = inject(Router);
 
   handleSubmit(): void {
     this.activatedRoute.paramMap

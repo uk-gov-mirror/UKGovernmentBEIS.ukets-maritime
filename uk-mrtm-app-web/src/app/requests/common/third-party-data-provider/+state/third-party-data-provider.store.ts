@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { map, Observable, take } from 'rxjs';
 
@@ -8,7 +8,7 @@ import { SignalStore } from '@netz/common/store';
 
 import { ThirdPartyDataProviderState } from '@requests/common/third-party-data-provider/third-party-data-provider.types';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ThirdPartyDataProviderStore extends SignalStore<ThirdPartyDataProviderState> {
   private readonly taskService = inject(TasksService);
 

@@ -144,13 +144,11 @@ export class SiteContactsComponent {
     return (this.contactsResponse().contacts ?? [])
       .slice()
       .sort((a, b) => a.accountName.localeCompare(b.accountName))
-      .map(
-        (contact): TableData => ({
-          ...contact,
-          user: users.find((user) => user.userId === contact.userId),
-          type: 'Maritime',
-        }),
-      );
+      .map((contact): TableData => ({
+        ...contact,
+        user: users.find((user) => user.userId === contact.userId),
+        type: 'Maritime',
+      }));
   });
 
   protected readonly tableData = toSignal(

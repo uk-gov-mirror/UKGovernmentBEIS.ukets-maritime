@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
 
 import { combineLatest, first, map, Observable, of, switchMap } from 'rxjs';
@@ -11,7 +11,7 @@ import { AuthService } from '@core/services/auth.service';
 import { LatestTermsStore } from '@core/store/latest-terms/latest-terms.store';
 import { loginDisabled } from '@core/util/user-status-util';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AuthGuard implements CanActivate {
   protected router = inject(Router);
   protected authService = inject(AuthService);

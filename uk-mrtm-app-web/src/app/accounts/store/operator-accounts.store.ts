@@ -1,10 +1,11 @@
 import { HttpResponse } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { Observable, switchMap, tap } from 'rxjs';
 import { produce } from 'immer';
 
 import {
+  AccountDetailsHistoryListResponse,
   AccountReportingStatusHistoryCreationDTO,
   AccountReportingStatusHistoryListResponse,
   AccountReportingStatusHistoryService,
@@ -14,6 +15,7 @@ import {
   MrtmAccountDTO,
   MrtmAccountEmpDTO,
   MrtmAccountSearchCriteria,
+  MrtmAccountUpdateDTO,
 } from '@mrtm/api';
 
 import { PendingRequestService } from '@netz/common/services';
@@ -28,7 +30,7 @@ import { ReportingStatusListItem } from '@accounts/types';
 import { Store } from '@core/store';
 import { Paging } from '@shared/types';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class OperatorAccountsStore extends Store<OperatorAccountsState> {
   private readonly service: MaritimeAccountsService = inject(MaritimeAccountsService);
   private readonly updateService: MaritimeAccountUpdateService = inject(MaritimeAccountUpdateService);
@@ -95,7 +97,10 @@ export class OperatorAccountsStore extends Store<OperatorAccountsState> {
   }
 
   editAccount(accountId: number): Observable<HttpResponse<void>> {
-    return this.updateService.updateMaritimeAccount(accountId, this.getState().currentAccount.account, 'response');
+    return this.updateService.updateMaritimeAccount(
+      accountId,
+      this.getState().currentAccount.account as MrtmAccountUpdateDTO,
+    );
   }
 
   setSearchFilters(searchFilters: MrtmAccountSearchCriteria) {
@@ -193,6 +198,14 @@ export class OperatorAccountsStore extends Store<OperatorAccountsState> {
     this.setState(
       produce(this.getState(), (state) => {
         state.currentAccount.reportingStatus.history = history.reportingStatusHistoryList;
+      }),
+    );
+  }
+
+  setAccountDetailsHistory(history: AccountDetailsHistoryListResponse) {
+    this.setState(
+      produce(this.getState(), (state) => {
+        state.currentAccount.operatorDetailsHistory = history.accountDetailsHistoryList;
       }),
     );
   }

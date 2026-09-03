@@ -1,0 +1,11 @@
+// GOV.UK Frontend settings, helpers and tools for *component* stylesheets.
+//
+// Each component stylesheet is compiled on its own, so it never sees the
+// `$govuk-assets-path` configured in styles.scss. Typography mixins such as
+// `govuk-font()` emit the `@font-face` declarations, which would then point at
+// the default `/assets/fonts/` instead of the path the app is served from, and
+// the browser would request the fonts again from a URL that does not exist.
+//
+// styles.scss declares the fonts once, globally, so component stylesheets only
+// need the rules - never the `@font-face` blocks.
+@forward 'base' with ($govuk-include-default-font-face: false);

@@ -3,7 +3,6 @@ import { inject } from '@angular/core';
 import { TaskSection } from '@netz/common/model';
 import { RequestTaskStore } from '@netz/common/store';
 
-import { TaskItemStatus } from '@requests/common';
 import {
   AER_PORTS_SUB_TASK,
   AER_TOTAL_EMISSIONS_SUB_TASK,
@@ -32,6 +31,7 @@ import {
   OPERATOR_DETAILS_SUB_TASK_PATH,
   operatorDetailsMap,
 } from '@requests/common/components/operator-details';
+import { TaskItemStatus } from '@requests/common/task-item-status';
 import {
   ADDITIONAL_DOCUMENTS_SUB_TASK,
   ADDITIONAL_DOCUMENTS_SUB_TASK_PATH,

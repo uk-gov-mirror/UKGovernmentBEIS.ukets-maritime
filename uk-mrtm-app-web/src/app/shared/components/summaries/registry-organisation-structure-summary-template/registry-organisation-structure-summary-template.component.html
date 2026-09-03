@@ -9,10 +9,6 @@
     </div>
     <div govukSummaryListRow>
       @switch (data?.legalStatusType) {
-        @case ('INDIVIDUAL') {
-          <dt govukSummaryListRowKey>Full name</dt>
-          <dd govukSummaryListRowValue [notProvided]="$any(data)?.fullName"></dd>
-        }
         @case ('LIMITED_COMPANY') {
           <dt govukSummaryListRowKey>Company registration number</dt>
           <dd govukSummaryListRowValue [notProvided]="$any(data)?.registrationNumber"></dd>
@@ -21,6 +17,11 @@
           <dt govukSummaryListRowKey>Name of the partnership</dt>
           <dd govukSummaryListRowValue [notProvided]="$any(data)?.partnershipName"></dd>
         }
+        @case ('INDIVIDUAL') {
+          <dt govukSummaryListRowKey>Full name</dt>
+          <dd govukSummaryListRowValue [notProvided]="$any(data)?.fullName"></dd>
+        }
+        @default never;
       }
     </div>
     <div govukSummaryListRow>

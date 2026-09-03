@@ -45,13 +45,7 @@ export const completedWorkFormProvider: Provider = {
               ),
             ],
           ],
-          fromDate: [
-            null,
-            [
-              GovukValidators.required('Enter a date value'),
-              todayOrPastDateValidator('The date from must be today or in the past'),
-            ],
-          ],
+          fromDate: [null, [GovukValidators.required('Enter a date value'), todayOrPastDateValidator('The date from')]],
           toDate: [null],
         },
         {

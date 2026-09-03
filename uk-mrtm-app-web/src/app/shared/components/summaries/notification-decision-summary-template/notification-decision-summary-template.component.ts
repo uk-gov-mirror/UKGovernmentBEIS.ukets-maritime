@@ -41,6 +41,7 @@ import { AttachedFile, NotificationReviewDecisionUnion, NotifyAccountOperatorUse
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationDecisionSummaryTemplateComponent implements OnInit {
+  private readonly authStore = inject(AuthStore);
   readonly reviewDecision = input.required<NotificationReviewDecisionUnion>();
   readonly usersInfo = input.required<NotifyAccountOperatorUsersInfo>();
   readonly reviewDecisionNotification = input.required<DecisionNotification>();
@@ -49,7 +50,6 @@ export class NotificationDecisionSummaryTemplateComponent implements OnInit {
   readonly isEditable = input(false);
   readonly queryParams = input<Params>({});
   recipientIds: string[] = [];
-  private readonly authStore = inject(AuthStore);
 
   public readonly userRole = this.authStore.select(selectUserRoleType);
 

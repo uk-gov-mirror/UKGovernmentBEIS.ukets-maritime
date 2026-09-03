@@ -1,6 +1,6 @@
 {{>licenseInfo}}
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
+import { inject, {{#isProvidedInNone}}Injectable{{/isProvidedInNone}}{{^isProvidedInNone}}Service{{/isProvidedInNone}} }                      from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams,
 HttpResponse, HttpEvent, HttpParameterCodec{{#httpContextInOptions}}, HttpContext {{/httpContextInOptions}}
 }       from '@angular/common/http';
@@ -47,9 +47,7 @@ import { {{configurationClassName}} }                                     from '
     @Injectable()
   {{/isProvidedInNone}}
   {{^isProvidedInNone}}
-    @Injectable({
-      providedIn: '{{providedIn}}'
-      })
+    @Service()
   {{/isProvidedInNone}}
   {{#withInterfaces}}
     export class {{classname}} implements {{classname}}Interface {
@@ -58,12 +56,17 @@ import { {{configurationClassName}} }                                     from '
     export class {{classname}} {
   {{/withInterfaces}}
 
+  protected httpClient = inject(HttpClient);
+
   protected basePath = '{{{basePath}}}';
   public defaultHeaders = new HttpHeaders();
   public configuration = new {{configurationClassName}}();
   public encoder: HttpParameterCodec;
 
-  constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string|string[], @Optional() configuration: {{configurationClassName}}) {
+  constructor() {
+  let basePath: string|string[]|null = inject(BASE_PATH, { optional: true });
+  const configuration = inject({{configurationClassName}}, { optional: true });
+
   if (configuration) {
   this.configuration = configuration;
   }

@@ -1,6 +1,10 @@
 <netz-feedback-banner />
 <netz-page-heading size="xl">Manage verifier users</netz-page-heading>
 <govuk-tabs (selectedTab)="handleSelectedTab($event)">
+  <ng-template govukTabLazy id="details" label="Details">
+    <h2 class="govuk-heading-m">Details</h2>
+    <mrtm-verification-body-summary [summaryInfo]="verificationBodyDetails()" [editable]="false" />
+  </ng-template>
   <ng-template govukTab id="verifier-users" label="Verifier users">
     <h2 class="govuk-heading-m">Verifier users</h2>
     <mrtm-verifier-users-list

@@ -30,10 +30,10 @@ export class ResponseComponent {
   private readonly route = inject(ActivatedRoute);
   readonly form: UntypedFormGroup = inject(TASK_FORM);
   private readonly requestTaskStore = inject(RequestTaskStore);
+  private readonly service = inject(TaskService<FollowUpAmendTaskPayload>);
   followUpResponseMap = followUpAmendMap.followUpResponse;
   downloadUrl = this.requestTaskStore.select(empCommonQuery.selectTasksDownloadUrl)();
   followUpRequest = this.requestTaskStore.select(followUpAmendQuery.selectPayload)().followUpRequest;
-  private readonly service = inject(TaskService<FollowUpAmendTaskPayload>);
 
   onSubmit() {
     this.service

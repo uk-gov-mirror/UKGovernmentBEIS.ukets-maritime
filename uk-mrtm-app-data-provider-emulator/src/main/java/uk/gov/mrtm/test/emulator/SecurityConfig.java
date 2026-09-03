@@ -27,7 +27,7 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         .authorizeHttpRequests(authz -> authz
-            .requestMatchers("/jwks").permitAll()
+            .requestMatchers("/health", "/jwks").permitAll()
             .requestMatchers("/retrieve-access-token/**").authenticated()
             .anyRequest().permitAll()
         )

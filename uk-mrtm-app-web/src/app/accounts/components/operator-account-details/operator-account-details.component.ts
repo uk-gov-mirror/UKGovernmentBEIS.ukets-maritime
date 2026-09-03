@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
 import { GovukDatePipe } from '@netz/common/pipes';
@@ -34,8 +35,10 @@ import { CountryPipe } from '@shared/pipes';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OperatorAccountDetailsComponent {
-  readonly editable = input<boolean>(true);
-  readonly formRouterLink = input('edit');
   private readonly store: OperatorAccountsStore = inject(OperatorAccountsStore);
-  accountInfo$ = this.store.pipe(selectAccount);
+
+  readonly isEditable = input<boolean>(true);
+  readonly formRouterLink = input('edit');
+
+  readonly accountInfo = toSignal(this.store.pipe(selectAccount));
 }

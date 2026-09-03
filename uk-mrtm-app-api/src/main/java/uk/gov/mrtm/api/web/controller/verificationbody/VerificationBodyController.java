@@ -41,6 +41,7 @@ import uk.gov.netz.api.verificationbody.service.VerificationBodyViewService;
 import java.util.List;
 
 import static uk.gov.netz.api.common.constants.RoleTypeConstants.REGULATOR;
+import static uk.gov.netz.api.common.constants.RoleTypeConstants.VERIFIER;
 
 @RestController
 @RequestMapping(path = "/v1.0/verification-bodies")
@@ -75,6 +76,25 @@ public class VerificationBodyController {
     @AuthorizedRole(roleType = REGULATOR)
     public ResponseEntity<VerificationBodyInfoResponseDTO> getVerificationBodies(@Parameter(hidden = true) AppUser appUser) {
         return new ResponseEntity<>(verificationBodyViewService.getVerificationBodies(appUser),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/details")
+    @Operation(summary = "Get the verification body details of the verification body to which the verifier belongs")
+    @ApiResponse(responseCode = "200", description = SwaggerApiInfo.OK,
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = VerificationBodyDTO.class))})
+    @ApiResponse(responseCode = "403", description = SwaggerApiInfo.FORBIDDEN,
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
+    @ApiResponse(responseCode = "404", description = SwaggerApiInfo.NOT_FOUND,
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
+    @ApiResponse(responseCode = "429", description = SwaggerApiInfo.TOO_MANY_REQUESTS,
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
+    @ApiResponse(responseCode = "500", description = SwaggerApiInfo.INTERNAL_SERVER_ERROR,
+            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponse.class))})
+    @AuthorizedRole(roleType = VERIFIER)
+    public ResponseEntity<VerificationBodyDTO> getVerificationBodyDetails(@Parameter(hidden = true) AppUser appUser) {
+        return new ResponseEntity<>(
+                verificationBodyQueryService.getVerificationBodyDTOById(appUser.getVerificationBodyId()),
                 HttpStatus.OK);
     }
 

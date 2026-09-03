@@ -894,12 +894,12 @@
         "properties": {
           "submissionDate": {
             "type": "string",
-            "description": "Submission date of the emissions monitoring plain",
+            "description": "Submission date of the emissions monitoring plan",
             "format": "date-time"
           },
           "version": {
             "type": "integer",
-            "description": "Emissions monitoring plain version",
+            "description": "Emissions monitoring plan version",
             "format": "int32"
           },
           "comments": {
@@ -1336,7 +1336,7 @@
           },
           "agreementDate": {
             "type": "string",
-            "description": "Date of written agreement (past or present)",
+            "description": "The date of the written agreement can be past or present. The present date is validated using UTC+14.",
             "format": "date"
           },
           "ships": {
@@ -1437,7 +1437,7 @@
             "$ref": "#/components/schemas/ExternalEmpDataGaps"
           }
         },
-        "description": "Emissions monitoring plain data"
+        "description": "Emissions monitoring plan data"
       },
       "ExternalAerReductionClaim": {
         "required": [

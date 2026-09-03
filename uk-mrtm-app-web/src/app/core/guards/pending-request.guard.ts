@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { CanDeactivate, Router } from '@angular/router';
 
 import { combineLatest, first, map, Observable, tap } from 'rxjs';
@@ -7,7 +7,7 @@ import { PendingRequestService } from '@netz/common/services';
 
 import { PendingRequest } from '@core/interfaces';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class PendingRequestGuard implements CanDeactivate<PendingRequest> {
   private readonly router = inject(Router);
   private readonly pendingRequest = inject(PendingRequestService);

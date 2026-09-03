@@ -45,6 +45,7 @@ export class DataGapsVariationReviewDecisionComponent {
     TaskService<EmpVariationReviewTaskPayload>,
   );
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
+  private readonly route: ActivatedRoute = inject(ActivatedRoute);
   readonly vm: Signal<ViewModel> = computed(() => ({
     dataGaps: this.store.select(empCommonQuery.selectDataGaps)(),
     originalDataGaps: this.store.select(empVariationReviewQuery.selectOriginalDataGaps)(),
@@ -52,7 +53,6 @@ export class DataGapsVariationReviewDecisionComponent {
     isEditable: this.store.select(requestTaskQuery.selectIsEditable)(),
     wizardStep: transformWizardStepDecision(DataGapsWizardStep),
   }));
-  private readonly route: ActivatedRoute = inject(ActivatedRoute);
 
   onSubmit() {
     (this.service as EmpVariationReviewService)

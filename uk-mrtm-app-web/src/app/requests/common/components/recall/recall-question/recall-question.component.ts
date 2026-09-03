@@ -35,12 +35,12 @@ import { recallActionsMap } from '@requests/common/recall-actions.map';
 })
 export class RecallQuestionComponent {
   private readonly store = inject(RequestTaskStore);
-  private readonly requestTask = this.store.select(requestTaskQuery.selectRequestTaskType)();
   private readonly tasksService: TasksService = inject(TasksService);
   private readonly pendingRequest: PendingRequestService = inject(PendingRequestService);
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
   private readonly router: Router = inject(Router);
   private readonly businessErrorService: BusinessErrorService = inject(BusinessErrorService);
+  private readonly requestTask = this.store.select(requestTaskQuery.selectRequestTaskType)();
 
   public readonly actionMap = recallActionsMap?.[this.requestTask];
 

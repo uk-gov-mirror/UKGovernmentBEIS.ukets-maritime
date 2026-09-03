@@ -1,52 +1,47 @@
 @if (editable()) {
-  @switch (userRole$ | async) {
-    @case ('REGULATOR') {
-      <a
-        [routerLink]="[editVerifierSubpath(), 'add', 'verifier_admin']"
-        [queryParams]="{ verificationBodyId: verificationBodyId() }"
-        govukButton
-        id="reg-add-user"
-        type="button">
-        Add new verifier admin
-      </a>
-    }
-    @case ('VERIFIER') {
-      <form
-        [formGroup]="addNewUserForm"
-        (ngSubmit)="addNewUser()"
-        class="govuk-grid-row row-container govuk-!-width-one-half"
-        id="add-verifier"
-        name="Add verifier">
-        <div class="govuk-grid-column-two-thirds">
-          <div
-            [options]="verifierUserTypes"
-            formControlName="roleCode"
-            govuk-select
-            label="Add a new user"
-            widthClass="govuk-!-width-full"></div>
-        </div>
-        <div class="govuk-grid-column-one-third">
-          <button govukButton type="submit">Continue</button>
-        </div>
-      </form>
-      <govuk-details summary="Learn more about user types">
-        <article>
-          <h3 class="govuk-heading-s govuk-!-padding-bottom-3">User types</h3>
-          <section>
-            <h4 class="govuk-heading-s govuk-!-font-weight-regular">Verifier admin</h4>
-            <p class="govuk-!-padding-left-3 govuk-!-padding-bottom-3">
-              This role can manage verifier users and site contacts and can verify operator AEM reports.
-            </p>
-          </section>
-          <section>
-            <h4 class="govuk-heading-s govuk-!-font-weight-regular">Verifier</h4>
-            <p class="govuk-!-padding-left-3 govuk-!-padding-bottom-3">
-              This role can verify operator AEM reports only.
-            </p>
-          </section>
-        </article>
-      </govuk-details>
-    }
+  @if (userRole() === 'REGULATOR') {
+    <a
+      [routerLink]="[editVerifierSubpath(), 'add', 'verifier_admin']"
+      [queryParams]="{ verificationBodyId: verificationBodyId() }"
+      govukButton
+      id="reg-add-user"
+      type="button">
+      Add new verifier admin
+    </a>
+  } @else if (userRole() === 'VERIFIER') {
+    <form
+      [formGroup]="addNewUserForm"
+      (ngSubmit)="addNewUser()"
+      class="govuk-grid-row row-container govuk-!-width-one-half"
+      id="add-verifier"
+      name="Add verifier">
+      <div class="govuk-grid-column-two-thirds">
+        <div
+          [options]="verifierUserTypes"
+          formControlName="roleCode"
+          govuk-select
+          label="Add a new user"
+          widthClass="govuk-!-width-full"></div>
+      </div>
+      <div class="govuk-grid-column-one-third">
+        <button govukButton type="submit">Continue</button>
+      </div>
+    </form>
+    <govuk-details summary="Learn more about user types">
+      <article>
+        <h3 class="govuk-heading-s govuk-!-padding-bottom-3">User types</h3>
+        <section>
+          <h4 class="govuk-heading-s govuk-!-font-weight-regular">Verifier admin</h4>
+          <p class="govuk-!-padding-left-3 govuk-!-padding-bottom-3">
+            This role can manage verifier users and site contacts and can verify operator AEM reports.
+          </p>
+        </section>
+        <section>
+          <h4 class="govuk-heading-s govuk-!-font-weight-regular">Verifier</h4>
+          <p class="govuk-!-padding-left-3 govuk-!-padding-bottom-3">This role can verify operator AEM reports only.</p>
+        </section>
+      </article>
+    </govuk-details>
   }
 }
 
@@ -59,7 +54,7 @@
       <ng-container [formGroupName]="index">
         @switch (column.field) {
           @case ('name') {
-            @if (editable() || (userId$ | async) === row.userId) {
+            @if (editable() || userId() === row.userId) {
               <a
                 [routerLink]="[editVerifierSubpath(), row.userId]"
                 [queryParams]="{ verificationBodyId: verificationBodyId() }"
@@ -111,6 +106,9 @@
                 Delete
               </a>
             </div>
+          }
+          @default {
+            {{ row[column.field] }}
           }
         }
       </ng-container>

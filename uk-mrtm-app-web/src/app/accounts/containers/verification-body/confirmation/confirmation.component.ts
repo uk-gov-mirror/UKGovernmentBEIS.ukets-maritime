@@ -13,7 +13,7 @@ import { LinkDirective, PanelComponent } from '@netz/govuk-components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmationComponent {
-  readonly verificationAccount = input.required<string>();
   private readonly route = inject(ActivatedRoute);
+  readonly verificationAccount = input.required<string>();
   accountId$ = this.route.paramMap.pipe(map((paramMap) => Number(paramMap.get('accountId'))));
 }

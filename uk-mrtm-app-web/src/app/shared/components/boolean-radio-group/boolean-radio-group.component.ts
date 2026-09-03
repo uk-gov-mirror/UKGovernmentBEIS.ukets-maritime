@@ -19,7 +19,6 @@ import { ConditionalContentDirective, RadioComponent, RadioOptionComponent } fro
 
 import { existingControlContainer } from '@shared/providers';
 
-// eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: 'mrtm-boolean-radio-group',
   imports: [RadioComponent, ReactiveFormsModule, RadioOptionComponent, AsyncPipe],

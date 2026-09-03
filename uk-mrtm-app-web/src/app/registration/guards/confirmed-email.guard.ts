@@ -1,9 +1,9 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { UserRegistrationStore } from '@registration/store/user-registration.store';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ConfirmedEmailGuard {
   private store = inject(UserRegistrationStore);
   private router = inject(Router);

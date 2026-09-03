@@ -1,12 +1,12 @@
 package uk.gov.mrtm.api.workflow.request.flow.empnotification.domain;
 
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.netz.api.common.validation.NotBeforeCurrentDateInZone;
 import uk.gov.netz.api.common.validation.SpELExpression;
 
 import java.time.LocalDate;
@@ -27,6 +27,6 @@ public class FollowUp {
     @Size(max = 10000)
     private String followUpRequest;
 
-    @Future
+    @NotBeforeCurrentDateInZone(inclusive = false)
     private LocalDate followUpResponseExpirationDate;
 }

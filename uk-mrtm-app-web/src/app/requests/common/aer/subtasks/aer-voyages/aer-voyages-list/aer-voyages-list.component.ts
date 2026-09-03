@@ -49,10 +49,10 @@ import { isSameDayOrAfter, isSameDayOrBefore } from '@shared/utils/dates.utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AerVoyagesListComponent extends PaginationStatePersistableComponent {
-  private readonly formGroup = new UntypedFormGroup({});
   private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private readonly store = inject(RequestTaskStore);
   private readonly service: TaskService<AerSubmitTaskPayload> = inject(TaskService);
+  private readonly formGroup = new UntypedFormGroup({});
   private readonly allVoyages = this.store.select(aerCommonQuery.selectVoyagesList);
   private readonly filter = signal<FilterByShipAndDateRange>(
     (this.currentPersistableComponentState()?.activeFilters as FilterByShipAndDateRange) ?? null,

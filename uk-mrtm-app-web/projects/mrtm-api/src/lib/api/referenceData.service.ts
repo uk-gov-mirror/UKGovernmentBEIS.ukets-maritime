@@ -17,7 +17,7 @@ import {
   HttpParams,
   HttpResponse,
 } from '@angular/common/http';
-import { Inject, Injectable, Optional } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
@@ -25,20 +25,19 @@ import { Configuration } from '../configuration';
 import { CustomHttpParameterCodec } from '../encoder';
 import { BASE_PATH } from '../variables';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class ReferenceDataService {
+  protected httpClient = inject(HttpClient);
+
   protected basePath = '/api';
   public defaultHeaders = new HttpHeaders();
   public configuration = new Configuration();
   public encoder: HttpParameterCodec;
 
-  constructor(
-    protected httpClient: HttpClient,
-    @Optional() @Inject(BASE_PATH) basePath: string | string[],
-    @Optional() configuration: Configuration,
-  ) {
+  constructor() {
+    let basePath: string | string[] | null = inject(BASE_PATH, { optional: true });
+    const configuration = inject(Configuration, { optional: true });
+
     if (configuration) {
       this.configuration = configuration;
     }
@@ -102,25 +101,25 @@ export class ReferenceDataService {
     types: Array<'COUNTRIES' | 'COUNTIES'>,
     observe?: 'body',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: 'application/json' | '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: '*/*' | 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<{ [key: string]: Array<object> }>;
   public getReferenceData(
     types: Array<'COUNTRIES' | 'COUNTIES'>,
     observe?: 'response',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: 'application/json' | '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: '*/*' | 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpResponse<{ [key: string]: Array<object> }>>;
   public getReferenceData(
     types: Array<'COUNTRIES' | 'COUNTIES'>,
     observe?: 'events',
     reportProgress?: boolean,
-    options?: { httpHeaderAccept?: 'application/json' | '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: '*/*' | 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<HttpEvent<{ [key: string]: Array<object> }>>;
   public getReferenceData(
     types: Array<'COUNTRIES' | 'COUNTIES'>,
     observe: any = 'body',
     reportProgress: boolean = false,
-    options?: { httpHeaderAccept?: 'application/json' | '*/*'; context?: HttpContext; transferCache?: boolean },
+    options?: { httpHeaderAccept?: '*/*' | 'application/json'; context?: HttpContext; transferCache?: boolean },
   ): Observable<any> {
     if (types === null || types === undefined) {
       throw new Error('Required parameter types was null or undefined when calling getReferenceData.');
@@ -138,7 +137,7 @@ export class ReferenceDataService {
     let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
     if (localVarHttpHeaderAcceptSelected === undefined) {
       // to determine the Accept header
-      const httpHeaderAccepts: string[] = ['application/json', '*/*'];
+      const httpHeaderAccepts: string[] = ['*/*', 'application/json'];
       localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
     }
     if (localVarHttpHeaderAcceptSelected !== undefined) {

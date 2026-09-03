@@ -102,6 +102,9 @@ describe('UsersTableDirective', () => {
                   @case ('name') {
                     <input type="text" formControlName="firstName" />
                   }
+                  @default {
+                    {{ row[column.field] | titlecase }}
+                  }
                 }
               </ng-container>
               <ng-template #bareField>{{ row[column.field] | titlecase }}</ng-template>

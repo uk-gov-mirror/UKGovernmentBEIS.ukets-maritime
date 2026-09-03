@@ -9,6 +9,7 @@ import {
   canActivateEditReportingStatus,
   canActivateEditReportingStatusSummary,
   canActivateOperatorAccount,
+  canActivateOperatorDetailsHistory,
   canDeactivateEditReportingStatus,
   canDeactivateOperatorAccount,
   CreateOperatorAccountGuard,
@@ -100,6 +101,13 @@ export const ACCOUNTS_ROUTES: Routes = [
               ),
           },
         ],
+      },
+      {
+        path: 'operator-details-history',
+        title: 'Operator details history',
+        data: { breadcrumb: true },
+        canActivate: [canActivateOperatorDetailsHistory],
+        loadComponent: () => import('@accounts/containers').then((c) => c.OperatorDetailsHistoryComponent),
       },
       {
         path: 'reporting-status-history',

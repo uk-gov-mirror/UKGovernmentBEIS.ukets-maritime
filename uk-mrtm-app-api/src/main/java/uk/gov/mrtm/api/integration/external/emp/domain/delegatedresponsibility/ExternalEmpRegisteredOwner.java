@@ -14,7 +14,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import uk.gov.mrtm.api.emissionsmonitoringplan.validation.PastOrPresentPlusDays;
+import uk.gov.netz.api.common.validation.NotAfterCurrentDateInZone;
 import uk.gov.netz.api.common.validation.uniqueelements.UniqueElements;
 import uk.gov.netz.api.common.validation.uniqueelements.UniqueField;
 
@@ -50,9 +50,9 @@ public class ExternalEmpRegisteredOwner {
     @NotBlank
     private String email;
 
-    @Schema(description = "Date of written agreement (past or present)")
+    @Schema(description = "The date of the written agreement can be past or present. The present date is validated using UTC+14.")
     @NotNull
-    @PastOrPresentPlusDays
+    @NotAfterCurrentDateInZone
     private LocalDate agreementDate;
 
     @Schema(description = "Associated ships")

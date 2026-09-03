@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { catchError, map, Observable, throwError } from 'rxjs';
 
@@ -38,7 +38,7 @@ import { EuXmlImportData } from '@requests/common/eu-xml-import/eu-xml-import.ty
 const SUPPORTED_TASK_TYPES = ['EMP_ISSUANCE_APPLICATION_SUBMIT'] as const;
 type SupportedTaskType = (typeof SUPPORTED_TASK_TYPES)[number];
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class EuXmlImportSaveService {
   private readonly store = inject(RequestTaskStore);
   private readonly tasksService = inject(TasksService);

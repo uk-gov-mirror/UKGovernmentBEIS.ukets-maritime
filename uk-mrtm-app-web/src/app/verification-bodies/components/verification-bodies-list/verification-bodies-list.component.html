@@ -31,6 +31,9 @@
           <a [routerLink]="[row.id, 'delete']" govukLink>Delete</a>
         </div>
       }
+      @default {
+        {{ row[column.field] }}
+      }
     }
   </ng-template>
 </govuk-table>

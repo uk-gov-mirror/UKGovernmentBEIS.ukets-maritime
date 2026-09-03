@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { produce } from 'immer';
 
@@ -13,7 +13,7 @@ import {
   WorkflowItemsAssignmentType,
 } from '@shared/dashboard/+store/dashboard.state';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class DashboardStore extends SignalStore<DashboardState> {
   constructor() {
     super(initialState);

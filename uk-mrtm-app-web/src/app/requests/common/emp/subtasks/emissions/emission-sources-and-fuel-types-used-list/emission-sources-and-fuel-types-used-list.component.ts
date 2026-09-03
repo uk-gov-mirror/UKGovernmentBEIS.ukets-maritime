@@ -44,12 +44,12 @@ import { isNil } from '@shared/utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmissionSourcesAndFuelTypesUsedListComponent {
-  private readonly fuelTitlePipe: FuelOriginTitlePipe = new FuelOriginTitlePipe();
   private readonly taskService = inject(TaskService<EmpTaskPayload>);
   private readonly store = inject(RequestTaskStore);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
+  private readonly fuelTitlePipe: FuelOriginTitlePipe = new FuelOriginTitlePipe();
 
   readonly shipId = input<string>();
   readonly emissionSources = computed(() => {

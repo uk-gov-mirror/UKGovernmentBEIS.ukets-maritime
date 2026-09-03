@@ -98,7 +98,7 @@ export const mandateRegisteredOwnersFormProvider: Provider = {
         {
           validators: [
             GovukValidators.required('Enter the date of written agreement'),
-            todayOrPastDateValidator('The date of written agreement must be today or in the past'),
+            todayOrPastDateValidator('The date of written agreement'),
           ],
         },
       ),
@@ -111,7 +111,7 @@ export const mandateRegisteredOwnersFormProvider: Provider = {
             GovukValidators.required(
               availableShips?.length
                 ? 'Select at least one ship to associate with the registered owner'
-                : 'No ships are available to associate with this registered owner.',
+                : 'No ships are available to associate with this registered owner',
             ),
           ],
         },

@@ -21,11 +21,11 @@ import { AerVerificationSubmitTaskPayload } from '@requests/common/aer/aer.types
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UncorrectedNonConformitiesPriorYearIssueDeleteComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
   readonly map = uncorrectedNonConformitiesMap;
   readonly wizardStep = UncorrectedNonConformitiesStep;
   private readonly subtask = UNCORRECTED_NON_CONFORMITIES_SUB_TASK;
-  private readonly route = inject(ActivatedRoute);
-  private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
   readonly reference = input<string>();
 
   onSubmit() {

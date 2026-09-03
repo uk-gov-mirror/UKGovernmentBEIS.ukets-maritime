@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 
 import { Observable, of, switchMap } from 'rxjs';
@@ -9,7 +9,7 @@ import { BusinessErrorService } from '@netz/common/error';
 
 import { appointedVerificationBodyError } from '@accounts/errors';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AppointVerifierGuard {
   private readonly accountVerificationBodyService = inject(AccountVerificationBodyService);
   private readonly businessErrorService = inject(BusinessErrorService);

@@ -69,7 +69,7 @@ module.exports = tseslint.config(
         {
           groups: [
             ['(@angular)(/.*|$)'],
-            ['(rxjs$)', '(^immer)', '(^date-fns)', '(^keycloak-js)', '(^@zxcvbn-ts)', '(^google-libphonenumber)'],
+            ['(rxjs$)', '(^immer)', '(^date-fns)', '(^keycloak-js)', '(^@zxcvbn-ts)', '(^libphonenumber-js)(/.*)?'],
             ['(@mrtm/api)(/.*|$)'],
             ['(@netz/common)(/.*|$)', '(@netz/govuk-components)(/.*|$)'],
             ['()(/.*|$)'],

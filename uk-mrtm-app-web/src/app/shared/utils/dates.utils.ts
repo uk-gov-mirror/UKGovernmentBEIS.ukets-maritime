@@ -25,6 +25,49 @@ export const mergeDatesToDate = (dateDate?: Date, timeDate?: Date): Date | null 
   return null;
 };
 
+/**
+ * UTC+14 (Line Islands, Kiribati) - the furthest ahead of UTC any civil timezone runs.
+ * The API tolerates 14 hours either side when it validates a date against "today", so neither bound
+ * below is ever wider than what the API accepts.
+ */
+const MAX_OFFSET_EAST_MS = 14 * 60 * 60 * 1000;
+
+/** UTC-12 (Baker and Howland Islands) - the furthest behind UTC any civil timezone runs. */
+const MAX_OFFSET_WEST_MS = 12 * 60 * 60 * 1000;
+
+/**
+ * Normalises a form control value to UTC midnight so it can be compared with the "today" bounds below.
+ * Accepts the UTC midnight `Date` produced by the date input components, an ISO string or a "yyyy-MM-dd" string.
+ * @returns the UTC start of the day, or null when the value is empty or unparseable.
+ */
+export const toUtcStartOfDay = (value: Date | string | null | undefined): Date | null => {
+  if (!value) {
+    return null;
+  }
+
+  const date = value instanceof Date ? value : new Date(value);
+
+  if (isNaN(date.getTime())) {
+    return null;
+  }
+
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+};
+
+/**
+ * The latest calendar day that is currently "today" for anyone on Earth, expressed as a UTC date.
+ * Date validations use this as the upper bound so a user ahead of UTC is not blocked from entering
+ * their own local today, which the API accepts thanks to its own tolerance.
+ */
+export const latestTodayAnywhere = (): Date => toUtcStartOfDay(new Date(Date.now() + MAX_OFFSET_EAST_MS));
+
+/**
+ * The earliest calendar day that is currently "today" for anyone on Earth, expressed as a UTC date.
+ * The mirror image of {@link latestTodayAnywhere} for validations that look forward, so a user behind
+ * UTC is not blocked from entering their own local today.
+ */
+export const earliestTodayAnywhere = (): Date => toUtcStartOfDay(new Date(Date.now() - MAX_OFFSET_WEST_MS));
+
 export const convertToUTCDate = (date: Date): Date | null => {
   if (date instanceof Date) {
     return new Date(

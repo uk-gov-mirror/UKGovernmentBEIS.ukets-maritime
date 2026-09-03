@@ -45,10 +45,6 @@ import { NotifyUsersService } from '@shared/services/notify-users.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotifyOperatorFormComponent {
-  protected readonly config = computed(() => {
-    const taskType = this.store.select(requestTaskQuery.selectRequestTaskType)();
-    return getNotifyOperatorConfigByRequestType(taskType);
-  });
   protected readonly form: UntypedFormGroup = inject(TASK_FORM);
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
   private readonly router: Router = inject(Router);
@@ -64,6 +60,10 @@ export class NotifyOperatorFormComponent {
       optional: true,
     },
   );
+  protected readonly config = computed(() => {
+    const taskType = this.store.select(requestTaskQuery.selectRequestTaskType)();
+    return getNotifyOperatorConfigByRequestType(taskType);
+  });
 
   accountId = this.store.select(requestTaskQuery.selectRequestTaskAccountId)();
   requestTaskId = this.store.select(requestTaskQuery.selectRequestTaskId)();

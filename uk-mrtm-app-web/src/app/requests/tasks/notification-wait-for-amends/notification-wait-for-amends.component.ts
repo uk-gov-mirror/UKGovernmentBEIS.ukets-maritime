@@ -15,8 +15,8 @@ import { FollowUpAmends } from '@shared/types/follow-up-amends.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationWaitForAmendsComponent {
-  readonly changeLink = 'wait-for-amends/edit-due-date';
   private readonly store = inject(RequestTaskStore);
+  readonly changeLink = 'wait-for-amends/edit-due-date';
 
   readonly followUpAmends: FollowUpAmends = {
     followUpReviewDecision: this.store.select(waitForAmendsQuery.selectFollowUpReviewDecisionDTO)(),

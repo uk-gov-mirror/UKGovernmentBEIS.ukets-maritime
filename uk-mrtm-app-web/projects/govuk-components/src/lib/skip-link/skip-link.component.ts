@@ -1,7 +1,6 @@
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-/* eslint-disable @angular-eslint/prefer-on-push-component-change-detection */
 @Component({
   selector: 'govuk-skip-link',
   imports: [RouterLink],

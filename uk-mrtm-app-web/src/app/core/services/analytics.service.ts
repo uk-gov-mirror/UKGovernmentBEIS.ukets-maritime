@@ -1,8 +1,8 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { ConfigStore } from '@core/config';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AnalyticsService {
   private readonly configStore = inject(ConfigStore);
   private currentScript: HTMLScriptElement;

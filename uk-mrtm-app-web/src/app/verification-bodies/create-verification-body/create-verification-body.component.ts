@@ -38,12 +38,12 @@ import {
 })
 export class CreateVerificationBodyComponent implements AfterViewInit {
   public readonly form: UntypedFormGroup = inject<UntypedFormGroup>(CREATE_VERIFICATION_BODY_PROVIDER);
-  public readonly wizardStep = viewChild(WizardStepComponent, { read: ElementRef });
   private readonly store: VerificationBodiesStoreService = inject(VerificationBodiesStoreService);
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private readonly submissionErrors$ = this.store.pipe(selectSubmissionErrors);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  public readonly wizardStep = viewChild(WizardStepComponent, { read: ElementRef });
+  private readonly submissionErrors$ = this.store.pipe(selectSubmissionErrors);
 
   public handleFormSubmit(): void {
     this.store.setNewVerificationBody(this.form.getRawValue());

@@ -44,12 +44,12 @@ import { isNil } from '@shared/utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MandateRegisteredOwnersListComponent {
-  public readonly form: UntypedFormGroup = new UntypedFormGroup({});
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
   private readonly taskService: TaskService<EmpTaskPayload> = inject(TaskService);
+  public readonly form: UntypedFormGroup = new UntypedFormGroup({});
 
   public readonly wizardMap = mandateMap;
   public readonly wizardStep = MandateWizardStep;

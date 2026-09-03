@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, DoCheck, inject, input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, DoCheck, inject, input, OnInit } from '@angular/core';
 import {
   ControlContainer,
   ControlValueAccessor,
@@ -28,7 +28,6 @@ import { CountryService } from '@core/services/country.service';
 import { CountryCallingCodeService } from '@core/services/country-calling-code.service';
 import { UKCountryCodes } from '@shared/types';
 
-// eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: 'div[mrtm-phone-input]',
   imports: [FieldsetDirective, ErrorMessageComponent, ReactiveFormsModule, AsyncPipe, LegendDirective],
@@ -48,6 +47,7 @@ export class PhoneInputComponent implements OnInit, DoCheck, ControlValueAccesso
   private readonly destroy$ = inject(DestroySubject);
   private readonly container = inject(ControlContainer, { optional: true })!;
   private readonly countryCallingCodeService = inject(CountryCallingCodeService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly label = input<string>();
   readonly govukDisplayBlock = true;
@@ -117,6 +117,11 @@ export class PhoneInputComponent implements OnInit, DoCheck, ControlValueAccesso
         filter(() => !!this.onChange),
       )
       .subscribe((value) => this.onChange({ countryCode: value.countryCode || null, number: value.number || null }));
+
+    // Submitting the parent form and validity changes are both model-only, so
+    // without this the errors would not be rendered until the view is next dirtied
+    this.form?.ngSubmit.pipe(takeUntil(this.destroy$)).subscribe(() => this.cdr.markForCheck());
+    this.control?.statusChanges.pipe(takeUntil(this.destroy$)).subscribe(() => this.cdr.markForCheck());
   }
 
   ngDoCheck(): void {

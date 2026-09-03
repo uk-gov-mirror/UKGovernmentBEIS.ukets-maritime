@@ -1,5 +1,5 @@
 import { APP_BASE_HREF } from '@angular/common';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { combineLatest, from, map, Observable, of, switchMap, tap } from 'rxjs';
@@ -20,7 +20,7 @@ import { ConfigStore, selectIsFeatureEnabled } from '@core/config';
 import { KeycloakService } from '@core/services';
 import { environment } from '@environments/environment';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AuthService {
   private readonly authStore = inject(AuthStore);
   private readonly configStore = inject(ConfigStore);

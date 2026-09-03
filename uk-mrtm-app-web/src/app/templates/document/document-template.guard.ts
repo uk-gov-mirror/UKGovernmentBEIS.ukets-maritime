@@ -1,13 +1,11 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Resolve } from '@angular/router';
 
 import { map, Observable, tap } from 'rxjs';
 
 import { DocumentTemplateDTO, DocumentTemplatesService } from '@mrtm/api';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class DocumentTemplateGuard implements CanActivate, Resolve<DocumentTemplateDTO> {
   private readonly documentTemplatesService = inject(DocumentTemplatesService);
 

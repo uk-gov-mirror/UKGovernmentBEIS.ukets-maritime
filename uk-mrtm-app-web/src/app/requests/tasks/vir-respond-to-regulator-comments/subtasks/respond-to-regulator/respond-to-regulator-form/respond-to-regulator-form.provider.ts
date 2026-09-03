@@ -40,7 +40,7 @@ export const respondToRegulatorFormProvider: Provider = {
         {
           validators: [
             GovukValidators.required('Enter a date'),
-            todayOrPastDateValidator('The date of the improvement must be today or in the past'),
+            todayOrPastDateValidator('The date of the improvement'),
           ],
         },
       ),

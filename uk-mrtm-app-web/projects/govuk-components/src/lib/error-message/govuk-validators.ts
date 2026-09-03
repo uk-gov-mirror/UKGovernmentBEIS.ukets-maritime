@@ -192,8 +192,8 @@ export class GovukValidators {
   }
 
   private static rangeNumberValidator(min: number, max: number): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: string } | null => {
-      let error = null;
+    return (control: AbstractControl): { [key: string]: boolean } | null => {
+      let error: { [key: string]: boolean } | null = null;
       if (control.value !== null && control.value !== undefined && !isNaN(control.value)) {
         if (control.value < min || control.value > max) {
           error = { invalidLength: true };

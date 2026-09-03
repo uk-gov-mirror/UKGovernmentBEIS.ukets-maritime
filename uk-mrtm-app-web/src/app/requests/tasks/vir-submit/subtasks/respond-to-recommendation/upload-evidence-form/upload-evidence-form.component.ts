@@ -27,8 +27,8 @@ export class UploadEvidenceFormComponent {
   private readonly service = inject(TaskService);
   private readonly activatedRoute = inject(ActivatedRoute);
 
-  public readonly downloadUrl = this.store.select(requestTaskQuery.selectTasksDownloadUrl)();
   public readonly formGroup = inject(TASK_FORM);
+  public readonly downloadUrl = this.store.select(requestTaskQuery.selectTasksDownloadUrl)();
   public readonly key = input<string>();
 
   public readonly caption = computed(() => {

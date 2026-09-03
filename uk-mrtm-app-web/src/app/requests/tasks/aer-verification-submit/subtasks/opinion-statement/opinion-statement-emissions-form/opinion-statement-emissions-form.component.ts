@@ -38,11 +38,11 @@ import { AerEmissionsOverviewSummaryTemplateComponent } from '@shared/components
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OpinionStatementEmissionsFormComponent {
-  readonly map = opinionStatementMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
   private readonly store = inject(RequestTaskStore);
+  readonly map = opinionStatementMap;
   readonly totalEmissions = this.store.select(aerCommonQuery.selectTotalEmissions);
 
   onSubmit() {

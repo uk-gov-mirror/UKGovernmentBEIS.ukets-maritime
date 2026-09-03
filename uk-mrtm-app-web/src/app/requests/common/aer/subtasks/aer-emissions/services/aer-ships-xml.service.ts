@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { AerShipEmissions } from '@mrtm/api';
 
@@ -14,9 +14,7 @@ import { ShipsXmlService } from '@requests/common/components/emissions/upload-sh
 import { XmlResult, XmlValidationError } from '@shared/types';
 import { X2jOptions, XMLParser } from 'fast-xml-parser';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class AerShipsXmlService implements ShipsXmlService {
   /**
    * Since there is no XSD schema validation, FastXMLParser declares objects to be always treated as array.

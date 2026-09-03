@@ -110,10 +110,10 @@ interface ViewModel {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AerSubmittedReportComponent implements AfterViewInit {
-  readonly hasVerification = input<boolean>(false);
-
   private readonly store = inject(RequestActionStore);
+
   private readonly requestActionReportService = inject(RequestActionReportService);
+  readonly hasVerification = input<boolean>(false);
 
   readonly vm: Signal<ViewModel> = computed(() => {
     const requestActionDTO = this.store.select(requestActionQuery.selectAction)();

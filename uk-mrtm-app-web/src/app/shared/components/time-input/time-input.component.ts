@@ -21,10 +21,6 @@ import {
 } from '@shared/components/time-input/time-input.types';
 import { isNil } from '@shared/utils';
 
-/*
-  eslint-disable
-  @angular-eslint/prefer-on-push-component-change-detection,
- */
 @Component({
   selector: 'div[mrtm-time-input]',
   imports: [ErrorMessageComponent, ReactiveFormsModule, FieldsetHintDirective, LegendDirective, FieldsetDirective],
@@ -33,10 +29,10 @@ import { isNil } from '@shared/utils';
   providers: [timeInputFormProvider],
 })
 export class TimeInputComponent extends FormInput implements ControlValueAccessor, OnInit, DoCheck {
+  public readonly formGroup: FormGroup<TimeInputFormGroupModel> = inject(TIME_INPUT_FORM);
   private onChange: (value: Partial<TimeInputFormModel>) => void;
   private onBlur: () => any;
   private initialValidator: ValidatorFn;
-  public readonly formGroup: FormGroup<TimeInputFormGroupModel> = inject(TIME_INPUT_FORM);
   private readonly currentFormValue = toSignal(this.formGroup.valueChanges);
   public readonly label: InputSignal<string> = input<string>();
   public readonly legendSize: InputSignal<LegendSizeType> = input<LegendSizeType>();

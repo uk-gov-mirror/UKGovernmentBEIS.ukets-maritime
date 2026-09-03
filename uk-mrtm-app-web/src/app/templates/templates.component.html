@@ -42,11 +42,12 @@
           @case ('name') {
             <a routerLink="." (click)="navigateToTemplate(row['id'])" govukLink>{{ row[column.field] }}</a>
           }
-          @case ('workflow') {
-            {{ row[column.field] }}
-          }
           @case ('lastUpdatedDate') {
             {{ row[column.field] | govukDate }}
+          }
+          @case ('workflow')
+          @default {
+            {{ row[column.field] }}
           }
         }
       </ng-template>

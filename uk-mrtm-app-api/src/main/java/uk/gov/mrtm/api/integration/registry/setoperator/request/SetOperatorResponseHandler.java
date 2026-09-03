@@ -12,6 +12,7 @@ import uk.gov.mrtm.api.account.enumeration.AccountSearchKey;
 import uk.gov.mrtm.api.account.enumeration.MrtmAccountReportingStatus;
 import uk.gov.mrtm.api.account.repository.AccountReportingStatusRepository;
 import uk.gov.mrtm.api.account.repository.MrtmAccountRepository;
+import uk.gov.mrtm.api.account.service.MrtmAccountUpdateService;
 import uk.gov.mrtm.api.common.constants.MrtmNotificationTemplateName;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlan;
 import uk.gov.mrtm.api.emissionsmonitoringplan.service.EmissionsMonitoringPlanQueryService;
@@ -63,6 +64,7 @@ public class SetOperatorResponseHandler {
     private final MaritimeAccountContactsEventListenerResolver accountContactsEventListenerResolver;
     private final MaritimeAccountExemptEventListenerResolver accountExemptEventListenerResolver;
     private final AccountSearchAdditionalKeywordService accountSearchAdditionalKeywordService;
+    private final MrtmAccountUpdateService mrtmAccountUpdateService;
 
     public void handleResponse(OperatorUpdateEvent event, String correlationId, String parentCorrelationId) {
         log.info("Set operator outcome with correlationId {}, parentCorrelationId {} and emitter ID {}",
@@ -85,7 +87,7 @@ public class SetOperatorResponseHandler {
 
         if (errors.isEmpty()) {
             MrtmAccount account = mrtmAccountRepository.findByBusinessId(event.getEmitterId());
-            saveOperatorId(account, event.getOperatorId());
+            mrtmAccountUpdateService.updateAccountRegistryId(account.getId(), event.getOperatorId().intValue());
             storeRegistryIdSearchKeyword(account, event.getOperatorId());
             sendUpdateAccountEvent(account.getId());
             sendAccountContactsEvent(account.getId());
@@ -185,11 +187,6 @@ public class SetOperatorResponseHandler {
         fields.put(PayloadFieldsUtils.OPERATOR_ID, asStringOrEmpty(event.getOperatorId()));
 
         return fields;
-    }
-
-    private void saveOperatorId(MrtmAccount account, Long operatorId) {
-        account.setRegistryId(operatorId.intValue());
-        mrtmAccountRepository.save(account);
     }
 
     private void storeRegistryIdSearchKeyword(MrtmAccount account, Long operatorId) {

@@ -43,10 +43,10 @@ import { NON_COMPLIANCE_REASON_TYPES, NonComplianceReason } from '@shared/types'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NonComplianceFinalDeterminationDetailsFormComponent {
-  readonly map = nonComplianceFinalDeterminationDetailsMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<NonComplianceFinalDeterminationTaskPayload>);
+  readonly map = nonComplianceFinalDeterminationDetailsMap;
   private readonly nonComplianceReasonPipe = new NonComplianceReasonPipe();
 
   readonly reasonOptions: GovukSelectOption<NonComplianceReason>[] = NON_COMPLIANCE_REASON_TYPES.map((value) => ({

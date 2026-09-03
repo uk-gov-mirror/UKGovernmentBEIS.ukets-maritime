@@ -16,6 +16,7 @@ import uk.gov.mrtm.api.account.enumeration.AccountSearchKey;
 import uk.gov.mrtm.api.account.enumeration.MrtmAccountReportingStatus;
 import uk.gov.mrtm.api.account.repository.AccountReportingStatusRepository;
 import uk.gov.mrtm.api.account.repository.MrtmAccountRepository;
+import uk.gov.mrtm.api.account.service.MrtmAccountUpdateService;
 import uk.gov.mrtm.api.common.constants.MrtmNotificationTemplateName;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlan;
 import uk.gov.mrtm.api.emissionsmonitoringplan.service.EmissionsMonitoringPlanQueryService;
@@ -89,6 +90,8 @@ class SetOperatorResponseHandlerTest {
     private MaritimeAccountExemptEventListenerResolver accountExemptEventListenerResolver;
     @Mock
     private AccountSearchAdditionalKeywordService accountSearchAdditionalKeywordService;
+    @Mock
+    private MrtmAccountUpdateService mrtmAccountUpdateService;
 
     @Test
     void handleResponse_with_errors() {
@@ -210,8 +213,7 @@ class SetOperatorResponseHandlerTest {
 
         verify(validator).validate(event);
         verify(mrtmAccountRepository).findByBusinessId(EMITTER_ID);
-        verify(mrtmAccountRepository).save(mrtmAccount);
-        verify(mrtmAccount).setRegistryId((int) OPERATOR_ID);
+        verify(mrtmAccountUpdateService).updateAccountRegistryId(accountId, (int) OPERATOR_ID);
         verify(accountSearchAdditionalKeywordService).storeKeywordsForAccount(accountId,
             Map.of(AccountSearchKey.REGISTRY_ID.name(), String.valueOf(OPERATOR_ID)));
         verify(setOperatorSendToRegistryProducer).produce(outcome, setOperatorKafkaTemplate,
@@ -225,7 +227,7 @@ class SetOperatorResponseHandlerTest {
         verifyNoMoreInteractions(mrtmAccount, validator,
             mrtmAccountRepository, setOperatorSendToRegistryProducer, emissionsMonitoringPlanQueryService,
             accountUpdatedRegistryListener, accountContactsEventListenerResolver, accountExemptEventListenerResolver,
-            accountReportingStatusRepository, accountSearchAdditionalKeywordService);
+            accountReportingStatusRepository, accountSearchAdditionalKeywordService, mrtmAccountUpdateService);
         verifyNoInteractions(setOperatorKafkaTemplate, notifyRegistryEmailService, emailProperties);
     }
 

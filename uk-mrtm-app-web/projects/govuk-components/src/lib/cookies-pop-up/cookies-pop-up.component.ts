@@ -1,17 +1,13 @@
-import { APP_BASE_HREF } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input, InputSignal, output, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, input, InputSignal, output, signal } from '@angular/core';
 
 @Component({
   selector: 'govuk-cookies-pop-up',
-  imports: [RouterLink],
   standalone: true,
   templateUrl: './cookies-pop-up.component.html',
   styleUrl: './cookies-pop-up.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CookiesPopUpComponent {
-  private readonly baseHref = inject<string>(APP_BASE_HREF, { optional: true });
   readonly cookieRejected = signal(false);
   readonly cookiesExpirationTime: InputSignal<string> = input<string>();
   readonly cookiesAccepted: InputSignal<boolean> = input<boolean>();

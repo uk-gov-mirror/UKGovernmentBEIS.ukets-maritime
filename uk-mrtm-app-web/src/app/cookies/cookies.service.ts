@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { BehaviorSubject } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class CookiesService {
   private PREFERENCES_SET_COOKIE = 'uk_pmrv_cookies_preferences_set';
   private COOKIES_POLICY = 'uk_pmrv_cookies_policy';

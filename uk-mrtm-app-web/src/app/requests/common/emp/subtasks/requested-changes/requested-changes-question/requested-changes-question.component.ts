@@ -40,8 +40,8 @@ export class RequestedChangesQuestionComponent {
   private readonly service: TaskService<EmpAmendTaskPayload> = inject(TaskService<EmpAmendTaskPayload>);
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
 
-  headerTitle = regulatorCommentsSubtaskMap.requestedChanges.title;
   decisionForAmends = inject(AMENDS_NEEDED_GROUPS);
+  headerTitle = regulatorCommentsSubtaskMap.requestedChanges.title;
   subtaskTitleMap: Record<keyof EmissionsMonitoringPlan, string> = empSubtaskToTitle;
 
   onSubmit() {

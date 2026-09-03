@@ -1,7 +1,7 @@
 import { Provider } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 
-import { addDays } from 'date-fns';
+import { addDays, isAfter } from 'date-fns';
 
 import { AerInPersonSiteVisit, AerInPersonSiteVisitDates } from '@mrtm/api';
 
@@ -14,7 +14,7 @@ import {
   AerInPersonSiteVisitDatesFormGroupModel,
   AerInPersonSiteVisitFormGroupModel,
 } from '@requests/tasks/aer-verification-submit/subtasks/opinion-statement/opinion-statement-site-visit-in-person/opinion-statement-site-visit-in-person.types';
-import { isNil } from '@shared/utils';
+import { isNil, latestTodayAnywhere, toUtcStartOfDay } from '@shared/utils';
 import { todayOrPastDateValidator } from '@shared/validators';
 
 export const addVisitDateFormGroup = (
@@ -24,7 +24,7 @@ export const addVisitDateFormGroup = (
     {
       startDate: new FormControl<Date>(!isNil(data?.startDate) ? new Date(data?.startDate) : null, [
         GovukValidators.required('Enter the date when the site visit began'),
-        todayOrPastDateValidator('The date entered must be today or in the past'),
+        todayOrPastDateValidator(),
       ]),
       numberOfDays: new FormControl<number>(data?.numberOfDays, [
         GovukValidators.required('Enter the number of days your team were on site'),
@@ -62,8 +62,8 @@ function siteVisitRangeTodayOrInThePast(): ValidatorFn {
     }
 
     const dates = getDates(formGroup);
-    const today = new Date();
-    if (dates.length && dates.some((date) => date > today)) {
+    const latestToday = latestTodayAnywhere();
+    if (dates.length && dates.some((date) => isAfter(toUtcStartOfDay(date), latestToday))) {
       return { invalidDate: 'The days must be in accordance with when the site visit began' };
     }
     return null;

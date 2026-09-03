@@ -1,12 +1,12 @@
 package uk.gov.mrtm.api.workflow.request.flow.noncompliance.domain;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import uk.gov.netz.api.common.validation.NotAfterCurrentDateInZone;
 import uk.gov.netz.api.common.validation.SpELExpression;
 
 import java.time.LocalDate;
@@ -28,7 +28,7 @@ public class NonComplianceFinalDetermination {
     @NotNull
     private ComplianceRestored complianceRestored;
 
-    @PastOrPresent
+    @NotAfterCurrentDateInZone
     private LocalDate complianceRestoredDate;
 
     @NotNull
@@ -41,6 +41,6 @@ public class NonComplianceFinalDetermination {
     @NotNull
     private Boolean operatorPaid;
 
-    @PastOrPresent
+    @NotAfterCurrentDateInZone
     private LocalDate operatorPaidDate;
 }

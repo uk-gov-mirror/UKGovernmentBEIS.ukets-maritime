@@ -46,8 +46,8 @@ export class ReductionClaimDetailsComponent {
   private readonly service: TaskService<AerSubmitTaskPayload> = inject(TaskService);
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private readonly formGroup = new UntypedFormGroup({});
   private readonly feedbackBannerStore = inject(FeedbackBannerStore);
+  private readonly formGroup = new UntypedFormGroup({});
 
   public readonly isEditable: Signal<boolean> = this.store.select(requestTaskQuery.selectIsEditable);
   public readonly wizardMap: SubTaskListMap<AerSmf> = reductionClaimMap;

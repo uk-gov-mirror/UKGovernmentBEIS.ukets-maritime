@@ -4,7 +4,7 @@ with parameters as (select 2022 as reportingYear),
                                        r.status,
                                        cast(r.metadata ->> 'year' as integer) reporting_year,
                                        r.metadata ->> 'exempted'              is_exempted
-                                from request r
+                                from request_account r
                                          join request_type rt on r.type_id = rt.id
                                 where rt.code = 'AER'
                                   and cast(r.metadata ->> 'year' as integer) = (select reportingYear from parameters)),

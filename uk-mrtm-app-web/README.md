@@ -75,18 +75,6 @@ yarn start
 This will build and serve the application under [http://localhost:4200](http://localhost:4200).
 The app will automatically rebuild and reload if you change any of the source files.
 
-## Analyze Bundles
-
-To start analyzing bundles run:
-
-```shell script
-yarn analyze
-```
-
-This will build the app, generate all `source-maps` needed by `source-map-explorer` and open a browser tab where you can view all bundles.
-
-![source-map-explorer](images/source-map-explorer.png)
-
 ## How to run Sonarqube locally
 
 1. Make sure you have sonarqube running locally. If you're running the docker compose from the [uk-netz-env-development](https://git.trasys.gr/bitbucket/projects/UKNETZ/repos/uk-netz-env-development) this should be enough.

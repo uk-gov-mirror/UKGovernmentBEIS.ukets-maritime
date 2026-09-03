@@ -30,10 +30,10 @@
     </callActivity>
     <sequenceFlow id="Flow_1hmzmrq" sourceRef="SITE_VISIT_REVIEW" targetRef="Gateway_19o6n11" />
     <serviceTask id="Activity_014ftb6" name="Handle Site Visit Approved" flowable:delegateExpression="#{siteVisitApprovedHandler}" />
-    <serviceTask id="Activity_0qgk5of" name="Update Workflow status to APPROVED" flowable:delegateExpression="#{requestUpdateStatusHandlerFlowable}">
+    <serviceTask id="Activity_0qgk5of" name="Update Workflow status to ACCEPTED" flowable:delegateExpression="#{requestUpdateStatusHandlerFlowable}">
       <extensionElements>
         <flowable:field name="requestStatus">
-          <flowable:string>APPROVED</flowable:string>
+          <flowable:string>ACCEPTED</flowable:string>
         </flowable:field>
       </extensionElements>
     </serviceTask>

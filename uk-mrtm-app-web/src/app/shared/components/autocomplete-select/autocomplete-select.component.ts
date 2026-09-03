@@ -26,7 +26,6 @@ import { AutocompleteSelectOption } from '@shared/components/autocomplete-select
 import { AutocompleteSelectInputScrollSyncDirective } from '@shared/components/autocomplete-select/autocomplete-select-input-scroll-sync.directive';
 import { isEqual } from '@shared/utils';
 
-// eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: 'div[mrtm-autocomplete-select]',
   imports: [ReactiveFormsModule, ErrorMessageComponent, AutocompleteSelectInputScrollSyncDirective, SafeHtmlPipe],

@@ -3,13 +3,14 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { RequestActionInfoDTO } from '@mrtm/api';
 
+import { DebounceDirective } from '@netz/common/directives';
 import { GovukDatePipe, ITEM_ACTIONS_MAP, ItemActionHeaderPipe, ItemActionsMap } from '@netz/common/pipes';
 import { getYearFromRequestId } from '@netz/common/utils';
 import { LinkDirective } from '@netz/govuk-components';
 
 @Component({
   selector: 'netz-timeline-item',
-  imports: [ItemActionHeaderPipe, GovukDatePipe, RouterLink, LinkDirective],
+  imports: [ItemActionHeaderPipe, GovukDatePipe, RouterLink, LinkDirective, DebounceDirective],
   standalone: true,
   template: `
     <div class="govuk-body govuk-!-margin-bottom-0">
@@ -18,7 +19,7 @@ import { LinkDirective } from '@netz/govuk-components';
       </h3>
       <p class="govuk-body govuk-!-margin-bottom-1">{{ action().creationDate | govukDate: 'datetime' }}</p>
       @if (isLinkable() && link()) {
-        <a [routerLink]="link()" [relativeTo]="route" [state]="state()" govukLink>View details</a>
+        <a [routerLink]="link()" [relativeTo]="route" [state]="state()" govukLink netzDebounce>View details</a>
       }
     </div>
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" aria-hidden="true" />

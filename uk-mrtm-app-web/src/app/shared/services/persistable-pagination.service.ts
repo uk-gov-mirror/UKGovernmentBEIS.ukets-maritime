@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { produce } from 'immer';
 
@@ -19,7 +19,7 @@ export const persistablePaginationQuery = {
   fragment: (state: PersistablePaginationState) => state?.fragment,
 };
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class PersistablePaginationService extends SignalStore<Record<string, PersistablePaginationState>> {
   constructor() {
     super({});

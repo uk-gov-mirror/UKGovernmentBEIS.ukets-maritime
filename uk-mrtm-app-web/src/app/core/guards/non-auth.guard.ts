@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
 
 import { first, map, Observable } from 'rxjs';
@@ -7,7 +7,7 @@ import { AuthStore, selectIsLoggedIn } from '@netz/common/auth';
 
 import { AuthService } from '@core/services/auth.service';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class NonAuthGuard implements CanActivate {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);

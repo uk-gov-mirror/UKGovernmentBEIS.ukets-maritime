@@ -59,8 +59,8 @@ export class AerVoyageDetailsComponent implements OnInit {
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
-  public readonly voyageId: InputSignal<string> = input<string>();
   public readonly isAddNewVoyage = inject(AER_SUBTASK_NEW_ENTRY_FLOW, { optional: true });
+  public readonly voyageId: InputSignal<string> = input<string>();
   public readonly wizardMap = aerVoyagesMap;
   public readonly countrySelectItems = AER_PORT_COUNTRY_SELECT_ITEMS;
   private readonly currentArrivalCountry = toSignal(this.arrivalCountryCtrl.valueChanges.pipe(), {

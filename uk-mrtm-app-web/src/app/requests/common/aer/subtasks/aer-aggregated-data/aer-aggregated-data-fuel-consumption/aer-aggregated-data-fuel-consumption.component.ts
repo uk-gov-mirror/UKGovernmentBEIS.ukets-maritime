@@ -60,11 +60,11 @@ import { isNil } from '@shared/utils';
 export class AerAggregatedDataFuelConsumptionComponent {
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
   private readonly service: TaskService<AerSubmitTaskPayload> = inject(TaskService);
-  private readonly fuelOriginTitlePipe: FuelOriginTitlePipe = new FuelOriginTitlePipe();
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-
   public readonly isAddNewAggregatedData = inject(AER_SUBTASK_NEW_ENTRY_FLOW, { optional: true });
+
   public form: FormGroup = inject(TASK_FORM);
+  private readonly fuelOriginTitlePipe: FuelOriginTitlePipe = new FuelOriginTitlePipe();
   public readonly dataId: InputSignal<string> = input<string>();
   public readonly wizardMap: SubTaskListMap<AerShipAggregatedData> = aerAggregatedDataSubtasksListMap;
   public readonly currentFuelConsumptionsValues = toSignal<Array<any>>(this.fuelConsumptionsFormArray.valueChanges, {

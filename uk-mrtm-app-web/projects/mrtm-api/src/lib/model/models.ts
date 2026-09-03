@@ -9,6 +9,8 @@ export * from './accountContactInfoDTO';
 export * from './accountContactInfoResponse';
 export * from './accountContactVbInfoDTO';
 export * from './accountContactVbInfoResponse';
+export * from './accountDetailsHistoryDTO';
+export * from './accountDetailsHistoryListResponse';
 export * from './accountNoteDto';
 export * from './accountNoteRequest';
 export * from './accountNoteResponse';

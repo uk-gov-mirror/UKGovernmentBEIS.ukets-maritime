@@ -14,16 +14,16 @@ import java.time.LocalDateTime;
 @Builder
 public class ExternalEmissionsMonitoringPlanDetails {
 
-    @Schema(description = "Submission date of the emissions monitoring plain")
+    @Schema(description = "Submission date of the emissions monitoring plan")
     private LocalDateTime submissionDate;
 
-    @Schema(description = "Emissions monitoring plain version")
+    @Schema(description = "Emissions monitoring plan version")
     private int version;
 
     @Schema(description = "Regulator comments")
     private String comments;
 
-    @Schema(description = "Emissions monitoring plain data")
+    @Schema(description = "Emissions monitoring plan data")
     private ExternalEmissionsMonitoringPlan empData;
 
 }

@@ -62,6 +62,10 @@ export abstract class FormInput implements ControlValueAccessor, OnInit, OnDestr
       this.isSubmitted = true;
       this.cdr?.markForCheck();
     });
+
+    // Validity changes are model-only, so without this the error message would
+    // not be rendered until something else happens to mark the view as dirty
+    this.control?.statusChanges.pipe(takeUntil(this.destroy$)).subscribe(() => this.cdr?.markForCheck());
   }
 
   ngOnDestroy(): void {

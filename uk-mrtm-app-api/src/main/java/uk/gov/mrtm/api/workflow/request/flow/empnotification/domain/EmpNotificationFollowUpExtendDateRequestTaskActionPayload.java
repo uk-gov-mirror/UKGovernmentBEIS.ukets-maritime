@@ -1,12 +1,12 @@
 package uk.gov.mrtm.api.workflow.request.flow.empnotification.domain;
 
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import uk.gov.netz.api.common.validation.NotBeforeCurrentDateInZone;
 import uk.gov.netz.api.workflow.request.core.domain.RequestTaskActionPayload;
 
 import java.time.LocalDate;
@@ -19,6 +19,6 @@ import java.time.LocalDate;
 public class EmpNotificationFollowUpExtendDateRequestTaskActionPayload extends RequestTaskActionPayload {
 
     @NotNull
-    @Future
+    @NotBeforeCurrentDateInZone(inclusive = false)
     private LocalDate dueDate;
 }

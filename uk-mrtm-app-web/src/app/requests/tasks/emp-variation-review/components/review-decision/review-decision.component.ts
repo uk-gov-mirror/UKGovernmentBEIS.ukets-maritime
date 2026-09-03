@@ -44,8 +44,8 @@ import { RequestTaskFileService } from '@shared/services';
 export class ReviewDecisionComponent {
   protected readonly form: ReviewDecisionFormModel = inject(VARIATION_REVIEW_DECISION_FORM);
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
-  downloadUrl = this.store.select(empCommonQuery.selectTasksDownloadUrl)();
   private readonly requestTaskFileService: RequestTaskFileService = inject(RequestTaskFileService);
+  downloadUrl = this.store.select(empCommonQuery.selectTasksDownloadUrl)();
 
   get requiredChangesCtrl() {
     return this.form.controls.requiredChanges;

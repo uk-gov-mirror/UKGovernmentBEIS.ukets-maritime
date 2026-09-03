@@ -22,10 +22,10 @@ import { WizardStepComponent } from '@shared/components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OpinionStatementSiteVisitVirtualComponent {
-  readonly map = opinionStatementMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
+  readonly map = opinionStatementMap;
 
   readonly hintHtml = `  
     <p class="govuk-body govuk-hint">You must explain:</p>

@@ -1,11 +1,11 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { BehaviorSubject, from, ignoreElements, Observable } from 'rxjs';
 
 import { BusinessError } from './business-error';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class BusinessErrorService {
   private readonly router = inject(Router);
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { EmpShipEmissions } from '@mrtm/api';
 
@@ -15,7 +15,7 @@ import { mapShipEmissions } from '@requests/common/eu-xml-import/mappers/ships.m
 import { XmlValidationError } from '@shared/types';
 import { X2jOptions, XMLParser } from 'fast-xml-parser';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class EuXmlImportService {
   private readonly arrayPaths = [
     'monitoringPlans.monitoringPlan',

@@ -4,7 +4,6 @@ import { ControlValueAccessor, NgControl, ReactiveFormsModule, UntypedFormContro
 import { FormService } from '@netz/govuk-components';
 
 /* eslint-disable
-   @angular-eslint/prefer-on-push-component-change-detection,
    @typescript-eslint/no-unused-vars
 */
 @Component({

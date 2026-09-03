@@ -3,7 +3,6 @@ import { RouterLink } from '@angular/router';
 
 import { LinkDirective } from '@netz/govuk-components';
 
-// eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: 'h2[mrtm-summary-header]',
   imports: [RouterLink, LinkDirective],

@@ -30,11 +30,11 @@ import { VerificationBodyDetailsSummaryTemplateComponent, WizardStepComponent } 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerifierDetailsFormComponent {
-  readonly map = verifierDetailsMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
   private readonly store = inject(RequestTaskStore);
+  readonly map = verifierDetailsMap;
   readonly verifierDetails = this.store.select(aerVerificationSubmitQuery.selectVerifierDetails);
 
   onSubmit() {

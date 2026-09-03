@@ -47,10 +47,10 @@ export class ReductionClaimFuelPurchaseComponent {
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
   private readonly service: TaskService<AerSubmitTaskPayload> = inject(TaskService);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private readonly fuelOriginTitlePipe: FuelOriginTitlePipe = new FuelOriginTitlePipe();
   private readonly route = inject(ActivatedRoute);
-
   public readonly form: FormGroup = inject(TASK_FORM);
+
+  private readonly fuelOriginTitlePipe: FuelOriginTitlePipe = new FuelOriginTitlePipe();
 
   private readonly currentFormValue = toSignal<ReductionClaimFuelPurchaseFormModel>(this.form.valueChanges, {
     initialValue: this.form.value,

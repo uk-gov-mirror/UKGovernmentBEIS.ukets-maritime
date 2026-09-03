@@ -32,7 +32,9 @@ export class DataSupplierAppointComponent {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
+  public readonly formGroup = inject(APPOINT_DATA_SUPPLIER_FORM);
   public readonly accountId: InputSignal<number> = input<number>(null);
+
   public readonly dataSupplierId = toSignal(
     this.activatedRoute.queryParams.pipe(map((params) => params?.dataSupplierId)),
   );
@@ -55,8 +57,6 @@ export class DataSupplierAppointComponent {
     ),
     { initialValue: [] },
   );
-
-  public readonly formGroup = inject(APPOINT_DATA_SUPPLIER_FORM);
 
   onSubmit(): void {
     const selectedValue = this.formGroup.value?.dataSupplierId;

@@ -21,11 +21,11 @@ import { AerVerificationSubmitTaskPayload } from '@requests/common/aer/aer.types
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverallVerificationDecisionCommentsDeleteComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
   readonly map = overallVerificationDecisionMap;
   readonly wizardStep = OverallVerificationDecisionStep;
   private readonly subtask = OVERALL_VERIFICATION_DECISION_SUB_TASK;
-  private readonly route = inject(ActivatedRoute);
-  private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
   readonly reasonIndex = input<string>();
 
   onSubmit() {

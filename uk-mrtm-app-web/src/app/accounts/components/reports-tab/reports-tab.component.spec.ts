@@ -138,7 +138,7 @@ describe('ReportsTabComponent', () => {
       resourceId: String(mockedAccount.account.id),
       historyCategory: 'REPORTING',
       requestTypes: ['AER'],
-      requestStatuses: ['COMPLETED'],
+      requestStatuses: ['CANCELLED'],
       pageNumber: 0,
       pageSize: 10000,
     });

@@ -39,8 +39,8 @@ export class NonComplianceCivilPenaltyUploadFormComponent {
   private readonly service = inject(TaskService<NonComplianceCivilPenaltyRequestTaskPayload>);
   private readonly store = inject(RequestTaskStore);
 
-  readonly map = nonComplianceCivilPenaltyMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
+  readonly map = nonComplianceCivilPenaltyMap;
   readonly getDownloadUrl: Signal<(uuid: string) => string | string[]> = computed(() => (uuid: string) => [
     this.store.select(requestTaskQuery.selectTasksDownloadUrl)(),
     uuid,

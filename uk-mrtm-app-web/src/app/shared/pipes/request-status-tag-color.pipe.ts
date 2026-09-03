@@ -18,6 +18,7 @@ export class RequestStatusTagColorPipe implements PipeTransform {
 
       case 'COMPLETED':
       case 'APPROVED':
+      case 'ACCEPTED':
         return 'green';
 
       case 'IN_PROGRESS':

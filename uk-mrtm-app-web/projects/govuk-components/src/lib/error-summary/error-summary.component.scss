@@ -1,4 +1,4 @@
-@use 'govuk-frontend/dist/govuk/index' as govuk;
+@use 'govuk-frontend/dist/govuk/base' as govuk;
 
 .govuk-error-summary__message-without-path {
   color: govuk.$govuk-error-colour;

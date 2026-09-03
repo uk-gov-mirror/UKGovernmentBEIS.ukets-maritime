@@ -34,7 +34,7 @@ export class BasePage<C> {
     return getInputValue(this.fixture, selector instanceof Element ? selector : this.sanitizeSelector(selector));
   }
 
-  setInputValue(selector: string, value): void {
+  setInputValue(selector: string, value?: any): void {
     changeInputValue(this.fixture, this.sanitizeSelector(selector), value);
   }
 

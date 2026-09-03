@@ -35,11 +35,11 @@ import { ShipEmissionTableListItem } from '@shared/types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListOfShipsComponent {
-  private readonly formGroup: UntypedFormGroup = new UntypedFormGroup({});
   private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly router: Router = inject(Router);
+  private readonly formGroup: UntypedFormGroup = new UntypedFormGroup({});
 
   readonly taskMap = emissionsSubTasksMap;
   readonly listOfShips = this.store.select(empCommonQuery.selectListOfShips);

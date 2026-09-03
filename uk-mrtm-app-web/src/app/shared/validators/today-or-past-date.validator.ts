@@ -1,30 +1,31 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 
-import { isAfter, startOfDay } from 'date-fns';
+import { isAfter } from 'date-fns';
 
-export function todayOrPastDateValidator(message?: string): ValidatorFn {
+import { latestTodayAnywhere, toUtcStartOfDay } from '@shared/utils';
+
+export function todayOrPastDateValidator(partialMessage?: string): ValidatorFn {
   return (control: AbstractControl): { [key: string]: string } | null => {
-    const value = control.value;
+    const inputDay = toUtcStartOfDay(control.value);
 
-    if (!value) {
+    if (!inputDay) {
       return null;
     }
 
-    const inputDate = value instanceof Date ? value : new Date(value);
+    const latestToday = latestTodayAnywhere();
+    const displayedDate = new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+    }).format(latestToday);
 
-    if (isNaN(inputDate.getTime())) {
-      return null;
-    }
-
-    const today = new Date();
-
-    const inputMidnight = startOfDay(
-      new Date(inputDate.getUTCFullYear(), inputDate.getUTCMonth(), inputDate.getUTCDate()),
-    );
-    const todayMidnight = startOfDay(today);
-
-    return isAfter(inputMidnight, todayMidnight)
-      ? { futureDateError: message ?? 'The date must be today or in the past' }
+    return isAfter(inputDay, latestToday)
+      ? {
+          invalidTodayOrPastDate: partialMessage
+            ? `${partialMessage} must be the same as or before ${displayedDate}`
+            : `The date must be the same as or before ${displayedDate}`,
+        }
       : null;
   };
 }

@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.mrtm.api.account.enumeration.AccountSearchKey;
+import uk.gov.mrtm.api.account.service.AccountDetailsHistoryConstants;
 import uk.gov.mrtm.api.account.service.MrtmAccountUpdateService;
 import uk.gov.mrtm.api.common.domain.dto.AddressStateDTO;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlan;
@@ -16,7 +17,6 @@ import uk.gov.mrtm.api.emissionsmonitoringplan.domain.operatordetails.LimitedCom
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.operatordetails.OrganisationLegalStatusType;
 import uk.gov.mrtm.api.emissionsmonitoringplan.service.EmissionsMonitoringPlanService;
 import uk.gov.mrtm.api.workflow.request.flow.empvariation.domain.EmpVariationAccountDraftData;
-import uk.gov.mrtm.api.workflow.request.flow.empvariation.domain.EmpVariationRequestInfo;
 import uk.gov.mrtm.api.workflow.request.flow.empvariation.domain.EmpVariationRequestMetadata;
 import uk.gov.mrtm.api.workflow.request.flow.empvariation.domain.EmpVariationRequestPayload;
 import uk.gov.netz.api.account.service.AccountSearchAdditionalKeywordService;
@@ -31,8 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -134,7 +132,12 @@ public class EmpVariationUpdateEmpServiceTest {
         verify(emissionsMonitoringPlanService, times(1)).setFileDocumentUuid(empId, requestPayload.getEmpDocument().getUuid());
         verify(empDraftDataQueryService, times(1)).getEmpVariationDeterminationSummary(request);
         verify(mrtmAccountUpdateService, times(1))
-                .updateAccountUponEmpVariationApproved(accountId, accountDraftData);
+                .updateAccountUponEmpVariationApproved(
+                        accountId,
+                        accountDraftData,
+                        AccountDetailsHistoryConstants.updatedThroughWorkflow(
+                                AccountDetailsHistoryConstants.WORKFLOW_NAME_EMP_VARIATION, requestId),
+                        AccountDetailsHistoryConstants.SUBMITTED_BY_SYSTEM);
 
         verify(accountSearchAdditionalKeywordService, times(1)).storeKeywordsForAccount(accountId, Map.of(AccountSearchKey.ACCOUNT_NAME.name(), operatorName));
     }

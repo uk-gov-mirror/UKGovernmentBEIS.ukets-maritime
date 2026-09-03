@@ -35,10 +35,10 @@ import { OverallVerificationDecisionPipe } from '@shared/pipes';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverallVerificationDecisionAssessmentComponent {
-  readonly map = overallVerificationDecisionMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
+  readonly map = overallVerificationDecisionMap;
 
   readonly options: AerVerificationDecision['type'][] = [
     'VERIFIED_AS_SATISFACTORY',

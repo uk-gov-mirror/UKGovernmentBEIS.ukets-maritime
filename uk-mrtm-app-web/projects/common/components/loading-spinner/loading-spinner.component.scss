@@ -1,4 +1,4 @@
-@use 'govuk-frontend/dist/govuk/index' as govuk;
+@use 'govuk-frontend/dist/govuk/base' as govuk;
 
 .hods-loading-spinner {
   &__spinner {

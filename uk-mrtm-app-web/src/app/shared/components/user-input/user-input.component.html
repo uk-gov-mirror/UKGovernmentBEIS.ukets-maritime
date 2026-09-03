@@ -23,28 +23,27 @@
     widthClass="govuk-!-width-three-quarters"></div>
 }
 
-@switch (phoneType()) {
-  @case ('full') {
-    <div mrtm-phone-input formControlName="phoneNumber" label="Phone number 1" class="govuk-!-margin-bottom-1"></div>
-    <div mrtm-phone-input formControlName="mobileNumber" label="Phone number 2 (optional)"></div>
-  }
-  @case ('national') {
-    <div
-      autoComplete="tel-national"
-      formControlName="phoneNumber"
-      govuk-text-input
-      inputType="tel"
-      label="Phone number 1"
-      widthClass="govuk-!-width-one-third"></div>
-    <div
-      autoComplete="mobile tel-national"
-      formControlName="mobileNumber"
-      govuk-text-input
-      inputType="tel"
-      label="Phone number 2 (optional)"
-      widthClass="govuk-!-width-one-third"></div>
-  }
+@let type = phoneType();
+@if (type === 'full') {
+  <div mrtm-phone-input formControlName="phoneNumber" label="Phone number 1" class="govuk-!-margin-bottom-1"></div>
+  <div mrtm-phone-input formControlName="mobileNumber" label="Phone number 2 (optional)"></div>
+} @else if (type === 'national') {
+  <div
+    autoComplete="tel-national"
+    formControlName="phoneNumber"
+    govuk-text-input
+    inputType="tel"
+    label="Phone number 1"
+    widthClass="govuk-!-width-one-third"></div>
+  <div
+    autoComplete="mobile tel-national"
+    formControlName="mobileNumber"
+    govuk-text-input
+    inputType="tel"
+    label="Phone number 2 (optional)"
+    widthClass="govuk-!-width-one-third"></div>
 }
+
 @if (!isNotification()) {
   <div>
     <div

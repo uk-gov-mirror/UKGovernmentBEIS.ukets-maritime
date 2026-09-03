@@ -25,8 +25,8 @@ import { WizardStepComponent } from '@shared/components';
 export class EditDueDateComponent {
   private readonly service = inject(TaskService<WaitForAmendsTaskPayload>);
   readonly form: UntypedFormGroup = inject(TASK_FORM);
-  readonly title = waitForAmendsMap.editDueDate.title;
   private readonly route = inject(ActivatedRoute);
+  readonly title = waitForAmendsMap.editDueDate.title;
 
   onSubmit() {
     (this.service as WaitForAmendsService)

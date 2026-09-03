@@ -1,3 +1,4 @@
+export * from './accountDetailsHistory.service';
 export * from './accountNotes.service';
 export * from './accountReportingStatusHistory.service';
 export * from './accountThirdPartyDataProviders.service';

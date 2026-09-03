@@ -1,9 +1,31 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 
-export const futureDateValidator = (message?: string): ValidatorFn => {
+import { isAfter } from 'date-fns';
+
+import { earliestTodayAnywhere, toUtcStartOfDay } from '@shared/utils';
+
+export const futureDateValidator = (partialMessage?: string): ValidatorFn => {
   return (control: AbstractControl): { [key: string]: string } | null => {
-    return control.value && control.value < new Date()
-      ? { invalidDate: message ?? 'The date must be in the future' }
-      : null;
+    const inputDay = toUtcStartOfDay(control.value);
+
+    if (!inputDay) {
+      return null;
+    }
+
+    const earliestToday = earliestTodayAnywhere();
+    const displayedDate = new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+    }).format(earliestToday);
+
+    return isAfter(inputDay, earliestToday)
+      ? null
+      : {
+          invalidFutureDate: partialMessage
+            ? `${partialMessage} must be after ${displayedDate}`
+            : `The date must be after ${displayedDate}`,
+        };
   };
 };

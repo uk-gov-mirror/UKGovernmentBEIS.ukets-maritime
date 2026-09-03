@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 
 import { combineLatest, first, map, Observable, of, switchMap } from 'rxjs';
@@ -9,9 +9,7 @@ import { ConfigStore, selectIsFeatureEnabled } from '@core/config';
 import { AuthService } from '@core/services/auth.service';
 import { LatestTermsStore } from '@core/store/latest-terms/latest-terms.store';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class TermsAndConditionsGuard implements CanActivate {
   protected router = inject(Router);
   protected authService = inject(AuthService);

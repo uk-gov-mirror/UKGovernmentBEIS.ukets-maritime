@@ -84,3 +84,4 @@ export * from './registry-account-updated-summary-template';
 export * from './registry-notice-event-submitted-summary-template';
 export * from './reduction-claim-submitted-summary-template';
 export * from './site-visit';
+export * from './verification-body-summary';

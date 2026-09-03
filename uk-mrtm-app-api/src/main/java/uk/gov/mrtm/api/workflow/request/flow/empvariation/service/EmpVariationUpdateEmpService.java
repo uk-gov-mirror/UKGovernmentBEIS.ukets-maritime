@@ -1,11 +1,11 @@
 package uk.gov.mrtm.api.workflow.request.flow.empvariation.service;
 
+import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.mrtm.api.account.enumeration.AccountSearchKey;
-
-import lombok.RequiredArgsConstructor;
+import uk.gov.mrtm.api.account.service.AccountDetailsHistoryConstants;
 import uk.gov.mrtm.api.account.service.MrtmAccountUpdateService;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlanContainer;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.dto.EmissionsMonitoringPlanDTO;
@@ -43,21 +43,23 @@ public class EmpVariationUpdateEmpService {
         final EmissionsMonitoringPlanContainer empContainer =
                 EMP_VARIATION_MAPPER.toEmissionsMonitoringPlanContainer(
                         requestPayload);
-        
-        //collect data
+
         final EmpVariationAccountDraftData accountDraftData = accountDraftDataQueryService
 				.getAccountDraftData(requestPayload);
 
-        // update
 		final EmissionsMonitoringPlanDTO empDTO = emissionsMonitoringPlanService.updateEmissionsMonitoringPlan(accountId, empContainer);
         final int newConsolidationNumber = empDTO.getConsolidationNumber();
 		emissionsMonitoringPlanService.setFileDocumentUuid(empDTO.getId(), requestPayload.getEmpDocument().getUuid());
         requestMetadata.setEmpConsolidationNumber(newConsolidationNumber);
         requestMetadata.setSummary(empDraftDataQueryService.getEmpVariationDeterminationSummary(request));
         requestPayload.setEmpConsolidationNumber(newConsolidationNumber);
-		requestService.saveRequest(request); // explicit save because for some (unknown) reason the request is not flushed,
-												// so as to retrieve the updates later in next service tasks
-		mrtmAccountUpdateService.updateAccountUponEmpVariationApproved(accountId, accountDraftData);
+		requestService.saveRequest(request);
+		mrtmAccountUpdateService.updateAccountUponEmpVariationApproved(
+                accountId,
+                accountDraftData,
+                AccountDetailsHistoryConstants.updatedThroughWorkflow(
+                        AccountDetailsHistoryConstants.WORKFLOW_NAME_EMP_VARIATION, requestId),
+                AccountDetailsHistoryConstants.SUBMITTED_BY_SYSTEM);
 
 		final EmpOperatorDetails empOperatorDetails = empContainer.getEmissionsMonitoringPlan().getOperatorDetails();
         updateSearchKeywords(accountId, empOperatorDetails.getOperatorName());

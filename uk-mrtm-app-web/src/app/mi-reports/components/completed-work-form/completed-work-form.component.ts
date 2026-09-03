@@ -11,7 +11,6 @@ import {
 import { DatePickerComponent } from '@shared/components';
 import { existingControlContainer } from '@shared/providers';
 
-/* eslint-disable @angular-eslint/prefer-on-push-component-change-detection */
 @Component({
   selector: 'mrtm-completed-work-form',
   imports: [

@@ -26,10 +26,10 @@ import { WizardStepComponent } from '@shared/components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverallVerificationDecisionCommentsFormComponent {
-  readonly map = overallVerificationDecisionMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
+  readonly map = overallVerificationDecisionMap;
   readonly isEditMode = !!this.formGroup.get('reasonIndex')?.value;
 
   onSubmit() {

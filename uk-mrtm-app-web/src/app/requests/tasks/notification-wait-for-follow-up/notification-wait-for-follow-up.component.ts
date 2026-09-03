@@ -14,8 +14,8 @@ import { FollowUpRequest } from '@shared/types/follow-up-request.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationWaitForFollowUpComponent {
-  readonly changeLink = 'wait-for-follow-up/edit-due-date';
   private readonly store = inject(RequestTaskStore);
+  readonly changeLink = 'wait-for-follow-up/edit-due-date';
 
   readonly followUpRequest: FollowUpRequest = {
     request: this.store.select(waitForFollowUpQuery.selectPayload)().followUpRequest,

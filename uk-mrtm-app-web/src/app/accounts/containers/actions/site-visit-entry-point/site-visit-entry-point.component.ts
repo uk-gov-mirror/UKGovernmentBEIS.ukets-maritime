@@ -36,8 +36,8 @@ export class SiteVisitEntryPointComponent {
   private readonly router = inject(Router);
   private readonly itemLinkPipe = inject(ItemLinkPipe);
 
-  readonly accountId = input<number>();
   readonly formGroup = inject(SITE_VISIT_ENTRY_POINT_FORM);
+  readonly accountId = input<number>();
 
   readonly availableYears = toSignal(
     toObservable(this.accountId).pipe(

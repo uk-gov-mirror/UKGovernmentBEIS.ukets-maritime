@@ -13,7 +13,7 @@
   (change)="onChange($event)"
   [accept]="accepted()"
   [class.govuk-file-upload--error]="control.invalid && isTouched"
-  [disabled]="control.disabled"
+  [disabled]="isDisabled()"
   [id]="identifier"
   [multiple]="isMultiple()"
   [name]="identifier"

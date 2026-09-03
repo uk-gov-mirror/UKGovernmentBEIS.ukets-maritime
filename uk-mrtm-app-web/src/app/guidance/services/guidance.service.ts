@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { map, Observable, switchMap, take } from 'rxjs';
 
@@ -18,7 +18,7 @@ import { guidanceSectionNameExist } from '@guidance/errors/business-error';
 import { ManageGuidanceDocumentDTO } from '@guidance/guidance.types';
 import { isNil } from '@shared/utils';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class GuidanceService {
   private readonly guidanceSectionsService = inject(GuidanceSectionsService);
   private readonly guidanceDocumentsService = inject(GuidanceDocumentsService);

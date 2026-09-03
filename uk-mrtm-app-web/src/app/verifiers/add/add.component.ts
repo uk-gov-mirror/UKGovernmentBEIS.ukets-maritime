@@ -29,12 +29,12 @@ import { ADD_USER_AUTHORITY_PROVIDER, addFormProvider } from '@verifiers/add/add
 })
 export class AddComponent implements AfterViewInit {
   public readonly formGroup: FormGroup = inject<UntypedFormGroup>(ADD_USER_AUTHORITY_PROVIDER);
-  public readonly wizardStep = viewChild(WizardStepComponent, { read: ElementRef });
   private readonly store: VerifierUserStore = inject(VerifierUserStore);
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private readonly submissionErrors$ = this.store.pipe(selectSubmissionErrors);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  public readonly wizardStep = viewChild(WizardStepComponent, { read: ElementRef });
+  private readonly submissionErrors$ = this.store.pipe(selectSubmissionErrors);
   public readonly formHint$ = this.activatedRoute.paramMap.pipe(
     map((params) => {
       const userType = params.get('userType');

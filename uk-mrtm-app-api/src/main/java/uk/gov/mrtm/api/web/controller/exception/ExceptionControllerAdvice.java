@@ -25,7 +25,6 @@ import uk.gov.mrtm.api.common.exception.ExternalBusinessException;
 import uk.gov.mrtm.api.web.util.ErrorUtil;
 import uk.gov.netz.api.common.exception.BusinessException;
 import uk.gov.netz.api.common.exception.ErrorCode;
-import uk.gov.netz.api.common.utils.ExceptionUtils;
 import uk.gov.netz.api.common.validation.Violation;
 
 
@@ -45,7 +44,7 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(BusinessException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
-        log.error("Business Logic Exception:", ExceptionUtils.getRootCause(e));
+        log.error("Business Logic Exception:", e);
 
         return ErrorUtil.getErrorResponse(e.getData(), e.getErrorCode());
     }
@@ -59,7 +58,7 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(ExternalBusinessException.class)
     @ResponseBody
     public ResponseEntity<ExternalErrorResponse> handleExternalBusinessException(ExternalBusinessException e) {
-        log.error("External API Business Logic Exception:", ExceptionUtils.getRootCause(e));
+        log.error("External API Business Logic Exception:", e);
 
         return ErrorUtil.getExternalErrorResponse(e.getData(), e.getErrorCode());
     }
@@ -73,7 +72,7 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
-        log.error("Method Argument Not Valid Exception:", ExceptionUtils.getRootCause(e));
+        log.error("Method Argument Not Valid Exception:", e);
 
         return ErrorUtil.getErrorResponse(extractBindingErrors(e.getBindingResult()), ErrorCode.FORM_VALIDATION);
     }
@@ -81,7 +80,7 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(BindException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleBindException(BindException e) {
-        log.error("Bind Exception:", ExceptionUtils.getRootCause(e));
+        log.error("Bind Exception:", e);
 
         return ErrorUtil.getErrorResponse(extractBindingErrors(e.getBindingResult()), ErrorCode.FORM_VALIDATION);
     }
@@ -106,7 +105,7 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleValidationException(ConstraintViolationException e) {
-        log.error("Constraint Violation Exception:", ExceptionUtils.getRootCause(e));
+        log.error("Constraint Violation Exception:", e);
 
         Object[] errors = e.getConstraintViolations().stream()
                 .map(v -> new Violation(v.getPropertyPath().toString(), v.getMessage()))
@@ -129,7 +128,7 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleValidationException(MissingServletRequestParameterException e) {
-        log.error("Missing Servlet Request Parameter Exception:", ExceptionUtils.getRootCause(e));
+        log.error("Missing Servlet Request Parameter Exception:", e);
 
         Object[] errors = {new Violation(e.getParameterName(), e.getMessage())};
 
@@ -139,7 +138,7 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(MissingServletRequestPartException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleValidationException(MissingServletRequestPartException e) {
-        log.error("Missing Servlet Request Part Exception:", ExceptionUtils.getRootCause(e));
+        log.error("Missing Servlet Request Part Exception:", e);
 
         Object[] errors = { new Violation(e.getRequestPartName(), e.getMessage()) };
 
@@ -149,7 +148,7 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e) {
-        log.error("Http Request Method Not Supported Exception:", ExceptionUtils.getRootCause(e));
+        log.error("Http Request Method Not Supported Exception:", e);
 
         return ErrorUtil.getErrorResponse(new Object[] {e.getMessage()}, ErrorCode.METHOD_NOT_ALLOWED);
     }
@@ -157,7 +156,7 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException e) {
-        log.error("Http Media Type Not Supported Exception:", ExceptionUtils.getRootCause(e));
+        log.error("Http Media Type Not Supported Exception:", e);
 
         return ErrorUtil.getErrorResponse(new Object[] {e.getMessage()}, ErrorCode.UNSUPPORTED_MEDIA_TYPE);
     }
@@ -165,7 +164,7 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException e) {
-        log.error("Http Media Type Not Acceptable Exception:", ExceptionUtils.getRootCause(e));
+        log.error("Http Media Type Not Acceptable Exception:", e);
 
         return ErrorUtil.getErrorResponse(new Object[] {e.getMessage()}, ErrorCode.NOT_ACCEPTABLE);
     }
@@ -173,7 +172,7 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException e) {
-        log.error("Method Argument Type Mismatch:", ExceptionUtils.getRootCause(e));
+        log.error("Method Argument Type Mismatch:", e);
 
         Object[] errors = {new Violation(e.getName(), e.getValue() + " is not valid type")};
 
@@ -183,7 +182,7 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        log.error("Invalid Request Format Exception:", ExceptionUtils.getRootCause(e));
+        log.error("Invalid Request Format Exception:", e);
 
         return ErrorUtil.getErrorResponse(new Object[] {}, ErrorCode.INVALID_REQUEST_FORMAT);
     }
@@ -191,7 +190,7 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(HttpClientErrorException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleHttpClientErrorException(HttpClientErrorException e) {
-        log.error("Http Client Error Unauthorized Exception:", ExceptionUtils.getRootCause(e));
+        log.error("Http Client Error Unauthorized Exception:", e);
 
         return HttpStatus.UNAUTHORIZED.equals(e.getStatusCode())
                 ? ErrorUtil.getErrorResponse(new Object[] {}, ErrorCode.UNAUTHORIZED)
@@ -201,22 +200,22 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(NoResourceFoundException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException e) {
-        log.error("No Resource Found Exception:", ExceptionUtils.getRootCause(e));
+        log.error("No Resource Found Exception:", e);
 
         return ErrorUtil.getErrorResponse(new Object[]{}, ErrorCode.RESOURCE_NOT_FOUND);
     }
 
     @ExceptionHandler(SecurityException.class)
     @ResponseBody
-    public ResponseEntity<ErrorResponse> handleSecurityException(SecurityException ex) {
-        log.error("File blocked by the content security filter", ex);
+    public ResponseEntity<ErrorResponse> handleSecurityException(SecurityException e) {
+        log.error("File blocked by the content security filter", e);
         return ErrorUtil.getErrorResponse(new Object[]{}, ErrorCode.INVALID_FILE_TYPE);
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> handleGenericException(Exception e) {
-        log.error("Generic Server Exception:", ExceptionUtils.getRootCause(e));
+        log.error("Generic Server Exception:", e);
 
         return ErrorUtil.getErrorResponse(new Object[]{}, ErrorCode.INTERNAL_SERVER);
     }

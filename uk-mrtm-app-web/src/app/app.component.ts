@@ -34,7 +34,6 @@ interface Permissions {
   showAuthorizedOperators: boolean;
 }
 
-// eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: 'mrtm-root',
   imports: [

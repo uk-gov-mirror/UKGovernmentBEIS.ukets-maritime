@@ -1,0 +1,55 @@
+<netz-page-heading size="l">Operator details history</netz-page-heading>
+@let items = historyItems();
+@if (items?.length) {
+  <govuk-accordion>
+    @for (entry of items; track entry.item) {
+      <govuk-accordion-item [header]="entry.item.creationDate | govukDate: 'datetime'">
+        <dl govuk-summary-list>
+          <div govukSummaryListRow>
+            <dt govukSummaryListRowKey>Reason for change</dt>
+            <dd govukSummaryListRowValue class="pre-wrap">{{ entry.item.reason }}</dd>
+          </div>
+          <div govukSummaryListRow>
+            <dt govukSummaryListRowKey>Changed by</dt>
+            <dd govukSummaryListRowValue>{{ entry.item.changedBy | lowercase }}</dd>
+          </div>
+        </dl>
+        @if (entry.changes.length) {
+          <h2 class="govuk-heading-s">Changes made</h2>
+          <govuk-table [columns]="columns" [data]="entry.changes">
+            <ng-template let-column="column" let-row="row">
+              @if (column.field === 'label') {
+                {{ row.label }}
+              } @else {
+                @switch (row.type) {
+                  @case ('address') {
+                    @if (row[column.field]; as address) {
+                      <div>{{ address.line1 }}</div>
+                      @if (address.line2) {
+                        <div>{{ address.line2 }}</div>
+                      }
+                      <div>{{ address.city }}</div>
+                      @if (address.state) {
+                        <div>{{ address.state }}</div>
+                      }
+                      <div>{{ address.postcode }}</div>
+                      <div>{{ address.country | country }}</div>
+                    }
+                  }
+                  @case ('date') {
+                    {{ row[column.field] | govukDate }}
+                  }
+                  @default {
+                    {{ row[column.field] }}
+                  }
+                }
+              }
+            </ng-template>
+          </govuk-table>
+        }
+      </govuk-accordion-item>
+    }
+  </govuk-accordion>
+} @else {
+  <p class="govuk-body">There are no results to show</p>
+}

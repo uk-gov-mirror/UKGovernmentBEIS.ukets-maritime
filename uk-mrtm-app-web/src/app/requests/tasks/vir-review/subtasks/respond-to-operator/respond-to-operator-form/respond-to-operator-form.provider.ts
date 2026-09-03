@@ -13,12 +13,12 @@ import {
   RespondToOperatorFormGroupModel,
   RespondToOperatorFormModel,
 } from '@requests/tasks/vir-review/subtasks/respond-to-operator/respond-to-operator-form/respond-to-operator-form.types';
-import { isNil } from '@shared/utils';
+import { earliestTodayAnywhere, isNil, toUtcStartOfDay } from '@shared/utils';
 
 const futureDateValidator: ValidatorFn = (control: AbstractControl) => {
-  const value = control.value;
+  const inputDay = toUtcStartOfDay(control.value);
 
-  return isNil(value) || isAfter(value, new Date())
+  return isNil(inputDay) || isAfter(inputDay, earliestTodayAnywhere())
     ? null
     : { futureDateError: 'The date of the improvement must be in the future' };
 };

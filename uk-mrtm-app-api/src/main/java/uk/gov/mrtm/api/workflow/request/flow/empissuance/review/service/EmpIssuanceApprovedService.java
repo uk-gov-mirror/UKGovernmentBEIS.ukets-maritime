@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import uk.gov.mrtm.api.account.enumeration.AccountSearchKey;
+import uk.gov.mrtm.api.account.service.AccountDetailsHistoryConstants;
 import uk.gov.mrtm.api.account.service.MrtmAccountUpdateService;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlanContainer;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.emissions.EmpShipEmissions;
@@ -48,11 +49,15 @@ public class EmpIssuanceApprovedService {
 
         emissionsMonitoringPlanService.submitEmissionsMonitoringPlan(accountId, empContainer, requestPayload.getEmpDocument().getUuid());
 
-        //collect data
         final EmpIssuanceAccountDraftData accountDraftData = accountDraftDataQueryService
             .getAccountDraftData(requestPayload);
 
-        accountUpdateService.updateAccountUponEmpApproved(accountId, accountDraftData);
+        accountUpdateService.updateAccountUponEmpApproved(
+                accountId,
+                accountDraftData,
+                AccountDetailsHistoryConstants.updatedThroughWorkflow(
+                        AccountDetailsHistoryConstants.WORKFLOW_NAME_EMP_ISSUANCE, requestId),
+                AccountDetailsHistoryConstants.SUBMITTED_BY_SYSTEM);
 
         requestService.saveRequest(request);
 

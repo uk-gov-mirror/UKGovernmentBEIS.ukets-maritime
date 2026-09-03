@@ -32,8 +32,8 @@ export class NonComplianceNoticeOfIntentUploadFormComponent {
   private readonly service = inject(TaskService<NonComplianceNoticeOfIntentRequestTaskPayload>);
   private readonly store = inject(RequestTaskStore);
 
-  readonly map = nonComplianceNoticeOfIntentMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
+  readonly map = nonComplianceNoticeOfIntentMap;
   readonly getDownloadUrl: Signal<(uuid: string) => string | string[]> = computed(() => (uuid: string) => [
     this.store.select(requestTaskQuery.selectTasksDownloadUrl)(),
     uuid,

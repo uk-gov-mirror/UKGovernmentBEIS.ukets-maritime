@@ -10,13 +10,13 @@ import uk.gov.mrtm.api.account.domain.AccountUpdatedRegistryEvent;
 import uk.gov.mrtm.api.account.domain.MrtmAccount;
 import uk.gov.mrtm.api.account.domain.MrtmAccountReportingYearsUpdatedEvent;
 import uk.gov.mrtm.api.account.domain.MrtmAccountStatus;
+import uk.gov.mrtm.api.account.domain.dto.AccountDetailsHistorySnapshot;
 import uk.gov.mrtm.api.account.domain.dto.MrtmAccountUpdateDTO;
 import uk.gov.mrtm.api.account.enumeration.AccountSearchKey;
 import uk.gov.mrtm.api.account.repository.MrtmAccountRepository;
 import uk.gov.mrtm.api.account.transform.AddressStateMapper;
 import uk.gov.mrtm.api.account.transform.MrtmAccountMapper;
 import uk.gov.mrtm.api.account.transform.RegisteredAddressStateMapper;
-import uk.gov.mrtm.api.common.domain.dto.AddressStateDTO;
 import uk.gov.mrtm.api.common.exception.MrtmErrorCode;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlan;
 import uk.gov.mrtm.api.emissionsmonitoringplan.service.EmissionsMonitoringPlanQueryService;
@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Log4j2
 @Service
@@ -46,6 +47,7 @@ public class MrtmAccountUpdateService {
     private final AddressStateMapper addressStateMapper;
     private final ApplicationEventPublisher publisher;
     private final MaritimeAccountUpdatedEventListenerResolver accountUpdatedRegistryListener;
+    private final AccountDetailsHistoryQueryService accountDetailsHistoryQueryService;
 
     @Value("${feature-flag.aer.workflow.enabled}")
     private boolean aerEnabled;
@@ -61,9 +63,15 @@ public class MrtmAccountUpdateService {
             mrtmAccount.getFirstMaritimeActivityDate().getYear(),
             mrtmAccountUpdateDTO.getFirstMaritimeActivityDate().getYear());
 
+        AccountDetailsHistorySnapshot previousDetails = toAccountDetailsHistorySnapshot(mrtmAccount);
+
         mrtmAccountMapper.updateMrtmAccount(mrtmAccount, mrtmAccountUpdateDTO);
         mrtmAccount.setUpdatedBy(user.getUserId());
         mrtmAccount.setLastUpdatedDate(LocalDateTime.now());
+
+        AccountDetailsHistorySnapshot newDetails = toAccountDetailsHistorySnapshot(mrtmAccount);
+        recordAccountDetailsHistoryIfChanged(
+                accountId, previousDetails, newDetails, mrtmAccountUpdateDTO.getReason(), user.getFullName(), user.getUserId());
 
         accountSearchAdditionalKeywordService.storeKeywordsForAccount(accountId,
                 Map.of(AccountSearchKey.ACCOUNT_NAME.name(), mrtmAccountUpdateDTO.getName()));
@@ -99,12 +107,24 @@ public class MrtmAccountUpdateService {
 
     @Transactional
     @AccountStatus(expression = "{#status == 'NEW'}")
-    public void updateAccountUponEmpApproved(Long accountId, EmpIssuanceAccountDraftData accountDraftData) {
+    public void updateAccountUponEmpApproved(Long accountId, EmpIssuanceAccountDraftData accountDraftData,
+                                             String reason, String submitterName) {
         MrtmAccount account = mrtmAccountQueryService.getAccountById(accountId);
+        AccountDetailsHistorySnapshot previousDetails = toAccountDetailsHistorySnapshot(account);
+
         account.setName(accountDraftData.getName());
         account.setAddress(accountDraftData.getAddress());
         account.setRegisteredAddress(accountDraftData.getRegisteredAddress());
         account.setStatus(MrtmAccountStatus.LIVE);
+
+        AccountDetailsHistorySnapshot newDetails = toAccountDetailsHistorySnapshot(account);
+        recordAccountDetailsHistoryIfChanged(
+                accountId,
+                previousDetails,
+                newDetails,
+                reason,
+                submitterName,
+                null);
     }
 
     @Transactional
@@ -116,17 +136,72 @@ public class MrtmAccountUpdateService {
 
     @Transactional
     @AccountStatus(expression = "{#status == 'LIVE'}")
-    public void updateAccountUponEmpVariationApproved(Long accountId, EmpVariationAccountDraftData accountDraftData) {
+    public void updateAccountUponEmpVariationApproved(Long accountId, EmpVariationAccountDraftData accountDraftData,
+                                                      String reason, String submitterName) {
         MrtmAccount account = mrtmAccountQueryService.getAccountById(accountId);
+        AccountDetailsHistorySnapshot previousDetails = toAccountDetailsHistorySnapshot(account);
+
         account.setName(accountDraftData.getName());
         account.setAddress(accountDraftData.getAddress());
         account.setRegisteredAddress(accountDraftData.getRegisteredAddress());
+
+        AccountDetailsHistorySnapshot newDetails = toAccountDetailsHistorySnapshot(account);
+        recordAccountDetailsHistoryIfChanged(
+                accountId,
+                previousDetails,
+                newDetails,
+                reason,
+                submitterName,
+                null);
+    }
+
+    @Transactional
+    public void updateAccountRegistryId(Long accountId, Integer registryId) {
+        MrtmAccount account = mrtmAccountQueryService.getAccountById(accountId);
+        AccountDetailsHistorySnapshot previousDetails = toAccountDetailsHistorySnapshot(account);
+
+        account.setRegistryId(registryId);
+        mrtmAccountRepository.save(account);
+
+        AccountDetailsHistorySnapshot newDetails = toAccountDetailsHistorySnapshot(account);
+        recordAccountDetailsHistoryIfChanged(
+                accountId,
+                previousDetails,
+                newDetails,
+                AccountDetailsHistoryConstants.REASON_REGISTRY_SET_OPERATOR,
+                AccountDetailsHistoryConstants.SUBMITTED_BY_SYSTEM,
+                null);
     }
 
     private void validateFirstMaritimeActivityDate(int currentFirstMaritimeActivityDate, int newFirstMaritimeActivityDate) {
         if (newFirstMaritimeActivityDate > currentFirstMaritimeActivityDate) {
             throw new BusinessException(MrtmErrorCode.FIRST_MARITIME_ACTIVITY_DATE_AFTER_PREVIOUS);
         }
+    }
+
+    private void recordAccountDetailsHistoryIfChanged(Long accountId,
+                                                      AccountDetailsHistorySnapshot previousDetails,
+                                                      AccountDetailsHistorySnapshot newDetails,
+                                                      String reason,
+                                                      String submitterName,
+                                                      String submitterId) {
+        if (Objects.equals(previousDetails, newDetails)) {
+            return;
+        }
+
+        accountDetailsHistoryQueryService.createAccountDetailsHistory(
+                accountId, previousDetails, newDetails, reason, submitterName, submitterId);
+    }
+
+    private AccountDetailsHistorySnapshot toAccountDetailsHistorySnapshot(MrtmAccount account) {
+        return AccountDetailsHistorySnapshot.builder()
+                .operatorName(account.getName())
+                .sopId(account.getSopId())
+                .contactAddress(addressStateMapper.toAddressStateDTO(account.getAddress()))
+                .registeredAddress(registeredAddressStateMapper.toAddressStateDTO(account.getRegisteredAddress()))
+                .firstYearOfReportingObligation(account.getFirstMaritimeActivityDate())
+                .registryId(account.getRegistryId())
+                .build();
     }
 
     private void sendAccountUpdateToRegistry(Long accountId) {

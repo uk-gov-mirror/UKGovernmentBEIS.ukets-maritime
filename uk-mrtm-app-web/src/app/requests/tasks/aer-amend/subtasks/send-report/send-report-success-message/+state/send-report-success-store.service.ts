@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { produce } from 'immer';
 
@@ -11,7 +11,7 @@ import {
   SendReportSuccessState,
 } from '@requests/tasks/aer-submit/subtasks/send-report/send-report-success-message/+state/send-report-success.state';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class SendReportSuccessStore extends SignalStore<SendReportSuccessState> {
   constructor() {
     super(initialSendReportSuccessState);

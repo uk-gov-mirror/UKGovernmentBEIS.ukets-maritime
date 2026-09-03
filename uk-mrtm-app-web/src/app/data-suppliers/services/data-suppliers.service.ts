@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { map, Observable, switchMap } from 'rxjs';
 
@@ -11,7 +11,7 @@ import { DataSuppliersStore } from '@data-suppliers/+state';
 import { DataSupplierItem } from '@data-suppliers/data-suppliers.types';
 import { thirdPartyDataProviderNameAlreadyExist, thirdPartyDataProviderUrlAlreadyExist } from '@data-suppliers/errors';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class DataSuppliersService {
   private readonly store = inject(DataSuppliersStore);
   private readonly thirdPartyDataProviderService = inject(ThirdPartyDataProviderAPIService);

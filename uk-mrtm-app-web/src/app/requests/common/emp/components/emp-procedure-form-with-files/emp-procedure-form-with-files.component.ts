@@ -8,7 +8,6 @@ import { EmpProcedureFormComponent } from '@requests/common/emp/components/emp-p
 import { MultipleFileInputComponent } from '@shared/components';
 import { existingControlContainer } from '@shared/providers';
 
-// eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: 'mrtm-emp-procedure-form-with-files',
   imports: [EmpProcedureFormComponent, MultipleFileInputComponent, ReactiveFormsModule],

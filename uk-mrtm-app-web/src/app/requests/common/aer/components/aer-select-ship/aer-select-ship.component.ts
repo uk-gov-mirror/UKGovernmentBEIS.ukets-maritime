@@ -47,10 +47,10 @@ export class AerSelectShipComponent {
   private readonly shipsSelector = inject(AER_SELECT_SHIPS_ITEMS_SELECTOR);
 
   public readonly form: FormGroup<AerSelectShipFormGroupModel> = inject<FormGroup>(TASK_FORM);
+  public readonly wizardMap: SubTaskListMap<AerPort | AerVoyage> = inject(AER_SUBTASK_LIST_MAP);
   public readonly objectId: Signal<string> = toSignal(
     this.activatedRoute.params.pipe(map((param) => param?.[this.routeParamKey])),
   );
-  public readonly wizardMap: SubTaskListMap<AerPort | AerVoyage> = inject(AER_SUBTASK_LIST_MAP);
   public readonly availableShips: Signal<Array<GovukSelectOption<string>>> = computed(() => {
     const ships = this.store.select(this.shipsSelector(this.objectId()))();
 

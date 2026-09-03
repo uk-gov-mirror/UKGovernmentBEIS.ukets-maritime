@@ -25,11 +25,11 @@ import { EmpReviewService } from '@requests/tasks/emp-review/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverallDecisionActionsComponent {
-  overallDecisionMap = overallDecisionMap;
   private readonly service: TaskService<EmpReviewTaskPayload> = inject(TaskService<EmpReviewTaskPayload>);
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
-  isAcceptedEnabled = this.store.select(empReviewQuery.selectAreAllSectionsAccepted)();
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
+  overallDecisionMap = overallDecisionMap;
+  isAcceptedEnabled = this.store.select(empReviewQuery.selectAreAllSectionsAccepted)();
 
   onSubmit(type: EmpIssuanceDetermination['type']) {
     (this.service as EmpReviewService)

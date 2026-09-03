@@ -51,7 +51,7 @@ export function createAggregateSelector<S = any, IMs extends any[] = [], SL = an
   sn: { [IM in keyof IMs]: StateSelector<S, IMs[IM]> },
   projector: (...ims: IMs) => SL,
 ): StateSelector<S, SL>;
-export function createAggregateSelector<S, SL = any>(...args): StateSelector<S, SL> {
+export function createAggregateSelector<S, SL = any>(...args: any[]): StateSelector<S, SL> {
   const projector = args[args.length - 1];
   const selectors = args.length === 2 && Array.isArray(args[0]) ? args[0] : args.slice(0, args.length - 1);
 

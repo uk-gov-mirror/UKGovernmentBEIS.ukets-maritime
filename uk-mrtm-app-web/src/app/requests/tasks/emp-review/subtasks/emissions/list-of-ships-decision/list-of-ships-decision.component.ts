@@ -44,12 +44,12 @@ import { ListOfShipsSummaryTemplateComponent } from '@shared/components/summarie
 export class ListOfShipsDecisionComponent {
   protected readonly form: ReviewDecisionFormModel = inject(REVIEW_DECISION_FORM);
 
-  private readonly formGroup = new UntypedFormGroup({});
   private readonly feedbackBannerStore = inject(FeedbackBannerStore);
-
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
+
   private readonly service: TaskService<EmpReviewTaskPayload> = inject(TaskService<EmpReviewTaskPayload>);
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
+  private readonly formGroup = new UntypedFormGroup({});
 
   readonly ships = this.store.select(empCommonQuery.selectListOfShips);
   readonly isEditable = this.store.select(requestTaskQuery.selectIsEditable);

@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpEvent, HttpEventType } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
 
 import {
@@ -25,7 +25,7 @@ import { FileUploadEvent } from '@shared/types';
 
 export type FileUploadRequest<T = FileUuidDTO> = (file: File) => Observable<HttpEvent<T>>;
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class FileUploadService {
   private readonly uploadProgressSubject = new Subject<FileUploadEvent>();
   readonly uploadProgress$ = this.uploadProgressSubject.asObservable();

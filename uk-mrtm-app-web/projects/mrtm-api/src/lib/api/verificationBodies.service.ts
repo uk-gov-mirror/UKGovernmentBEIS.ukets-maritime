@@ -17,7 +17,7 @@ import {
   HttpParams,
   HttpResponse,
 } from '@angular/common/http';
-import { Inject, Injectable, Optional } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
@@ -31,20 +31,19 @@ import { VerificationBodyUpdateDTO } from '../model/verificationBodyUpdateDTO';
 import { VerificationBodyUpdateStatusDTO } from '../model/verificationBodyUpdateStatusDTO';
 import { BASE_PATH } from '../variables';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class VerificationBodiesService {
+  protected httpClient = inject(HttpClient);
+
   protected basePath = '/api';
   public defaultHeaders = new HttpHeaders();
   public configuration = new Configuration();
   public encoder: HttpParameterCodec;
 
-  constructor(
-    protected httpClient: HttpClient,
-    @Optional() @Inject(BASE_PATH) basePath: string | string[],
-    @Optional() configuration: Configuration,
-  ) {
+  constructor() {
+    let basePath: string | string[] | null = inject(BASE_PATH, { optional: true });
+    const configuration = inject(Configuration, { optional: true });
+
     if (configuration) {
       this.configuration = configuration;
     }
@@ -432,6 +431,82 @@ export class VerificationBodiesService {
     }
 
     const localVarPath = `/v1.0/verification-bodies/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'number', dataFormat: 'int64' })}`;
+    return this.httpClient.request<VerificationBodyDTO>('get', `${this.configuration.basePath}${localVarPath}`, {
+      context: localVarHttpContext,
+      responseType: <any>responseType_,
+      withCredentials: this.configuration.withCredentials,
+      headers: localVarHeaders,
+      observe: observe,
+      transferCache: localVarTransferCache,
+      reportProgress: reportProgress,
+    });
+  }
+
+  /**
+   * Get the verification body details of the verification body to which the verifier belongs
+   * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+   * @param reportProgress flag to report request and response progress.
+   */
+  public getVerificationBodyDetails(
+    observe?: 'body',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<VerificationBodyDTO>;
+  public getVerificationBodyDetails(
+    observe?: 'response',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpResponse<VerificationBodyDTO>>;
+  public getVerificationBodyDetails(
+    observe?: 'events',
+    reportProgress?: boolean,
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<HttpEvent<VerificationBodyDTO>>;
+  public getVerificationBodyDetails(
+    observe: any = 'body',
+    reportProgress: boolean = false,
+    options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean },
+  ): Observable<any> {
+    let localVarHeaders = this.defaultHeaders;
+
+    // authentication (bearerAuth) required
+    const localVarCredential: string | undefined = this.configuration.lookupCredential('bearerAuth');
+    if (localVarCredential) {
+      localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+    }
+
+    let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+    if (localVarHttpHeaderAcceptSelected === undefined) {
+      // to determine the Accept header
+      const httpHeaderAccepts: string[] = ['application/json'];
+      localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+    }
+    if (localVarHttpHeaderAcceptSelected !== undefined) {
+      localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+    }
+
+    let localVarHttpContext: HttpContext | undefined = options && options.context;
+    if (localVarHttpContext === undefined) {
+      localVarHttpContext = new HttpContext();
+    }
+
+    let localVarTransferCache: boolean | undefined = options && options.transferCache;
+    if (localVarTransferCache === undefined) {
+      localVarTransferCache = true;
+    }
+
+    let responseType_: 'text' | 'json' | 'blob' = 'json';
+    if (localVarHttpHeaderAcceptSelected) {
+      if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+        responseType_ = 'text';
+      } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+        responseType_ = 'json';
+      } else {
+        responseType_ = 'blob';
+      }
+    }
+
+    const localVarPath = `/v1.0/verification-bodies/details`;
     return this.httpClient.request<VerificationBodyDTO>('get', `${this.configuration.basePath}${localVarPath}`, {
       context: localVarHttpContext,
       responseType: <any>responseType_,

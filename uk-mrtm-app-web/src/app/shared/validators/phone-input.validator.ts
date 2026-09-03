@@ -1,8 +1,10 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-import { PhoneNumberUtil } from 'google-libphonenumber';
+import { isValidPhoneNumber, validatePhoneNumberLength } from 'libphonenumber-js/max';
 
 import { GovukValidators, MessageValidatorFn } from '@netz/govuk-components';
+
+import { getRegionCodeForCallingCode } from '@shared/utils';
 
 const phoneNumberSizeValidator = (): ValidatorFn => {
   return (control: AbstractControl): { [key: string]: string } | null => {
@@ -14,8 +16,6 @@ const phoneNumberSizeValidator = (): ValidatorFn => {
 
 const phoneNumberValidatorWithSeparateCountryCodeAndPhoneNumberFields = (): ValidatorFn => {
   return (control: AbstractControl): ValidationErrors | null => {
-    const phoneNumberUtil = PhoneNumberUtil.getInstance();
-
     // If the fields are not filled, return null
     if (!control.value?.countryCode || !control.value?.number) {
       return null;
@@ -33,30 +33,25 @@ const phoneNumberValidatorWithSeparateCountryCodeAndPhoneNumberFields = (): Vali
       return { invalidChars: 'The phone number contains invalid characters' };
     }
 
-    let validNumber = false;
-    let validationResult;
-    try {
-      const regionCode = phoneNumberUtil.getRegionCodeForCountryCode(countryCode);
-      const phoneNumber = phoneNumberUtil.parseAndKeepRawInput(phone, regionCode);
-      validNumber = phoneNumberUtil.isValidNumber(phoneNumber);
-      validationResult = phoneNumberUtil.isPossibleNumberWithReason(phoneNumber);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
+    const regionCode = getRegionCodeForCallingCode(countryCode);
+    if (!regionCode) {
       return { invalidPhone: 'Your phone number is not valid' };
     }
-    if (!validNumber) {
-      switch (validationResult) {
-        case PhoneNumberUtil.ValidationResult.TOO_SHORT:
-          return { tooShort: 'The phone number is too short for your country code' };
-        case PhoneNumberUtil.ValidationResult.TOO_LONG:
-          return { tooLong: 'The phone number is too long for your country code' };
-        case PhoneNumberUtil.ValidationResult.INVALID_LENGTH:
-          return { invalidLength: 'The phone number length is invalid' };
-        default:
-          return { invalidPhone: 'Your phone number is not valid' };
-      }
+
+    if (isValidPhoneNumber(phone, regionCode)) {
+      return null;
     }
-    return null;
+
+    switch (validatePhoneNumberLength(phone, regionCode)) {
+      case 'TOO_SHORT':
+        return { tooShort: 'The phone number is too short for your country code' };
+      case 'TOO_LONG':
+        return { tooLong: 'The phone number is too long for your country code' };
+      case 'INVALID_LENGTH':
+        return { invalidLength: 'The phone number length is invalid' };
+      default:
+        return { invalidPhone: 'Your phone number is not valid' };
+    }
   };
 };
 

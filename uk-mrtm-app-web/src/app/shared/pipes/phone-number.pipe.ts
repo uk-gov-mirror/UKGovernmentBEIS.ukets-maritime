@@ -1,8 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { PhoneNumberUtil } from 'google-libphonenumber';
-
 import { UKCountryCodes } from '@shared/types';
+import { getRegionCodeForCallingCode } from '@shared/utils';
 
 @Pipe({
   name: 'phoneNumber',
@@ -13,7 +12,8 @@ export class PhoneNumberPipe implements PipeTransform {
     if (callingCode == null) {
       return null;
     }
-    const countryCode = PhoneNumberUtil.getInstance().getRegionCodeForCountryCode(Number(callingCode));
+    // 'ZZ' is shown for calling codes that belong to no known region
+    const countryCode: string = getRegionCodeForCallingCode(callingCode) ?? 'ZZ';
     return `${UKCountryCodes.GB === countryCode ? UKCountryCodes.UK : countryCode} (${callingCode})`;
   }
 }

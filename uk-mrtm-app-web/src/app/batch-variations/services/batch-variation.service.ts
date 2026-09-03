@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { map, Observable } from 'rxjs';
 
@@ -11,7 +11,7 @@ import { PAGE_SIZE } from '@batch-variations/batch-variations.consts';
 import { BatchVariationState } from '@batch-variations/batch-variations.types';
 import { BatchVariationsApiService } from '@batch-variations/services/batch-variations-api.service';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class BatchVariationService {
   private readonly apiService: BatchVariationsApiService = inject(BatchVariationsApiService);
   private readonly store: BatchVariationStore = inject(BatchVariationStore);

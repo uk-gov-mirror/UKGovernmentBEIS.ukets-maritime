@@ -33,10 +33,10 @@ import { MultipleFileInputComponent, WizardStepComponent } from '@shared/compone
 })
 export class NonSignificantChangeComponent {
   public formGroup: UntypedFormGroup = inject(TASK_FORM);
-  protected readonly detailsChangeMap = detailsChangeMap;
   private readonly service: TaskService<NotificationTaskPayload> = inject(TaskService<NotificationTaskPayload>);
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
+  protected readonly detailsChangeMap = detailsChangeMap;
   public readonly downloadUrl = this.store.select(empCommonQuery.selectTasksDownloadUrl)();
 
   onSubmit() {

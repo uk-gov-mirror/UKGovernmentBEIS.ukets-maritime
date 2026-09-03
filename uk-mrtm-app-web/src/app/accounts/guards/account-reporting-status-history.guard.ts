@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ActivatedRouteSnapshot, UrlTree } from '@angular/router';
 
 import { map, Observable, of, tap } from 'rxjs';
@@ -9,7 +9,7 @@ import { AuthStore, selectUserRoleType } from '@netz/common/auth';
 
 import { OperatorAccountsStore } from '@accounts/store';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AccountReportingStatusHistoryGuard {
   private readonly authStore = inject(AuthStore);
   private readonly store = inject(OperatorAccountsStore);

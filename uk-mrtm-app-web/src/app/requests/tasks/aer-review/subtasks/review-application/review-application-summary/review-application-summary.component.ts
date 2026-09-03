@@ -43,8 +43,8 @@ export class ReviewApplicationSummaryComponent {
   private readonly subtask = inject<string>(AER_REVIEW_SUBTASK, { optional: false });
 
   public readonly summaryDetails = inject(AER_REVIEW_SUBTASK_DETAILS, { optional: true });
-  public readonly wizardMap = AerReviewWizardSteps;
   public readonly caption = inject(AER_REVIEW_TASK_TITLE);
+  public readonly wizardMap = AerReviewWizardSteps;
   public readonly decision = computed(() =>
     this.store.select(aerReviewQuery.selectSummaryReviewGroupDecision(this.decisionGroup))(),
   );

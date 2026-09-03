@@ -32,8 +32,8 @@ export class NonComplianceInitialPenaltyNoticeUploadFormComponent {
   private readonly service = inject(TaskService<NonComplianceInitialPenaltyNoticeRequestTaskPayload>);
   private readonly store = inject(RequestTaskStore);
 
-  readonly map = nonComplianceInitialPenaltyNoticeMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
+  readonly map = nonComplianceInitialPenaltyNoticeMap;
   readonly getDownloadUrl: Signal<(uuid: string) => string | string[]> = computed(() => (uuid: string) => [
     this.store.select(requestTaskQuery.selectTasksDownloadUrl)(),
     uuid,

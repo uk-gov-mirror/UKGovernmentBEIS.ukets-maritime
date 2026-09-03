@@ -40,10 +40,10 @@ import { ComplianceToTextPipe } from '@shared/pipes';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ComplianceMonitoringReportingCompletenessComponent {
-  readonly map = complianceMonitoringReportingMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
+  readonly map = complianceMonitoringReportingMap;
 
   onSubmit() {
     this.service

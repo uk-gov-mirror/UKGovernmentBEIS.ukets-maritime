@@ -38,10 +38,10 @@ import { WizardStepComponent } from '@shared/components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NonComplianceDetailsCivilPenaltyComponent {
-  readonly map = nonComplianceDetailsMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<NonComplianceSubmitTaskPayload>);
+  readonly map = nonComplianceDetailsMap;
 
   onSubmit() {
     this.service

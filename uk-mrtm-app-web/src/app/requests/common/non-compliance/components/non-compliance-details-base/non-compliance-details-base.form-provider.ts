@@ -21,11 +21,11 @@ export const nonComplianceDetailsBaseProvider: Provider = {
       }),
       complianceDate: formBuilder.control<NonComplianceDetailsBase['complianceDate'] | Date | null>(
         nonComplianceDetails?.complianceDate ? new Date(nonComplianceDetails?.complianceDate) : null,
-        { validators: [todayOrPastDateValidator('The date must be today or in the past')] },
+        { validators: [todayOrPastDateValidator()] },
       ),
       nonComplianceDate: formBuilder.control<NonComplianceDetailsBase['nonComplianceDate'] | Date | null>(
         nonComplianceDetails?.nonComplianceDate ? new Date(nonComplianceDetails?.nonComplianceDate) : null,
-        { validators: [todayOrPastDateValidator('The date must be today or in the past')] },
+        { validators: [todayOrPastDateValidator()] },
       ),
       nonComplianceComments: formBuilder.control<NonComplianceDetailsBase['nonComplianceComments']>(
         nonComplianceDetails?.nonComplianceComments ?? null,

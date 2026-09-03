@@ -52,8 +52,8 @@ export class RespondToRecommendationFormComponent implements AfterViewInit {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
-  public readonly key = input<string>();
   public readonly formGroup: FormGroup = inject(TASK_FORM);
+  public readonly key = input<string>();
 
   public readonly verificationData = computed(() => {
     const key = this.key();

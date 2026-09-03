@@ -6,8 +6,9 @@ This emulator contains operations that are only suitable for controlled test env
 
 # Overview
 This is a Spring Boot emulator for end-to-end testing of Private Key JWTClient Authentication flow with Keycloak.
-This emulator exposes two HTTP endpoints used by tests and other services:
+This emulator exposes the following HTTP endpoints used by tests and other services:
 
+- GET /data-emulator/health — Spring Boot Actuator health check (no auth). Used by DevOps to verify the application is up and running.
 - GET /data-emulator/jwks — returns the public JWK Set (JWKS) containing the public keys used to verify JWTs issued by this emulator.
 - GET /data-emulator/retrieve-access-token/{client-id} — generates and signs a client-assertion JWT for the given client id, posts it to the configured Keycloak token endpoint and returns Keycloak's token response.
 - GET /data-emulator/jwks/{key-pair-no} — returns the public JWK Set (JWKS) for a specific key pair number.

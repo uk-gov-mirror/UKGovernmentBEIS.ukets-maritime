@@ -31,7 +31,7 @@ import { CountryPipe } from '@shared/pipes';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerificationBodySummaryComponent {
-  readonly summaryInfo = input.required<VerificationBodyCreationDTO | VerificationBodyDTO>();
+  readonly summaryInfo = input<VerificationBodyCreationDTO | VerificationBodyDTO>();
   readonly formRouterLink = input('edit');
   readonly editable = input(true);
 }

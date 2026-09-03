@@ -38,10 +38,10 @@ import { WizardStepComponent } from '@shared/components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EtsComplianceRulesFormComponent {
-  readonly map = etsComplianceRulesMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
+  readonly map = etsComplianceRulesMap;
 
   onSubmit() {
     this.service

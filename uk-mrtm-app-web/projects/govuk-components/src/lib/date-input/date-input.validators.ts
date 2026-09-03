@@ -1,5 +1,11 @@
 import { AbstractControl, UntypedFormGroup, ValidatorFn } from '@angular/forms';
 
+interface DateInputParts {
+  year?: string | number;
+  month?: string | number;
+  day?: string | number;
+}
+
 // @dynamic
 export class DateInputValidators {
   static dateFieldValidator(identifier: string, min: number, max: number): ValidatorFn {
@@ -16,14 +22,14 @@ export class DateInputValidators {
           : null;
   }
 
-  static dateIncompleteValidator: ValidatorFn = (fg: UntypedFormGroup) => {
+  static dateIncompleteValidator: ValidatorFn = (fg: AbstractControl) => {
     const day = fg.get('day').value;
     const month = fg.get('month').value;
     const year = fg.get('year').value;
     return (day || month || year) && (!year || !month || !day) ? { incomplete: true } : null;
   };
 
-  static incorrectDayValidator: ValidatorFn = (fg: UntypedFormGroup) => {
+  static incorrectDayValidator: ValidatorFn = (fg: AbstractControl) => {
     const day = fg.get('day').value;
     const month = fg.get('month').value;
 
@@ -42,17 +48,17 @@ export class DateInputValidators {
     return month === 2 || month === 4 || month === 6 || month === 9 || month === 11;
   }
 
-  static buildDate({ year, month, day }): Date | null {
+  static buildDate({ year, month, day }: DateInputParts): Date | null {
     return !year || !month || !day ? null : new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
   }
 
-  static combinedRulesValidator = (fg: UntypedFormGroup, isRequired = false) => {
-    return (fg: UntypedFormGroup) => {
-      return this.getCombinedValidationResults(fg, isRequired);
+  static combinedRulesValidator = (fg: UntypedFormGroup, isRequired = false): ValidatorFn => {
+    return (control: AbstractControl) => {
+      return this.getCombinedValidationResults(control, isRequired);
     };
   };
 
-  static getCombinedValidationResults(fg: UntypedFormGroup, isRequired) {
+  static getCombinedValidationResults(fg: AbstractControl, isRequired: boolean) {
     return isRequired && this.isEmpty(fg)
       ? { isEmpty: true }
       : this.isIncomplete(fg)
@@ -62,27 +68,27 @@ export class DateInputValidators {
           : null;
   }
 
-  static isEmpty(fg: UntypedFormGroup): boolean {
+  static isEmpty(fg: AbstractControl): boolean {
     const day = fg.get('day').value;
     const month = fg.get('month').value;
     const year = fg.get('year').value;
     return !day && !month && !year;
   }
 
-  static isIncomplete(fg: UntypedFormGroup): boolean {
+  static isIncomplete(fg: AbstractControl): boolean {
     const day = fg.get('day').value;
     const month = fg.get('month').value;
     const year = fg.get('year').value;
     return (day || month || year) && (!year || !month || !day);
   }
 
-  static isUnrealDate(fg: UntypedFormGroup): boolean {
+  static isUnrealDate(fg: AbstractControl): boolean {
     const day = fg.get('day').value;
     const month = fg.get('month').value;
     const year = fg.get('year').value;
 
-    const isBetweenTheAllowedValues = (value, min, max) => {
-      return /^\d+$/.test(value) && value >= min && value <= max;
+    const isBetweenTheAllowedValues = (value: unknown, min: number, max: number) => {
+      return /^\d+$/.test(String(value)) && Number(value) >= min && Number(value) <= max;
     };
     const isNotCorrectLeapYearDate = () => {
       return Number(day) === 29 && Number(month) === 2 && !DateInputValidators.isLeapYear(Number(year));

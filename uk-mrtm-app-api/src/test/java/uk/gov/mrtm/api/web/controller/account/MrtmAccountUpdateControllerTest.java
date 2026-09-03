@@ -155,6 +155,7 @@ class MrtmAccountUpdateControllerTest {
                 .address(addressStateDTO)
                 .sopId(100L)
                 .firstMaritimeActivityDate(LocalDate.of(2026,4, 26))
+                .reason("Update reason")
                 .build();
     }
 }

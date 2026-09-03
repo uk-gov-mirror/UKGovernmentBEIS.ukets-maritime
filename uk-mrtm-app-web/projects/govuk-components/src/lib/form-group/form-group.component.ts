@@ -7,7 +7,6 @@ import { FieldsetDirective, LegendDirective, LegendSizeType } from '../fieldset'
 
 /*
   eslint-disable
-  @angular-eslint/prefer-on-push-component-change-detection,
   @angular-eslint/component-selector
 */
 @Component({

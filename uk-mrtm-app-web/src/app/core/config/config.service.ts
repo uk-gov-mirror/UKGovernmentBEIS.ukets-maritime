@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { map, Observable, tap } from 'rxjs';
 
@@ -8,7 +8,7 @@ import { selectConfigProperty, selectGtmContainerId, selectIsFeatureEnabled } fr
 import { ConfigPropertiesName, ConfigState, FeatureName } from '@core/config/config.state';
 import { ConfigStore } from '@core/config/config.store';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ConfigService {
   private readonly store = inject(ConfigStore);
   private readonly configurationService = inject(UIConfigurationService);

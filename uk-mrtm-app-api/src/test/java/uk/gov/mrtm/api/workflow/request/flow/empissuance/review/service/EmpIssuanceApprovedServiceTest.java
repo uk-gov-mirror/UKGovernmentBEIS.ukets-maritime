@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.mrtm.api.account.enumeration.AccountSearchKey;
+import uk.gov.mrtm.api.account.service.AccountDetailsHistoryConstants;
 import uk.gov.mrtm.api.account.service.MrtmAccountUpdateService;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlan;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlanContainer;
@@ -101,7 +102,12 @@ class EmpIssuanceApprovedServiceTest {
         verify(requestService).findRequestById(requestId);
         verify(requestService).saveRequest(request);
         verify(accountDraftDataQueryService).getAccountDraftData(payload);
-        verify(accountUpdateService).updateAccountUponEmpApproved(accountId, accountDraftData);
+        verify(accountUpdateService).updateAccountUponEmpApproved(
+                accountId,
+                accountDraftData,
+                AccountDetailsHistoryConstants.updatedThroughWorkflow(
+                        AccountDetailsHistoryConstants.WORKFLOW_NAME_EMP_ISSUANCE, requestId),
+                AccountDetailsHistoryConstants.SUBMITTED_BY_SYSTEM);
         verify(accountSearchAdditionalKeywordService)
             .storeKeywordsForAccount(accountId, Map.of(AccountSearchKey.ACCOUNT_NAME.name(), name));
         verify(emissionsMonitoringPlanService)

@@ -56,13 +56,13 @@ export class ThirdPartyDataProviderImportComponent {
   private readonly service = inject(TaskService) as IThirdPartyDataProviderService<unknown>;
   private readonly thirdPartyDataProviderStore = inject(ThirdPartyDataProviderStore);
   private readonly feedbackBannerStore = inject(FeedbackBannerStore);
-  private readonly requestTaskId = this.store.select(requestTaskQuery.selectRequestTaskId);
-  private readonly requestTaskType = this.store.select(requestTaskQuery.selectRequestTaskType);
-  private readonly sectionsCompleted = this.store.select(this.sectionsCompletedSelector);
   private readonly affectedSubtasks = inject(SUBTASKS_AFFECTED_BY_IMPORT);
   readonly extraWarning = inject(EXTRA_WARNING, { optional: true });
   readonly successMessage = inject(SUCCESS_MESSAGES, { optional: true });
   readonly extraDetails = inject(EXTRA_DETAILS, { optional: true });
+  private readonly requestTaskId = this.store.select(requestTaskQuery.selectRequestTaskId);
+  private readonly requestTaskType = this.store.select(requestTaskQuery.selectRequestTaskType);
+  private readonly sectionsCompleted = this.store.select(this.sectionsCompletedSelector);
   readonly dataInfo = this.thirdPartyDataProviderStore.select(
     thirdPartyDataProviderQuery.selectThirdPartyDataProviderInfo,
   );

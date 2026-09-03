@@ -11,8 +11,8 @@ describe('BackLinkComponent', () => {
     template: '<govuk-back-link [link]="link" [route]="route"  [inverse]="inverse()" />',
   })
   class MockParentComponent {
-    link = '../back';
     route = inject(ActivatedRoute).snapshot;
+    link = '../back';
     readonly inverse = signal(false);
   }
 

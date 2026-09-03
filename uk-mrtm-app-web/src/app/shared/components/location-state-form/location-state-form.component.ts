@@ -18,7 +18,6 @@ import { existingControlContainer } from '@shared/providers/control-container.fa
 
 type LocationModelType = AddressDTO & { state?: string };
 
-// eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: 'mrtm-location-state-form',
   imports: [

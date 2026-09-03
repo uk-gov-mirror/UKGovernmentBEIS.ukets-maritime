@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { UrlTree } from '@angular/router';
 
 import { first, map, Observable } from 'rxjs';
@@ -8,7 +8,7 @@ import { AuthStore, selectUserRoleType } from '@netz/common/auth';
 import { OperatorAccountsStore } from '@accounts/store';
 import { AuthService } from '@core/services/auth.service';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class CreateOperatorAccountGuard {
   private readonly authService: AuthService = inject(AuthService);
   private readonly authStore: AuthStore = inject(AuthStore);

@@ -21,11 +21,11 @@ import { VerifierUserStore } from '@verifiers/+state/verifier-user.store';
 })
 export class SuccessComponent {
   private readonly store: VerifierUserStore = inject(VerifierUserStore);
+  private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   userInfo$: Observable<UserAuthorityInfoDTO> = this.store.pipe(
     selectUserAuthority,
     map((userAuthority) => userAuthority),
     take(1),
   );
-  private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   verificationBodyId$ = this.activatedRoute.queryParamMap.pipe(map((params) => params.get('verificationBodyId')));
 }

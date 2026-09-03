@@ -17,7 +17,6 @@ import { DateInputValidators } from './date-input.validators';
 
 /*
   eslint-disable
-  @angular-eslint/prefer-on-push-component-change-detection,
   @angular-eslint/component-selector
  */
 @Component({
@@ -135,9 +134,9 @@ export class DateInputComponent extends FormInput implements ControlValueAccesso
   writeValue(value: Date | null): void {
     if (value) {
       this.formGroup.setValue({
-        day: value.getDate(),
-        month: value.getMonth() + 1,
-        year: value.getFullYear(),
+        day: value.getUTCDate(),
+        month: value.getUTCMonth() + 1,
+        year: value.getUTCFullYear(),
       });
     }
   }

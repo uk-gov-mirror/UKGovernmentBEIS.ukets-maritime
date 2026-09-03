@@ -1,13 +1,11 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { BehaviorSubject } from 'rxjs';
 
 import { BREADCRUMB_ITEMS } from './breadcrumbs.factory';
 import { BreadcrumbItem } from './breadcrumbs.interface';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class BreadcrumbService {
   readonly breadcrumbItem$ = inject<BehaviorSubject<BreadcrumbItem[]>>(BREADCRUMB_ITEMS);
 

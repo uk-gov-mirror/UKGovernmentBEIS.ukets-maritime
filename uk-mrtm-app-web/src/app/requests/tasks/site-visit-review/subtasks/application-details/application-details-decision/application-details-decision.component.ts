@@ -57,8 +57,8 @@ export class ApplicationDetailsDecisionComponent implements OnInit {
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly map = siteVisitSubtasksMap;
   readonly form = inject(TASK_FORM);
+  readonly map = siteVisitSubtasksMap;
   readonly siteVisit = this.store.select(siteVisitCommonQuery.selectSiteVisitSummary);
   readonly downloadUrl = this.store.select(requestTaskQuery.selectTasksDownloadUrl)();
 

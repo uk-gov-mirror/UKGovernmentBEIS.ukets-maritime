@@ -1,5 +1,5 @@
 import { HttpResponse } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { map, Observable, switchMap, tap } from 'rxjs';
 
@@ -29,7 +29,7 @@ import {
 import { viewNotFoundVerificationBodyError } from '@verification-bodies/errors/business-error';
 import { EmissionTradingSchemesEnum } from '@verification-bodies/types';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class VerificationBodiesStoreService extends Store<VerificationBodiesState> {
   private readonly verificationBodyService: VerificationBodiesService = inject(VerificationBodiesService);
   private readonly verifierAuthoritiesService: VerifierAuthoritiesService = inject(VerifierAuthoritiesService);

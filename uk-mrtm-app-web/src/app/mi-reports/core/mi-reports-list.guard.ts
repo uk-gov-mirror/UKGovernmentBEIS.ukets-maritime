@@ -1,11 +1,11 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { CanActivate, Resolve } from '@angular/router';
 
 import { map, Observable, tap } from 'rxjs';
 
 import { MiReportsService, MiReportSystemSearchResult } from '@mrtm/api';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class MiReportsListGuard implements CanActivate, Resolve<MiReportSystemSearchResult[]> {
   private readonly miReportsService = inject(MiReportsService);
 

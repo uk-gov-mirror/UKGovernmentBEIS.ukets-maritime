@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 
 import { first, Observable, switchMap } from 'rxjs';
@@ -10,7 +10,7 @@ import { BusinessErrorService, catchBadRequest, ErrorCodes } from '@netz/common/
 
 import { saveNotFoundRegulatorError } from '@regulators/errors/business-error';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class DeleteResolver implements Resolve<UserDTO | RegulatorUserDTO> {
   private readonly regulatorUsersService = inject(RegulatorUsersService);
   private readonly usersService = inject(UsersService);

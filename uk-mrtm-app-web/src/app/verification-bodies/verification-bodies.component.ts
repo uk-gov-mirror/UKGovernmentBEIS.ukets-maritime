@@ -45,13 +45,13 @@ import {
 export class VerificationBodiesComponent implements OnInit {
   public readonly formGroup: UntypedFormGroup = inject<UntypedFormGroup>(VERIFICATION_BODIES_FORM);
   private readonly store: VerificationBodiesStoreService = inject(VerificationBodiesStoreService);
-  readonly editable$ = this.store.pipe(selectIsEditableVerificationBodiesList);
-  readonly verificationBodies$ = this.store.pipe(selectVerificationBodiesListItems);
   private readonly destroyRef: DestroyRef = inject(DestroyRef);
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private readonly businessErrorService = inject(BusinessErrorService);
+  readonly editable$ = this.store.pipe(selectIsEditableVerificationBodiesList);
+  readonly verificationBodies$ = this.store.pipe(selectVerificationBodiesListItems);
 
   public handleAddNewVerificationBody(): void {
     this.router.navigate(['add'], { relativeTo: this.activatedRoute });

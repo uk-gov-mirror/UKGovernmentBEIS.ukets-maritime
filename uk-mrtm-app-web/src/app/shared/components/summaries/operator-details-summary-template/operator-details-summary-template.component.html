@@ -98,6 +98,7 @@
 }
 
 @if (operatorDetails()?.organisationStructure) {
+  @let legalStatusType = operatorDetails()?.organisationStructure?.legalStatusType;
   <h2 class="govuk-heading-m">Organisation details</h2>
   <dl govuk-summary-list>
     <div govukSummaryListRow>
@@ -105,7 +106,7 @@
       <dd
         govukSummaryListRowValue
         htmlDiff
-        [current]="operatorDetails()?.organisationStructure?.legalStatusType | legalStatusTypeDisplayText"
+        [current]="legalStatusType | legalStatusTypeDisplayText"
         [previous]="
           originalOperatorDetails()?.organisationStructure?.legalStatusType | legalStatusTypeDisplayText
         "></dd>
@@ -123,9 +124,9 @@
     </div>
     <div govukSummaryListRow>
       <dt govukSummaryListRowKey>
-        {{ operatorDetails()?.organisationStructure?.legalStatusType | organisationStructureTitle }}
+        {{ legalStatusType | organisationStructureTitle }}
       </dt>
-      @switch (operatorDetails()?.organisationStructure?.legalStatusType) {
+      @switch (legalStatusType) {
         @case ('INDIVIDUAL') {
           <dd
             govukSummaryListRowValue
@@ -160,7 +161,7 @@
             [queryParams]="queryParams()">
             Change
             <span class="govuk-visually-hidden">
-              {{ operatorDetails()?.organisationStructure?.legalStatusType | organisationStructureTitle | lowercase }}
+              {{ legalStatusType | organisationStructureTitle | lowercase }}
             </span>
           </a>
         </dd>
@@ -170,7 +171,7 @@
       <dt
         govukSummaryListRowKey
         htmlDiff
-        [current]="operatorDetails()?.organisationStructure?.legalStatusType | organisationDetailsAddressTitle"
+        [current]="legalStatusType | organisationDetailsAddressTitle"
         [previous]="
           originalOperatorDetails()?.organisationStructure?.legalStatusType | organisationDetailsAddressTitle
         "></dt>
@@ -216,37 +217,33 @@
             [queryParams]="queryParams()">
             Change
             <span class="govuk-visually-hidden">
-              {{
-                operatorDetails()?.organisationStructure?.legalStatusType | organisationDetailsAddressTitle | lowercase
-              }}
+              {{ legalStatusType | organisationDetailsAddressTitle | lowercase }}
             </span>
           </a>
         </dd>
       }
     </div>
-    @if (operatorDetails()?.organisationStructure?.legalStatusType !== 'INDIVIDUAL') {
+    @if (legalStatusType !== 'INDIVIDUAL') {
       <div govukSummaryListRow>
-        @switch (operatorDetails()?.organisationStructure?.legalStatusType) {
-          @case ('PARTNERSHIP') {
-            <dt govukSummaryListRowKey>List the partners</dt>
-            <dd govukSummaryListRowValue>
-              @if (combinedPartners()?.length > 0) {
-                @for (partner of combinedPartners(); track partner) {
-                  <div
-                    htmlDiff
-                    current="{{ $index + 1 }}. {{ partner.current }}"
-                    previous="{{ $index + 1 }}. {{ partner.previous }}"></div>
-                }
+        @if (legalStatusType === 'PARTNERSHIP') {
+          <dt govukSummaryListRowKey>List the partners</dt>
+          <dd govukSummaryListRowValue>
+            @if (combinedPartners()?.length > 0) {
+              @for (partner of combinedPartners(); track partner) {
+                <div
+                  htmlDiff
+                  current="{{ $index + 1 }}. {{ partner.current }}"
+                  previous="{{ $index + 1 }}. {{ partner.previous }}"></div>
               }
-            </dd>
-          }
-          @case ('LIMITED_COMPANY') {
-            <dt govukSummaryListRowKey>Upload proof of registered address</dt>
-            <dd govukSummaryListRowValue>
-              <mrtm-summary-download-files [files]="files()" [originalFiles]="originalFiles()" />
-            </dd>
-          }
+            }
+          </dd>
+        } @else if (legalStatusType === 'LIMITED_COMPANY') {
+          <dt govukSummaryListRowKey>Upload proof of registered address</dt>
+          <dd govukSummaryListRowValue>
+            <mrtm-summary-download-files [files]="files()" [originalFiles]="originalFiles()" />
+          </dd>
         }
+
         @if (isEditable()) {
           <dd govukSummaryListRowActions>
             <a

@@ -62,13 +62,13 @@ export class AerEmissionsCalculationsComponent {
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
-  private readonly form: UntypedFormGroup = new UntypedFormGroup({});
   private readonly service: TaskService<AerSubmitTaskPayload> = inject(TaskService);
-
   public readonly isAddNewEntryFlow = inject(AER_SUBTASK_NEW_ENTRY_FLOW, { optional: true });
+
+  public readonly wizardMap = inject(AER_SUBTASK_LIST_MAP);
+  private readonly form: UntypedFormGroup = new UntypedFormGroup({});
   public readonly editable: Signal<boolean> = this.store.select(requestTaskQuery.selectIsEditable);
   public readonly wizardStep = AerPortsWizardStep;
-  public readonly wizardMap = inject(AER_SUBTASK_LIST_MAP);
   public readonly objectId: Signal<string> = toSignal(
     this.activatedRoute.params.pipe(map((param) => param?.[this.routeParamKey])),
   );

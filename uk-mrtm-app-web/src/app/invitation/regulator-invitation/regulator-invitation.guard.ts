@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Resolve, Router, UrlTree } from '@angular/router';
 
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
@@ -7,7 +7,7 @@ import { InvitedUserInfoDTO, RegulatorUsersRegistrationService } from '@mrtm/api
 
 import { isBadRequest } from '@netz/common/error';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RegulatorInvitationGuard implements CanActivate, Resolve<InvitedUserInfoDTO> {
   private readonly router = inject(Router);
   private readonly regulatorUsersRegistrationService = inject(RegulatorUsersRegistrationService);

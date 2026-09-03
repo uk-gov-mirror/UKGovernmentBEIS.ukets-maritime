@@ -45,6 +45,7 @@ export class GreenhouseGasVariationReviewDecisionComponent {
     TaskService<EmpVariationReviewTaskPayload>,
   );
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
+  private readonly route: ActivatedRoute = inject(ActivatedRoute);
   readonly vm: Signal<ViewModel> = computed(() => ({
     greenhouseGas: this.store.select(empCommonQuery.selectGreenhouseGas)(),
     originalGreenhouseGas: this.store.select(empVariationReviewQuery.selectOriginalGreenhouseGas)(),
@@ -52,7 +53,6 @@ export class GreenhouseGasVariationReviewDecisionComponent {
     isEditable: this.store.select(requestTaskQuery.selectIsEditable)(),
     wizardStep: transformWizardStepDecision(GreenhouseGasWizardStep),
   }));
-  private readonly route: ActivatedRoute = inject(ActivatedRoute);
 
   onSubmit() {
     (this.service as EmpVariationReviewService)

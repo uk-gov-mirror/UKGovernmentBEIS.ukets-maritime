@@ -33,10 +33,10 @@ import { FollowUpAmendsDetailsSummaryTemplateComponent, WizardStepComponent } fr
 export class AmendsDetailsComponent {
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
   private readonly service: TaskService<FollowUpAmendTaskPayload> = inject(TaskService<FollowUpAmendTaskPayload>);
-  followUpReviewDecision = this.store.select(followUpAmendQuery.selectFollowUpReviewDecisionDTO)();
-  readonly title = followUpAmendMap.amendsDetails.title;
   protected readonly form: UntypedFormGroup = inject(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
+  followUpReviewDecision = this.store.select(followUpAmendQuery.selectFollowUpReviewDecisionDTO)();
+  readonly title = followUpAmendMap.amendsDetails.title;
 
   onSubmit() {
     this.service.submitSubtask(AMENDS_DETAILS_SUB_TASK, '../', this.route).subscribe();

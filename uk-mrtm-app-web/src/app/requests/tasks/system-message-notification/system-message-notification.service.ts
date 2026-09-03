@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
@@ -17,7 +17,7 @@ import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
 
 import { SystemMessageParsedPart } from '@requests/tasks/system-message-notification/system-message-notification.types';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class SystemMessageNotificationService {
   private readonly tasksService = inject(TasksService);
   private readonly store = inject(RequestTaskStore);

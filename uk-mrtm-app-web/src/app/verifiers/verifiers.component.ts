@@ -1,15 +1,19 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { BehaviorSubject, EMPTY, take } from 'rxjs';
+
+import { VerificationBodiesService } from '@mrtm/api';
 
 import { FeedbackBannerComponent, FeedbackBannerStore, PageHeadingComponent } from '@netz/common/components';
 import { BusinessErrorService, catchBadRequest, ErrorCodes } from '@netz/common/error';
 import { TabDirective, TabLazyDirective, TabsComponent } from '@netz/govuk-components';
 
 import { VerifierUsersListComponent } from '@shared/components';
+import { VerificationBodySummaryComponent } from '@shared/components/summaries/verification-body-summary';
 import { savePartiallyNotFoundVerifierError } from '@shared/errors';
 import { FormUtils } from '@shared/utils/form.utils';
 import {
@@ -31,20 +35,25 @@ import { DataSupplierComponent, SiteContactsComponent } from '@verifiers/compone
     SiteContactsComponent,
     TabLazyDirective,
     DataSupplierComponent,
+    VerificationBodySummaryComponent,
   ],
   standalone: true,
   templateUrl: './verifiers.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerifiersComponent {
-  public readonly currentTab$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly businessErrorService = inject(BusinessErrorService);
   private readonly store: VerifierUserStore = inject(VerifierUserStore);
+  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
+  private readonly verificationBodiesService = inject(VerificationBodiesService);
+
+  public readonly currentTab$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   public readonly authorities$ = this.store.pipe(selectVerifierUsersListItems);
   public readonly verifiersEditable$ = this.store.pipe(selectIsEditableVerifierUsersList);
-  private readonly feedbackBannerStore = inject(FeedbackBannerStore);
+
+  readonly verificationBodyDetails = toSignal(this.verificationBodiesService.getVerificationBodyDetails());
 
   public handleSelectedTab(tab: string): void {
     this.router.navigate([], {

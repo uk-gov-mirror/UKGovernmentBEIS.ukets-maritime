@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { ConfigState, initialState } from '@core/config/config.state';
 import { Store } from '@core/store';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ConfigStore extends Store<ConfigState> {
   constructor() {
     super(initialState);

@@ -30,11 +30,11 @@ import { NON_COMPLIANCE_REASON_TYPES, NonComplianceReason } from '@shared/types'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NonComplianceDetailsBaseComponent {
-  readonly map = nonComplianceDetailsMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly store = inject(RequestTaskStore);
   private readonly service = inject(TaskService);
   private readonly route = inject(ActivatedRoute);
+  readonly map = nonComplianceDetailsMap;
   private readonly nonComplianceReasonPipe = new NonComplianceReasonPipe();
   private readonly requestTaskType = this.store.select(requestTaskQuery.selectRequestTaskType);
 

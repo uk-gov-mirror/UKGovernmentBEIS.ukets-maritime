@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { produce } from 'immer';
 
@@ -8,7 +8,7 @@ import { SignalStore } from '@netz/common/store';
 
 import { GuidanceState, ManageGuidanceDTO } from '@guidance/guidance.types';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class GuidanceStore extends SignalStore<GuidanceState> {
   constructor() {
     super({

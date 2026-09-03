@@ -48,7 +48,7 @@ export const nonComplianceCivilPenaltyUploadFormProvider: Provider = {
         !isNil(nonComplianceCivilPenaltyUpload?.dueDate) ? new Date(nonComplianceCivilPenaltyUpload?.dueDate) : null,
         [
           GovukValidators.required('Enter the date by which the penalty must be paid'),
-          futureDateValidator('The penalty payment due date must be in the future'),
+          futureDateValidator('The penalty payment due date'),
         ],
       ),
       comments: formBuilder.control<NonComplianceCivilPenaltyRequestTaskPayload['comments']>(

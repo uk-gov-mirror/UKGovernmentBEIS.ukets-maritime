@@ -1,13 +1,11 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Resolve } from '@angular/router';
 
 import { map, Observable, tap } from 'rxjs';
 
 import { NotificationTemplateDTO, NotificationTemplatesService } from '@mrtm/api';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class EmailTemplateGuard implements CanActivate, Resolve<NotificationTemplateDTO> {
   private readonly notificationTemplatesService = inject(NotificationTemplatesService);
 

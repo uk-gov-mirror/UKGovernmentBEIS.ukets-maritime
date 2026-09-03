@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 
 import { MrtmItemDTO } from '@mrtm/api';
 
+import { DebounceDirective } from '@netz/common/directives';
 import { DaysRemainingPipe, ItemLinkPipe, ItemNamePipe, UserFullNamePipe } from '@netz/common/pipes';
 import { getYearFromRequestId } from '@netz/common/utils';
 import { GovukTableColumn, LinkDirective, TableComponent, TagComponent } from '@netz/govuk-components';
@@ -23,6 +24,7 @@ import { ScrollablePaneDirective } from '@shared/directives';
     ItemTypePipe,
     DaysRemainingPipe,
     ScrollablePaneDirective,
+    DebounceDirective,
   ],
   standalone: true,
   templateUrl: './dashboard-items-list.component.html',

@@ -27,11 +27,11 @@ import { DeterminationHeaderTypePipe } from '@shared/pipes';
 })
 export class OverallDecisionQuestionComponent {
   protected readonly form = inject(TASK_FORM);
-  protected readonly overallDecisionMap = overallDecisionMap;
   private readonly service: TaskService<EmpReviewTaskPayload> = inject(TaskService<EmpReviewTaskPayload>);
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
-  determinationType = this.store.select(empReviewQuery.selectDetermination)()?.type;
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
+  protected readonly overallDecisionMap = overallDecisionMap;
+  determinationType = this.store.select(empReviewQuery.selectDetermination)()?.type;
 
   onSubmit() {
     (this.service as EmpReviewService)

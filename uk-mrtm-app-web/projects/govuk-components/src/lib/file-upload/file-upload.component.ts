@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { ControlValueAccessor, NgControl, UntypedFormControl } from '@angular/forms';
 
 import { ErrorMessageComponent } from '../error-message';
@@ -8,7 +8,6 @@ import { LabelSizeType } from '../text-input';
 /*
   eslint-disable
   @typescript-eslint/no-unused-vars,
-  @angular-eslint/prefer-on-push-component-change-detection,
 */
 @Component({
   selector: 'div[govukFileUpload],govuk-file-upload',
@@ -33,6 +32,7 @@ export class FileUploadComponent implements ControlValueAccessor {
 
   readonly govukDisplayBlock = true;
   readonly govukFormGroupClass = true;
+  readonly isDisabled = signal(false);
 
   get govukFormGroupErrorClass(): boolean {
     return this.control?.invalid && this.control?.touched;
@@ -78,6 +78,10 @@ export class FileUploadComponent implements ControlValueAccessor {
   }
 
   writeValue(_: any): void {}
+
+  setDisabledState(isDisabled: boolean): void {
+    this.isDisabled.set(isDisabled);
+  }
 
   registerOnChange(_: any): void {}
 

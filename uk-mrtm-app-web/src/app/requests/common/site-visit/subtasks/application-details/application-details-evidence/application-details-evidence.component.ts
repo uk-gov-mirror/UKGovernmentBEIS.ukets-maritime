@@ -40,8 +40,8 @@ export class ApplicationDetailsEvidenceComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly subtaskMap = siteVisitSubtasksMap.applicationDetails;
   readonly formGroup = inject(TASK_FORM);
+  readonly subtaskMap = siteVisitSubtasksMap.applicationDetails;
   readonly reportingYear = this.store.select(siteVisitCommonQuery.selectYear);
   readonly downloadUrl = this.store.select(requestTaskQuery.selectTasksDownloadUrl);
 

@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { map, Observable, shareReplay } from 'rxjs';
 
@@ -6,7 +6,7 @@ import { ReferenceDataService } from '@mrtm/api';
 
 import { County } from '@core/interfaces/county.interface';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class CountyService {
   private readonly referenceDataService = inject(ReferenceDataService);
 

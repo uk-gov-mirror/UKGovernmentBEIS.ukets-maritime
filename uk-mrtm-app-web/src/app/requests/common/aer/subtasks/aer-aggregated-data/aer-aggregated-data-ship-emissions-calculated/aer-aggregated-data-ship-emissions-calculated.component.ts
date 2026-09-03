@@ -35,9 +35,9 @@ export class AerAggregatedDataShipEmissionsCalculatedComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router: Router = inject(Router);
   private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
-  private readonly form: UntypedFormGroup = new UntypedFormGroup({});
-
   public readonly isAddNewAggregatedData = inject(AER_SUBTASK_NEW_ENTRY_FLOW, { optional: true });
+
+  private readonly form: UntypedFormGroup = new UntypedFormGroup({});
   public readonly wizardMap = aerAggregatedDataSubtasksListMap;
   public readonly dataId: InputSignal<string> = input<string>();
   public readonly data: Signal<AerShipAggregatedData> = computed(() =>

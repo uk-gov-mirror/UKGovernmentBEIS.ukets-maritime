@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { produce } from 'immer';
 
@@ -10,7 +10,7 @@ import {
   PeerReviewState,
 } from '@requests/tasks/notification-peer-review/+state/peer-review.state';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class PeerReviewStore extends SignalStore<PeerReviewState> {
   constructor() {
     super(initialPeerReviewState);

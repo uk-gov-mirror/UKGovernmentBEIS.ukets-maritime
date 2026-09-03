@@ -11,7 +11,6 @@ import { GovukSelectWidthClass } from './select.type';
 
 /*
   eslint-disable
-  @angular-eslint/prefer-on-push-component-change-detection,
   @angular-eslint/component-selector
 */
 @Component({

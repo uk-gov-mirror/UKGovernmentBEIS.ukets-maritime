@@ -1,5 +1,5 @@
 @use 'sass:map';
-@use 'base' as govuk;
+@use 'govuk-base' as govuk;
 
 .app-related-items {
   padding-top: govuk.govuk-spacing(2);

@@ -49,6 +49,9 @@
         @case ('TEMP_DISABLED') {
           <ng-container [ngTemplateOutlet]="userTempDisabled" />
         }
+        @default {
+          <!-- NO_ROLE_TYPE cannot occur here: this branch is already guarded by a truthy vm.roleType. -->
+        }
       }
     } @else {
       <netz-page-heading>

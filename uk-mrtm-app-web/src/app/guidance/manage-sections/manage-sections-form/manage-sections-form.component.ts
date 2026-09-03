@@ -28,8 +28,8 @@ export class ManageSectionsFormComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
-  readonly manageType = this.guidanceStore.select(guidanceQuery.selectManageGuidanceType);
   readonly formGroup = inject<ManageSectionsFormGroupModel>(MANAGE_GUIDANCE_FORM);
+  readonly manageType = this.guidanceStore.select(guidanceQuery.selectManageGuidanceType);
   readonly displayOrderSelectItems: Signal<Array<GovukSelectOption>> = computed(() => {
     const competentAuthority = (this.authStore.select(selectUser)() as RegulatorCurrentUserDTO)?.competentAuthority;
     const manageType = this.guidanceStore.select(guidanceQuery.selectManageGuidanceType)();

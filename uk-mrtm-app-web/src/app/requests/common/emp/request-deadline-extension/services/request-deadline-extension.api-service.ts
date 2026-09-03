@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
@@ -17,7 +17,7 @@ import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
 
 import { requestDeadlineExtensionSubmitTaskMap } from '@requests/common/emp/request-deadline-extension/request-deadline-extension-task.map';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RequestDeadlineExtensionApiService {
   private readonly taskStore = inject(RequestTaskStore);
   private readonly tasksService = inject(TasksService);

@@ -1,8 +1,8 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { FileUploadService } from '@shared/services';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class GuidanceFileService {
   private readonly fileUploadService = inject(FileUploadService);
 }

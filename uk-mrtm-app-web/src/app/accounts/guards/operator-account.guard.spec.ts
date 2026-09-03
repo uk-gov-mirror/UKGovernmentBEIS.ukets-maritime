@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { CanActivateFn } from '@angular/router';
 
-import { lastValueFrom, Observable, of } from 'rxjs';
+import { delay, first, firstValueFrom, lastValueFrom, Observable, of } from 'rxjs';
 
 import { AccountReportingStatusHistoryService, MaritimeAccountsService, MaritimeAccountUpdateService } from '@mrtm/api';
 
+import { PendingRequestService } from '@netz/common/services';
 import { ActivatedRouteSnapshotStub, mockClass } from '@netz/common/testing';
 
 import { canActivateOperatorAccount } from '@accounts/guards/operator-account.guard';
@@ -29,7 +30,7 @@ describe('canActivateOperatorAccount', () => {
     };
 
     operatorAccountsStore = {
-      pipe: vi.fn().mockReturnValue(of({ paging: { page: 1, pageSize: 10 } })),
+      getState: vi.fn().mockReturnValue({ currentAccount: { reportingStatus: { paging: { page: 1, pageSize: 10 } } } }),
       setCurrentAccount: vi.fn(),
       setReportingStatuses: vi.fn(),
       setReportingStatusTotal: vi.fn(),
@@ -56,5 +57,30 @@ describe('canActivateOperatorAccount', () => {
     await expect(lastValueFrom(result$)).resolves.toEqual(true);
 
     expect(accountsService.getMaritimeAccount).toHaveBeenCalledWith(1);
+  });
+
+  it('should request the account only once, even though it writes the response back into the store', async () => {
+    const getMaritimeAccount = vi.fn().mockReturnValue(of(mockedAccount).pipe(delay(1)));
+    const getAllReportingStatuses = vi.fn().mockReturnValue(of(mockReportingStatusesResults).pipe(delay(1)));
+
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        OperatorAccountsStore,
+        { provide: MaritimeAccountsService, useValue: { getMaritimeAccount } },
+        { provide: AccountReportingStatusHistoryService, useValue: { getAllReportingStatuses } },
+        { provide: MaritimeAccountUpdateService, useValue: mockClass(MaritimeAccountUpdateService) },
+        { provide: PendingRequestService, useValue: mockClass(PendingRequestService) },
+      ],
+    });
+
+    const route = new ActivatedRouteSnapshotStub({ accountId: '35' });
+    const result$ = executeGuard(route, null) as Observable<boolean>;
+
+    // The router takes the first emission and then unsubscribes.
+    await firstValueFrom(result$.pipe(first()));
+
+    expect(getMaritimeAccount).toHaveBeenCalledTimes(1);
+    expect(getAllReportingStatuses).toHaveBeenCalledTimes(1);
   });
 });

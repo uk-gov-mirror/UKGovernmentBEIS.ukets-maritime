@@ -22,6 +22,7 @@
     @case ('PARTNERSHIP') {
       <div formControlName="partnershipName" govuk-text-input label="Name of the partnership (Optional)"></div>
     }
+    @default never;
   }
 
   <h3 class="govuk-heading-m govuk-!-margin-bottom-2">
@@ -48,33 +49,30 @@
     formGroupName="registeredAddress"
     [isReadonly]="sameAsContactAddressCtrl.value?.includes(true)" />
 
-  @switch (operatorDetails?.organisationStructure?.legalStatusType) {
-    @case ('PARTNERSHIP') {
-      <h2 class="govuk-heading-m">List the partners</h2>
-      <div formArrayName="partners">
-        @for (partner of partnersCtrl.controls; track partner) {
-          <fieldset govukFieldset>
-            <legend govukLegend legendSize="small">Name of partner {{ $index + 1 }}</legend>
-            @if (partnersCtrl.length > 1) {
-              <button (click)="removePartner($index)" mrtmAddAnother govukSecondaryButton type="button">Remove</button>
-            }
-            <div
-              [label]="`Name of partner ${$index + 1}`"
-              [isLabelHidden]="true"
-              govuk-text-input
-              [formControlName]="$index"></div>
-          </fieldset>
-        }
-        <button (click)="addPartner()" govukSecondaryButton type="button">Add another partner</button>
-      </div>
-    }
-    @case ('LIMITED_COMPANY') {
-      <mrtm-multiple-file-input
-        [baseDownloadUrl]="downloadUrl"
-        label="Upload proof of registered address (optional)"
-        hint="For example, a screenshot from your company register"
-        listTitle="Uploaded files"
-        formControlName="evidenceFiles" />
-    }
+  @if (operatorDetails?.organisationStructure?.legalStatusType === 'PARTNERSHIP') {
+    <h2 class="govuk-heading-m">List the partners</h2>
+    <div formArrayName="partners">
+      @for (partner of partnersCtrl.controls; track partner) {
+        <fieldset govukFieldset>
+          <legend govukLegend legendSize="small">Name of partner {{ $index + 1 }}</legend>
+          @if (partnersCtrl.length > 1) {
+            <button (click)="removePartner($index)" mrtmAddAnother govukSecondaryButton type="button">Remove</button>
+          }
+          <div
+            [label]="`Name of partner ${$index + 1}`"
+            [isLabelHidden]="true"
+            govuk-text-input
+            [formControlName]="$index"></div>
+        </fieldset>
+      }
+      <button (click)="addPartner()" govukSecondaryButton type="button">Add another partner</button>
+    </div>
+  } @else if (operatorDetails?.organisationStructure?.legalStatusType === 'LIMITED_COMPANY') {
+    <mrtm-multiple-file-input
+      [baseDownloadUrl]="downloadUrl"
+      label="Upload proof of registered address (optional)"
+      hint="For example, a screenshot from your company register"
+      listTitle="Uploaded files"
+      formControlName="evidenceFiles" />
   }
 </mrtm-wizard-step>

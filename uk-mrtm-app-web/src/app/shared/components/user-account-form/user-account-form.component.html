@@ -2,35 +2,29 @@
 <div formControlName="lastName" govuk-text-input label="Last name" widthClass="govuk-!-width-two-thirds"></div>
 
 @if (formMode() === 'EDIT') {
-  @switch (phoneType()) {
-    @case ('full') {
-      <div
-        mrtm-phone-input
-        formControlName="phoneNumber"
-        label="Phone number"
-        widthClass="govuk-!-width-one-third"></div>
-      <div
-        mrtm-phone-input
-        formControlName="mobileNumber"
-        label="Mobile number (optional)"
-        widthClass="govuk-!-width-one-third"></div>
-    }
-    @case ('national') {
-      <div
-        formControlName="phoneNumber"
-        govuk-text-input
-        label="Telephone number"
-        hint="You must include the country code"
-        inputType="tel"
-        widthClass="govuk-!-width-one-third"></div>
-      <div
-        formControlName="mobileNumber"
-        govuk-text-input
-        label="Mobile number (optional)"
-        hint="You must include the country code"
-        inputType="tel"
-        widthClass="govuk-!-width-one-third"></div>
-    }
+  @let type = phoneType();
+  @if (type === 'full') {
+    <div mrtm-phone-input formControlName="phoneNumber" label="Phone number" widthClass="govuk-!-width-one-third"></div>
+    <div
+      mrtm-phone-input
+      formControlName="mobileNumber"
+      label="Mobile number (optional)"
+      widthClass="govuk-!-width-one-third"></div>
+  } @else if (type === 'national') {
+    <div
+      formControlName="phoneNumber"
+      govuk-text-input
+      label="Telephone number"
+      hint="You must include the country code"
+      inputType="tel"
+      widthClass="govuk-!-width-one-third"></div>
+    <div
+      formControlName="mobileNumber"
+      govuk-text-input
+      label="Mobile number (optional)"
+      hint="You must include the country code"
+      inputType="tel"
+      widthClass="govuk-!-width-one-third"></div>
   }
 }
 

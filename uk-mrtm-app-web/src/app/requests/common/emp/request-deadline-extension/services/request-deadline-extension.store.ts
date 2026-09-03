@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { RdePayload } from '@mrtm/api';
 
@@ -10,7 +10,7 @@ import {
 } from '@requests/common/emp/components/request-notification-form/request-notification-form.types';
 import { EmpRdeTaskPayload } from '@requests/common/emp/request-deadline-extension/request-deadline-extension.types';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RequestDeadlineExtensionStore
   extends SignalStore<EmpRdeTaskPayload>
   implements RequestNotificationService

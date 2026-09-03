@@ -23,6 +23,7 @@ import uk.gov.mrtm.api.account.transform.MrtmAccountMapper;
 import uk.gov.mrtm.api.account.transform.RegisteredAddressStateMapper;
 import uk.gov.mrtm.api.common.domain.AddressState;
 import uk.gov.mrtm.api.common.domain.RegisteredAddressState;
+import uk.gov.mrtm.api.common.domain.dto.AddressStateDTO;
 import uk.gov.mrtm.api.common.exception.MrtmErrorCode;
 import uk.gov.mrtm.api.emissionsmonitoringplan.domain.EmissionsMonitoringPlan;
 import uk.gov.mrtm.api.emissionsmonitoringplan.service.EmissionsMonitoringPlanQueryService;
@@ -46,6 +47,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -88,6 +91,9 @@ class MrtmAccountUpdateServiceTest {
     @Mock
     private MaritimeAccountUpdatedEventListenerResolver accountUpdatedRegistryListener;
 
+    @Mock
+    private AccountDetailsHistoryQueryService accountDetailsHistoryQueryService;
+
     @Captor
     ArgumentCaptor<LocalDateTime> dateTimeArgumentCaptor;
 
@@ -99,6 +105,8 @@ class MrtmAccountUpdateServiceTest {
                                                              int accountUpdateInvocations) throws IllegalAccessException, NoSuchFieldException {
         String name = "name";
         AppUser appUser = AppUser.builder().userId("userId").build();
+        AddressState address = AddressState.builder().line1("line1").city("city").country("GB").build();
+        AddressStateDTO addressDTO = AddressStateDTO.builder().line1("line1").city("city").country("GB").build();
 
         MrtmAccountUpdateDTO mrtmAccountUpdateDTO = mock(MrtmAccountUpdateDTO.class);
         MrtmAccount mrtmAccount = mock(MrtmAccount.class);
@@ -110,8 +118,15 @@ class MrtmAccountUpdateServiceTest {
 
         when(mrtmAccountUpdateDTO.getName()).thenReturn(name);
         when(mrtmAccountQueryService.getAccountById(ACCOUNT_ID)).thenReturn(mrtmAccount);
+        when(mrtmAccount.getName()).thenReturn(name);
+        when(mrtmAccount.getSopId()).thenReturn(1L);
+        when(mrtmAccount.getAddress()).thenReturn(address);
+        when(mrtmAccount.getRegisteredAddress()).thenReturn(null);
+        when(mrtmAccount.getRegistryId()).thenReturn(null);
         when(mrtmAccount.getFirstMaritimeActivityDate()).thenReturn(currentFirstMaritimeActivity);
         when(mrtmAccountUpdateDTO.getFirstMaritimeActivityDate()).thenReturn(newFirstMaritimeActivity);
+        when(addressStateMapper.toAddressStateDTO(address)).thenReturn(addressDTO);
+        when(registeredAddressStateMapper.toAddressStateDTO(null)).thenReturn(null);
         lenient().when(emissionsMonitoringPlanQueryService.getLastestEmissionsMonitoringPlan(ACCOUNT_ID))
             .thenReturn(emissionsMonitoringPlan);
 
@@ -130,6 +145,7 @@ class MrtmAccountUpdateServiceTest {
                 .accountId(ACCOUNT_ID)
                 .reportingYears(expectedYears)
                 .build());
+        verifyNoInteractions(accountDetailsHistoryQueryService);
         verifyNoMoreInteractions(emissionsMonitoringPlanQueryService, accountUpdatedRegistryListener,
             mrtmAccountQueryService, mrtmAccountMapper, accountSearchAdditionalKeywordService, publisher);
         verifyNoInteractions(mrtmAccountRepository);
@@ -163,7 +179,7 @@ class MrtmAccountUpdateServiceTest {
 
         verifyNoMoreInteractions(mrtmAccountQueryService);
         verifyNoInteractions(emissionsMonitoringPlanQueryService, accountUpdatedRegistryListener,
-            mrtmAccountMapper, accountSearchAdditionalKeywordService, publisher);
+            mrtmAccountMapper, accountSearchAdditionalKeywordService, publisher, accountDetailsHistoryQueryService);
     }
 
     @Test
@@ -204,56 +220,158 @@ class MrtmAccountUpdateServiceTest {
 
     @Test
     void updateAccountUponEmpApproved() {
-        String name = "test name";
-        MrtmAccount account = mock(MrtmAccount.class);
-        AddressState contactAddress = mock(AddressState.class);
-        RegisteredAddressState registeredAddress = mock(RegisteredAddressState.class);
+        AddressState oldAddress = AddressState.builder().line1("old").city("city").country("GB").build();
+        AddressState newAddress = AddressState.builder().line1("new").city("city").country("GB").build();
+        RegisteredAddressState oldRegistered = RegisteredAddressState.builder().line1("oldReg").city("city").country("GB").build();
+        RegisteredAddressState newRegistered = RegisteredAddressState.builder().line1("newReg").city("city").country("GB").build();
+        AddressStateDTO oldAddressDTO = AddressStateDTO.builder().line1("old").city("city").country("GB").build();
+        AddressStateDTO newAddressDTO = AddressStateDTO.builder().line1("new").city("city").country("GB").build();
+        AddressStateDTO oldRegisteredDTO = AddressStateDTO.builder().line1("oldReg").city("city").country("GB").build();
+        AddressStateDTO newRegisteredDTO = AddressStateDTO.builder().line1("newReg").city("city").country("GB").build();
+
+        MrtmAccount account = MrtmAccount.builder()
+                .name("old name")
+                .address(oldAddress)
+                .registeredAddress(oldRegistered)
+                .firstMaritimeActivityDate(LocalDate.of(2026, 1, 1))
+                .build();
         EmpIssuanceAccountDraftData accountDraftData = EmpIssuanceAccountDraftData.builder()
-            .name(name)
-            .registeredAddress(registeredAddress)
-            .address(contactAddress)
-            .build();
+                .name("test name")
+                .address(newAddress)
+                .registeredAddress(newRegistered)
+                .build();
 
         when(mrtmAccountQueryService.getAccountById(ACCOUNT_ID)).thenReturn(account);
+        when(addressStateMapper.toAddressStateDTO(oldAddress)).thenReturn(oldAddressDTO);
+        when(addressStateMapper.toAddressStateDTO(newAddress)).thenReturn(newAddressDTO);
+        when(registeredAddressStateMapper.toAddressStateDTO(oldRegistered)).thenReturn(oldRegisteredDTO);
+        when(registeredAddressStateMapper.toAddressStateDTO(newRegistered)).thenReturn(newRegisteredDTO);
 
-        mrtmAccountUpdateService.updateAccountUponEmpApproved(ACCOUNT_ID, accountDraftData);
+        mrtmAccountUpdateService.updateAccountUponEmpApproved(
+                ACCOUNT_ID,
+                accountDraftData,
+                AccountDetailsHistoryConstants.updatedThroughWorkflow(
+                        AccountDetailsHistoryConstants.WORKFLOW_NAME_EMP_ISSUANCE, "REQ3"),
+                AccountDetailsHistoryConstants.SUBMITTED_BY_SYSTEM);
 
-        verify(mrtmAccountQueryService).getAccountById(ACCOUNT_ID);
-        verify(account).setStatus(MrtmAccountStatus.LIVE);
-        verify(account).setAddress(contactAddress);
-        verify(account).setRegisteredAddress(registeredAddress);
-        verify(account).setName(name);
-        verifyNoMoreInteractions(account, mrtmAccountQueryService);
-        verifyNoInteractions(mrtmAccountMapper, accountSearchAdditionalKeywordService, addressStateMapper, registeredAddressStateMapper);
+        assertThat(account.getName()).isEqualTo("test name");
+        assertThat(account.getStatus()).isEqualTo(MrtmAccountStatus.LIVE);
+        verify(accountDetailsHistoryQueryService).createAccountDetailsHistory(
+                eq(ACCOUNT_ID), any(), any(),
+                eq("Updated through Emissions monitoring plan REQ3"),
+                eq(AccountDetailsHistoryConstants.SUBMITTED_BY_SYSTEM),
+                eq(null));
     }
 
     @Test
     void updateAccountUponEmpVariationApproved() {
+    	AddressState oldAddress = AddressState.builder().city("oldcity").country("GB").build();
+    	AddressState newAddress = AddressState.builder().city("city").country("GB").build();
+    	RegisteredAddressState oldRegistered = RegisteredAddressState.builder().city("oldcity2").country("GB").build();
+    	RegisteredAddressState newRegistered = RegisteredAddressState.builder().city("city2").country("GB").build();
+    	AddressStateDTO oldAddressDTO = AddressStateDTO.builder().city("oldcity").country("GB").build();
+    	AddressStateDTO newAddressDTO = AddressStateDTO.builder().city("city").country("GB").build();
+    	AddressStateDTO oldRegisteredDTO = AddressStateDTO.builder().city("oldcity2").country("GB").build();
+    	AddressStateDTO newRegisteredDTO = AddressStateDTO.builder().city("city2").country("GB").build();
+
     	EmpVariationAccountDraftData accountDraftData = EmpVariationAccountDraftData.builder()
     			.name("name")
-    			.address(AddressState.builder()
-    					.city("city")
-    					.build())
-    			.registeredAddress(RegisteredAddressState.builder()
-    					.city("city2")
-    					.build())
+    			.address(newAddress)
+    			.registeredAddress(newRegistered)
     			.build();
 
     	MrtmAccount account = MrtmAccount.builder()
     			.name("oldname")
-    			.address(AddressState.builder()
-    					.city("oldcity")
-    					.build())
-    			.registeredAddress(RegisteredAddressState.builder()
-    					.city("oldcity2")
-    					.build())
+    			.address(oldAddress)
+    			.registeredAddress(oldRegistered)
+    			.firstMaritimeActivityDate(LocalDate.of(2026, 1, 1))
     			.build();
         when(mrtmAccountQueryService.getAccountById(ACCOUNT_ID)).thenReturn(account);
+        when(addressStateMapper.toAddressStateDTO(oldAddress)).thenReturn(oldAddressDTO);
+        when(addressStateMapper.toAddressStateDTO(newAddress)).thenReturn(newAddressDTO);
+        when(registeredAddressStateMapper.toAddressStateDTO(oldRegistered)).thenReturn(oldRegisteredDTO);
+        when(registeredAddressStateMapper.toAddressStateDTO(newRegistered)).thenReturn(newRegisteredDTO);
 
-        mrtmAccountUpdateService.updateAccountUponEmpVariationApproved(ACCOUNT_ID, accountDraftData);
+        mrtmAccountUpdateService.updateAccountUponEmpVariationApproved(
+                ACCOUNT_ID,
+                accountDraftData,
+                AccountDetailsHistoryConstants.updatedThroughWorkflow(
+                        AccountDetailsHistoryConstants.WORKFLOW_NAME_EMP_VARIATION, "requestId"),
+                AccountDetailsHistoryConstants.SUBMITTED_BY_SYSTEM);
         assertThat(account.getName()).isEqualTo(accountDraftData.getName());
         assertThat(account.getAddress()).isEqualTo(accountDraftData.getAddress());
         assertThat(account.getRegisteredAddress()).isEqualTo(accountDraftData.getRegisteredAddress());
         verify(mrtmAccountQueryService).getAccountById(ACCOUNT_ID);
+        verify(accountDetailsHistoryQueryService).createAccountDetailsHistory(
+                eq(ACCOUNT_ID), any(), any(),
+                eq("Updated through EMP variation requestId"),
+                eq(AccountDetailsHistoryConstants.SUBMITTED_BY_SYSTEM),
+                eq(null));
+    }
+
+    @Test
+    void updateAccountRegistryId_recordsHistoryWithSystem() {
+        MrtmAccount account = MrtmAccount.builder()
+                .name("name")
+                .address(AddressState.builder().line1("line1").city("city").country("GB").build())
+                .firstMaritimeActivityDate(LocalDate.of(2026, 1, 1))
+                .registryId(1111111)
+                .build();
+        AddressStateDTO addressDTO = AddressStateDTO.builder().line1("line1").city("city").country("GB").build();
+
+        when(mrtmAccountQueryService.getAccountById(ACCOUNT_ID)).thenReturn(account);
+        when(addressStateMapper.toAddressStateDTO(account.getAddress())).thenReturn(addressDTO);
+        when(registeredAddressStateMapper.toAddressStateDTO(null)).thenReturn(null);
+
+        mrtmAccountUpdateService.updateAccountRegistryId(ACCOUNT_ID, 2222222);
+
+        assertThat(account.getRegistryId()).isEqualTo(2222222);
+        verify(mrtmAccountRepository).save(account);
+        verify(accountDetailsHistoryQueryService).createAccountDetailsHistory(
+                eq(ACCOUNT_ID),
+                any(),
+                any(),
+                eq(AccountDetailsHistoryConstants.REASON_REGISTRY_SET_OPERATOR),
+                eq(AccountDetailsHistoryConstants.SUBMITTED_BY_SYSTEM),
+                eq(null));
+    }
+
+    @Test
+    void updateMaritimeAccount_recordsHistoryWhenDetailsChange() {
+        AppUser appUser = AppUser.builder().userId("userId").firstName("Jane").lastName("Regulator").build();
+        AddressState address = AddressState.builder().line1("line1").city("city").country("GB").build();
+        AddressStateDTO addressDTO = AddressStateDTO.builder().line1("line1").city("city").country("GB").build();
+        LocalDate fyro = LocalDate.of(2026, 1, 1);
+
+        MrtmAccount account = MrtmAccount.builder()
+                .name("Old Name")
+                .sopId(10L)
+                .address(address)
+                .firstMaritimeActivityDate(fyro)
+                .build();
+
+        MrtmAccountUpdateDTO updateDTO = MrtmAccountUpdateDTO.builder()
+                .name("New Name")
+                .sopId(10L)
+                .address(addressDTO)
+                .firstMaritimeActivityDate(fyro)
+                .reason("Corrected company data")
+                .build();
+
+        when(mrtmAccountQueryService.getAccountById(ACCOUNT_ID)).thenReturn(account);
+        when(addressStateMapper.toAddressStateDTO(address)).thenReturn(addressDTO);
+        when(registeredAddressStateMapper.toAddressStateDTO(null)).thenReturn(null);
+        org.mockito.Mockito.doAnswer(invocation -> {
+            account.setName(updateDTO.getName());
+            account.setSopId(updateDTO.getSopId());
+            account.setFirstMaritimeActivityDate(updateDTO.getFirstMaritimeActivityDate());
+            return null;
+        }).when(mrtmAccountMapper).updateMrtmAccount(account, updateDTO);
+
+        mrtmAccountUpdateService.updateMaritimeAccount(ACCOUNT_ID, updateDTO, appUser);
+
+        verify(accountDetailsHistoryQueryService).createAccountDetailsHistory(
+            eq(ACCOUNT_ID), any(), any(), eq("Corrected company data"), eq(appUser.getFullName()),
+            eq(appUser.getUserId()));
     }
 }

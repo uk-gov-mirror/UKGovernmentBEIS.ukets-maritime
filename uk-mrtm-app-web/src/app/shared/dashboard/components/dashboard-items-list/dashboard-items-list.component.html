@@ -8,7 +8,7 @@
   <ng-template let-column="column" let-row="row">
     @switch (column.field) {
       @case ('taskType') {
-        <a [routerLink]="row | itemLink" govukLink>
+        <a [routerLink]="row | itemLink" govukLink netzDebounce>
           {{ row[column.field] | itemName: getYearFromRequestId(row.requestId) }}
         </a>
         @if (row.isNew) {

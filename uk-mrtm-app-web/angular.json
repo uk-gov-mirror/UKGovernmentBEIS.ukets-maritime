@@ -45,10 +45,10 @@
             ],
             "styles": ["src/styles.scss"],
             "stylePreprocessorOptions": {
-              "includePaths": ["node_modules/govuk-frontend/dist/govuk/"]
+              "includePaths": ["node_modules/govuk-frontend/dist/govuk/", "src/theming"]
             },
             "scripts": [],
-            "allowedCommonJsDependencies": ["js-sha256", "google-libphonenumber", "papaparse"]
+            "allowedCommonJsDependencies": ["js-sha256", "papaparse"]
           },
           "configurations": {
             "production": {

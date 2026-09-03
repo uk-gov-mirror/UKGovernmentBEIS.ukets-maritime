@@ -52,8 +52,8 @@ export class RespondToOperatorFormComponent {
   private readonly service = inject(TaskService);
   private readonly activatedRoute = inject(ActivatedRoute);
 
-  public readonly key = input<string>();
   public readonly formGroup: FormGroup<RespondToOperatorFormGroupModel> = inject(TASK_FORM);
+  public readonly key = input<string>();
 
   public readonly verificationData = computed(() => {
     const key = this.key();

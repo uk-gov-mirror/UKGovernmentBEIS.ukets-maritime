@@ -16,9 +16,9 @@ import { ReviewReturnForAmendsSubtaskSummaryTemplateComponent } from '@shared/co
 })
 export class AerReturnedForAmendsComponent {
   private readonly store = inject(RequestActionStore);
-  readonly decisions = this.store.select(aerReturnedForAmendsQuery.selectAmendsDecisions);
-  readonly subtaskTitleMap = AER_REVIEW_SUBTASK_TO_TITLE_MAP;
-
   private readonly authStore = inject(AuthStore);
+  readonly decisions = this.store.select(aerReturnedForAmendsQuery.selectAmendsDecisions);
+
+  readonly subtaskTitleMap = AER_REVIEW_SUBTASK_TO_TITLE_MAP;
   readonly userRoleType = this.authStore.select(selectUserRoleType);
 }

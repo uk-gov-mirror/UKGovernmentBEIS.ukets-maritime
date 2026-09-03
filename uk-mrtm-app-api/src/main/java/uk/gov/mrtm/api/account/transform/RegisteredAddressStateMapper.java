@@ -13,4 +13,5 @@ public interface RegisteredAddressStateMapper {
 
     RegisteredAddressState toRegisteredAddressState(AddressStateDTO addressStateDTO);
 
+    AddressStateDTO toAddressStateDTO(RegisteredAddressState registeredAddressState);
 }

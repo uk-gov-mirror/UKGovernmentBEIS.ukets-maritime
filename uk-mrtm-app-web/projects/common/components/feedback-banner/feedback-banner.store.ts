@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { produce } from 'immer';
@@ -7,7 +7,7 @@ import { SignalStore } from '@netz/common/store';
 
 import { FeedbackBannerState, initialFeedbackBannerState } from './feedback-banner.state';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class FeedbackBannerStore extends SignalStore<FeedbackBannerState> {
   constructor() {
     super(initialFeedbackBannerState);

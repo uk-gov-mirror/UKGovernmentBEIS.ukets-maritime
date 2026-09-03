@@ -1,11 +1,31 @@
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 
-export const todayOrFutureDateValidator = (): ValidatorFn => {
+import { isBefore } from 'date-fns';
+
+import { earliestTodayAnywhere, toUtcStartOfDay } from '@shared/utils';
+
+export const todayOrFutureDateValidator = (partialMessage?: string): ValidatorFn => {
   return (control: AbstractControl): { [key: string]: string } | null => {
-    const dateAndTime = new Date();
-    const today = new Date(dateAndTime.toDateString());
-    return control.value && control.value instanceof Date && new Date(control.value.toDateString()) < today
-      ? { invalidDate: `The date must be today or in the future` }
+    const inputDay = toUtcStartOfDay(control.value);
+
+    if (!inputDay) {
+      return null;
+    }
+
+    const earliestToday = earliestTodayAnywhere();
+    const displayedDate = new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+    }).format(earliestToday);
+
+    return isBefore(inputDay, earliestToday)
+      ? {
+          invalidTodayOrFutureDate: partialMessage
+            ? `${partialMessage} must be the same as or after ${displayedDate}`
+            : `The date must be the same as or after ${displayedDate}`,
+        }
       : null;
   };
 };

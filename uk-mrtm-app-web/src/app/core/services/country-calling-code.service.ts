@@ -1,11 +1,15 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
-import { PhoneNumberUtil } from 'google-libphonenumber';
+import { getCountryCallingCode, isSupportedCountry } from 'libphonenumber-js/max';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class CountryCallingCodeService {
   getCountryCallingCode(countryCode: string): number {
-    return this.handleMissingCodes(countryCode) ?? PhoneNumberUtil.getInstance().getCountryCodeForRegion(countryCode);
+    return this.handleMissingCodes(countryCode) ?? this.lookUpCallingCode(countryCode);
+  }
+
+  private lookUpCallingCode(countryCode: string): number {
+    return isSupportedCountry(countryCode) ? Number(getCountryCallingCode(countryCode)) : 0;
   }
 
   private handleMissingCodes(countryCode: string): number {

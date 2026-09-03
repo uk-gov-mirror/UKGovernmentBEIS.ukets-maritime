@@ -112,7 +112,10 @@ export class ErrorSummaryComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  private flattenErrors(errors: NestedMessageValidationErrors, flattenedErrors = []): FlatSummaryError[] {
+  private flattenErrors(
+    errors: NestedMessageValidationErrors,
+    flattenedErrors: FlatSummaryError[] = [],
+  ): FlatSummaryError[] {
     if (errors.self) {
       flattenedErrors.push({ path: errors.path, self: errors.self });
     }
@@ -135,7 +138,7 @@ export class ErrorSummaryComponent implements OnChanges, AfterViewInit {
   };
 
   private getAbstractControlErrors(control: AbstractControl, path: string[] = []): NestedMessageValidationErrors {
-    let childControlErrors;
+    let childControlErrors: NestedMessageValidationErrors['controls'];
 
     if (control instanceof UntypedFormGroup) {
       childControlErrors = Object.entries(control.controls)

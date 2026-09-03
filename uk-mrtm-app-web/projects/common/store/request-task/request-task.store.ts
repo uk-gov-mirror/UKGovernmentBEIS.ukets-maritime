@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { produce } from 'immer';
 
@@ -13,7 +13,7 @@ import {
 import { SignalStore } from '../signal-store';
 import { initialRequestTaskState, RequestTaskState } from './request-task.state';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RequestTaskStore extends SignalStore<RequestTaskState> {
   constructor() {
     super(initialRequestTaskState);

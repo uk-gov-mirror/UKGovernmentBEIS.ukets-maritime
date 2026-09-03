@@ -26,10 +26,10 @@ import { VerifierUserStore } from '@verifiers/+state/verifier-user.store';
 })
 export class AddSummaryComponent {
   private readonly store: VerifierUserStore = inject(VerifierUserStore);
-  public summaryInfo$ = this.store.pipe(selectNewUserAuthority, take(1));
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly router: Router = inject(Router);
   private readonly businessErrorService = inject(BusinessErrorService);
+  public summaryInfo$ = this.store.pipe(selectNewUserAuthority, take(1));
 
   public readonly formHint$ = this.activatedRoute.paramMap.pipe(
     map((params) => {

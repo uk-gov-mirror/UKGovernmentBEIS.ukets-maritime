@@ -26,10 +26,10 @@ import { WizardStepComponent } from '@shared/components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RecommendedImprovementsExistComponent {
-  readonly map = recommendedImprovementsMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
+  readonly map = recommendedImprovementsMap;
 
   onSubmit() {
     this.service

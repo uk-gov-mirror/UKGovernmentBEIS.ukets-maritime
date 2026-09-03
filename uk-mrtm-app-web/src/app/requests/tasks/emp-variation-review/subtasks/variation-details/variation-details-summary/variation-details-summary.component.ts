@@ -49,6 +49,7 @@ export class VariationDetailsSummaryComponent {
     TaskService<EmpVariationReviewTaskPayload>,
   );
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
+  private readonly route: ActivatedRoute = inject(ActivatedRoute);
   readonly vm: Signal<ViewModel> = computed(() => {
     const empVariationDetails = this.store.select(empVariationQuery.selectEmpVariationDetails)();
 
@@ -63,7 +64,6 @@ export class VariationDetailsSummaryComponent {
       wizardStep: VariationDetailsWizardStep,
     };
   });
-  private readonly route: ActivatedRoute = inject(ActivatedRoute);
 
   onSubmit() {
     this.service.submitSubtask(VARIATION_DETAILS_SUB_TASK, OperatorDetailsWizardStep.SUMMARY, this.route).subscribe();

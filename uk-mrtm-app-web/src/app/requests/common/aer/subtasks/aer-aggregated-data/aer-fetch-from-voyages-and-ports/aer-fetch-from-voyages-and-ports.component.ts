@@ -36,14 +36,14 @@ import { AerJourneyTypeEnum } from '@shared/types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AerFetchFromVoyagesAndPortsComponent {
-  public readonly wizardMap = aerAggregatedDataSubtasksListMap;
-  public readonly wizardStep = AerAggregatedDataWizardStep;
-
   private readonly persistablePaginationService = inject(PersistablePaginationService);
   private readonly store = inject(RequestTaskStore);
+
   private readonly service: TaskService<AerSubmitTaskPayload> = inject(TaskService);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly feedbackBannerStore = inject(FeedbackBannerStore);
+  public readonly wizardMap = aerAggregatedDataSubtasksListMap;
+  public readonly wizardStep = AerAggregatedDataWizardStep;
   private readonly form: UntypedFormGroup = new UntypedFormGroup({});
 
   public readonly hasAggregatedData = computed(

@@ -30,11 +30,11 @@ import { RequestNamePipe } from '@shared/pipes';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NonComplianceDetailsSelectedRequestsComponent {
-  readonly map = nonComplianceDetailsMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<NonComplianceSubmitTaskPayload>);
   private readonly store = inject(RequestTaskStore);
+  readonly map = nonComplianceDetailsMap;
   private readonly nonComplianceDetails = this.store.select(nonComplianceSubmitQuery.selectNonComplianceDetails);
   private readonly requestNamePipe = new RequestNamePipe();
 

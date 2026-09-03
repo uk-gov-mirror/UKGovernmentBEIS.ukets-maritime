@@ -11,6 +11,7 @@ import { MaritimeAccountsService, MrtmAccountEmpDTO } from '@mrtm/api';
 import { RequestTaskStore } from '@netz/common/store';
 import { ActivatedRouteStub, mockClass } from '@netz/common/testing';
 
+import { OperatorAccountsStore } from '@accounts/store';
 import { IncorporateHeaderComponent } from '@incorporate-header/incorporate-header.component';
 
 describe('IncorporateHeaderComponent', () => {
@@ -99,6 +100,17 @@ describe('IncorporateHeaderComponent', () => {
     fixture.detectChanges();
     expect(fixture.debugElement.query(By.css('span'))).toBeFalsy();
     expect((fixture.debugElement.nativeElement as Element).textContent).not.toContain('Emissions Plan ID:');
+  });
+
+  it('should reuse the account already loaded in the store instead of fetching it again', () => {
+    maritimeAccountsService.getMaritimeAccount = vi.fn().mockReturnValue(of(mockAccountDetails));
+    TestBed.inject(OperatorAccountsStore).setCurrentAccount(mockAccountDetails);
+    fixture.detectChanges();
+
+    expect(maritimeAccountsService.getMaritimeAccount).not.toHaveBeenCalled();
+    expect((fixture.debugElement.query(By.css('.govuk-phase-banner')).nativeElement as Element).textContent).toContain(
+      'name',
+    );
   });
 
   it('should display emp-id and account-status section if emp info available', () => {

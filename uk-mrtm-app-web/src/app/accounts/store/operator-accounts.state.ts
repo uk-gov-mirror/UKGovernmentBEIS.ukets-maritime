@@ -1,10 +1,12 @@
 import {
+  AccountDetailsHistoryListResponse,
   AccountReportingStatusHistoryCreationDTO,
   AccountReportingStatusHistoryListResponse,
   AccountSearchResultInfoDTO,
   MrtmAccountDTO,
   MrtmAccountEmpDTO,
   MrtmAccountSearchCriteria,
+  MrtmAccountUpdateDTO,
   MrtmAccountViewDTO,
 } from '@mrtm/api';
 
@@ -32,8 +34,9 @@ export interface OperatorAccountsState {
 }
 
 export interface CurrentAccountState extends MrtmAccountEmpDTO {
-  account: MrtmAccountViewDTO | null;
+  account: (MrtmAccountViewDTO & Partial<Pick<MrtmAccountUpdateDTO, 'reason'>>) | null;
   reportingStatus: ReportingStatusState;
+  operatorDetailsHistory: AccountDetailsHistoryListResponse['accountDetailsHistoryList'];
 }
 
 export interface ReportingStatusState {
@@ -64,6 +67,7 @@ export const initialCreateAccountState: CreateAccountState = {
 export const initialCurrentAccountState: CurrentAccountState = {
   account: null,
   reportingStatus: initialReportingStatusState,
+  operatorDetailsHistory: [],
 };
 
 export const initialAccountsSearchState: AccountsSearchState = {

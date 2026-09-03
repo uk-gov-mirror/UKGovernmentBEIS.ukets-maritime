@@ -1,11 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { Match, Operation, OperationMap } from '@shared/directives/html-diff/html-diff.type';
 import { isNullOrEmpty } from '@shared/utils';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class HtmlDiffService {
   private isEndOfTag(char: string): boolean {
     return char === '>';

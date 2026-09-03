@@ -32,10 +32,7 @@ export const nonComplianceFinalDeterminationDetailsFormProvider: Provider = {
             : null,
           disabled: nonComplianceFinalDetermination?.complianceRestored !== 'YES',
         },
-        [
-          GovukValidators.required('Enter when did the operator become compliant'),
-          todayOrPastDateValidator('The date must be today or in the past'),
-        ],
+        [GovukValidators.required('Enter when did the operator become compliant'), todayOrPastDateValidator()],
       ),
       comments: formBuilder.control<NonComplianceFinalDetermination['comments']>(
         nonComplianceFinalDetermination?.comments ?? null,
@@ -59,10 +56,7 @@ export const nonComplianceFinalDeterminationDetailsFormProvider: Provider = {
             : null,
           disabled: nonComplianceFinalDetermination?.operatorPaid !== true,
         },
-        [
-          GovukValidators.required('Enter when did the operator pay'),
-          todayOrPastDateValidator('The date must be today or in the past'),
-        ],
+        [GovukValidators.required('Enter when did the operator pay'), todayOrPastDateValidator()],
       ),
     });
   },

@@ -1,95 +1,93 @@
 <h2 class="govuk-heading-m">Users, contacts and verifiers</h2>
 @if (isEditable()) {
-  @switch (roleType()) {
-    @case ('OPERATOR') {
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-half">
-          <form
-            (ngSubmit)="addUser(addUserForm.get('userType').value)"
-            [formGroup]="addUserForm"
-            class="govuk-grid-row row-container"
-            id="add-user-form"
-            name="add-user">
-            <div class="govuk-grid-column-two-thirds">
-              <div
-                [options]="userType$ | async"
-                formControlName="userType"
-                govuk-select
-                label="Add a new user"
-                widthClass="govuk-!-width-full"></div>
-            </div>
-            <div class="govuk-grid-column-one-third">
-              <button govukButton type="submit">Continue</button>
-            </div>
-          </form>
-        </div>
+  @if (roleType() === 'OPERATOR') {
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-half">
+        <form
+          (ngSubmit)="addUser(addUserForm.get('userType').value)"
+          [formGroup]="addUserForm"
+          class="govuk-grid-row row-container"
+          id="add-user-form"
+          name="add-user">
+          <div class="govuk-grid-column-two-thirds">
+            <div
+              [options]="userType$ | async"
+              formControlName="userType"
+              govuk-select
+              label="Add a new user"
+              widthClass="govuk-!-width-full"></div>
+          </div>
+          <div class="govuk-grid-column-one-third">
+            <button govukButton type="submit">Continue</button>
+          </div>
+        </form>
       </div>
-      <govuk-details summary="Learn more about user types and permissions">
-        <h3 class="govuk-heading-s">User types</h3>
-        <p class="govuk-body govuk-!-margin-bottom-1">Operator admin</p>
-        <p class="govuk-body govuk-!-margin-bottom-1">
-          Every account with an emissions monitoring plan (EMP) must have at least one person assigned as an operator
-          admin. An operator admin user can:
-        </p>
-        <ul class="govuk-list govuk-list--bullet">
-          <li>add and delete other users from the account</li>
-          <li>also be assigned as the primary or secondary contact, service contact or financial contact.</li>
-        </ul>
-        <p class="govuk-body govuk-!-margin-bottom-1">Operator</p>
-        <p class="govuk-body">
-          Every account with an EMP can have any number of operator users. These user types can be assigned as the
-          primary or secondary contact, service contact or financial contact.
-        </p>
-        <p class="govuk-body govuk-!-margin-bottom-1">Consultant / agent</p>
-        <p class="govuk-body">
-          You may wish to engage a consultant or agent to access this service and help you with tasks relating to your
-          EMP. They can be assigned as the primary or secondary contact, service contact or financial contact.
-        </p>
-        <p class="govuk-body govuk-!-margin-bottom-1">Emitter contact</p>
-        <p class="govuk-body">
-          This role enables a non-operational person to receive official notices and other communications. They cannot
-          be assigned any additional permissions.
-        </p>
-        <p class="govuk-body govuk-!-margin-bottom-1">Verifier body</p>
-        <p class="govuk-body">
-          Where applicable, you must appoint a verifier body before you submit your annual emissions report. They will
-          verify the report before you submit it to your regulator.
-        </p>
-        <p class="govuk-body govuk-!-margin-bottom-1">Data supplier</p>
-        <p class="govuk-body">
-          Appointing a data supplier will allow the supplier to share data that can be imported into relevant METS
-          workflows.
-        </p>
-        <h3 class="govuk-heading-s">User permissions</h3>
-        <p class="govuk-body govuk-!-margin-bottom-1">Primary and secondary contacts</p>
-        <ul class="govuk-list govuk-list--bullet">
-          <li>Responsible for day to day operations</li>
-          <li>You must have a primary site contact</li>
-          <li>You can have a secondary site contact</li>
-          <li>Both can send or receive messages to or from the relevant regulator</li>
-          <li>Both can initiate and receive tasks in the service</li>
-        </ul>
-        <p class="govuk-body">
-          These are people who receive legal and regulatory notices and correspondence (although the secondary contact
-          does not automatically receive notices). An individual with this role will be the official representative of
-          the legal entity holding the EMP.
-        </p>
-        <p class="govuk-body govuk-!-margin-bottom-1">Financial contact</p>
-        <p class="govuk-body">
-          This is the person who receives information about fees. They can also be the primary or secondary site
-          contact, or the service contact.
-        </p>
-        <p class="govuk-body govuk-!-margin-bottom-1">Service contact</p>
-        <p class="govuk-body">This is the person who receives all notices, for example about enforcements.</p>
-      </govuk-details>
-    }
-    @case ('REGULATOR') {
-      <button (click)="addUser('operator_admin')" govukButton id="reg-add-user" type="button">
-        Add new operator admin
-      </button>
-    }
+    </div>
+    <govuk-details summary="Learn more about user types and permissions">
+      <h3 class="govuk-heading-s">User types</h3>
+      <p class="govuk-body govuk-!-margin-bottom-1">Operator admin</p>
+      <p class="govuk-body govuk-!-margin-bottom-1">
+        Every account with an emissions monitoring plan (EMP) must have at least one person assigned as an operator
+        admin. An operator admin user can:
+      </p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>add and delete other users from the account</li>
+        <li>also be assigned as the primary or secondary contact, service contact or financial contact.</li>
+      </ul>
+      <p class="govuk-body govuk-!-margin-bottom-1">Operator</p>
+      <p class="govuk-body">
+        Every account with an EMP can have any number of operator users. These user types can be assigned as the primary
+        or secondary contact, service contact or financial contact.
+      </p>
+      <p class="govuk-body govuk-!-margin-bottom-1">Consultant / agent</p>
+      <p class="govuk-body">
+        You may wish to engage a consultant or agent to access this service and help you with tasks relating to your
+        EMP. They can be assigned as the primary or secondary contact, service contact or financial contact.
+      </p>
+      <p class="govuk-body govuk-!-margin-bottom-1">Emitter contact</p>
+      <p class="govuk-body">
+        This role enables a non-operational person to receive official notices and other communications. They cannot be
+        assigned any additional permissions.
+      </p>
+      <p class="govuk-body govuk-!-margin-bottom-1">Verifier body</p>
+      <p class="govuk-body">
+        Where applicable, you must appoint a verifier body before you submit your annual emissions report. They will
+        verify the report before you submit it to your regulator.
+      </p>
+      <p class="govuk-body govuk-!-margin-bottom-1">Data supplier</p>
+      <p class="govuk-body">
+        Appointing a data supplier will allow the supplier to share data that can be imported into relevant METS
+        workflows.
+      </p>
+      <h3 class="govuk-heading-s">User permissions</h3>
+      <p class="govuk-body govuk-!-margin-bottom-1">Primary and secondary contacts</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Responsible for day to day operations</li>
+        <li>You must have a primary site contact</li>
+        <li>You can have a secondary site contact</li>
+        <li>Both can send or receive messages to or from the relevant regulator</li>
+        <li>Both can initiate and receive tasks in the service</li>
+      </ul>
+      <p class="govuk-body">
+        These are people who receive legal and regulatory notices and correspondence (although the secondary contact
+        does not automatically receive notices). An individual with this role will be the official representative of the
+        legal entity holding the EMP.
+      </p>
+      <p class="govuk-body govuk-!-margin-bottom-1">Financial contact</p>
+      <p class="govuk-body">
+        This is the person who receives information about fees. They can also be the primary or secondary site contact,
+        or the service contact.
+      </p>
+      <p class="govuk-body govuk-!-margin-bottom-1">Service contact</p>
+      <p class="govuk-body">This is the person who receives all notices, for example about enforcements.</p>
+    </govuk-details>
+  } @else if (roleType() === 'REGULATOR') {
+    <button (click)="addUser('operator_admin')" govukButton id="reg-add-user" type="button">
+      Add new operator admin
+    </button>
   }
 }
+
 <form (ngSubmit)="onSubmit()" [formGroup]="usersForm" id="users-form" name="users">
   <govuk-table
     [columns]="isEditable() ? editableCols : nonEditableCols"
@@ -210,6 +208,9 @@
                         </a>
                       </li>
                     </ul>
+                  }
+                  @default {
+                    <!-- Only verifiers and data suppliers can be replaced or removed from this list. -->
                   }
                 }
               }

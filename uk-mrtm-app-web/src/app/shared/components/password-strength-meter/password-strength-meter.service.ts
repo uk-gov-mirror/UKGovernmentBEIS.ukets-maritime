@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 import { zxcvbn, zxcvbnOptions } from '@zxcvbn-ts/core';
@@ -15,7 +15,7 @@ export const DEFAULT_ZXVBN_CONFIG: ZxcvbnConfigType = {
   translations: translations,
 };
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class PasswordStrengthMeterService {
   readonly options = inject<ZxcvbnConfigType>(ZXCVBN_CONFIG, { optional: true });
 

@@ -21,7 +21,7 @@
       @if (vm.accountInfo?.status === 'LIVE' || vm.accountInfo?.status === 'CLOSED') {
         <mrtm-active-emissions-plan />
       }
-      <mrtm-operator-account-details [editable]="vm.isAccountEditable" />
+      <mrtm-operator-account-details [isEditable]="vm.isAccountEditable" />
       <mrtm-operator-account-reporting-details [editable]="vm.isAccountEditable" />
     </ng-template>
     @if (vm.userRoleType === 'REGULATOR') {

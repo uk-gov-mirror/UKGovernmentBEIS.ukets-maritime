@@ -25,11 +25,11 @@ import {
 })
 export class EditComponent {
   public readonly form: UntypedFormGroup = inject<UntypedFormGroup>(EDIT_VERIFICATION_BODY_PROVIDER);
-  public readonly wizardStep = viewChild(WizardStepComponent, { read: ElementRef });
   private readonly store: VerificationBodiesStoreService = inject(VerificationBodiesStoreService);
   private readonly router: Router = inject(Router);
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly businessErrorService = inject(BusinessErrorService);
+  public readonly wizardStep = viewChild(WizardStepComponent, { read: ElementRef });
 
   public handleFormSubmit(): void {
     (this.form.dirty

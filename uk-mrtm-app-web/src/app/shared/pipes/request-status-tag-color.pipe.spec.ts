@@ -22,6 +22,8 @@ describe('RequestStatusTagColorPipe', () => {
     expect(transformation).toEqual('green');
     transformation = pipe.transform('APPROVED');
     expect(transformation).toEqual('green');
+    transformation = pipe.transform('ACCEPTED');
+    expect(transformation).toEqual('green');
 
     transformation = pipe.transform('IN_PROGRESS');
     expect(transformation).toEqual('teal');

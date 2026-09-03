@@ -27,12 +27,12 @@ import { EmpVariationReviewService } from '@requests/tasks/emp-variation-review/
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverallDecisionActionsComponent {
-  public overallDecisionMap = overallDecisionMap;
   private readonly service: TaskService<EmpVariationReviewTaskPayload> = inject(
     TaskService<EmpVariationReviewTaskPayload>,
   );
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
+  public overallDecisionMap = overallDecisionMap;
   public isAcceptedEnabled = this.store.select(
     empVariationReviewQuery.selectAreAllSectionsWithStatus(TaskItemStatus.ACCEPTED),
   )();

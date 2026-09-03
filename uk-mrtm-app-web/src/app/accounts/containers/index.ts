@@ -9,6 +9,7 @@ export * from './create-user-authority-summary';
 export * from './delete-user-authority';
 export * from './edit-operator-account';
 export * from './edit-user-authority';
+export * from './operator-details-history';
 export * from './process-actions';
 export * from './user-authority-details';
 export * from './view-operator-account';

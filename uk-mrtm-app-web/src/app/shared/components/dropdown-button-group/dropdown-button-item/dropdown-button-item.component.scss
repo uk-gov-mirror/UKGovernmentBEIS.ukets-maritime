@@ -1,4 +1,4 @@
-@use 'base' as govuk;
+@use 'govuk-base' as govuk;
 
 $dropdown-button-colour: govuk.govuk-colour("black", $variant: "tint-95");
 $dropdown-button-hover-colour: #767676;

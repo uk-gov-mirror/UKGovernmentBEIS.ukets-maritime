@@ -35,13 +35,13 @@ import { DeterminationTypePipe, VariationDeterminationHeaderTypePipe } from '@sh
 })
 export class OverallDecisionQuestionComponent {
   protected readonly form = inject(TASK_FORM);
-  protected readonly overallDecisionMap = overallDecisionMap;
   private readonly service: TaskService<EmpVariationReviewTaskPayload> = inject(
     TaskService<EmpVariationReviewTaskPayload>,
   );
   private readonly store: RequestTaskStore = inject(RequestTaskStore);
-  public readonly determinationType = this.store.select(empVariationReviewQuery.selectDetermination)()?.type;
   private readonly route: ActivatedRoute = inject(ActivatedRoute);
+  protected readonly overallDecisionMap = overallDecisionMap;
+  public readonly determinationType = this.store.select(empVariationReviewQuery.selectDetermination)()?.type;
 
   onSubmit() {
     (this.service as EmpVariationReviewService)

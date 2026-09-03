@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -8,6 +7,7 @@ import {
   inject,
   viewChild,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -34,7 +34,6 @@ import { UserAccountFormComponent, WizardStepComponent } from '@shared/component
     UserTypePipe,
     UserAccountFormComponent,
     WizardStepComponent,
-    AsyncPipe,
     ReactiveFormsModule,
     OperatorAdminInfoComponent,
     OperatorUserInfoComponent,
@@ -48,12 +47,14 @@ import { UserAccountFormComponent, WizardStepComponent } from '@shared/component
 })
 export class CreateUserAuthorityComponent implements AfterViewInit {
   public form = inject<FormGroup>(CREATE_USER_AUTHORITY_PROVIDER);
-  readonly wizardStep = viewChild(WizardStepComponent, { read: ElementRef });
   private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  public userType$ = this.activatedRoute.paramMap.pipe(map((params) => params.get('userType')));
   private readonly router: Router = inject(Router);
   private readonly store: UserAuthorityStore = inject(UserAuthorityStore);
   private readonly cdr = inject(ChangeDetectorRef);
+
+  readonly wizardStep = viewChild(WizardStepComponent, { read: ElementRef });
+
+  public readonly userType = toSignal(this.activatedRoute.paramMap.pipe(map((params) => params.get('userType'))));
   private submissionErrors$ = this.store.pipe(selectSubmissionErrors);
 
   ngAfterViewInit(): void {

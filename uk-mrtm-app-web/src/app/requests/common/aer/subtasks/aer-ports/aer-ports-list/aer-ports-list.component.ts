@@ -46,10 +46,10 @@ import { isSameDayOrAfter, isSameDayOrBefore } from '@shared/utils/dates.utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AerPortsListComponent extends PaginationStatePersistableComponent {
-  private readonly formGroup = new UntypedFormGroup({});
   private readonly feedbackBannerStore = inject(FeedbackBannerStore);
   private readonly store = inject(RequestTaskStore);
   private readonly service: TaskService<AerSubmitTaskPayload> = inject(TaskService);
+  private readonly formGroup = new UntypedFormGroup({});
   private readonly filter = signal<FilterByShipAndDateRange | null>(
     (this.currentPersistableComponentState()?.activeFilters as FilterByShipAndDateRange) ?? null,
   );

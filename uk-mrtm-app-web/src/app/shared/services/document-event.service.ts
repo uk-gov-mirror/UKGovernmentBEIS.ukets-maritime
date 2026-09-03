@@ -1,4 +1,4 @@
-import { inject, Injectable, InjectionToken, RendererFactory2 } from '@angular/core';
+import { inject, InjectionToken, RendererFactory2, Service } from '@angular/core';
 
 import { Subject } from 'rxjs';
 
@@ -7,7 +7,7 @@ export const DOCUMENT_EVENT = new InjectionToken<Subject<PointerEvent | FocusEve
   factory: () => new Subject<PointerEvent | FocusEvent>(),
 });
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class DocumentEventService {
   private readonly documentEvent$ = inject<Subject<PointerEvent | FocusEvent>>(DOCUMENT_EVENT);
   private rendererFactory2 = inject(RendererFactory2);

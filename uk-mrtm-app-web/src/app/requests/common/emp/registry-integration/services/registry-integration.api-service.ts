@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
@@ -17,7 +17,7 @@ import { requestTaskQuery, RequestTaskStore } from '@netz/common/store';
 
 import { REGISTRY_INTEGRATION_TASK_NAME } from '@requests/common/emp/registry-integration';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RegistryIntegrationApiService {
   private readonly taskStore = inject(RequestTaskStore);
   private readonly tasksService = inject(TasksService);

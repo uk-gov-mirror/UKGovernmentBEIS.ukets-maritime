@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { iif, Observable, tap } from 'rxjs';
 
@@ -20,7 +20,7 @@ import {
 import { Store } from '@core/store';
 import { SubmissionError } from '@shared/types';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class UserAuthorityStore extends Store<UserAuthorityState> {
   private readonly operatorUsersInvitationService: OperatorUsersInvitationService =
     inject(OperatorUsersInvitationService);

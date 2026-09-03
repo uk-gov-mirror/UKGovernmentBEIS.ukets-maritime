@@ -1,6 +1,6 @@
 <h2 class="govuk-heading-m">Maritime operator details</h2>
-@if (accountInfo$ | async; as accountInfo) {
-  <dl govuk-summary-list>
+@if (accountInfo(); as accountInfo) {
+  <dl govuk-summary-list [hasBottomMargin]="!isEditable()">
     <div govukSummaryListRow>
       <dt govukSummaryListRowKey>Company IMO Number</dt>
       <dd govukSummaryListRowValue>{{ accountInfo.imoNumber }}</dd>
@@ -8,7 +8,7 @@
     <div govukSummaryListRow>
       <dt govukSummaryListRowKey>Operator name</dt>
       <dd govukSummaryListRowValue>{{ accountInfo.name }}</dd>
-      @if (editable()) {
+      @if (isEditable()) {
         <dd govukSummaryListRowActions>
           <a [routerLink]="[formRouterLink()]" govukLink>
             Change
@@ -20,7 +20,7 @@
     <div govukSummaryListRow>
       <dt govukSummaryListRowKey>SOP ID</dt>
       <dd govukSummaryListRowValue>{{ accountInfo.sopId }}</dd>
-      @if (editable()) {
+      @if (isEditable()) {
         <dd govukSummaryListRowActions>
           <a [routerLink]="[formRouterLink()]" govukLink>
             Change
@@ -47,7 +47,7 @@
         <div>{{ accountInfo.postcode }}</div>
         <div>{{ accountInfo.country | country }}</div>
       </dd>
-      @if (editable()) {
+      @if (isEditable()) {
         <dd govukSummaryListRowActions>
           <a [routerLink]="[formRouterLink()]" govukLink>
             Change
@@ -76,7 +76,7 @@
     <div govukSummaryListRow>
       <dt govukSummaryListRowKey>First year of reporting obligation</dt>
       <dd govukSummaryListRowValue>{{ accountInfo.firstMaritimeActivityDate | govukDate }}</dd>
-      @if (editable()) {
+      @if (isEditable()) {
         <dd govukSummaryListRowActions>
           <a [routerLink]="[formRouterLink()]" govukLink>
             Change
@@ -86,4 +86,9 @@
       }
     </div>
   </dl>
+  @if (isEditable()) {
+    <div class="govuk-!-margin-bottom-9">
+      <a govukLink routerLink="operator-details-history">View operator details history</a>
+    </div>
+  }
 }

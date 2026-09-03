@@ -10,6 +10,7 @@ import {
   NO_ERRORS_SCHEMA,
   OnInit,
   Renderer2,
+  signal,
   viewChild,
 } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
@@ -26,7 +27,6 @@ import { HTMLInputType } from './text-input.type';
 
 /*
  eslint-disable
- @angular-eslint/prefer-on-push-component-change-detection,
  @angular-eslint/component-selector
  */
 @Component({
@@ -70,7 +70,7 @@ export class TextInputComponent extends FormInput implements ControlValueAccesso
     }
   });
 
-  disabled: boolean;
+  readonly isDisabled = signal(false);
   onChange: (_: any) => any;
   onBlur: (_: any) => any;
 
@@ -127,7 +127,7 @@ export class TextInputComponent extends FormInput implements ControlValueAccesso
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+    this.isDisabled.set(isDisabled);
   }
 
   getInputValue(event: Event): string {

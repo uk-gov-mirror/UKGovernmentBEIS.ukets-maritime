@@ -42,10 +42,10 @@ import { WizardStepComponent } from '@shared/components';
 export class OpinionStatementSiteVisitInPersonComponent {
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly map = opinionStatementMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
+  readonly map = opinionStatementMap;
 
   get visitDatesFormArray(): FormArray {
     return this.formGroup.get('visitDates') as FormArray;

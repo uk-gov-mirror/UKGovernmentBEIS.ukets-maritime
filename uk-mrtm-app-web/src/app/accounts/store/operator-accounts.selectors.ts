@@ -1,6 +1,7 @@
 import { map, OperatorFunction, pipe } from 'rxjs';
 
 import {
+  AccountDetailsHistoryListResponse,
   AccountReportingStatusHistoryCreationDTO,
   AccountReportingStatusHistoryListResponse,
   EmpDetailsDTO,
@@ -111,6 +112,11 @@ export const selectPageSize: OperatorFunction<OperatorAccountsState, number> = p
 export const selectReportingStatus: OperatorFunction<OperatorAccountsState, ReportingStatusState> = pipe(
   map((state) => state.currentAccount?.reportingStatus),
 );
+
+export const selectOperatorDetailsHistory: OperatorFunction<
+  OperatorAccountsState,
+  AccountDetailsHistoryListResponse['accountDetailsHistoryList']
+> = pipe(map((state) => state.currentAccount?.operatorDetailsHistory));
 
 export const selectUpsertReportingStatus: OperatorFunction<
   OperatorAccountsState,

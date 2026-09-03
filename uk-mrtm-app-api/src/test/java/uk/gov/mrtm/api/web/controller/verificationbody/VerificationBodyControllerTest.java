@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Validator;
+import uk.gov.netz.api.authorization.core.domain.AppAuthority;
 import uk.gov.netz.api.authorization.core.domain.AppUser;
 import uk.gov.netz.api.authorization.rules.services.AppUserAuthorizationService;
 import uk.gov.netz.api.authorization.rules.services.RoleAuthorizationService;
@@ -153,6 +154,44 @@ class VerificationBodyControllerTest {
                 .andExpect(status().isForbidden());
 
         verify(verificationBodyViewService, never()).getVerificationBodies(any());
+    }
+
+    @Test
+    void getVerificationBodyDetails() throws Exception {
+        Long verificationBodyId = 1L;
+        VerificationBodyDTO verificationBodyDTO = VerificationBodyDTO.builder().id(verificationBodyId).name("name").build();
+        AppUser user = AppUser.builder()
+                .userId("userId")
+                .authorities(List.of(AppAuthority.builder().verificationBodyId(verificationBodyId).build()))
+                .build();
+
+        when(appSecurityComponent.getAuthenticatedUser()).thenReturn(user);
+        when(verificationBodyQueryService.getVerificationBodyDTOById(verificationBodyId))
+            .thenReturn(verificationBodyDTO);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders
+                    .get(CONTROLLER_PATH + "/details"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(verificationBodyId))
+            .andExpect(jsonPath("$.name").value("name"));
+    }
+
+    @Test
+    void getVerificationBodyDetails_forbidden() throws Exception {
+        AppUser user = AppUser.builder().userId("userId").build();
+
+        when(appSecurityComponent.getAuthenticatedUser()).thenReturn(user);
+        doThrow(new BusinessException(ErrorCode.FORBIDDEN))
+                .when(roleAuthorizationService)
+                .evaluate(user, new String[] { RoleTypeConstants.VERIFIER });
+
+        mockMvc.perform(
+                MockMvcRequestBuilders
+                    .get(CONTROLLER_PATH + "/details"))
+            .andExpect(status().isForbidden());
+
+        verify(verificationBodyQueryService, never()).getVerificationBodyDTOById(Mockito.any());
     }
     
     @Test

@@ -2,7 +2,7 @@ import { FormControl, ValidatorFn } from '@angular/forms';
 
 import { isAfter } from 'date-fns';
 
-import { formatDateFromString } from '@shared/utils';
+import { formatDateFromString, latestTodayAnywhere } from '@shared/utils';
 
 /**
  * Validates a CSV field of type date according to DD/MM/YYYY format and whether is today or past date
@@ -24,14 +24,13 @@ export function csvFieldTodayOrPastDateValidator<T>(
     const errorMessageRows = [];
 
     data.forEach((dataRow, index) => {
-      const currentField = formatDateFromString(dataRow[field], null);
-      const today = new Date();
+      const currentField = formatDateFromString(dataRow[field], null, true);
 
       if (hiddenIfNull && (currentField === null || currentField === undefined)) {
         return null;
       }
 
-      if (isAfter(currentField, today)) {
+      if (isAfter(currentField, latestTodayAnywhere())) {
         errorMessageRows.push({
           rowIndex: index + 2,
         });

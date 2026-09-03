@@ -42,13 +42,13 @@ interface ViewModel {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RequestForInformationSummaryComponent {
-  private readonly userInfoPipe: UserInfoResolverPipe = new UserInfoResolverPipe();
   private readonly taskStore = inject(RequestTaskStore);
   private readonly rfiStore = inject(RequestForInformationStore);
   private readonly rfiService = inject(RequestForInformationApiService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly notifyUsersService: NotifyUsersService = inject(NotifyUsersService);
+  private readonly userInfoPipe: UserInfoResolverPipe = new UserInfoResolverPipe();
   private readonly accountId = this.taskStore.select(requestTaskQuery.selectRequestTaskAccountId)();
   private readonly requestTaskId = this.taskStore.select(requestTaskQuery.selectRequestTaskId)();
   private readonly allOperatorsInfo = toSignal(this.notifyUsersService.getAllOperatorsInfo(this.accountId));

@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ErrorHandler, inject, Injectable, NgZone } from '@angular/core';
+import { ErrorHandler, inject, NgZone, Service } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { EMPTY, first, from, Observable, switchMap, throwError } from 'rxjs';
@@ -8,7 +8,7 @@ import { GenericServiceErrorCode, HttpStatuses } from '@netz/common/error';
 
 import { AuthService } from '@core/services/auth.service';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class GlobalErrorHandlingService implements ErrorHandler {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);

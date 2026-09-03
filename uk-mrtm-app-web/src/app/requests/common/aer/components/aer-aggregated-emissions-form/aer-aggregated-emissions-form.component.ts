@@ -13,7 +13,6 @@ import { BigNumberPipe } from '@shared/pipes';
 import { existingControlContainer } from '@shared/providers';
 import { bigNumberUtils, isNil } from '@shared/utils';
 
-/* eslint-disable @angular-eslint/prefer-on-push-component-change-detection */
 @Component({
   selector: 'mrtm-aer-aggregated-emissions-form',
   imports: [TextInputComponent, FieldsetDirective, LegendDirective, ReactiveFormsModule, BigNumberPipe],

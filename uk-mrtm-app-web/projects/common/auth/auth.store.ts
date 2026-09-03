@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 import { produce } from 'immer';
 import { KeycloakProfile } from 'keycloak-js';
@@ -9,7 +9,7 @@ import { SignalStore } from '@netz/common/store';
 
 import { AuthState, initialState } from './auth.state';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AuthStore extends SignalStore<AuthState> {
   constructor() {
     super(initialState);

@@ -9,6 +9,7 @@ import {
   inject,
   input,
   OnInit,
+  signal,
   untracked,
 } from '@angular/core';
 import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm, UntypedFormControl } from '@angular/forms';
@@ -22,10 +23,6 @@ import { MultiSelectItemComponent } from '@shared/components';
 import { DOCUMENT_EVENT } from '@shared/services';
 import { filter, skip, takeUntil, withLatestFrom } from 'rxjs/operators';
 
-/*
-  eslint-disable
-  @angular-eslint/prefer-on-push-component-change-detection
-*/
 @Component({
   selector: 'div[mrtm-multi-select]',
   imports: [AsyncPipe, ErrorMessageComponent, SafeHtmlPipe],
@@ -70,7 +67,7 @@ export class MultiSelectComponent implements ControlValueAccessor, OnInit {
   isDisabled: boolean;
   itemMap: { [key: string]: string };
   hasBeenTouched = false;
-  currentValue = [];
+  readonly currentValue = signal<any[]>([]);
   private onBlur: () => any;
   private onChange: (value: any) => void;
 
@@ -106,8 +103,8 @@ export class MultiSelectComponent implements ControlValueAccessor, OnInit {
         option.index = index;
 
         option.registerOnChange(() => {
-          this.currentValue = options.filter((opt) => opt.isChecked).map((opt) => opt.itemValue());
-          this.onChange(this.currentValue);
+          this.currentValue.set(options.filter((opt) => opt.isChecked).map((opt) => opt.itemValue()));
+          this.onChange(this.currentValue());
         });
 
         option.registerOnTouched(() => this.onBlur());
@@ -162,7 +159,7 @@ export class MultiSelectComponent implements ControlValueAccessor, OnInit {
   }
 
   writeValue(value: any): void {
-    this.currentValue = value;
+    this.currentValue.set(value ?? []);
     const options = this.options();
     if (options) {
       options.forEach((option) => option.writeValue(value?.includes(option.itemValue()) ?? false));

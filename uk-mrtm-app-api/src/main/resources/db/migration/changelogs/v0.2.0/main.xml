@@ -11,6 +11,7 @@
     <include file="request_mrtm.xml" relativeToChangelogFile="true" />
 	<include file="site_visit.xml" relativeToChangelogFile="true" />
 	<include file="notification_template.xml" relativeToChangelogFile="true" />
+    <include file="account_details_history.xml" relativeToChangelogFile="true" />
 
 	<include file="changelog_flowable_schema_tables_management.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

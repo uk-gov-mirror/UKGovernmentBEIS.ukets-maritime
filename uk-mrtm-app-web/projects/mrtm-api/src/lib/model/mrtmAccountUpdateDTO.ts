@@ -21,4 +21,5 @@ export interface MrtmAccountUpdateDTO {
   state?: string;
   firstMaritimeActivityDate: string;
   sopId?: number;
+  reason: string;
 }

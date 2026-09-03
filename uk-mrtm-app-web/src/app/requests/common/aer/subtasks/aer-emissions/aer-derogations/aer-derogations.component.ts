@@ -33,11 +33,11 @@ import { WizardStepComponent } from '@shared/components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AerDerogationsComponent {
-  protected readonly map = aerEmissionsShipMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService);
   private readonly store = inject(RequestTaskStore);
+  protected readonly map = aerEmissionsShipMap;
 
   readonly returnToLabel = emissionsSubtaskMap.ships.title;
   readonly shipName = this.store.select(aerCommonQuery.selectShipName(this.route.snapshot.params.shipId));

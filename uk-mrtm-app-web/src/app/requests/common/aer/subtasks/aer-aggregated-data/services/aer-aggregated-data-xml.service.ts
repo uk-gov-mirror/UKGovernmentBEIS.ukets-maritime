@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 
 import { AerShipAggregatedDataSave } from '@mrtm/api';
 
@@ -12,9 +12,7 @@ import { EmissionDetailsDtoValidator } from '@requests/common/aer/subtasks/aer-a
 import { XmlValidationError } from '@shared/types';
 import { X2jOptions, XMLParser } from 'fast-xml-parser';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class AerAggregatedDataXmlService {
   private readonly store = inject(RequestTaskStore);
   /**

@@ -31,12 +31,12 @@ import { UncorrectedItemsListTemplateComponent } from '@shared/components/summar
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UncorrectedNonCompliancesListComponent {
-  readonly map = uncorrectedNonCompliancesMap;
-  readonly wizardStep = UncorrectedNonCompliancesStep;
-  private readonly subtask = UNCORRECTED_NON_COMPLIANCES_SUB_TASK;
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
   private readonly store = inject(RequestTaskStore);
+  readonly map = uncorrectedNonCompliancesMap;
+  readonly wizardStep = UncorrectedNonCompliancesStep;
+  private readonly subtask = UNCORRECTED_NON_COMPLIANCES_SUB_TASK;
 
   readonly isEditable = this.store.select(requestTaskQuery.selectIsEditable);
   readonly issues = computed(

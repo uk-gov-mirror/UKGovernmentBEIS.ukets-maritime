@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 
 import { Observable } from 'rxjs';
@@ -10,7 +10,7 @@ import { BusinessErrorService, catchBadRequest, ErrorCodes } from '@netz/common/
 import { saveNotFoundExternalContactError } from '@regulators/errors/business-error';
 import { DetailsGuard } from '@regulators/external-contacts/details/details.guard';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class DeleteGuard {
   private readonly externalContactDetailsGuard = inject(DetailsGuard);
   private readonly businessErrorService = inject(BusinessErrorService);

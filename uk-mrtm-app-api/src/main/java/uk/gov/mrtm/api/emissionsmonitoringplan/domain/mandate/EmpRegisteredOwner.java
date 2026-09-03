@@ -13,7 +13,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import uk.gov.mrtm.api.emissionsmonitoringplan.validation.PastOrPresentPlusDays;
+import uk.gov.netz.api.common.validation.NotAfterCurrentDateInZone;
 import uk.gov.netz.api.common.validation.uniqueelements.UniqueElements;
 import uk.gov.netz.api.common.validation.uniqueelements.UniqueField;
 
@@ -51,7 +51,7 @@ public class EmpRegisteredOwner {
     private String email;
 
     @NotNull
-    @PastOrPresentPlusDays
+    @NotAfterCurrentDateInZone
     private LocalDate effectiveDate;
 
     @Builder.Default

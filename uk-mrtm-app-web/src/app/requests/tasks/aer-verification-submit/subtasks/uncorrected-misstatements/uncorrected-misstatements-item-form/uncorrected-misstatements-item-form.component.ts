@@ -26,11 +26,11 @@ import { WizardStepComponent } from '@shared/components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UncorrectedMisstatementsItemFormComponent {
-  readonly map = uncorrectedMisstatementsMap;
-
   readonly formGroup = inject<FormGroup>(TASK_FORM);
+
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
+  readonly map = uncorrectedMisstatementsMap;
   readonly isEditMode = !!this.formGroup.get('reference')?.value;
 
   onSubmit() {

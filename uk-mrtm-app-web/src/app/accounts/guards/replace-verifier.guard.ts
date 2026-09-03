@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 
 import { map, Observable, tap } from 'rxjs';
@@ -9,11 +9,11 @@ import { BusinessErrorService, catchElseRethrow, HttpStatuses } from '@netz/comm
 
 import { viewNotFoundOperatorError } from '@accounts/errors';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ReplaceVerifierGuard {
-  private verificationBodyNameInfo: VerificationBodyNameInfoDTO;
   private readonly accountVerificationBodyService = inject(AccountVerificationBodyService);
   private readonly businessErrorService = inject(BusinessErrorService);
+  private verificationBodyNameInfo: VerificationBodyNameInfoDTO;
 
   canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
     const accountId = Number(route.paramMap.get('accountId'));

@@ -58,8 +58,8 @@ export class RespondToRegulatorFormComponent {
   private readonly service: VirRespondToRegulatorService = inject(TaskService) as VirRespondToRegulatorService;
   private readonly activatedRoute = inject(ActivatedRoute);
 
-  public readonly key = input<string>();
   public readonly formGroup: FormGroup = inject(TASK_FORM);
+  public readonly key = input<string>();
 
   public readonly verificationData = computed(() => {
     const key = this.key();

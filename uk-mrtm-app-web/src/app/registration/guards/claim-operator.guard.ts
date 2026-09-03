@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, UrlTree } from '@angular/router';
 
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
@@ -11,7 +11,7 @@ import { UserRegistrationStore } from '@registration/store/user-registration.sto
 
 export type ClaimOperatorData = { accountInstallationName: string; roleCode: string };
 export type OperatorInvitationResultData = { accountName: string; roleCode: string };
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ClaimOperatorGuard {
   private readonly router = inject(Router);
   private readonly operatorUsersRegistrationService = inject(OperatorUsersRegistrationService);

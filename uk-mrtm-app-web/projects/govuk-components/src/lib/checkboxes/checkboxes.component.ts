@@ -9,7 +9,6 @@ import { LabelSizeType } from '../text-input';
 import { CheckboxComponent } from './checkbox/checkbox.component';
 /*
   eslint-disable
-  @angular-eslint/prefer-on-push-component-change-detection,
   @angular-eslint/component-selector
  */
 @Component({

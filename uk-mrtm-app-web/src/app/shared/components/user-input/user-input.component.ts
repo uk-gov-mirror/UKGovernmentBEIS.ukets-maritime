@@ -6,7 +6,6 @@ import { TextInputComponent } from '@netz/govuk-components';
 import { PhoneInputComponent } from '@shared/components';
 import { existingControlContainer } from '@shared/providers';
 
-// eslint-disable-next-line @angular-eslint/prefer-on-push-component-change-detection
 @Component({
   selector: 'mrtm-user-input',
   imports: [TextInputComponent, ReactiveFormsModule, PhoneInputComponent],

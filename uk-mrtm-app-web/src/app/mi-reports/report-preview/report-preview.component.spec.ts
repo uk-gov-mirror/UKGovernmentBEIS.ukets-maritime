@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 
 import { MiReportsService } from '@mrtm/api';
 
-import { BasePage, mockClass } from '@netz/common/testing';
+import { ActivatedRouteStub, BasePage, mockClass } from '@netz/common/testing';
 
 import { miReportTypeDescriptionMap } from '@mi-reports/core/mi-report';
 import { MiReportType } from '@mi-reports/core/mi-report-type.enum';
@@ -16,6 +17,8 @@ describe('ReportPreviewComponent', () => {
   let page: Page;
 
   const miReportsService = mockClass(MiReportsService);
+  const routeStub = new ActivatedRouteStub();
+  routeStub.snapshot.queryParams = {};
 
   class Page extends BasePage<ReportPreviewComponent> {}
 
@@ -23,6 +26,8 @@ describe('ReportPreviewComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ReportPreviewComponent],
       providers: [
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: routeStub },
         { provide: MiReportsService, useValue: miReportsService },
         { provide: MI_REPORT_USE_CASE_SERVICE, useClass: ListOfAccountsUseCaseService },
       ],

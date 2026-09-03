@@ -41,12 +41,12 @@ import { MonitoringPlanVersionSummaryTemplateComponent, WizardStepComponent } fr
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MonitoringPlanChangesFormComponent {
-  readonly map = monitoringPlanChangesMap;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
-
   private readonly route = inject(ActivatedRoute);
+
   private readonly service = inject(TaskService<AerSubmitTaskPayload>);
   private readonly store = inject(RequestTaskStore);
+  readonly map = monitoringPlanChangesMap;
 
   readonly monitoringPlanVersion = this.store.select(aerCommonQuery.selectMonitoringPlanVersion);
 

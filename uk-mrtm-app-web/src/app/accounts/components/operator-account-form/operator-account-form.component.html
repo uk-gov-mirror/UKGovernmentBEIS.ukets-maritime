@@ -17,3 +17,13 @@
   label="First year of reporting obligation"
   hint="The first year of reporting obligation will be recorded in the UK Registry and <br />represents the first year of emissions within the scope of UK ETS"
   labelSize="small"></div>
+
+@if (formMode() === 'EDIT') {
+  <div
+    formControlName="reason"
+    govuk-textarea
+    label="Reason for updating operator details"
+    labelSize="small"
+    [maxLength]="10000"
+    widthClass="govuk-!-width-one-third"></div>
+}

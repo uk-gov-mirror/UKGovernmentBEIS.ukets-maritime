@@ -44,7 +44,13 @@ import BigNumber from 'bignumber.js';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AerAggregatedDataShipSummaryComponent {
+  private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
+  private readonly store = inject(RequestTaskStore);
+  readonly isAddNewAggregatedData = inject(AER_SUBTASK_NEW_ENTRY_FLOW, { optional: true });
+  private readonly service: TaskService<AerSubmitTaskPayload> = inject(TaskService);
+  private readonly activatedRoute = inject(ActivatedRoute);
   readonly form = new UntypedFormGroup({});
+
   readonly dataId: InputSignal<string> = input<string>();
   readonly wizardMap = aerAggregatedDataSubtasksListMap;
   readonly warningMessages: Signal<Array<string>> = computed(() => {
@@ -65,10 +71,7 @@ export class AerAggregatedDataShipSummaryComponent {
 
     return warnings;
   });
-  private readonly feedbackBannerStore: FeedbackBannerStore = inject(FeedbackBannerStore);
-  private readonly store = inject(RequestTaskStore);
 
-  readonly isAddNewAggregatedData = inject(AER_SUBTASK_NEW_ENTRY_FLOW, { optional: true });
   readonly aggregatedData: Signal<
     AerAggregatedDataShipSummary & {
       status: TaskItemStatus;
@@ -85,7 +88,6 @@ export class AerAggregatedDataShipSummaryComponent {
       this.store.select(requestTaskQuery.selectIsEditable)()
     );
   });
-
   readonly canSubmit: Signal<boolean> = computed(() => {
     const editable = this.store.select(requestTaskQuery.selectIsEditable)();
     const { status, fromFetch, relatedPorts, relatedVoyages } = this.aggregatedData() ?? {};
@@ -105,8 +107,6 @@ export class AerAggregatedDataShipSummaryComponent {
   readonly ship: Signal<AerShipEmissions> = computed(() =>
     this.store.select(aerCommonQuery.selectRelatedShipForAggregatedData(this.dataId()))(),
   );
-  private readonly service: TaskService<AerSubmitTaskPayload> = inject(TaskService);
-  private readonly activatedRoute = inject(ActivatedRoute);
 
   onSubmit(): void {
     const { totalShipEmissions, surrenderEmissions, fuelConsumptions, relatedShip } = this.aggregatedData() ?? {};

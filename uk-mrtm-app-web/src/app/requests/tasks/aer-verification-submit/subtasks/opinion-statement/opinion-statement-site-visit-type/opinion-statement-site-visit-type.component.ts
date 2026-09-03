@@ -30,11 +30,11 @@ import { AerSiteVisitTypeToLabelPipe } from '@shared/pipes';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OpinionStatementSiteVisitTypeComponent {
-  readonly map = opinionStatementMap;
-  readonly siteVisitTypeOptions = AER_SITE_VISIT_TYPES;
   readonly formGroup = inject<FormGroup>(TASK_FORM);
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
+  readonly map = opinionStatementMap;
+  readonly siteVisitTypeOptions = AER_SITE_VISIT_TYPES;
 
   onSubmit() {
     this.service

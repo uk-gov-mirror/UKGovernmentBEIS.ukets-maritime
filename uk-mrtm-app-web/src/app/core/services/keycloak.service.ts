@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Service, signal } from '@angular/core';
 
 import Keycloak, {
   type KeycloakConfig,
@@ -10,7 +10,7 @@ import Keycloak, {
 
 import { KeycloakEvent, KeycloakEventType } from '@core/interfaces';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class KeycloakService {
   private keycloak: Keycloak | undefined;
 

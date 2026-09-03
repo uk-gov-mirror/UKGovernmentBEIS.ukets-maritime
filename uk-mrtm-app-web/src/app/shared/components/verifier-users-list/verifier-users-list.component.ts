@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, OnInit, output } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormArray, FormGroup, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -51,15 +51,22 @@ import { isNil } from '@shared/utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerifierUsersListComponent implements OnInit {
-  public form: UntypedFormGroup;
-  public readonly verifierUserStatuses = VERIFIER_USER_STATUSES;
-  public readonly verifierUsersAcceptedStatuses = VERIFIER_USER_STATUSES_ACCEPTED;
-  public readonly verifierUserTypes = VERIFIER_USER_TYPES;
+  private readonly router = inject(Router);
+  private readonly formBuilder = inject(UntypedFormBuilder);
+  private readonly formCreator =
+    inject<(authorities: UserAuthorityInfoDTO[]) => UntypedFormGroup>(VERIFIER_USERS_LIST_FORM);
+  private readonly authStore: AuthStore = inject(AuthStore);
+  private readonly destroyRef: DestroyRef = inject(DestroyRef);
 
   readonly editVerifierSubpath = input<string>('/user/verifiers');
   readonly verificationBodyId = input<number>();
   readonly editable = input<boolean>(false);
   readonly authorities = input.required<Observable<UserAuthorityInfoDTO[]>>();
+
+  public form: UntypedFormGroup;
+  public readonly verifierUserStatuses = VERIFIER_USER_STATUSES;
+  public readonly verifierUsersAcceptedStatuses = VERIFIER_USER_STATUSES_ACCEPTED;
+  public readonly verifierUserTypes = VERIFIER_USER_TYPES;
   public readonly tableColumns = VERIFIER_USERS_LIST_COLUMNS;
   public readonly readonlyTableColumns = VERIFIER_USERS_LIST_COLUMNS.slice(0, 2);
   readonly saveChanges = output<{
@@ -67,17 +74,11 @@ export class VerifierUsersListComponent implements OnInit {
     form: FormGroup;
   }>();
   readonly discardChanges = output<void>();
-  private readonly router = inject(Router);
-  private readonly formBuilder = inject(UntypedFormBuilder);
   public readonly addNewUserForm = this.formBuilder.group({
     roleCode: ['verifier'],
   });
-  private readonly formCreator =
-    inject<(authorities: UserAuthorityInfoDTO[]) => UntypedFormGroup>(VERIFIER_USERS_LIST_FORM);
-  private readonly authStore: AuthStore = inject(AuthStore);
-  public readonly userRole$ = this.authStore.rxSelect(selectUserRoleType);
-  public readonly userId$ = this.authStore.rxSelect(selectUserId);
-  private readonly destroyRef: DestroyRef = inject(DestroyRef);
+  public readonly userRole = toSignal(this.authStore.rxSelect(selectUserRoleType));
+  public readonly userId = toSignal(this.authStore.rxSelect(selectUserId));
 
   public ngOnInit(): void {
     this.authorities()

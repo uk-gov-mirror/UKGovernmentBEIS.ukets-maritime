@@ -31,12 +31,12 @@ import { RecommendedImprovementsListTemplateComponent } from '@shared/components
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RecommendedImprovementsListComponent {
-  readonly map = recommendedImprovementsMap;
-  readonly wizardStep = RecommendedImprovementsStep;
-  private readonly subtask = RECOMMENDED_IMPROVEMENTS_SUB_TASK;
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(TaskService<AerVerificationSubmitTaskPayload>);
   private readonly store = inject(RequestTaskStore);
+  readonly map = recommendedImprovementsMap;
+  readonly wizardStep = RecommendedImprovementsStep;
+  private readonly subtask = RECOMMENDED_IMPROVEMENTS_SUB_TASK;
 
   readonly isEditable = this.store.select(requestTaskQuery.selectIsEditable);
   readonly improvements = computed(
