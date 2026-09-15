@@ -30,7 +30,7 @@
         <uk-netz-app-api-userinfoapi.version>1.2.0</uk-netz-app-api-userinfoapi.version>
         <uk-netz-app-api-mireport.version>1.13.0</uk-netz-app-api-mireport.version>
         <uk-netz-app-api-alert.version>1.2.0</uk-netz-app-api-alert.version>
-        <uk-netz-app-api-rest-logging.version>1.7.0</uk-netz-app-api-rest-logging.version>
+        <uk-netz-app-api-rest-logging.version>1.8.0</uk-netz-app-api-rest-logging.version>
         <uk-netz-app-api-restclient.version>1.3.0</uk-netz-app-api-restclient.version>
         <uk-netz-app-api-user.version>1.10.0</uk-netz-app-api-user.version>
         <uk-netz-app-api-request.version>1.36.0</uk-netz-app-api-request.version>

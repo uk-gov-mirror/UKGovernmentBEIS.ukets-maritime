@@ -5,6 +5,7 @@ import { catchError, map, of } from 'rxjs';
 
 import { RequestActionsService } from '@mrtm/api';
 
+import { PendingRequestService } from '@netz/common/services';
 import { RequestActionStore } from '@netz/common/store';
 
 export function getRequestActionPageCanActivateGuard(actionIdParam = 'actionId'): CanActivateFn {
@@ -12,6 +13,7 @@ export function getRequestActionPageCanActivateGuard(actionIdParam = 'actionId')
     const router = inject(Router);
     const store = inject(RequestActionStore);
     const service = inject(RequestActionsService);
+    const pendingRequestService = inject(PendingRequestService);
 
     const id = +route.paramMap.get(actionIdParam);
     if (!route.paramMap.has(actionIdParam) || Number.isNaN(id)) {
@@ -24,6 +26,7 @@ export function getRequestActionPageCanActivateGuard(actionIdParam = 'actionId')
         store.setAction(action);
         return true;
       }),
+      pendingRequestService.trackRequest(),
       catchError(() => {
         return of(router.createUrlTree(['dashboard']));
       }),

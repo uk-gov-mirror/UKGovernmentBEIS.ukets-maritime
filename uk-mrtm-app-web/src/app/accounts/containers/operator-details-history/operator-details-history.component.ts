@@ -1,4 +1,3 @@
-import { LowerCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -41,7 +40,6 @@ import { isEqual } from '@shared/utils';
     SummaryListRowKeyDirective,
     SummaryListRowValueDirective,
     TableComponent,
-    LowerCasePipe,
   ],
   templateUrl: './operator-details-history.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

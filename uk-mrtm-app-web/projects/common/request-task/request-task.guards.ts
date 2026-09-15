@@ -5,6 +5,7 @@ import { catchError, concatMap, map, of } from 'rxjs';
 
 import { RequestActionsService, RequestItemsService, TasksService } from '@mrtm/api';
 
+import { PendingRequestService } from '@netz/common/services';
 import { RequestTaskStore } from '@netz/common/store';
 
 import { REQUEST_TASK_IS_EDITABLE_RESOLVER } from './request-task.providers';
@@ -19,6 +20,7 @@ export function getRequestTaskPageDefaultCanActivateGuard(taskIdParam = 'taskId'
     const requestActionsService = inject(RequestActionsService);
     const requestItemsService = inject(RequestItemsService);
     const editableResolver: RequestTaskIsEditableResolver = inject(REQUEST_TASK_IS_EDITABLE_RESOLVER);
+    const pendingRequestService = inject(PendingRequestService);
 
     const id = +route.paramMap.get(taskIdParam);
     if (!route.paramMap.has(taskIdParam) || Number.isNaN(id)) {
@@ -44,6 +46,7 @@ export function getRequestTaskPageDefaultCanActivateGuard(taskIdParam = 'taskId'
           }),
         );
       }),
+      pendingRequestService.trackRequest(),
       catchError((error) => {
         console.error(error);
         return of(router.createUrlTree(['dashboard']));

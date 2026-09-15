@@ -61,8 +61,7 @@ export const VERIFICATION_BODY_DETAILS_ROUTES: Route[] = [
             path: 'edit',
             data: { breadcrumb: false, backlink: '../' },
             canDeactivate: [PendingRequestGuard],
-            loadComponent: () =>
-              import('@verification-bodies/verification-body-details/edit').then((c) => c.EditComponent),
+            loadComponent: () => import('@verifiers/details').then((c) => c.EditComponent),
           },
           {
             path: 'delete',

@@ -16,6 +16,7 @@ import { AuthStore, selectUserRoleType } from '@netz/common/auth';
 import { PageHeadingComponent } from '@netz/common/components';
 import { PendingButtonDirective } from '@netz/common/directives';
 import { ITEM_LINK_REQUEST_TYPES_WHITELIST, ItemLinkPipe } from '@netz/common/pipes';
+import { PendingRequestService } from '@netz/common/services';
 import { ButtonDirective } from '@netz/govuk-components';
 
 import {
@@ -47,6 +48,7 @@ export class ProcessActionsComponent {
   private readonly router: Router = inject(Router);
   private readonly itemLinkPipe: ItemLinkPipe = inject(ItemLinkPipe);
   private readonly accountStatusPipe: AccountStatusPipe = inject(AccountStatusPipe);
+  private readonly pendingRequestService = inject(PendingRequestService);
 
   private accountId$ = this.activatedRoute.paramMap.pipe(map((parameters) => +parameters.get('accountId')));
   private userRoleWorkflowsMap: Record<UserStateDTO['roleType'], WorkflowMap> = userRoleWorkflowsMap;
@@ -84,6 +86,7 @@ export class ProcessActionsComponent {
         ),
         switchMap(({ requestId }) => this.requestItemsService.getItemsByRequest(requestId)),
         first(),
+        this.pendingRequestService.trackRequest(),
       )
       .subscribe(({ items }) => {
         const link = items?.length == 1 ? this.itemLinkPipe.transform(items[0]) : ['/dashboard'];

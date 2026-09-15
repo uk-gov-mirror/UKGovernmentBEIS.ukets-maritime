@@ -10,7 +10,9 @@ import {
   AER_AGGREGATED_DATA_SUB_TASK,
   AerAggregatedDataWizardStep,
 } from '@requests/common/aer/subtasks/aer-aggregated-data/aer-aggregated-data.helpers';
+import { getAerJourneyType } from '@requests/common/aer/subtasks/aer-voyages';
 import { TaskItemStatus } from '@requests/common/task-item-status';
+import { AerJourneyTypeEnum } from '@shared/types';
 
 export class AerFetchFromVoyagesAndPortsPayloadMutator extends PayloadMutator {
   public readonly subtask: string = AER_AGGREGATED_DATA_SUB_TASK;
@@ -21,7 +23,10 @@ export class AerFetchFromVoyagesAndPortsPayloadMutator extends PayloadMutator {
       produce(currentPayload, (payload: AerSubmitTaskPayload) => {
         const imoNumbers = Array.from(
           new Set<string>([
-            ...(payload?.aer?.voyageEmissions?.voyages ?? []).map((voyage) => voyage.imoNumber),
+            ...(payload?.aer?.voyageEmissions?.voyages ?? [])
+              .map((voyage) => ({ imoNumber: voyage.imoNumber, journeyType: getAerJourneyType(voyage?.voyageDetails) }))
+              .filter((voyage) => [AerJourneyTypeEnum.Domestic, AerJourneyTypeEnum.NI].includes(voyage.journeyType))
+              .map((voyage) => voyage.imoNumber),
             ...(payload?.aer?.portEmissions?.ports ?? []).map((port) => port.imoNumber),
           ]),
         );
